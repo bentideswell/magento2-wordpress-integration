@@ -20,7 +20,7 @@ class Pages extends AbstractWidget
 		if (!$this->hasPost()) {
 			$this->setPost(false);
 			
-			if ($post = Mage::registry('wordpress_post')) {
+			if ($post = $this->_registry->registry('wordpress_post')) {
 				if ($post->getPostType() === 'page') {
 					$this->setPost($post);
 				}
@@ -42,7 +42,7 @@ class Pages extends AbstractWidget
 	
 	public function getPosts()
 	{
-		$posts = Mage::getResourceModel('wordpress/post_collection')
+		$posts = $this->_factory->getFactory('Post')->create()->getCollection()
 			->addPostTypeFilter('page');
 
 		if ($this->hasParentId()) {
@@ -79,6 +79,15 @@ class Pages extends AbstractWidget
 	 */
 	public function getDefaultTitle()
 	{
-		return $this->__('Pages');
+		return __('Pages');
+	}
+	
+	protected function _beforeToHtml()
+	{
+		if (!$this->getTemplate()) {
+			$this->setTemplate('sidebar/widget/pages.phtml');
+		}
+		
+		return parent::_beforeToHtml();
 	}
 }

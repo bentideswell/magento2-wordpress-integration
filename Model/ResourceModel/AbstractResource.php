@@ -45,6 +45,11 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
     {
 		return $this->_resource->getTable($tableName);;
     }
+    
+    public function getFactory()
+    {
+	    return $this->_factory;
+    }
     	
 	/**
 	 * Retrieve a meta value from the database

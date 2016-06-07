@@ -71,7 +71,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	public function setOrderByName($dir = 'ASC')
 	{
 		$this->getSelect()
-			->reset(Zend_Db_Select::ORDER)
+			->reset(\Zend_Db_Select::ORDER)
 			->order('main_table.name ' . $dir);
 			
 		return $this;
@@ -201,7 +201,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	 */
 	public function addCloudFilter($taxonomy)
 	{
-		$cloudIdsSelect = Mage::getResourceModel('wordpress/term_collection')
+		$cloudIdsSelect = $this->getResource()->getFactory()->getFactory('Term')->create()->getCollection()
 			->addTaxonomyFilter($taxonomy)
 			->addOrderByItemCount()
 			->setPageSize(20)

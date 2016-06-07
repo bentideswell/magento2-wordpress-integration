@@ -23,7 +23,7 @@ class Cloud extends AbstractWidget
 		
 		$this->setTags(false);
 		
-		$tags = Mage::getResourceModel('wordpress/term_collection')
+		$tags = $this->_factory->getFactory('Term')->create()->getCollection()
 			->addCloudFilter($this->getTaxonomy())
 			->setOrderByName()
 			->load();
@@ -55,7 +55,7 @@ class Cloud extends AbstractWidget
 	 * @param Varien_Object $tag
 	 * @return int
 	 */
-	public function getFontSize(Varien_Object $tag)
+	public function getFontSize($tag)
 	{
 		if ($this->getMaximumPopularity() > 0) {
 			$percentage = ($tag->getCount() * 100) / $this->getMaximumPopularity();
@@ -77,7 +77,7 @@ class Cloud extends AbstractWidget
 	 */
 	public function getDefaultTitle()
 	{
-		return $this->__('Tag Cloud');
+		return __('Tag Cloud');
 	}
 	
 	/**
@@ -98,5 +98,14 @@ class Cloud extends AbstractWidget
 		}
 		
 		return $this->_getData('font_sizes');
+	}
+	
+	protected function _beforeToHtml()
+	{
+		if (!$this->getTemplate()) {
+			$this->setTemplate('sidebar/widget/tagcloud.phtml');
+		}
+		
+		return parent::_beforeToHtml();
 	}
 }

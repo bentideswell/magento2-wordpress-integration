@@ -19,11 +19,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 	 * @var \Magento\Framework\Registry
 	**/
 	protected $_registry = null;
-
-	/**
-	 * @var \Magento\Framework\Registry
-	**/
-	protected $_pageConfig = null;
 	
 	protected $_wpUrlBuilder = null;
 	protected $_viewHelper = null;
@@ -42,7 +37,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     	\FishPig\WordPress\Model\App $app,
     	\Magento\Framework\Registry $registry,
     	\FishPig\WordPress\Model\Config $config,
-    	\Magento\Framework\View\Page\Config $pageConfig,
     	\FishPig\WordPress\Model\App\Url $urlBuilder,
     	\FishPig\WordPress\Model\App\Factory $factory,
     	\FishPig\WordPress\Helper\View $viewHelper,
@@ -52,7 +46,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 	    $this->_app = $app;
 	    $this->_config = $config;
 	    $this->_registry = $registry;
-	    $this->_pageConfig = $pageConfig;
 	    $this->_wpUrlBuilder = $urlBuilder;
 	    $this->_factory = $factory;
 	    $this->_viewHelper = $viewHelper;

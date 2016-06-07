@@ -17,16 +17,15 @@ class Meta extends AbstractWidget
 	 */
 	public function getDefaultTitle()
 	{
-		return $this->__('Meta');
+		return __('Meta');
 	}
 	
-	/**
-	 * Determine whether the current customer is logged in
-	 *
-	 * @return bool
-	 */
-	public function customerIsLoggedIn()
+	protected function _beforeToHtml()
 	{
-		return Mage::getSingleton('customer/session')->isLoggedIn();
+		if (!$this->getTemplate()) {
+			$this->setTemplate('sidebar/widget/meta.phtml');
+		}
+		
+		return parent::_beforeToHtml();
 	}
 }

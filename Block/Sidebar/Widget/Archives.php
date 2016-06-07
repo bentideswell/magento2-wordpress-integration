@@ -25,21 +25,14 @@ class Archives extends AbstractWidget
 	public function getArchives()
 	{
 		if (is_null($this->_archiveCollection)) {
-			$table = Mage::helper('wordpress/app')->getTableName('posts');
-			$sql = "SELECT COUNT(ID) AS post_count, CONCAT(SUBSTRING(post_date, 1, 4), '/', SUBSTRING(post_date, 6, 2)) as archive_date 
-					FROM `" . $table . "` AS `main_table` WHERE (`main_table`.`post_type`='post') AND (`main_table`.`post_status` ='publish') 
-					GROUP BY archive_date ORDER BY archive_date DESC";
-					
-			$dates = Mage::helper('wordpress/app')->getDbConnection()->fetchAll($sql);
-			$collection  = new Varien_Data_Collection();
+			$dates = $this->_factory->getFactory('Archive')->create()->getResource()->getDatesForWidget();
+			$archiveCollection = array();
 			
 			foreach($dates as $date) {
-				$obj = Mage::getModel('wordpress/archive')->load($date['archive_date']);
-				$obj->setPostCount($date['post_count']);
-				$collection->addItem($obj);
+				$archiveCollection[] = $this->_factory->getFactory('Archive')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
 			}
 
-			$this->_archiveCollection = $collection;
+			$this->_archiveCollection = $archiveCollection;
 		}
 		
 		return $this->_archiveCollection;
@@ -57,7 +50,7 @@ class Archives extends AbstractWidget
 		$dates = explode($splitter, $date);
 		
 		foreach($dates as $it => $part) {
-			$dates[$it] = $this->__($part);
+			$dates[$it] = __($part);
 		}
 		
 		return implode($splitter, $dates);
@@ -86,11 +79,7 @@ class Archives extends AbstractWidget
 	 */
 	public function getCurrentArchive()
 	{
-		if (!$this->hasCurrentArchive()) {
-			$this->setCurrentArchive(Mage::registry('wordpress_archive'));
-		}
-		
-		return $this->getData('current_archive');
+		return $this->_registry->registry('wordpress_archive');
 	}
 	
 	/**
@@ -100,6 +89,16 @@ class Archives extends AbstractWidget
 	 */
 	public function getDefaultTitle()
 	{
-		return $this->__('Archives');
+		return __('Archives');
 	}
+	
+	protected function _beforeToHtml()
+	{
+		if (!$this->getTemplate()) {
+			$this->setTemplate('sidebar/widget/archives.phtml');
+		}
+		
+		return parent::_beforeToHtml();
+	}
+
 }

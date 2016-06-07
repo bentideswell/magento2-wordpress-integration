@@ -18,7 +18,7 @@ class Comments extends AbstractWidget
 	public function getComments()
 	{
 		if (!$this->hasComments()) {
-			$comments = Mage::getResourceModel('wordpress/post_comment_collection')
+			$comments = $this->_factory->getFactory('Post\Comment')->create()->getCollection()
 				->addCommentApprovedFilter()
 				->addOrderByDate('desc');
 			
@@ -37,6 +37,20 @@ class Comments extends AbstractWidget
 	 */
 	public function getDefaultTitle()
 	{
-		return $this->__('Recent Comments');
+		return __('Recent Comments');
+	}
+	
+	/**
+	 * Ensure template is set
+	 *
+	 * @return string
+	 */
+	protected function _beforeToHtml()
+	{
+		if (!$this->getTemplate()) {
+			$this->setTemplate('sidebar/widget/comments.phtml');
+		}
+		
+		return parent::_beforeToHtml();
 	}
 }

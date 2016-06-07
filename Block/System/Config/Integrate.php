@@ -13,18 +13,25 @@ class Integrate extends \Magento\Backend\Block\Template
 	
     public function __construct(
     	\Magento\Backend\Block\Template\Context $context,
-    	\FishPig\WordPress\Model\App $app, 
+    	\FishPig\WordPress\Model\AppFactory $appFactory, 
     	\FishPig\WordPress\Model\App\Url $urlBuilder,
     	array $data = []
     ) {
-	    $this->_app = $app;
-	    $this->_wpUrlBuilder = $urlBuilder;
-	    
 	    parent::__construct($context, $data);
+
+	    $this->_wpUrlBuilder = $urlBuilder;	    
+
+		if ($this->_request->getParam('section') === 'wordpress') {
+		    $this->_app = $appFactory->create();;
+		}
 	}
 	
 	protected function _toHtml()
 	{
+		if (!$this->_app) {
+			return '';
+		}
+
 		if ($exception = $this->_app->getException()) {
 			if ($exception instanceof \FishPig\WordPress\Model\App\Integration\Exception) {
 				$msg = $exception->getMessage() . ' Error: ' . $exception->getRawErrorMessage();

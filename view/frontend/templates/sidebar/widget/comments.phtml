@@ -19,7 +19,7 @@
 				<?php foreach($comments as $comment): ?>
 					<?php if ($comment->getPost()): ?>
 					<li class="item">
-						<?php echo $this->__("%s on %s", $comment->getCommentAuthor(), $comment->getAnchor()) ?>
+						<?php echo __("%1 on %2", $comment->getCommentAuthor(), $comment->getAnchor()) ?>
 					</li>
 					<?php endif; ?>
 				<?php endforeach; ?>

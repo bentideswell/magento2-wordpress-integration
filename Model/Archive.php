@@ -105,4 +105,78 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 		
 		return $this->getData('post_collection');
 	}
+	
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getContent()
+	{
+		if (!$this->hasContent()) {
+			$this->setContent($this->_config->getOption('blogdescription'));
+		}
+		
+		return $this->_getData('content');
+	}
+	
+	/**
+	 *
+	 *
+	 * @return \FishPig\WordPress\Model\Image
+	**/
+	public function getImage()
+	{
+		return false;
+	}
+	
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getPageTitle()
+	{
+		return $this->getName();
+	}
+
+	/**
+	 *
+	 *
+	 * @return  string
+	**/	
+	public function getMetaDescription()
+	{
+		return 'homepage meta description';
+	}
+
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getMetaKeywords()
+	{
+		return 'blog,homepage,wordpress,fishpig';
+	}
+	
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getRobots()
+	{
+		return 'index,follow';
+	}
+	
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getCanonicalUrl()
+	{
+		return $this->getUrl();
+	}
 }
