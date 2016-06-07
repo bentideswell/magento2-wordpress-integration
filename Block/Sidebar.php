@@ -106,7 +106,7 @@ class Sidebar extends AbstractBlock
 	
 	public function getWidgetArea()
 	{
-		return 'sidebar.main';
+		return 'sidebar-main';
 	}
 	
 	/**
@@ -140,7 +140,7 @@ class Sidebar extends AbstractBlock
 	 */
 	public function getRealWidgetArea()
 	{
-		return 'sidebar.main';
+		return 'sidebar-main';
 		if (!Mage::helper('wordpress')->isPluginEnabled('custom-sidebars/customsidebars.php')) {
 			return $this->getWidgetArea();
 		}

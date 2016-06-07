@@ -107,7 +107,7 @@ class Fishpig_Wordpress_Block_Sidebar_Widget_Taxonomy extends Fishpig_Wordpress_
 	protected function _beforeToHtml()
 	{
 		if (!$this->getTemplate()) {
-			$this->setTemplate('wordpress/sidebar/widget/taxonomy.phtml');
+			$this->setTemplate('sidebar/widget/taxonomy.phtml');
 		}
 
 		return parent::_beforeToHtml();

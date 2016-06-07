@@ -60,6 +60,11 @@ class App
 	 * @var FishPig\WordPress\Model\App\Url
 	**/
 	protected $_wpUrlBuilder = null;
+	
+	/**
+	 * @var FishPig\WordPress\Model\App\Url
+	**/
+	protected $_themeHelper = null;
 
 	/**
 	 * Create the object with the required dependencies
@@ -70,12 +75,14 @@ class App
 		\FishPig\WordPress\Model\Config $config,
 		\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
 		\FishPig\WordPress\Model\App\Url $urlBuilder,
-		\FishPig\WordPress\Model\App\Factory $factory
+		\FishPig\WordPress\Model\App\Factory $factory,
+		\FishPig\WordPress\Helper\Theme $themeHelper
 	) {
 		$this->_config = $config;
 		$this->_resource = $resourceConnection;
 		$this->_wpUrlBuilder = $urlBuilder;
 		$this->_factory = $factory;
+		$this->_themeHelper = $themeHelper;
 		
 		$this->_init();
 	}
@@ -110,6 +117,8 @@ class App
 			
 			// Check that the integration is successful
 			$this->_validateIntegration();
+			
+			$this->_themeHelper->setPath($this->getPath())->validate();
 			
 			// Mark the state as true. This means all is well
 			$this->_state = true;

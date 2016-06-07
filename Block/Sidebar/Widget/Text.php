@@ -17,7 +17,7 @@ class Text extends AbstractWidget
 	protected function _beforeToHtml()
 	{
 		if (!$this->getTemplate()) {
-			$this->setTemplate('sidebar/widget/posts.phtml');
+			$this->setTemplate('sidebar/widget/text.phtml');
 		}
 		
 		return parent::_beforeToHtml();
@@ -28,7 +28,7 @@ class Text extends AbstractWidget
 	 *
 	 * @return string
 	 */
-	protected function _toHtml()
+	protected function _toHtmlIgnore()
 	{
 		if ($html = parent::_toHtml()) {
 			return Mage::helper('cms')->getBlockTemplateProcessor()->filter($html);
