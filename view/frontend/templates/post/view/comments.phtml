@@ -1,0 +1,44 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $post = $this->getPost() ?>
+<?php $comments = $this->getComments() ?>
+<?php if (count($comments) > 0): ?>
+	<ol class="comment-list<?php if ($this->getParentId()): ?> children<?php endif; ?>">
+		<?php foreach($comments as $comment): ?>
+			<li class="comment-list-item" id="comment-<?php echo $comment->getId() ?>">
+				<div class="comment-list-item-wrapper">
+					<?php if ($avatarUrl = $comment->getAvatarUrl(75)): ?>
+						<div class="comment-image gravatar">
+							<img src="<?php echo $avatarUrl ?>" alt="<?php echo $this->escapeHtml($comment->getCommentAuthor()) ?>" />
+						</div>
+					<?php endif; ?>
+					<div class="comment-meta">
+						<div class="comment-author">
+							<?php if ($comment->getCommentAuthorUrl() !== '#'): ?>
+								<a href="<?php echo $this->escapeHtml($comment->getCommentAuthorUrl()) ?>" rel="nofollow" class="comment-url"><?php echo $this->escapeHtml($comment->getCommentAuthor()) ?></a> 
+							<?php else: ?>
+								<span class="comment-url"><?php echo $this->escapeHtml($comment->getCommentAuthor()) ?></span>
+							<?php endif; ?>
+						</div>
+						<div class="comment-date">
+							<a href="<?php echo $comment->getUrl() ?>" rel="nofollow" class="comment-when"><?php echo __('%1 at %2', $comment->getCommentDate() , $comment->getCommentTime()) ?></a>
+						</div>
+					</div>
+					<div class="comment-entry"><?php echo $this->getCommentContent($comment) ?></div>
+					<?php if ($this->canComment()): ?>
+						<div class="reply">
+							<a href="<?php echo $this->getPost()->getPermalink() ?>?replytocom=<?php echo $comment->getId() ?>#respond" class="comment-reply-link"><?php echo __('Reply') ?></a> <span>&darr;</span>
+						</div>
+					<?php endif; ?>
+				</div>
+				<?php echo $this->getChildrenCommentsHtml($comment) ?>
+			</li>
+		<?php endforeach; ?>
+	</ol>
+<?php endif; ?>

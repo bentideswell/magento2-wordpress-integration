@@ -1,0 +1,41 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $archives = $this->getArchives() ?>
+<?php if (count($archives) > 0): ?>
+	<div class="block block-blog block-blog-archives">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo __($title) ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<ul id="wp-archive-list">
+			<?php if ($this->getDropdown()): ?>
+				<li class="item">
+					<select name="blog-archive-dropdown" onchange="setLocation(this.value);">
+							<option value="<?php echo $this->helper('wordpress')->getUrl() ?>"><?php echo $this->__('Select Month') ?></option>
+						<?php foreach($archives as $archive): ?>
+							<option value="<?php echo $archive->getUrl() ?>"<?php if ($this->isCurrentArchive($archive)): ?> selected="selected"<?php endif; ?>>
+								<?php echo $this->translateDate($archive->getName()) ?> <?php if ($this->getCount()): ?> (<?php echo $archive->getPostCount() ?>)<?php endif; ?>
+							</option>
+						<?php endforeach; ?>
+					</select>
+				</li>
+			<?php else: ?>
+				<?php foreach($archives as $archive): ?>
+					<li class="item<?php if ($this->isCurrentArchive($archive)): ?> active<?php endif; ?>">
+						<a href="<?php echo $archive->getUrl() ?>" title="<?php echo $archive->getName() ?>"><?php echo $this->translateDate($archive->getName()) ?></a>
+						<?php if ($this->getCount()): ?> (<?php echo $archive->getPostCount() ?>)<?php endif; ?>
+					</li>
+				<?php endforeach; ?>
+			<?php endif; ?>
+			</ul>
+		</div>
+	</div>
+<?php endif; ?>

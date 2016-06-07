@@ -1,0 +1,24 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<li class="level<?php echo $this->getLevel() ?> item<?php if ($this->isCurrentTerm($this->getTerm())): ?> active<?php endif; ?>">
+	<a  class="level<?php echo $this->getLevel() ?>" href="<?php echo $this->getTerm()->getUrl() ?>" title="<?php echo $this->__($this->escapeHtml($this->getTerm()->getName())) ?>">
+		<?php echo $this->__($this->escapeHtml($this->getTerm()->getName())) ?>
+	</a>
+	<?php if ($this->canShowCount()): ?> (<?php echo $this->getTerm()->getItemCount() ?>)<?php endif; ?>
+	<?php if ($this->isHierarchical()): ?>
+		<?php $children = $this->getTerm()->getChildrenTerms()->load() ?>
+		<?php if (count($children) > 0): ?>
+			<ul class="level<?php echo $this->getLevel() + 1?>">
+				<?php foreach($children as $child): ?>
+					<?php echo $this->drawChildItem($child, $this->getLevel() + 1) ?>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+	<?php endif; ?>
+</li>

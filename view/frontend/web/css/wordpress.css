@@ -1,0 +1,41 @@
+/**
+ *
+ **/
+
+
+ol.post-list, 
+ol.comment-list { list-style: none; padding: 0; margin: 0; }
+
+/* General Post Styles */
+.post-list li:after { content: ' '; clear: both; display: block; }
+.post-entry { overflow: hidden; margin: 0 0 20px; }
+.post-date { margin: 0 0 20px; }
+.post-image { float: left; margin-right: 10px; }
+.post-meta { clear: both; margin: 0 0 20px; text-align: left; }
+.post-meta .post-meta-item { display: inline-block; margin-right: 10px; }
+.post-readmore { margin-top: 10px; }
+
+/* Comments */
+.comment-list-item { margin: 0 0 20px; }
+.comment-list.children { margin-top: 20px; }
+.comment-image { float: left; margin: 0 10px 10px 0; }
+.comment-meta {}
+.comment-author { font-weight: bold; display: block; }
+.comment-date {}
+.comment-entry { clear: both; margin: 0 0 20px; }
+
+/* Widgets */
+.block-blog {}
+.block-blog .block-title {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #c6c6c6
+}
+
+.block-blog .block-title > strong {
+    font-size: 18px;
+    font-weight: 300
+   }
+.block-blog .block-content {}
+
+.block-blog ul, .block-blog ol { list-style: none; margin: 0; padding: 0; }

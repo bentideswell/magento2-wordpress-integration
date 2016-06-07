@@ -1,0 +1,31 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($images = $this->getImages()): ?>
+	<style type="text/css">
+		#gallery-<?php echo $this->getGalleryIt() ?> {margin: auto;}
+		#gallery-<?php echo $this->getGalleryIt() ?> .gallery-item {float: left;margin-top: 10px;text-align: center;width: <?php echo floor(100 / $this->getColumns()) ?>%;}
+		#gallery-<?php echo $this->getGalleryIt() ?> img {border: 2px solid #cfcfcf;}
+		#gallery-<?php echo $this->getGalleryIt() ?> .gallery-caption {margin-left: 0;padding-left:0;}	
+	</style>
+	<?php $columns = $this->getColumns() ?>
+	<?php $imageCount = count($images) ?>
+	<div class="gallery galleryid-<?php echo $this->getObject()->getId() ?> gallery-columns-<?php echo $this->getColumns() ?> gallery-size-<?php echo $this->getSize() ?> gallery<?php echo $this->getGalleryIt() ?>" id="gallery-<?php echo $this->getGalleryIt() ?>">
+		<?php $it = 0; foreach($images as $image): ?>
+		<dl class="gallery-item"<?php if ($it%$columns == 0): ?> style="clear: left;"<?php endif; ?>>
+			<dt class="gallery-icon">
+				<a title="<?php echo $this->escapeHtml($image->getPostTitle()) ?>" rel="gallery<?php echo $this->getGalleryIt() ?>" href="<?php echo $image->getFullSizeImage() ?>"><img title="<?php echo $image->getPostTitle() ?>" alt="<?php echo $image->getPostTitle() ?>" class="attachment-<?php echo $this->getSize() ?>" src="<?php echo $image->getImageByType($this->getSize()) ? $image->getImageByType($this->getSize()) : $image->getAvailableImage() ?>" /></a>
+			</dt>
+			<?php if (($caption = trim($this->stripTags($image->getPostExcerpt()))) !== false): ?>
+				<dd class="wp-caption-text gallery-caption"><?php echo $caption ?></dd>
+			<?php endif; ?>
+		</dl>
+		<?php ++$it; endforeach; ?>
+	</div>
+	<div class="clearer"></div>
+<?php endif; ?>

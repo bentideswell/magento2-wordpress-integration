@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2016 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page layout="2columns-left" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<css src="FishPig_WordPress/css/wordpress.css"/>
+	</head>
+    <body>
+        <referenceContainer name="sidebar.main">
+			<block class="FishPig\WordPress\Block\Sidebar" name="wp.sidebar" before="-" />
+        </referenceContainer>
+        <referenceContainer name="content">
+			<block class="FishPig\WordPress\Block\Homepage\View" name="wp.homepage.view" template="post/list/wrapper.phtml">
+				<block class="FishPig\WordPress\Block\Post\ListPost" name="wp.post.list" template="post/list.phtml">
+					<container name="wp.post.list.renderer" as="renderer">
+						<block class="FishPig\WordPress\Block\Post" name="post.list.heading" template="FishPig_WordPress::post/data/name.phtml">
+							<action method="setHeadingLevel">
+								<argument xsi:type="string">2</argument>
+							</action>
+						</block>
+						<container name="wp.post.list.entry" htmlTag="div" htmlClass="post-entry">
+							<block class="FishPig\WordPress\Block\Post" name="post.list.image" template="FishPig_WordPress::post/data/image.phtml"/>
+							<block class="FishPig\WordPress\Block\Post" name="post.list.excerpt" template="FishPig_WordPress::post/data/excerpt.phtml">
+								<action method="setMaxWords">
+									<argument xsi:type="string">60</argument>
+								</action>
+							</block>
+							<block class="FishPig\WordPress\Block\Post" name="post.list.readmore" template="FishPig_WordPress::post/data/readmore.phtml">
+								<action method="setReadMoreText">
+									<argument xsi:type="string"><![CDATA[Read more &raquo;]]></argument>
+								</action>
+							</block>
+						</container>
+						<container name="wp.post.list.meta" as="meta" htmlTag="div" htmlClass="post-meta">
+							<block class="FishPig\WordPress\Block\Post" name="post.meta.categories" template="FishPig_WordPress::post/data/categories.phtml"/>
+							<block class="FishPig\WordPress\Block\Post" name="post.meta.tags" template="FishPig_WordPress::post/data/tags.phtml"/>
+							<block class="FishPig\WordPress\Block\Post" name="post.meta.date" template="FishPig_WordPress::post/data/date.phtml"/>
+							<block class="FishPig\WordPress\Block\Post" name="post.meta.user" template="FishPig_WordPress::post/data/user.phtml"/>
+						</container>
+					</container>
+					<block class="FishPig\WordPress\Block\Post\PostList\Pager" name="wp.post_list.pager" as="pager" />
+				</block>
+			</block>
+        </referenceContainer>
+    </body>
+</page>

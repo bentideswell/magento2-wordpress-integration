@@ -1,0 +1,22 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($post = $this->getPost()): ?>
+	<div class="post-list-item">
+		<h2><a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><?php echo $this->escapeHtml($post->getPostTitle()) ?></a></h2>
+		<div class="post-entry">
+			<?php if ($featuredImage = $post->getImage()): ?>
+				<div class="post-image">
+					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><img src="<?php echo $featuredImage->getAvailableImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/></a>
+				</div>
+			<?php endif; ?>
+			<div class="post-excerpt"><?php echo $post->getPostExcerpt(60) ?></div>
+		</div>
+		<?php echo $this->getMetaHtml() ?>
+	</div>
+<?php endif; ?>

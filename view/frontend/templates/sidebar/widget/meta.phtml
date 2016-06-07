@@ -1,0 +1,33 @@
+<?php
+/**
+ * @category   Fishpig
+ * @package   Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author     Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<div class="block block-blog block-blog-meta">
+	<div class="block-title">
+		<strong><span><?php echo $this->__($this->getTitle()) ?></span></strong>
+	</div>
+	<div class="block-content">
+		<ul id="wp-meta-list">
+			<li class="item">
+				<a href="<?php echo $this->helper('wordpress')->getUrl('feed/') ?>"><span><?php echo stripslashes($this->__('Entries <abbr title=\"Really Simple Syndication\">RSS</abbr>')) ?></span></a>
+			</li>
+			<li class="item">
+				<a href="http://wordpress.org/" title="<?php echo $this->__('Powered by WordPress, state-of-the-art semantic personal publishing platform.') ?>"><span><?php echo $this->__('WordPress.org') ?></span></a>
+			</li>
+			<li class="item">
+				<a href="http://www.magentocommerce.com/" title="<?php echo $this->__('Magento eCommerce') ?>"><span><?php echo $this->__('Magento') ?></span></a>
+			</li>
+			<li class="item">
+				<a href="http://fishpig.co.uk/magento/wordpress-integration/" title="<?php echo $this->__('Magento WordPress Integration') ?>"><span><?php echo $this->__('Magento WordPress Integration') ?></span></a>
+			</li>
+			<li class="item">
+				<a href="http://fishpig.co.uk/magento/extensions/" title="<?php echo $this->__('Magento Extensions') ?>"><span><?php echo $this->__('Magento Extensions') ?></span></a>
+			</li>
+		</ul>
+		<script type="text/javascript">$$('#wp-meta-list a').invoke('writeAttribute', 'target', '_blank');</script>
+	</div>
+</div>

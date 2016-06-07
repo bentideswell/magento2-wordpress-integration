@@ -1,0 +1,27 @@
+<?php
+/**
+ *
+ *
+ *
+ */
+?>
+<?php $pages = $this->getPages() ?>
+<?php if (count($pages) > 0): ?>
+	<div class="block block-blog block-blog-pages">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo $title ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<ul id="wp-page-list">
+				<?php foreach($pages as $page): ?>
+					<li class="item">
+						<a href="<?php echo $page->getUrl() ?>" title="<?php echo $page->getPostTitle() ?>"><?php echo $this->escapeHtml($page->getPostTitle()) ?></a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+			<script type="text/javascript">decorateList('wp-page-list');</script>
+		</div>
+	</div>
+<?php endif; ?>

@@ -1,0 +1,28 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<div class="block block-blog block-blog-search">
+	<?php if ($title = $this->getTitle()): ?>
+		<div class="block-title">
+			<strong><?php echo __($title) ?></strong>
+		</div>
+	<?php endif; ?>
+	<div class="block-content">
+		<form method="get" action="<?php echo $this->getFormActionUrl() ?>" id="blog-search-form">
+			<div class="blog-search">
+				<?php if ($this->getPostType()): ?>
+				<div class="no-display">
+					<input type="hidden" name="post_type" value="<?php echo $this->getPostType() ?>" />
+				</div>
+				<?php endif; ?>
+				<input type="text" name="s" class="input-text" title="<?php echo __('Search Posts') ?>" value="<?php echo $this->escapeHtml($this->getSearchTerm()) ?>"/>
+				<button class="button" title="<?php echo __('Search') ?>" type="submit"><span><span><?php echo __('Search') ?></span></span></button>
+			</div>
+		</form>
+	</div>
+</div>

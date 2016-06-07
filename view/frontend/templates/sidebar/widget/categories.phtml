@@ -1,0 +1,61 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $categories = $this->getCategories() ?>
+<?php if (count($categories) > 0): ?>
+	<div class="block block-blog block-blog-categories">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo __($title) ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<ul class="level0" id="wp-category-list">
+				<?php if ($this->getDropdown()): ?>
+					<li class="level0 item">
+						<select name="blog-archive-dropdown" onchange="setLocation(this.value);">
+							<option value="<?php echo $this->helper('wordpress')->getUrl() ?>"><?php echo __('Select Category') ?></option>
+							<?php foreach($categories as $category): ?>
+								<option value="<?php echo $category->getUrl() ?>"<?php if ($this->isCurrentCategory($category)): ?> selected="selected"<?php endif; ?>><?php echo $category->getName() ?> <?php if ($this->getCount()): ?> (<?php echo $category->getPostCount() ?>)<?php endif; ?></option>
+								<?php if ($this->getHierarchical()): ?>
+									<?php $children = $category->getChildrenCategories() ?>
+									<?php if (count($children) > 0): ?>
+										<?php foreach($children as $child): ?>
+											<option value="<?php echo $child->getUrl() ?>"<?php if ($this->isCurrentCategory($child)): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;<?php echo $child->getName() ?> <?php if ($this->getCount()): ?> (<?php echo $child->getPostCount() ?>)<?php endif; ?></option>
+										<?php endforeach; ?>
+									<?php endif; ?>
+								<?php endif; ?>
+							<?php endforeach; ?>
+						</select>
+					</li>
+				<?php else: ?>
+					<?php foreach($categories as $category): ?>
+						<li class="level0 item<?php if ($this->isCurrentCategory($category)): ?> active<?php endif; ?>">
+							<a  class="level0" href="<?php echo $category->getUrl() ?>" title="<?php echo $category->getName() ?>">
+								<?php echo $category->getName() ?>
+							</a><?php if ($this->getCount()): ?> (<?php echo $category->getPostCount() ?>)<?php endif; ?>
+							<?php if ($this->getHierarchical()): ?>
+								<?php $children = $category->getChildrenTerms() ?>
+								<?php if (count($children) > 0): ?>
+									<ul class="level1">
+										<?php foreach($children as $child): ?>
+											<?php if ($child->getPostCount() > 0): ?>
+											<li class="level1 item<?php if ($this->isCurrentCategory($child)): ?> active<?php endif; ?>">&raquo; <a href="<?php echo $child->getUrl() ?>" title="<?php echo $child->getName() ?>" class="level1"><?php echo $child->getName() ?></a><?php if ($this->getCount()): ?> (<?php echo $child->getPostCount() ?>)<?php endif; ?>
+											</li>
+											<?php endif; ?>
+										<?php endforeach; ?>
+									</ul>
+								<?php endif; ?>
+							<?php endif; ?>
+						</li>
+					<?php endforeach; ?>
+				<?php endif; ?>
+			</ul>
+		</div>
+	</div>
+<?php endif; ?>

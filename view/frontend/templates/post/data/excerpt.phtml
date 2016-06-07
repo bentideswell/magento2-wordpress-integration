@@ -1,0 +1,11 @@
+<?php
+/**
+ *
+**/
+?>
+
+<?php if ($post = $this->getPost()): ?>
+	<?php if (($excerpt = trim($post->getPostExcerpt($this->getMaxWords()))) !== ''): ?>
+		<div class="post-excerpt"><?php echo $excerpt ?></div>
+	<?php endif; ?>
+<?php endif; ?>

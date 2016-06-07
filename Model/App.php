@@ -1,0 +1,418 @@
+<?php
+/**
+ * Copyright © 2016 FishPig. All rights reserved. http://fishpig.co.uk/magento-2/wordpress-integration/
+ */
+namespace FishPig\WordPress\Model;
+
+/**
+ * WordPress App object
+ */
+class App
+{   
+	/**
+	 * @var bool
+	**/
+	protected $_state = null;
+	
+	/**
+	 * @var string|false
+	**/
+	protected $_path = null;
+	
+	/**
+	 * @var FishPig\WordPress\Model\App\ResourceConnection
+	**/
+	protected $_resource = null;
+	
+	/**
+	 * @var FishPig\WordPress\Model\App\Integration\Exception
+	**/
+	protected $_exception = false;
+	
+	/**
+	 * @var array
+	**/
+	protected $_postTypes = null;
+	
+	/**
+	 * @var array
+	**/
+	protected $_taxonomies = null;
+
+	/**
+	 * Array of the definitions from wp-config.php
+	 *
+	 * @var array|false
+	**/
+	protected $_wpconfig = null;
+
+	/**
+	 * @var FishPig\WordPress\Model\Config
+	**/
+	protected $_config = null;
+	
+	/**
+	 * @var FishPig\WordPress\Model\App\Factory
+	**/
+	protected $_factory = null;
+	
+	/**
+	 * @var FishPig\WordPress\Model\App\Url
+	**/
+	protected $_wpUrlBuilder = null;
+
+	/**
+	 * Create the object with the required dependencies
+	 *
+	 * @param \Magento\Framework\App\ResourceConnection\ConnectionFactory $connectionFactory,
+	**/
+	public function __construct(
+		\FishPig\WordPress\Model\Config $config,
+		\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
+		\FishPig\WordPress\Model\App\Url $urlBuilder,
+		\FishPig\WordPress\Model\App\Factory $factory
+	) {
+		$this->_config = $config;
+		$this->_resource = $resourceConnection;
+		$this->_wpUrlBuilder = $urlBuilder;
+		$this->_factory = $factory;
+		
+		$this->_init();
+	}
+	
+	/**
+	 * Initialize the connection to WordPress
+	 *
+	 * @return $this
+	 */
+	protected function _init()
+	{
+		if (!is_null($this->_state)) {
+			return $this;
+		}
+
+		$this->_state = false;
+
+		try {
+			// Check that the path to WordPress is valid
+			if ($this->getPath() === false) {
+				throw new \Exception('Unable to find a WordPress installation at specified path.');
+			}
+			
+			// Connect to the WordPress database
+			$this->_initResource();
+			
+			// This will load the wp-config.php values
+			$this->_getWpConfigValue();
+			
+			// Use the wp-config.php values to connect to the DB
+			$this->_initResource();
+			
+			// Check that the integration is successful
+			$this->_validateIntegration();
+			
+			// Mark the state as true. This means all is well
+			$this->_state = true;
+		}
+		catch (\Exception $e) {
+			$this->_exception = $e;
+			$this->_state = false;
+#			echo sprintf('<h1>%s</h1><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());exit;
+		}
+	}
+
+   /**
+	 * Get the absolute path to the WordPress installation
+	 *
+	 * @return false|string
+	 */
+    public function getPath()
+    {
+		if (!is_null($this->_path)) {
+			return $this->_path;
+		}
+		
+		$this->_path = false;
+		
+		if (!($path = trim($this->_config->getStoreConfigValue('wordpress/setup/path')))) {
+			return $this->_path;;
+		}
+		
+		if (substr($path, 0, 1) !== '/') {
+			$path = BP . '/' . $path;
+		}
+		
+		if (!is_dir($path) || !is_file($path . '/wp-config.php')) {
+			return $this->_path;
+		}
+		
+		return $this->_path = $path;
+    }
+    
+	/**
+	 * Get the wp-config.php definitions
+	 *
+	 * @param string|null $key = null
+	 * @return mixed
+	 */
+	protected function _getWpConfigValue($key = null)
+	{
+		if (is_null($this->_wpconfig)) {
+			$wpConfig = file_get_contents($this->getPath() . '/wp-config.php');
+
+			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
+				throw new Exception('Unable to extract values from wp-config.php');
+			}
+		
+			$this->_wpconfig = array_combine($matches[1], $matches[3]);
+			
+			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-z0-9_]+)\\1/', $wpConfig, $match)) {
+				$this->_wpconfig['DB_TABLE_PREFIX'] = $match[2];
+			}
+			else {
+				$this->_wpconfig['DB_TABLE_PREFIX'] = 'wp_';
+			}
+		}
+		
+		if (is_null($key)) {
+			return $this->_wpconfig;
+		}
+		
+		return isset($this->_wpconfig[$key]) ? $this->_wpconfig[$key] : false;
+	}
+	
+	/**
+	 * Get the database connection
+	 *
+	 * @return false|Magento\Framework\DB\Adapter\Pdo\Mysql
+	**/
+	protected function _initResource()
+	{
+		if (!$this->_resource->isConnected()) {
+			$this->_resource->setTablePrefix($this->_getWpConfigValue('DB_TABLE_PREFIX'))
+				->setMappingData(array(
+					'before_connect' => $this->_config->getDbTableMapping('before_connect'),
+					'after_connect' => $this->_config->getDbTableMapping('after_connect'),
+				))
+				->connect(array(
+			        'host' => 'localhost',
+			        'dbname' => $this->_getWpConfigValue('DB_NAME'),
+			        'username' => $this->_getWpConfigValue('DB_USER'),
+			        'password' => $this->_getWpConfigValue('DB_PASSWORD'),
+			        'active' => '1',	
+				)
+			);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Check that the WP settings allow for integration
+	 *
+	 * @return bool
+	**/
+	protected function _validateIntegration()
+	{
+		$magentoUrl = $this->_wpUrlBuilder->getMagentoUrl();
+
+		if ($this->_wpUrlBuilder->getHomeUrl() === $this->_wpUrlBuilder->getSiteurl()) {
+			throw new Exception('Your Home URL matches your Site URL.');
+		}
+
+		if (strpos($this->_wpUrlBuilder->getHomeUrl(), $magentoUrl) !== 0) {
+			throw new Exception('Your home URL is invalid.');
+		}
+		
+		return $this;
+	}
+	
+    /**
+	 * Get all of the post types
+	 *
+	 * @return false|array
+	 */
+	public function getPostTypes()
+	{
+		return $this->getPostType();
+	}
+	
+    /**
+	 * Get a single post type by the type or get an array of all post types
+	 * This method also retrieves the post type data
+	 *
+	 * @param null|string $key
+	 * @return false|array
+	 */
+	public function getPostType($key = null)
+	{
+		if (is_null($this->_postTypes)) {
+			if ($postTypes = $this->_config->getOption('fp_post_types')) {
+				$this->_postTypes = unserialize($postTypes);
+			}
+			else {
+				$this->_postTypes = array(
+					'post' => $this->_factory->getFactory('Post\Type')->create(),
+					'page' => $this->_factory->getFactory('Post\Type')->create(),
+				);
+				
+				$this->_postTypes['post']->addData(array(
+					'post_type' => 'post',
+					'rewrite' => array('slug' => $this->_config->getOption('permalink_structure')),
+					'taxonomies' => array('category', 'post_tag'),
+					'_builtin' => true,
+				));
+				
+				$this->_postTypes['page']->addData(array(
+					'post_type' => 'page',
+					'rewrite' => array('slug' => '%postname%/'),
+					'hierarchical' => true,
+					'taxonomies' => array(),
+					'_builtin' => true,
+				));
+			}
+		}
+		
+		if (is_null($key)) {
+			return $this->_postTypes;
+		}
+		
+		return isset($this->_postTypes[$key]) ? $this->_postTypes[$key]: false;
+	}
+	
+    /**
+	 * Get a single taxonomy by the type or get an array of all taxonomies
+	 *
+	 * @param null|string $key
+	 * @return false|array
+	 */
+	public function getTaxonomy($key = null)
+	{
+		if (is_null($this->_taxonomies)) {
+			if ($taxonomies = $this->_config->getOption('fp_taxonomies')) {
+				$this->_taxonomies = $axonomies;
+			}
+			else {
+				
+				/*
+				TODO
+				$blogPrefix = Mage::helper('wordpress')->isWordPressMU()
+					 && Mage::helper('wp_addon_multisite')->canRun()
+					 && Mage::helper('wp_addon_multisite')->isDefaultBlog();
+				*/
+				
+				$bases = array(
+					'category' => $this->_config->getOption('category_base') ? $this->_config->getOption('category_base') : 'category',
+					'post_tag' => $this->_config->getOption('tag_base') ? $this->_config->getOption('tag_base') : 'tag',
+				);
+				
+				/*
+					TODO
+				foreach($bases as $baseType => $base) {
+					if ($blogPrefix && $base && strpos($base, '/blog') === 0) {
+						$bases[$baseType] = substr($base, strlen('/blog'));	
+					}
+				}
+				*/
+
+				$this->_taxonomies = array(
+					'category' => $this->_factory->getFactory('Term\Taxonomy')->create(),
+					'post_tag' => $this->_factory->getFactory('Term\Taxonomy')->create()
+				);
+				
+				$this->_taxonomies['category']->addData(array(
+					'type' => 'category',
+					'taxonomy_type' => 'category',
+					'labels' => array(
+						'name' => 'Categories',
+						'singular_name' => 'Category',
+					),
+					'public' => true,
+					'hierarchical' => true,
+					'rewrite' => array(
+						'hierarchical' => true,
+						'slug' => $bases['category'],
+					),
+					'_builtin' => true,
+				));
+				
+				$this->_taxonomies['post_tag']->addData(array(
+					'type' => 'post_tag',
+					'taxonomy_type' => 'post_tag',
+					'labels' => array(
+						'name' => 'Tags',
+						'singular_name' => 'Tag',
+					),
+					'public' => true,
+					'hierarchical' => false,
+					'rewrite' => array(
+						'slug' => $bases['post_tag'],
+					),
+					'_builtin' => true,
+				));
+			}
+	
+	/*
+		TODO
+			if (isset($this->_taxonomies['category'])) {
+				$helper = Mage::helper('wordpress');
+				
+				$canRemoveCategoryPrefix = $helper->isPluginEnabled('wp-no-category-base/no-category-base.php')
+					|| $helper->isPluginEnabled('wp-remove-category-base/wp-remove-category-base.php')
+					|| $helper->isPluginEnabled('remove-category-url/remove-category-url.php')
+					|| Mage::helper('wp_addon_wordpressseo')->canRemoveCategoryBase();
+				
+				if ($canRemoveCategoryPrefix) {
+					$this->_taxonomies['category']->setSlug('');
+				}
+			}
+			*/
+		}
+		
+		if (is_null($key)) {
+			return $this->_taxonomies;
+		}
+		
+		return isset($this->_taxonomies[$key]) ? $this->_taxonomies[$key] : false;
+	}
+	
+	/**
+	 * Get all of the taxonomies
+	 *
+	 * @return array
+	 **/
+	public function getTaxonomies()
+	{
+		return $this->getTaxonomy();
+	}
+    
+    /**
+	 * Determine whether the integration is usable
+	 *
+	 * @return bool
+	**/
+    public function canRun()
+    {
+	    return $this->_state === true;
+    }
+    
+	/**
+	 * Get the exception that occured during self::_init if it occured
+	 *
+	 * @return false|FishPig\WordPress\Model\App\Integration\Exception
+	**/
+	public function getException()
+	{
+		return $this->_exception;
+	}
+	
+	/**
+	 * Get the config object
+	 *
+	 * @return \FishPig\WordPress\Model\Config
+	**/
+	public function getConfig()
+	{
+		return $this->_config;
+	}
+}

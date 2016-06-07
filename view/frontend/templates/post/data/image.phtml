@@ -1,0 +1,12 @@
+<?php
+/**
+ *
+**/
+?>
+<?php if ($post = $this->getPost()): ?>
+	<?php if ($image = $post->getImage()): ?>
+		<div class="post-image">
+			<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><img src="<?php echo $image->getAvailableImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/></a>
+		</div>
+	<?php endif; ?>
+<?php endif; ?>

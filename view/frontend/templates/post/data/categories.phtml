@@ -1,0 +1,10 @@
+<?php
+/**
+ *
+**/
+?>
+<?php if ($post = $this->getPost()): ?>
+	<?php if ($categoryString = $post->getTermCollectionAsString('category')): ?>
+		<div class="post-categories post-meta-item"><strong><?php echo __('Categories') ?>:</strong> <?php echo $categoryString ?></div>
+	<?php endif; ?>
+<?php endif; ?>

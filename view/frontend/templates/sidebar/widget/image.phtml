@@ -1,0 +1,25 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($image = $this->getImage()): ?>
+	<div class="block block-blog block-image">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo __($title) ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<a href="<?php echo $this->getLink() ?>"<?php if ($this->getLinktarget()): ?> target="<?php echo $this->getLinktarget() ?>"<?php endif; ?>>
+				<img src="<?php echo $this->getImageUrl() ?>" alt="<?php echo $this->getAlt() ?>" style="max-width: 100%;" />
+			</a>
+			<?php if ($this->getDescription()): ?>
+				<p><?php echo $this->getDescription() ?></p>
+			<?php endif; ?>
+		</div>
+	</div>
+<?php endif; ?>

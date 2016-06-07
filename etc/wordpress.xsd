@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="wordpress">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="database">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="tables">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="table" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="id" use="optional"/>
+                            <xs:attribute type="xs:string" name="when" use="optional"/>
+                            <xs:attribute type="xs:string" name="meta" use="optional"/>
+                            <xs:attribute type="xs:string" name="name" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="sidebar">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="widgets">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="widget" maxOccurs="unbounded" minOccurs="0">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute type="xs:string" name="id" use="optional"/>
+                            <xs:attribute type="xs:string" name="class" use="optional"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="shortcodes">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="shortcode" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:simpleContent>
+                    <xs:extension base="xs:string">
+                      <xs:attribute type="xs:string" name="id" use="optional"/>
+                      <xs:attribute type="xs:string" name="class" use="optional"/>
+                      <xs:attribute type="xs:byte" name="sortOrder" use="optional"/>
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

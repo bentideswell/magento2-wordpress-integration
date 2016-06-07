@@ -1,0 +1,11 @@
+<?php
+/**
+ *
+**/
+?>
+
+<?php if ($post = $this->getPost()): ?>
+	<?php if (($content = trim($post->getPostContent())) !== ''): ?>
+		<div class="post-content"><?php echo $content ?></div>
+	<?php endif; ?>
+<?php endif; ?>

@@ -1,0 +1,21 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $posts = $this->getPosts() ?>
+<?php if (count($posts) > 0): ?>
+	<div class="post-list-wrapper">
+		<ol class="post-list">
+			<?php foreach($posts as $post): ?>
+				<li class="item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?php echo $post->getPostFormat() ?>">
+					<?php echo $this->renderPost($post) ?>
+				</li>
+			<?php endforeach; ?>
+		</ol>
+		<?php echo $this->getPagerHtml() ?>
+	</div>
+<?php endif; ?>

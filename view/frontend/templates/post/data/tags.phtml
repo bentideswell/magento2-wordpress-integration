@@ -1,0 +1,10 @@
+<?php
+/**
+ *
+**/
+?>
+<?php if ($post = $this->getPost()): ?>
+	<?php if ($tagString = $post->getTermCollectionAsString('post_tag')): ?>
+		<div class="post-tags post-meta-item"><strong><?php echo __('Tags') ?>:</strong> <?php echo $tagString ?></div>
+	<?php endif; ?>
+<?php endif; ?>

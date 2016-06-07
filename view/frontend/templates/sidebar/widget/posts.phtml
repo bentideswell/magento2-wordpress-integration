@@ -1,0 +1,28 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $posts = $this->getPosts() ?>
+<?php if (count($posts) > 0): ?>
+	<div class="block block-blog block-recent-posts">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo __($title) ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<ul id="<?php echo $this->getListId() ?>">
+			<?php foreach($posts as $post): ?>
+				<li class="item">
+					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><?php echo $this->escapeHtml($post->getPostTitle()) ?></a>
+				</li>
+			<?php endforeach; ?>
+			</ul>
+			<script type="text/javascript">decorateList('<?php echo $this->getListId() ?>')</script>
+		</div>
+	</div>
+<?php endif; ?>

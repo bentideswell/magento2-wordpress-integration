@@ -1,0 +1,25 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($tags = $this->getTags()): ?>
+	<?php $tagCount = count($tags) ?>
+	<div class="block block-blog block-blog-tag-cloud block-tags">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo __($title) ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<ul class="tags-list">
+				<?php foreach ($tags as $tag): ?>
+					<li<?php if (--$tagCount < 1): ?> class="last"<?php endif; ?>><a href="<?php echo $tag->getUrl() ?>" style="font-size:<?php echo $this->getFontSize($tag) ?>%;"><?php echo $this->htmlEscape($tag->getName()) ?></a></li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	</div>
+<?php endif; ?>

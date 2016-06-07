@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
+	<menu>
+		<!--
+		<add id="FishPig_WordPress::brand" title="WordPress" parent="Magento_Backend::content" module="FishPig_WordPress" sortOrder="30" resource="FishPig_WordPress::brand"/>
+		-->
+		<add id="FishPig_WordPress::config_wordpress" title="WordPress" module="FishPig_WordPress" sortOrder="30" resource="FishPig_WordPress::config_wordpress" action="admin/system_config/index" />
+	</menu>
+</config>

@@ -1,0 +1,29 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $comments = $this->getComments() ?>
+<?php if (count($comments) > 0): ?>
+	<div class="block block-blog block-blog-comments">
+		<?php if ($title = $this->getTitle()): ?>
+			<div class="block-title">
+				<strong><?php echo __($title) ?></strong>
+			</div>
+		<?php endif; ?>
+		<div class="block-content">
+			<ul id="wp-recent-comments-list">
+				<?php foreach($comments as $comment): ?>
+					<?php if ($comment->getPost()): ?>
+					<li class="item">
+						<?php echo $this->__("%s on %s", $comment->getCommentAuthor(), $comment->getAnchor()) ?>
+					</li>
+					<?php endif; ?>
+				<?php endforeach; ?>
+			</ul>
+		</div>
+	</div>
+<?php endif; ?>

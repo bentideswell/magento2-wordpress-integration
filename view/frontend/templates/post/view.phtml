@@ -1,0 +1,17 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($post = $this->getPost()): ?>
+	<div class="post-view">
+		<div class="post-entry std<?php if ($post->getFeaturedImage()): ?> post-entry-with-image<?php endif; ?>">
+			<div class="post-content"><?php echo $post->getPostContent() ?></div>
+		</div>
+		<?php echo $this->getChildHtml('meta') ?>
+		<?php echo $this->getCommentsHtml() ?>
+	</div>
+<?php endif; ?>

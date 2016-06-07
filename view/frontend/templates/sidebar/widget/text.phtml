@@ -1,0 +1,18 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<div class="block block-blog block-blog-text">
+	<?php if ($title = $this->getTitle()): ?>
+		<div class="block-title">
+			<strong><?php echo __($title) ?></strong>
+		</div>
+	<?php endif; ?>
+	<div class="block-content">
+		<?php echo $this->getText() ?>
+	</div>
+</div>

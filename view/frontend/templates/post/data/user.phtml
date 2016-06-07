@@ -1,0 +1,8 @@
+<?php
+/**
+ *
+**/
+?>
+<?php if ($post = $this->getPost()): ?>
+	<div class="post-user post-meta-item"><strong><?php echo __('Posted By') ?>:</strong> <a href="<?php echo $post->getUser()->getUrl() ?>"><?php echo $post->getUser() ->getDisplayName() ?></a></div>
+<?php endif; ?>

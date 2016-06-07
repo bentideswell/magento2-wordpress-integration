@@ -1,0 +1,16 @@
+<?php
+/**
+ *
+**/
+?>
+<?php if ($post = $this->getPost()): ?>
+	<?php if ((int)$this->getHeadingLevel() === 1): ?>
+		<h1 class="post-name"><?php echo $this->escapeHtml($post->getName()) ?></h1>
+	<?php else: ?>
+		<h<?php echo $this->getHeadingLevel() ?> class="post-name">
+			<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getName()) ?>">
+				<?php echo $this->escapeHtml($post->getName()) ?>
+			</a>
+		</h<?php echo $this->getHeadingLevel() ?>>
+	<?php endif; ?>
+<?php endif; ?>

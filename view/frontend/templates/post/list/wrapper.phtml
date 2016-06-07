@@ -1,0 +1,16 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($text = $this->getIntroText()): ?>
+	<p class="post-list-description"><?php echo $text ?></p>
+<?php endif; ?>
+<?php if ($postList = trim($this->getPostListHtml())): ?>
+	<?php echo $postList ?>
+<?php else: ?>
+	<p class="note-msg"><?php echo __('There are no posts matching your selection.') ?>
+<?php endif; ?>

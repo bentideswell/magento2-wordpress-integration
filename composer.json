@@ -1,0 +1,13 @@
+{
+    "name": "FishPig/WordPress",
+    "description": "Magento WordPress Integration",
+    "type": "magento2-module",
+    "extra": {
+        "map": [
+            [
+                "*",
+                "FishPig/WordPress"
+            ]
+        ]
+    }
+}
