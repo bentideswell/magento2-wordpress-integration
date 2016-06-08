@@ -103,7 +103,7 @@ class Cloud extends AbstractWidget
 	protected function _beforeToHtml()
 	{
 		if (!$this->getTemplate()) {
-			$this->setTemplate('sidebar/widget/tagcloud.phtml');
+			$this->setTemplate('sidebar/widget/cloud.phtml');
 		}
 		
 		return parent::_beforeToHtml();
