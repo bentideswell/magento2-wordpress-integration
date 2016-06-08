@@ -21,7 +21,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 * Returns the current Wordpress category
 	 * This is just a wrapper for getCurrentCategory()
 	 *
-	 * @return Fishpig_Wordpress_Model_Post_Categpry
+	 * @return \FishPig_WordPress\Model\Term
 	 */
 	public function getTerm()
 	{
@@ -35,7 +35,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	/**
 	 * Generates and returns the collection of posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
+	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
 	 */
 	protected function _getPostCollection()
 	{

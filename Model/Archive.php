@@ -89,13 +89,12 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 	/**
 	 * Retrieve a collection of blog posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getPostCollection()
 	{
 		if (!$this->hasPostCollection()) {
-			$collection = Mage::getResourceModel('wordpress/post_collection')
-				->setFlag('source', $this)
+			$collection = $this->getPostCollection()
 				->addIsViewableFilter()
 				->addArchiveDateFilter($this->getId(), $this->getIsDaily())
 				->setOrderByPostDate();

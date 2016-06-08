@@ -424,4 +424,36 @@ class App
 	{
 		return $this->_config;
 	}
+	
+	/**
+	 * If a page is set as a custom homepage, get it's ID
+	 *
+	 * @return false|int
+	 */
+	public function getHomepagePageId()
+	{
+		if ($this->_config->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->_config->getOption('page_on_front')) {
+				return $pageId;
+			}
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * If a page is set as a custom homepage, get it's ID
+	 *
+	 * @return false|int
+	 */
+	public function getBlogPageId()
+	{
+		if ($this->_config->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->_config->getOption('page_for_posts')) {
+				return $pageId;
+			}
+		}
+		
+		return false;
+	}
 }

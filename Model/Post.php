@@ -1,7 +1,7 @@
 <?php
 /**
  * @category    Fishpig
- * @package     Fishpig_Wordpress
+ * @package     FishPig/WordPress
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
@@ -217,7 +217,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	 * If Yoast SEO is installed, the primary category will be used (if $taxonomy === category)
 	 *
 	 * @param string $taxonomy
-	 * @return Fishpig_Wordpress_Model_Term
+	 * @return \FishPig/WordPress\Model\Term
 	 **/
 	public function getParentTerm($taxonomy)
 	{
@@ -241,7 +241,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	 * Get a collection of terms by the taxonomy
 	 *
 	 * @param string $taxonomy
-	 * @return Fishpig_Wordpress_Model_Resource_Term_Collection
+	 * @return \FishPig/WordPress\Model\ResourceModel\Term\Collection
 	 */
 	public function getTermCollection($taxonomy)
 	{
@@ -285,7 +285,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Retrieve the previous post
 	 *
-	 * @return false|Fishpig_Wordpress_Model_Post
+	 * @return false|\FishPig/WordPress\Model\Post
 	 */
 	public function getPreviousPost()
 	{
@@ -312,7 +312,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Retrieve the next post
 	 *
-	 * @return false|Fishpig_Wordpress_Model_Post
+	 * @return false|\FishPig/WordPress\Model\Post
 	 */
 	public function getNextPost()
 	{
@@ -365,7 +365,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Returns a collection of comments for this post
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Comment_Collection
+	 * @return \FishPig/WordPress\Model\ResourceModel\Post\Comment\Collection
 	 */
 	public function getComments()
 	{
@@ -379,7 +379,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Returns a collection of images for this post
 	 * 
-	 * @return Fishpig_Wordpress_Model_Mysql4_Image_Collection
+	 * @return \FishPig/WordPress\Model\ResourceModel\Image\Collection
 	 *
 	 * NB. This function has not been thoroughly tested
 	 *        Please report any bugs
@@ -401,7 +401,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	 *
 	 * This image must be uploaded and assigned in the WP Admin
 	 *
-	 * @return Fishpig_Wordpress_Model_Image
+	 * @return \FishPig/WordPress\Model\Image
 	 */
 	public function getImage()
 	{
@@ -411,7 +411,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Get the model for the author of this post
 	 *
-	 * @return Fishpig_Wordpress_Model_Author
+	 * @return \FishPig/WordPress\Model\User
 	 */
 	public function getUser()
 	{
@@ -516,8 +516,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	 */
 	public function isViewableForVisitor()
 	{
-		return $this->getPostPassword() === '' 
-			|| Mage::getSingleton('core/session')->getPostPassword() == $this->getPostPassword(); 
+		return true;
 	}
 	
 	/**
@@ -539,7 +538,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	public function canBeViewed()
 	{
 		return $this->isPublished()
-			|| ($this->getPostStatus() === 'private' && Mage::getSingleton('customer/session')->isLoggedIn());
+			|| ($this->getPostStatus() === 'private' && $this->getApp()->getConfig()->isLoggedIn());
 	}
 	
 	/**
@@ -603,7 +602,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Retrieve the parent page
 	 *
-	 * @return false|Fishpig_Wordpress_Model_Post
+	 * @return false|\FishPig/WordPress\Model\Post
 	 */
 	public function getParentPost()
 	{
@@ -611,7 +610,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 			$this->setParentPost(false);
 
 			if ($this->getParentId()) {
-				$parent = Mage::getModel('wordpress/post')
+				$parent = $this->_factory->getFactory('Post')->create()
 					->setPostType($this->getPostType() === 'revision' ? '*' : $this->getPostType())
 					->load($this->getParentId());
 				
@@ -627,7 +626,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Retrieve the page's children pages
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql_Page_Collection
+	 * @return \FishPig/WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getChildrenPosts()
 	{
@@ -671,12 +670,12 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	
 	public function isHomepagePage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)Mage::helper('wordpress/router')->getHomepagePageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->getApp()->getHomepagePageId();
 	}
 	
 	public function isBlogListingPage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)Mage::helper('wordpress/router')->getBlogPageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->getApp()->getBlogPageId();
 	}
 	
 	/**

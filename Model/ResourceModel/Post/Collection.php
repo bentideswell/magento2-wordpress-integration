@@ -87,7 +87,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 		}
 
 		if (!$this->hasPostTypeFilter()) {
-			if ($this->getFlag('source') instanceof Fishpig_Wordpress_Model_Term) {
+			if ($this->getFlag('source') instanceof \FishPig_WordPress\Model\Term) {
 				if ($postTypes = $this->getApp()->getPostTypes()) {
 					$supportedTypes = array();
 	
@@ -284,12 +284,6 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	 */
 	public function addIsViewableFilter()
 	{
-		/*
-		$fields = Mage::app()->getStore()->isAdmin() 
-			|| (Mage::getSingleton('customer/session')->isLoggedIn() && Mage::helper('wordpress')->isAddonInstalled('CS'))
-			? array('publish', 'private', 'protected')
-			: array('publish', 'protected');
-*/
 		$fields = array('publish', 'private', 'protected');
 
 		return $this->addStatusFilter($fields);

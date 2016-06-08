@@ -100,12 +100,12 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 			if (!isset($this->_metaFieldsJoined[$field])) {
 				$alias = $this->_getMetaFieldAlias($field);
 
-				$meta = new Varien_Object(array(
+				$meta = new \Magento\Framework\DataObject(array(
 					'key' => $field,
 					'alias' => $alias,
 				));
 				
-				Mage::dispatchEvent($model->getEventPrefix() . '_join_meta_field', array('collection' => $this, 'meta' => $meta));
+				$this->_eventManager->dispatch($model->getEventPrefix() . '_join_meta_field', ['collection' => $this, 'meta' => $meta]);
 				
 				if ($meta->getCanSkipJoin()) {
 					$this->_metaFieldsJoined[$field] = $meta->getAlias();
@@ -146,12 +146,10 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 	protected function _afterLoad()
 	{
 		if ($this->getFlag('after_load_event_name')) {
-			/*
-			Mage::dispatchEvent($this->getFlag('after_load_event_name'), array(
+			$this->_eventManager->dispatch($this->getFlag('after_load_event_name'), [
 				'collection' => $this,
 				'wrapper_block' => $this->getFlag('after_load_event_block')
-			));
-			*/
+			]);
 		}
 
 		return parent::_afterLoad();

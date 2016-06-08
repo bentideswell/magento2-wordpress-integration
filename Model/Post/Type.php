@@ -108,17 +108,17 @@ class Type extends Type\AbstractType
 	 */
 	public function getUrl()
 	{
-		return Mage::helper('wordpress')->getUrl($this->getArchiveSlug() . '/');
+		return $this->_wpUrlBuilder->getUrl($this->getArchiveSlug() . '/');
 	}
 	
 	/**
 	 * Retrieve the post collection for this post type
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
+	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getPostCollection()
 	{
-		return Mage::getResourceModel('wordpress/post_collection')->addPostTypeFilter($this->getPostType());
+		return $this->_factory->getFactory('Post')->create()->getCollection()->addPostTypeFilter($this->getPostType());
 	}
 
 	/**
@@ -172,7 +172,7 @@ class Type extends Type\AbstractType
 	public function getArchiveUrl()
 	{
 		return $this->hasArchive()
-			? Mage::helper('wordpress')->getUrl($this->getArchiveSlug() . '/')
+			? $this->_wpUrlBuilder->getUrl($this->getArchiveSlug() . '/')
 			: '';
 	}
 
@@ -302,32 +302,4 @@ class Type extends Type\AbstractType
 	{
 		return $this->getHasArchive() && $this->getHasArchive() !== '0';
 	}
-	
-	/**
-	 * Get the archive list template for the post type
-	 *
-	 * @return string
-	 */
-	public function getArchiveTemplate()
-	{
-		return false;
-		$customTemplateFile = 'wordpress/post/list/renderer/' . $this->getPostType() . '.phtml';
-		$customTemplate = Mage::getBaseDir('design') . DS . Mage::getDesign()->getTemplateFilename($customTemplateFile, array('_relative'=>true));
-
-		return is_file($customTemplate) ? $customTemplateFile : false;
-	}
-	
-	/**
-	 * Get the archive list template for the post type
-	 *
-	 * @return string
-	 */
-	public function getViewTemplate()
-	{
-		return false;
-		$customTemplateFile = 'wordpress/post/view/' . $this->getPostType() . '.phtml';
-		$customTemplate = Mage::getBaseDir('design') . DS . Mage::getDesign()->getTemplateFilename($customTemplateFile, array('_relative'=>true));
-
-		return is_file($customTemplate) ? $customTemplateFile : false;
-	}	
 }

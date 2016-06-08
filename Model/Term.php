@@ -75,7 +75,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Get the taxonomy object for this term
 	 *
-	 * @return Fishpig_Wordpress_Model_Term_Taxonomy
+	 * @return \FishPig_WordPress\Model\Term\Taxonomy
 	 */
 	public function getTaxonomyInstance()
 	{
@@ -99,7 +99,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Retrieve the parent term
 	 *
-	 * @reurn false|Fishpig_Wordpress_Model_Term
+	 * @reurn false|\FishPig_WordPress\Model\Term
 	 */
 	public function getParentTerm()
 	{
@@ -121,7 +121,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Retrieve a collection of children terms
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql_Term_Collection
+	 * @return \FishPig_WordPress\Model\ResourceModel\Term\Collection
 	 */
 	public function getChildrenTerms()
 	{
@@ -131,7 +131,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Loads the posts belonging to this category
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
 	 */    
     public function getPostCollection()
     {
@@ -244,20 +244,6 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	 **/
 	public function getMetaValue($key)
 	{
-		$ikey = '__acf_meta_' . $key;
-		
-		if ($this->hasData($ikey)) {
-			return $this->_getData($ikey);
-		}
-		
-		if (!$this->getApp()->isAddonInstalled('ACF')) {
-			$this->setData($ikey, null);
-			
-			return null;
-		}
-		
-		$this->setData($ikey, Mage::helper('wp_addon_acf')->getTermValue($key, $this));
-
-		return $this->_getData($ikey);
+		return null;
 	}
 }

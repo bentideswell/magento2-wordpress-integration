@@ -97,7 +97,7 @@ class Comment extends \FishPig\WordPress\Model\AbstractModel
 	 */	
 	public function getGuid()
 	{
-		return Mage::helper('wordpress')->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId());
+		return $this->_wpUrlBuilder->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId());
 	}
 	
 	/**
@@ -139,7 +139,7 @@ class Comment extends \FishPig\WordPress\Model\AbstractModel
 			$this->setCommentPageId(1);
 			if ($post = $this->getPost()) {
 				$totalComments = count($post->getComments());
-				$commentsPerPage = Mage::helper('wordpress')->getWpOption('comments_per_page', 50);
+				$commentsPerPage = $this->getApp()->getConfig()->getOption('comments_per_page', 50);
 
 				if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
 					$it = 0;

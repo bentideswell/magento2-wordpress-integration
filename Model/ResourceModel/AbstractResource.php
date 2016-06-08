@@ -56,12 +56,12 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 * This only works if the model is setup to work a meta table
 	 * If not, null will be returned
 	 *
-	 * @param Fishpig_Wordpress_Model_Meta_Abstract $object
+	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
 	 * @param string $metaKey
 	 * @param string $selectField
 	 * @return null|mixed
 	 */
-	public function getMetaValue(\Fishpig\Wordpress\Model\AbstractModel $object, $metaKey, $selectField = 'meta_value')
+	public function getMetaValue(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object, $metaKey, $selectField = 'meta_value')
 	{
 		if ($object->hasMeta()) {
 			$select = $this->getConnection()
@@ -85,11 +85,11 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 * Save a meta value to the database
 	 * This only works if the model is setup to work a meta table
 	 *
-	 * @param Fishpig_Wordpress_Model_Meta_Abstract $object
+	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
 	 * @param string $metaKey
 	 * @param string $metaValue
 	 */
-	public function setMetaValue(\Fishpig\Wordpress\Model\AbstractModel $object, $metaKey, $metaValue)
+	public function setMetaValue(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object, $metaKey, $metaValue)
 	{
 		if ($object->hasMeta()) {
 			$metaValue = trim($metaValue);
@@ -111,10 +111,10 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	/**
 	 * Get an array of all of the meta values associated with this post
 	 *
-	 * @param Fishpig_Wordpress_Model_Meta_Abstract $object
+	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
 	 * @return false|array
 	 */
-	public function getAllMetaValues(\Fishpig\Wordpress\Model\AbstractModel $object)
+	public function getAllMetaValues(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object)
 	{
 		if ($object->hasMeta()) {
 			$select = $this->getConnection()

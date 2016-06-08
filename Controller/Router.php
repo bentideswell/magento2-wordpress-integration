@@ -296,36 +296,4 @@ class Router implements \Magento\Framework\App\RouterInterface
 
 		return $this;
 	}
-	
-	/**
-	 * If a page is set as a custom homepage, get it's ID
-	 *
-	 * @return false|int
-	 */
-	public function getHomepagePageId()
-	{
-		if (Mage::helper('wordpress')->getWpOption('show_on_front') === 'page') {
-			if ($pageId = Mage::helper('wordpress')->getWpOption('page_on_front')) {
-				return $pageId;
-			}
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * If a page is set as a custom homepage, get it's ID
-	 *
-	 * @return false|int
-	 */
-	public function getBlogPageId()
-	{
-		if (Mage::helper('wordpress')->getWpOption('show_on_front') === 'page') {
-			if ($pageId = Mage::helper('wordpress')->getWpOption('page_for_posts')) {
-				return $pageId;
-			}
-		}
-		
-		return false;
-	}
 }

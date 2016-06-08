@@ -13,7 +13,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	/**
 	 * Caches and returns the current category
 	 *
-	 * @return Fishpig_Wordpress_Model_User
+	 * @return \FishPig_WordPress\Model\User
 	 */
 	public function getEntity()
 	{
@@ -23,7 +23,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	/**
 	 * Generates and returns the collection of posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
 	 */
 	protected function _getPostCollection()
 	{

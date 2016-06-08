@@ -372,10 +372,10 @@ class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
 	/**
 	 * Determine whether the given post has any children posts
 	 *
-	 * @param Fishpig_Wordpress_Model_Post $post
+	 * @param \FishPig_WordPress\Model\Post $post
 	 * @return bool
 	 */
-	public function hasChildrenPosts(Fishpig_Wordpress_Model_Post $post)
+	public function hasChildrenPosts(\FishPig_WordPress\Model\Post $post)
 	{
 		$select = $this->getConnection()
 			->select()
@@ -391,8 +391,8 @@ class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
 /**
 	 * Retrieve a collection of post comments
 	 *
-	 * @param Fishpig_Wordpress_Model_Post $post
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Comment_Collection
+	 * @param \FishPig_WordPress\Model\Post $post
+	 * @return \FishPig_WordPress\Model\ResourceModel\Post_Comment_Collection
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
@@ -406,8 +406,8 @@ class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
 	/**
 	 * Retrieve the featured image for the post
 	 *
-	 * @param Fishpig_Wordpress_Model_Post $post
-	 * @return Fishpig_Wordpress_Model_Image $image
+	 * @param \FishPig_WordPress\Model\Post $post
+	 * @return \FishPig_WordPress\Model\Image $image
 	 */
 	public function getFeaturedImage(\FishPig\WordPress\Model\Post $post)
 	{
@@ -420,25 +420,7 @@ class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
 				->limit(1);
 
 			if (($imageId = $this->getConnection()->fetchOne($select)) !== false) {
-				if (preg_match('/([a-z-]{1,})([0-9]{1,})/', $imageId, $matches)) {
-					if (($prefix = trim($matches[1], '- ')) !== '') {
-						$eventData = array(
-							'object' => $post,
-							'image_id' => $matches[2],
-							'original_image_id' => $imageId,
-							'result' => new Varien_Object(),
-						);
-
-						Mage::dispatchEvent('wordpress_post_get_featured_image_' . $prefix, $eventData);
-						
-						if ($eventData['result']->getFeaturedImage()) {
-							return $eventData['result']->getFeaturedImage();
-						}
-					}
-				}
-				else {
-					return $this->_factory->getFactory('Image')->create()->load($imageId);
-				}
+				return $this->_factory->getFactory('Image')->create()->load($imageId);
 			}
 		}
 		

@@ -130,7 +130,7 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	/**
 	 * Load the WordPress user model associated with the current logged in customer
 	 *
-	 * @return Fishpig_Wordpress_Model_User
+	 * @return \FishPig_WordPress\Model\User
 	 */
 	public function loadCurrentLoggedInUser()
 	{
