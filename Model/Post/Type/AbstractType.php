@@ -21,11 +21,6 @@ abstract class AbstractType extends \Magento\Framework\DataObject
 	    $this->_app = $app;
     	$this->_resource = $resourceConnection;
     }
-     
-     public function getApp()
-     {
-	     return $this->_app;
-     }
 	
 	/**
 	 * Generate an array of URI's based on $results

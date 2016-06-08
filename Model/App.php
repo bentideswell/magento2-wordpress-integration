@@ -4,6 +4,8 @@
  */
 namespace FishPig\WordPress\Model;
 
+use \FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
+
 /**
  * WordPress App object
  */
@@ -226,11 +228,17 @@ class App
 		$magentoUrl = $this->_wpUrlBuilder->getMagentoUrl();
 
 		if ($this->_wpUrlBuilder->getHomeUrl() === $this->_wpUrlBuilder->getSiteurl()) {
-			throw new Exception('Your Home URL matches your Site URL.');
+			IntegrationException::throwException(
+				sprintf('Your WordPress Home URL matches your Site URL (%s).<br/>Your SiteURL should be the WordPress installation URL. The Home URL should be the integrated blog URL.', $this->_wpUrlBuilder->getSiteurl())
+			);
 		}
 
 		if (strpos($this->_wpUrlBuilder->getHomeUrl(), $magentoUrl) !== 0) {
-			throw new Exception('Your home URL is invalid.');
+			IntegrationException::throwException('Your home URL is invalid.');
+		}
+		
+		if ($this->_wpUrlBuilder->getHomeUrl() === $magentoUrl) {
+			IntegrationException::throwException('Your WordPress Home URL matches your Magento URL. Try changing your Home URL to something like ' . $magentoUrl . '/blog');
 		}
 		
 		return $this;

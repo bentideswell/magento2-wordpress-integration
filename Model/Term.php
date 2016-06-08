@@ -44,7 +44,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	 */
 	public function getTaxonomyInstance()
 	{
-		return $this->getApp()->getTaxonomy($this->getTaxonomy());
+		return $this->_app->getTaxonomy($this->getTaxonomy());
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 			$this->setParentTerm(false);
 			
 			if ($this->getParentId()) {
-				$parentTerm = $this->getApp()->getFactory()->create('term')->load($this->getParentId());
+				$parentTerm = $this->_app->getFactory()->create('term')->load($this->getParentId());
 				
 				if ($parentTerm->getId()) {
 					$this->setParentTerm($parentTerm);

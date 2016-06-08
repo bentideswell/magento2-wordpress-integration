@@ -11,6 +11,25 @@ namespace FishPig\WordPress\Shortcode;
 class oEmbed extends AbstractShortcode
 {
 	/**
+	 * Constructor
+	**/
+    public function __construct(
+	    \FishPig\WordPress\Model\App\Factory $factory,
+    	\Magento\Framework\View\Element\Context $context, 
+	    \Magento\Framework\HTTP\Client\Curl $curl,
+		\Magento\Framework\App\CacheInterface $cache,
+		\Magento\Framework\App\Cache\StateInterface $cacheState,
+    	array $data = []
+    )
+    {
+	    parent::__construct($factory, $context, $data);
+		
+		$this->_curl = $curl;
+		$this->_cache = $cache;
+		$this->_cacheState = $cacheState;
+    }
+    
+	/**
 	 *
 	 *
 	 * @return 
@@ -78,6 +97,25 @@ class oEmbed extends AbstractShortcode
 	**/
 	protected function _getOembedData($url)
 	{
-		return file_get_contents($url);
+		$cacheKey = md5($url);
+		$cacheIsActive = $this->_cacheState->isEnabled(
+			\Magento\Framework\App\Cache\Type\Block::TYPE_IDENTIFIER
+		);
+
+		
+		if ($cacheIsActive) {
+			if ($data = $this->_cache->load($cacheKey)) {
+				return $data;
+			}
+		}
+		
+		$data = false;
+		$this->_curl->get($url);
+		
+		if (($data =  $this->_curl->getBody()) && $cacheIsActive) {
+			$this->_cache->save($data, $cacheKey, array('FishPig', 'WordPress', 'oEmbed'), 604800);
+		}
+		
+		return $data;
 	}
 }

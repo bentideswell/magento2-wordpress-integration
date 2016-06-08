@@ -97,7 +97,7 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 	 */
 	public function getPagerHtml()
 	{
-		if ($this->getApp()->getConfig()->getOption('page_comments', false)) {
+		if ($this->_config->getOption('page_comments', false)) {
 			return $this->getChildHtml('pager');
 		}
 	}

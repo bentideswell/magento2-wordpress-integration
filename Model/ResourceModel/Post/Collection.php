@@ -88,7 +88,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 
 		if (!$this->hasPostTypeFilter()) {
 			if ($this->getFlag('source') instanceof \FishPig_WordPress\Model\Term) {
-				if ($postTypes = $this->getApp()->getPostTypes()) {
+				if ($postTypes = $this->_app->getPostTypes()) {
 					$supportedTypes = array();
 	
 					foreach($postTypes as $postType) {
@@ -109,7 +109,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 		}
 
 		if (count($this->_postTypes) === 0) {
-			$this->addFieldToFilter('post_type', array('in' => array_keys($this->getApp()->getPostTypes())));
+			$this->addFieldToFilter('post_type', array('in' => array_keys($this->_app->getPostTypes())));
 		}
 		else {
 			$this->addFieldToFilter('post_type', array('in' => $this->_postTypes));
@@ -156,7 +156,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			$this->joinTermTables('category');
 		}
 		
-		$readAdapter = $this->getApp()->getDbConnection();
+		$readAdapter = $this->_app->getDbConnection();
 
 		$postSql = $readAdapter->quoteInto("`main_table`.`ID` IN (?)", $postIds);
 		$categorySql = $readAdapter->quoteInto("`tax_category`.`term_id` IN (?)", $categoryIds);
@@ -222,11 +222,11 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addStickyPostsToCollection()
 	{
-		if (($sticky = trim($this->getApp()->getConfig()->getOption('sticky_posts'))) !== '') {
+		if (($sticky = trim($this->_app->getConfig()->getOption('sticky_posts'))) !== '') {
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {
-				$select = $this->getApp()->getDbConnection()
+				$select = $this->_app->getDbConnection()
 					->select()
 					->from($this->getTable('wordpress_post'), new Zend_Db_Expr(1))
 					->where('main_table.ID IN (?)', $stickyIds)

@@ -51,4 +51,9 @@ class Exception extends \Exception
 	{
 		return $this->_error;
 	}
+	
+	public function getFullMessage()
+	{
+		return $this->getMessage() . ($this->getRawErrorMessage() ? 'Error: ' . $this->getRawErrorMessage() : '');
+	}
 }

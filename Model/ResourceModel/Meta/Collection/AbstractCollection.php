@@ -17,29 +17,6 @@ abstract class AbstractCollection extends \FishPig\WordPress\Model\ResourceModel
 	 * @var array
 	 */
 	protected $_metaFieldsJoined = array();
-        
-	public function getApp()
-	{
-		return $this->getResource()->getApp();
-	}
-	
-	public function getConnection()
-	{
-		return $this->getResource()->getConnection();
-	}
-	
-	/**
-	 * Removes all order data set at the collection level
-	 * This does not remove order set using self::getSelect()->order($field, $dir)
-	 *
-	 * @return $this
-	 */
-	public function resetOrderBy()
-	{
-		$this->_orders = array();
-		
-		return $this;
-	}
 	
 	/**
 	 * Add a meta field to the select statement columns section
@@ -136,22 +113,5 @@ abstract class AbstractCollection extends \FishPig\WordPress\Model\ResourceModel
 	protected function _getMetaFieldAlias($field)
 	{
 		return 'meta_field_' . str_replace('-', '_', $field);
-	}
-
-	/**
-	 * After loading a collection, dispatch the pre-set event
-	 *
-	 * @return $this
-	 */
-	protected function _afterLoad()
-	{
-		if ($this->getFlag('after_load_event_name')) {
-			$this->_eventManager->dispatch($this->getFlag('after_load_event_name'), [
-				'collection' => $this,
-				'wrapper_block' => $this->getFlag('after_load_event_block')
-			]);
-		}
-
-		return parent::_afterLoad();
 	}
 }

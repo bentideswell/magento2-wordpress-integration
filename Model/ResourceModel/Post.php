@@ -60,7 +60,7 @@ class Post extends AbstractMeta
 			if ($mtoken === '%postnames%') {
 				$slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
 			}
-			else if ($taxonomy = $this->getApp()->getTaxonomy(trim($mtoken, '%'))) {
+			else if ($taxonomy = $this->_app->getTaxonomy(trim($mtoken, '%'))) {
 				$termData = $this->getParentTermsByPostId(array($postId), $taxonomy->getTaxonomyType(), false);
 
 				foreach($termData as $key => $term) {
@@ -154,7 +154,7 @@ class Post extends AbstractMeta
 	 */
 	public function getPermalinkSqlColumn()
 	{	
-		if (!($postTypes = $this->getApp()->getPostTypes())) {
+		if (!($postTypes = $this->_app->getPostTypes())) {
 			return false;
 		}
 
@@ -197,7 +197,7 @@ class Post extends AbstractMeta
 		$originalUri = $uri;
 		$permalinks = array();	
 
-		if ($postTypes = $this->getApp()->getPostTypes()) {
+		if ($postTypes = $this->_app->getPostTypes()) {
 			$fields = $this->getPermalinkSqlFields();
 
 			foreach($postTypes as $postType) {
@@ -254,7 +254,7 @@ class Post extends AbstractMeta
 						foreach($tokens as $key => $token) {
 							if (substr($token, 0, 1) === '%') {
 								if (!isset($fields[trim($token, '%')])) {
-									if ($taxonomy = $this->getApp()->getTaxonomy(trim($token, '%'))) {
+									if ($taxonomy = $this->_app->getTaxonomy(trim($token, '%'))) {
 										$endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/' 
 											&& isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%' 
 											&& !isset($tokens[$key+3]);

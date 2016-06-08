@@ -15,6 +15,7 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 .post-meta .post-meta-item { display: inline-block; margin-right: 10px; }
 .post-readmore { margin-top: 10px; }
 
+.post-entry iframe { max-width: 100%; }
 /* Comments */
 .comment-list-item { margin: 0 0 20px; }
 .comment-list.children { margin-top: 20px; }

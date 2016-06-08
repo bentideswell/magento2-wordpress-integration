@@ -13,26 +13,19 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 {
 	protected $_resource = null;
 	protected $_factory = null;
-	
+
     public function __construct(
     	\Magento\Framework\Model\ResourceModel\Db\Context $context,
-    	\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
-    	\FishPig\WordPress\Model\App $app,
-    	\FishPig\WordPress\Model\App\Factory $factory,
+		\FishPig\WordPress\Model\Context $wpContext,
     	$connectionName = null
     )
     {
         parent::__construct($context, $connectionName);
         
-        $this->_app = $app;
-        $this->_resource = $resourceConnection;
-        $this->_factory = $factory;
+        $this->_app = $wpContext->getApp();
+        $this->_resource = $wpContext->getResourceConnection();
+        $this->_factory = $wpContext->getFactory();
     }
-    
-	public function getApp()
-	{
-		return $this->_app;
-	}
 	
 	public function getConnection()
 	{

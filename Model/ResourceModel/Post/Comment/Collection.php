@@ -46,7 +46,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	public function addOrderByDate($dir = null)
 	{
 		if (is_null($dir)) {
-			$dir = $this->getApp()->getConfig()->getOption('comment_order');
+			$dir = $this->_app->getConfig()->getOption('comment_order');
 			$dir = in_array($dir, array('asc', 'desc')) ? $dir : 'asc';
 		}
 		

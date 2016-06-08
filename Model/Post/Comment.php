@@ -111,7 +111,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 			if ($post = $this->getPost()) {
 				$pageId = '';
 				
-				if ($this->getApp()->getConfig()->getOption('page_comments')) {
+				if ($this->_app->getConfig()->getOption('page_comments')) {
 					$pageId = '/comment-page-' . $this->getCommentPageId();
 				}
 				
@@ -139,7 +139,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 			$this->setCommentPageId(1);
 			if ($post = $this->getPost()) {
 				$totalComments = count($post->getComments());
-				$commentsPerPage = $this->getApp()->getConfig()->getOption('comments_per_page', 50);
+				$commentsPerPage = $this->_app->getConfig()->getOption('comments_per_page', 50);
 
 				if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
 					$it = 0;
@@ -183,7 +183,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	public function getAvatarUrl($size = 50)
 	{
 		if (!$this->hasGravatarUrl()) {
-			$config = $this->getApp()->getConfig();
+			$config = $this->_app->getConfig();
 			
 			if ($config->getOption('show_avatars')) {
 				if ($this->getCommentAuthorEmail()) {

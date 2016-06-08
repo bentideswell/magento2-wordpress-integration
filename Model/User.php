@@ -85,7 +85,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function getTablePrefix()
 	{
-		return $this->getApp()->getTablePrefix();
+		return $this->_app->getTablePrefix();
 	}
 	
 	/**

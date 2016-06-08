@@ -34,7 +34,7 @@ class Integrate extends \Magento\Backend\Block\Template
 
 		if ($exception = $this->_app->getException()) {
 			if ($exception instanceof \FishPig\WordPress\Model\App\Integration\Exception) {
-				$msg = $exception->getMessage() . ' Error: ' . $exception->getRawErrorMessage();
+				$msg = $exception->getFullMessage();
 			}
 			else {
 				$msg = 'Unknown Error: ' . $exception->getMessage();

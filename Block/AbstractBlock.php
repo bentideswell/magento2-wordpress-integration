@@ -10,21 +10,6 @@ namespace FishPig\WordPress\Block;
 
 abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 {
-	/**
-	 * @var \FishPig\WordPress\Model\App
-	**/
-	protected $_app = null;
-	
-	/**
-	 * @var \Magento\Framework\Registry
-	**/
-	protected $_registry = null;
-	
-	protected $_wpUrlBuilder = null;
-	protected $_viewHelper = null;
-	protected $_factory = null;
-	protected $_config = null;
-	
     /**
      * Constructor
      *
@@ -34,39 +19,19 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
      */
     public function __construct(
     	\Magento\Framework\View\Element\Template\Context $context, 
-    	\FishPig\WordPress\Model\App $app,
-    	\Magento\Framework\Registry $registry,
-    	\FishPig\WordPress\Model\Config $config,
-    	\FishPig\WordPress\Model\App\Url $urlBuilder,
-    	\FishPig\WordPress\Model\App\Factory $factory,
-    	\FishPig\WordPress\Helper\View $viewHelper,
+    	\FishPig\WordPress\Block\Context $wpContext,
     	array $data = []
     )
     {
-	    $this->_app = $app;
-	    $this->_config = $config;
-	    $this->_registry = $registry;
-	    $this->_wpUrlBuilder = $urlBuilder;
-	    $this->_factory = $factory;
-	    $this->_viewHelper = $viewHelper;
+	    $this->_app = $wpContext->getApp();
+	    $this->_config = $wpContext->getConfig();
+	    $this->_registry = $wpContext->getRegistry();
+	    $this->_wpUrlBuilder = $wpContext->getUrlBuilder();
+	    $this->_factory = $wpContext->getFactory();
+	    $this->_viewHelper = $wpContext->getViewHelper();
 	    
         parent::__construct($context, $data);
     }
-    
-    /**
-	 * Get the App model
-	 *
-	 * @return \FishPig\WordPress\Model\App
-	**/
-	public function getApp()
-	{
-		return $this->_app;
-	}
-	
-	public function getRegistry()
-	{
-		return $this->_registry;
-	}
 	
 	protected function _toHtml()
 	{

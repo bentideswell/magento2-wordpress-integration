@@ -20,7 +20,7 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 	public function getName()
 	{
 		return $this->_getData('name');
-		return $this->getApp()->translateDate($this->_getData('name'));
+		return $this->_app->translateDate($this->_getData('name'));
 	}
 	
 	/**

@@ -52,7 +52,7 @@ class Type extends Type\AbstractType
 		
 
 		if ((int)$this->getData('rewrite/with_front') === 1) {
-			$postPermalink = $this->getApp()->getPostType('post')->getPermalinkStructure();
+			$postPermalink = $this->_app->getPostType('post')->getPermalinkStructure();
 			
 			if (substr($postPermalink, 0, 1) !== '%') {
 				$front = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');
@@ -202,12 +202,12 @@ class Type extends Type\AbstractType
 		
 		foreach($prioritise as $type) {
 			if ($this->isTaxonomySupported($type)) {
-				return $this->getApp()->getTaxonomy($type);
+				return $this->_app->getTaxonomy($type);
 			}
 		}
 		
 		if ($taxonomies = $this->getTaxonomies()) {
-			return $this->getApp()->getTaxonomy(array_shift($taxonomies));
+			return $this->_app->getTaxonomy(array_shift($taxonomies));
 		}
 		
 		return false;

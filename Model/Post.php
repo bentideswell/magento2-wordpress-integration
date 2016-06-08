@@ -57,11 +57,11 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 					);
 				}
 			}
-			else if ($typeInstance = $this->getApp()->getPostType($this->getPostType())) {
+			else if ($typeInstance = $this->_app->getPostType($this->getPostType())) {
 				$this->setTypeInstance($typeInstance);
 			}
 			else {
-				$this->setTypeInstance($this->getApp()->getPostType('post'));
+				$this->setTypeInstance($this->_app->getPostType('post'));
 			}
 		}
 		
@@ -182,7 +182,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected function _getTeaserAnchor()
 	{
 		// Allows translation
-		return stripslashes($this->getApp()->__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
+		return stripslashes($this->_app->__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
 	}
 	
 	/**
@@ -196,7 +196,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getParentTerm($taxonomy)
 	{
 		/*
-		if ($taxonomy === 'category' && $this->getApp()->isAddonInstalled('WordPressSEO')) {
+		if ($taxonomy === 'category' && $this->_app->isAddonInstalled('WordPressSEO')) {
 			if ($category = Mage::helper('wp_addon_yoastseo')->getPostPrimaryCategory($this)) {
 				return $category;
 			}
@@ -476,7 +476,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getPreviewUrl()
 	{
 		if ($this->isPending()) {
-			return $this->getApp()->getUrl('?p=' . $this->getId() . '&preview=1');
+			return $this->_app->getUrl('?p=' . $this->getId() . '&preview=1');
 		}
 		
 		return '';
@@ -512,7 +512,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function canBeViewed()
 	{
 		return $this->isPublished()
-			|| ($this->getPostStatus() === 'private' && $this->getApp()->getConfig()->isLoggedIn());
+			|| ($this->getPostStatus() === 'private' && $this->_app->getConfig()->isLoggedIn());
 	}
 	
 	/**
@@ -644,12 +644,12 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	
 	public function isHomepagePage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->getApp()->getHomepagePageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_app->getHomepagePageId();
 	}
 	
 	public function isBlogListingPage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->getApp()->getBlogPageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_app->getBlogPageId();
 	}
 	
 	/**

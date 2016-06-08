@@ -13,40 +13,27 @@ use Magento\Framework\DataObject\IdentityInterface;
 
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
-	protected $_app = null;
-	protected $_wpUrlBuilder = null;
-	protected $_factory = null;
-	protected $_viewHelper = null;
-	protected $_filter = null;
-	
 	public function __construct(
 		\Magento\Framework\Model\Context $context,
 		\Magento\Framework\Registry $registry,
-		\FishPig\WordPress\Model\App\Url $urlBuilder,
-		\FishPig\WordPress\Model\App\Factory $factory,
-		\FishPig\WordPress\Helper\View $viewHelper,
-        \FishPig\WordPress\Helper\Filter $filter,
+		\FishPig\WordPress\Model\Context $wpContext,
 		\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
 		\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
 		array $data = []
 	) {
 		parent::__construct($context, $registry, $resource, $resourceCollection);	
 		
-		$this->_wpUrlBuilder = $urlBuilder;
-		$this->_factory = $factory;
-		$this->_viewHelper = $viewHelper;
-		$this->_filter = $filter;
+		$this->_app = $wpContext->getApp();
+		$this->_wpUrlBuilder = $wpContext->getUrlBuilder();
+		$this->_factory = $wpContext->getFactory();
+		$this->_viewHelper = $wpContext->getViewHelper();
+		$this->_filter = $wpContext->getFilterHelper();
 	}
 
 	public function getIdentities()
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
     }
-
-	public function getApp()
-	{
-		return $this->getResource()->getApp();
-	}
 	
 	/**
 	 * Get a collection of posts

@@ -26,7 +26,7 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	/**
 	 * @var Magento\Framework\View\Layout
 	**/
-	protected $_postFactory = null;
+	protected $_factory = null;
 	
 	/**
 	 * Function that handles generating the HTML
@@ -39,14 +39,14 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	 * Constructor
 	**/
     public function __construct(
-	    \FishPig\WordPress\Model\PostFactory $postFactory,
+	    \FishPig\WordPress\Model\App\Factory $factory,
     	\Magento\Framework\View\Element\Context $context, 
     	array $data = []
     )
     {
 	    parent::__construct($data);
 		
-		$this->_postFactory = $postFactory;
+		$this->_factory = $factory;
 		$this->_layout = $context->getLayout();
     }
     

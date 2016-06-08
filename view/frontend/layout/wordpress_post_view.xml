@@ -15,7 +15,7 @@
         </referenceContainer>
         <referenceContainer name="content">
 			<block class="FishPig\WordPress\Block\Post\View" name="wp.post.view">
-				<container name="wp.post.view.entry" htmlTag="div" class="post-entry">
+				<container name="wp.post.view.entry" htmlTag="div" htmlClass="post-entry">
 					<block class="FishPig\WordPress\Block\Post" name="post.view.image" template="FishPig_WordPress::post/data/image.phtml"/>
 					<block class="FishPig\WordPress\Block\Post" name="post.view.content" template="FishPig_WordPress::post/data/content.phtml"/>
 				</container>

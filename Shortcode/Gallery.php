@@ -10,23 +10,6 @@ namespace FishPig\WordPress\Shortcode;
 
 class Gallery extends AbstractShortcode
 {
-	protected $_imageFactory = null;
-	
-	/**
-	 * Constructor
-	**/
-    public function __construct(
-	    \FishPig\WordPress\Model\PostFactory $postFactory,
-    	\Magento\Framework\View\Element\Context $context, 
-	    \FishPig\WordPress\Model\ImageFactory $imageFactory,
-    	array $data = []
-    )
-    {
-	    parent::__construct($postFactory, $context, $data);
-		
-		$this->_imageFactory = $imageFactory;
-    }
-    
 	/**
 	 *
 	 *
@@ -63,14 +46,14 @@ class Gallery extends AbstractShortcode
 				$post = false;
 				
 				if ($params->getPostId() && (int)$params->getPostId() !== $this->getPostId()) {
-					$post = $this->_postFactory->create()->load($params->getPostId());
+					$post = $this->_factory->getFactory('Post')->create()->load($params->getPostId());
 				}
 
 				if (($ids = trim($params->getIds(), ',')) !== '') {
 					$images = array();
 					
 					foreach(explode(',', $ids) as $imageId) {
-						$image = $this->_imageFactory->create()->load($imageId);
+						$image = $this->_factory->getFactory('Image')->create()->load($imageId);
 						
 						if ($image->getId()) {
 							$images[] = $image;

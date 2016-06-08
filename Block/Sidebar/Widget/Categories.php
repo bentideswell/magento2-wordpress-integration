@@ -68,7 +68,7 @@ class Categories extends AbstractWidget
 	public function getCurrentCategory()
 	{
 		if (!$this->hasCurrentCategory()) {
-			$this->setCurrentCategory($this->getRegistry()->registry('wordpress_term'));
+			$this->setCurrentCategory($this->_registry->registry('wordpress_term'));
 		}
 		
 		return $this->getData('current_category');
