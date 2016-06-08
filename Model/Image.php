@@ -186,4 +186,19 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 	{
 		return $this->_getData('post_excerpt');
 	}
+	
+	/**
+	 * Required for interface
+	 *
+	 * @return string
+	**/
+	public function getContent()
+	{
+		return $this->getDescription();
+	}
+	
+	public function getUrl()
+	{
+		return $this->getFullSizeImage();
+	}
 }

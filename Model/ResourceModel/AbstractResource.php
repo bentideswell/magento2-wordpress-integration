@@ -37,7 +37,6 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	public function getConnection()
 	{
 		return $this->_resource->getConnection();
-		return $this->getApp()->getConnection();
 	}
 
     
@@ -46,87 +45,13 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 		return $this->_resource->getTable($tableName);;
     }
     
+    public function getTablePrefix()
+    {
+	    return $this->_resource->getTablePrefix();
+    }
+    
     public function getFactory()
     {
 	    return $this->_factory;
     }
-    	
-	/**
-	 * Retrieve a meta value from the database
-	 * This only works if the model is setup to work a meta table
-	 * If not, null will be returned
-	 *
-	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
-	 * @param string $metaKey
-	 * @param string $selectField
-	 * @return null|mixed
-	 */
-	public function getMetaValue(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object, $metaKey, $selectField = 'meta_value')
-	{
-		if ($object->hasMeta()) {
-			$select = $this->getConnection()
-				->select()
-				->from($object->getMetaTable(), $selectField)
-				->where($object->getMetaObjectField() . '=?', $object->getId())
-				->where('meta_key=?', $metaKey)
-				->limit(1);
-
-			if (($value = $this->getConnection()->fetchOne($select)) !== false) {
-				return trim($value);
-			}
-			
-			return false;
-		}
-		
-		return null;
-	}
-
-	/**
-	 * Save a meta value to the database
-	 * This only works if the model is setup to work a meta table
-	 *
-	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
-	 * @param string $metaKey
-	 * @param string $metaValue
-	 */
-	public function setMetaValue(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object, $metaKey, $metaValue)
-	{
-		if ($object->hasMeta()) {
-			$metaValue = trim($metaValue);
-			$metaData = array(
-				$object->getMetaObjectField() => $object->getId(),
-				'meta_key' => $metaKey,
-				'meta_value' => $metaValue,
-			);
-							
-			if (($metaId = $this->getMetaValue($object, $metaKey, $object->getMetaPrimaryKeyField())) !== false) {
-				$this->_getWriteAdapter()->update($object->getMetaTable(), $metaData, $object->getMetaPrimaryKeyField() . '=' . $metaId);
-			}
-			else {
-				$this->_getWriteAdapter()->insert($object->getMetaTable(), $metaData);
-			}
-		}
-	}
-	
-	/**
-	 * Get an array of all of the meta values associated with this post
-	 *
-	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
-	 * @return false|array
-	 */
-	public function getAllMetaValues(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object)
-	{
-		if ($object->hasMeta()) {
-			$select = $this->getConnection()
-				->select()
-				->from($object->getMetaTable(), array('meta_key', 'meta_value'))
-				->where($object->getMetaObjectField() . '=?', $object->getId());
-
-			if (($values = $this->getConnection()->fetchPairs($select)) !== false) {
-				return $values;
-			}
-		}
-		
-		return false;
-	}
 }

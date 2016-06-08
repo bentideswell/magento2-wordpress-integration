@@ -11,17 +11,28 @@ namespace FishPig\WordPress\Helper;
 class View extends \Magento\Framework\App\Helper\AbstractHelper
 {
 	protected $_layout = null;
+	protected $_config = null;
+	protected $_request = null;
 	
 	public function __construct(
 		\Magento\Framework\App\Helper\Context $context,
-		\Magento\Framework\View\Layout $layout
+		\FishPig\WordPress\Model\Config $config,
+		\Magento\Framework\View\Layout $layout,
+    	\Magento\Framework\App\Request\Http $request
 	)
 	{
 		parent::__construct($context);
 		
+		$this->_config = $config;
 		$this->_layout = $layout;
+		$this->_request = $request;
 	}
 	
+	public function getRequest()
+	{
+		return $this->_request;
+	}
+
 	public function applyPageConfigData($pageConfig, $entity)
 	{
         $pageConfig->getTitle()->set($entity->getPageTitle());
@@ -39,6 +50,21 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 		}
 
         return $this;
+	}
+	
+	public function canDiscourageSearchEngines()
+	{
+		return (int)$this->_config->getOption('blog_public') === 0;
+	}
+	
+	public function getBlogName()
+	{
+		return $this->_config->getOption('blogname');
+	}
+	
+	public function getBlogDescription()
+	{
+		return $this->_config->getOption('blogdescription');
 	}
 	
 	/**

@@ -8,7 +8,7 @@
 
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
-class Comment extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+class Comment extends \FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta
 {
 	public function _construct()
 	{

@@ -8,7 +8,7 @@
 
 namespace FishPig\WordPress\Model\Post;
 
-class Comment extends \FishPig\WordPress\Model\AbstractModel
+class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 {
 
 	/**
@@ -238,4 +238,25 @@ class Comment extends \FishPig\WordPress\Model\AbstractModel
 	{
 		return sprintf('<a href="%s" title="%s">%s</a>', $this->getUrl(), $this->getCommentAuthor(), $this->getPost()->getPostTitle());
 	}
+	
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getMetaTableAlias()
+	{
+		return 'wordpress_post_comment_meta';
+	}
+	
+	/**
+	 *
+	 *
+	 * @return  string
+	**/
+	public function getMetaTableObjectField()
+	{
+		return 'comment_id';
+	}
+
 }

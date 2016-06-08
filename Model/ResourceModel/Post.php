@@ -8,7 +8,9 @@
 
 namespace FishPig\WordPress\Model\ResourceModel;
 
-class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+use \FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
+
+class Post extends AbstractMeta
 {
 
 	/**

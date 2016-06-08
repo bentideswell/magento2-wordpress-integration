@@ -8,7 +8,7 @@
 
 namespace FishPig\WordPress\Model\ResourceModel;
 
-class User extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+class User extends \FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta
 {
 	public function _construct()
 	{

@@ -34,42 +34,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	
 	public function getContent()
 	{
-		return $this->getDescription();
-	}
-	
-	public function getSummary()
-	{
-		return $this->getDescription();
-	}
-	
-	public function getImage()
-	{
-		return false;
-	}
-	
-	public function getPageTitle()
-	{
-		return $this->getName();
-	}
-	
-	public function getMetaDescription()
-	{
-		return 'Meta Description';
-	}
-	
-	public function getMetaKeywords()
-	{
-		return 'keywords,for,meta';
-	}
-	
-	public function getRobots()
-	{
-		return 'index,follow';
-	}
-	
-	public function getCanonicalUrl()
-	{
-		return $this->getUrl();
+		return $this->_getData('description');
 	}
 	
 	/**
@@ -194,19 +159,6 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		}
 		
 		return $this->_getData('uri');
-	}
-	
-	/**
-	 * Retrieve an image URL for the category
-	 * This uses the Category Images plugin (http://wordpress.org/plugins/categories-images/)
-	 *
-	 * @return false|string
-	 */
-	public function getImageUrl()
-	{
-		return ($imageUrl = $this->getApp()->getOption('z_taxonomy_image' . $this->getId()))
-			 ? $imageUrl
-			 : false;
 	}
 	
 	/**

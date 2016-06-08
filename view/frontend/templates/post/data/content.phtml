@@ -5,7 +5,7 @@
 ?>
 
 <?php if ($post = $this->getPost()): ?>
-	<?php if (($content = trim($post->getPostContent())) !== ''): ?>
+	<?php if (($content = trim($post->getContent())) !== ''): ?>
 		<div class="post-content"><?php echo $content ?></div>
 	<?php endif; ?>
 <?php endif; ?>

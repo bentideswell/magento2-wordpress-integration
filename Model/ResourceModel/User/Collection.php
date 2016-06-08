@@ -8,7 +8,7 @@
 
 namespace FishPig\WordPress\Model\ResourceModel\User;
 
-class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection
 {
 
 	/**

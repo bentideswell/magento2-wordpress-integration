@@ -8,19 +8,11 @@
  
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Api\Data\Entity\MetaInterface;
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterface, ViewableInterface
+class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements ViewableInterface
 {
 	const ENTITY = 'wordpress_user';
-	
-	/**
-	 * Entity meta infromation
-	 *
-	 * @var string
-	 */
-	protected $_metaHasPrefix = true;
 
 	/**
 	 * Event information
@@ -29,77 +21,25 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	*/
 	protected $_eventPrefix = 'wordpress_user';
 	protected $_eventObject = 'user';
-
-	public function getMetaTableObjectField()
-	{
-		return 'user_id';
-	}
-	
-	public function getMetaTableAlias()
-	{
-		return 'wordpress_user_meta';
-	}
-	
-	/**
-	 * Retrieve the column name of the primary key fields
-	 *
-	 * @return string
-	 */
-	public function getMetaPrimaryKeyField()
-	{
-		return 'umeta_id';
-	}
 	
 	public function _construct()
 	{
         $this->_init('FishPig\WordPress\Model\ResourceModel\User');
 	}
-
+	
 	public function getName()
 	{
-		return $this->_getData('name');
+		return $this->_getData('display_name');
 	}
 	
 	public function getContent()
 	{
-		return $this->_getData('post_content');
-	}
-	
-	public function getSummary()
-	{
-		return 'Summary';
-	}
-	
-	public function getPageTitle()
-	{
-		return 'Page Title';
-	}
-	
-	public function getMetaDescription()
-	{
-		return 'Meta Description';
-	}
-	
-	public function getMetaKeywords()
-	{
-		return 'keywords,for,meta';
-	}
-	
-	public function getRobots()
-	{
-		return 'index,follow';
-	}
-	
-	public function getCanonicalUrl()
-	{
-		return $this->getUrl();
+		return $this->getMetaValue('description');
 	}
 
 	public function getImage()
 	{
-		return false;
-		
-		#add gravatar here?
+		return $this->getGravatarUrl();
 	}
 	
 	/**
@@ -188,18 +128,6 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	}
 	
 	/**
-	 * Set the user level
-	 *
-	 * @param int $level
-	 * @return $this
-	 */
-	public function setUserLevel($level)
-	{
-		$this->setMetaValue($this->getTablePrefix() . 'user_level', $level);
-		return $this;
-	}
-	
-	/**
 	 * Retrieve the users first name
 	 *
 	 * @return string
@@ -207,18 +135,6 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	public function getFirstName()
 	{
 		return $this->getMetaValue('first_name');
-	}
-	
-	/**
-	 * Set the users first name
-	 *
-	 * @param string $name
-	 * @return $this
-	 */
-	public function setFirstName($name)
-	{
-		$this->setMetaValue('first_name', $name);
-		return $this;
 	}
 	
 	/**
@@ -232,18 +148,6 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	}
 	
 	/**
-	 * Set the users last name
-	 *
-	 * @param string $name
-	 * @return $this
-	 */
-	public function setLastName($name)
-	{
-		$this->setMetaValue('last_name', $name);
-		return $this;
-	}
-	
-	/**
 	 * Retrieve the user's nickname
 	 *
 	 * @return string
@@ -251,18 +155,6 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	public function getNickname()
 	{
 		return $this->getMetaValue('nickname');
-	}
-	
-	/**
-	 * Set the user's nickname
-	 *
-	 * @param string $nickname
-	 * @return $this
-	 */
-	public function setNickname($nickname)
-	{
-		$this->setMetaValue('nickname', $nickname);
-		return $this;
 	}
 
 	/**
@@ -285,45 +177,18 @@ class User extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 		return '';
 	}
 	
-	/**
-	 * Retrieve the user's photo
-	 * The UserPhoto plugin must be installed in WordPress
-	 *
-	 * @param bool $thumb
-	 * @return null|string
-	 */
-	public function getUserPhoto($thumb = false)
+	public function doesMetaTableHavePrefix()
 	{
-		$dataKey = $thumb ? 'userphoto_thumb_file' : 'userphoto_image_file';
-		
-		if (!$this->hasData($dataKey)) {
-			if ($photo = $this->getCustomField($dataKey)) {
-				$this->setData($dataKey, $this->getApp()->getFileUploadUrl() . 'userphoto/' . $photo);
-			}
-			else if ($this->getApp()->getWpOption('userphoto_use_avatar_fallback')) {
-				if ($thumb) {
-					$this->setData($dataKey, $this->getGravatarUrl($this->getApp()->getWpOption('userphoto_thumb_dimension')));
-				}
-				else {
-					$this->setData($dataKey, $this->getGravatarUrl($this->getApp()->getWpOption('userphoto_maximum_dimension')));
-				}
-			}
-		}
-		
-		return $this->_getData($dataKey);
+		return true;
 	}
 	
-	/**
-	 * Retrieve the default user role from the WordPress Database
-	 *
-	 * @return string
-	 */
-	public function getDefaultUserRole()
+	public function getMetaTableObjectField()
 	{
-		if (($role = trim($this->getApp()->getWpOption('default_role', 'subscriber'))) !== '') {
-			return $role;
-		}
-
-		return 'subscriber';
+		return 'user_id';
+	}
+	
+	public function getMetaTableAlias()
+	{
+		return 'wordpress_user_meta';
 	}
 }

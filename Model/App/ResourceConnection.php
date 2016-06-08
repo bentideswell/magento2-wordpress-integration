@@ -140,4 +140,14 @@ class ResourceConnection
 		
 		return $this;
 	}
+	
+	/**
+	 *
+	 *
+	 * @return 
+	**/
+	public function getTablePrefix()
+	{
+		return $this->_tablePrefix;
+	}
 }

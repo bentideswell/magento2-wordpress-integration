@@ -8,10 +8,9 @@
  
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Api\Data\Entity\MetaInterface;
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterface, ViewableInterface
+class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements ViewableInterface
 {
 	/**
 	 *
@@ -38,34 +37,9 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 		return $this->_getData('post_title');
 	}
 	
-	public function getContent()
-	{
-#		return $this->getPostContent();
-	}
-	
-	public function getPageTitle()
-	{
-		return $this->getName();
-	}
-	
 	public function getMetaDescription()
 	{
-		return 'Meta Description';
-	}
-	
-	public function getMetaKeywords()
-	{
-		return 'keywords,for,meta';
-	}
-	
-	public function getRobots()
-	{
-		return 'index,follow';
-	}
-	
-	public function getCanonicalUrl()
-	{
-		return $this->getUrl();
+		return $this->getExcerpt(20);
 	}
 
 	public function isType($type)
@@ -131,7 +105,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	 *
 	 * @return string
 	 */
-	public function getPostExcerpt($maxWords = 0)
+	public function getExcerpt($maxWords = 0)
 	{
 		if (!$this->getData('post_excerpt')) {
 			if ($this->hasMoreTag()) {
@@ -351,7 +325,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements MetaInterfa
 	 *
 	 * @return string
 	 */
-	public function getPostContent($context = 'default')
+	public function getContent($context = 'default')
 	{
 		$contextKey = 'post_content_' . $context;
 		

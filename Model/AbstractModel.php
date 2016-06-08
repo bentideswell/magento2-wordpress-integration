@@ -13,36 +13,6 @@ use Magento\Framework\DataObject\IdentityInterface;
 
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
-	/**
-	 * Name of entity meta table
-	 * false if entity does not have a meta table
-	 *
-	 * @var string
-	 */
-	protected $_metaTable = false;
-	
-	/**
-	 * Name of entity meta field
-	 *
-	 * @var false|string
-	 */
-	protected $_metaTableObjectField = false;
-
-	/**
-	 * Determine whether some meta fields have a prefix
-	 * if true, the database table prefix is used
-	 *
-	 * @var bool
-	 */
-	protected $_metaHasPrefix = false;
-	
-	/**
-	 * Array of entity's meta values
-	 *
-	 * @var array
-	 */
-	protected $_meta = array();
-
 	protected $_app = null;
 	protected $_wpUrlBuilder = null;
 	protected $_factory = null;
@@ -67,9 +37,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 		$this->_viewHelper = $viewHelper;
 		$this->_filter = $filter;
 	}
-	
-	
-	
+
 	public function getIdentities()
     {
         return [self::CACHE_TAG . '_' . $this->getId()];
@@ -78,127 +46,6 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	public function getApp()
 	{
 		return $this->getResource()->getApp();
-	}
-
-	/**
-	 * Retrieve the name of the meta database table
-	 *
-	 * @return false|string
-	 */
-	public function getMetaTable()
-	{
-		if ($this->hasMeta()) {
-			return $this->getResource()->getTable($this->_metaTable);
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Retrieve the name of the column used to identify the entity
-	 *
-	 * @return string
-	 */
-	public function getMetaObjectField()
-	{
-		return $this->_metaTableObjectField;
-	}
-	
-	/**
-	 * Retrieve the column name of the primary key fields
-	 *
-	 * @return string
-	 */
-	public function getMetaPrimaryKeyField()
-	{
-		return 'meta_id';
-	}
-	
-	/**
-	 * Determine whether the entity type has a meta table
-	 *
-	 * @return bool
-	 */
-	public function hasMeta()
-	{
-		return $this->_metaTable !== false && $this->_metaTableObjectField !== false;
-	}
-	
-	/**
-	 * Retrieve a meta value
-	 *
-	 * @param string $key
-	 * @return false|string
-	 */
-	public function getMetaValue($key)
-	{
-		if ($this->hasMeta()) {
-			if (!isset($this->_meta[$key])) {
-				$this->_meta[$key] = $value = $this->getResource()->getMetaValue($this, $this->_getRealMetaKey($key));
-				
-				/*
-				$meta = new \Magento\Framework\DataObject(array(
-					'key' => $key,
-					'value' => $value,
-				));
-
-				$this->_eventManager->dispatch($this->_eventPrefix . '_get_meta_value', array('object' => $this, $this->_eventObject => $this, 'meta' => $meta));
-				
-				$this->_meta[$key] = $meta->getValue();
-				*/
-			}
-			
-			return $this->_meta[$key];
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Get an array of all of the meta values associated with this post
-	 *
-	 * @return false|array
-	 */
-	public function getAllMetaValues()
-	{
-		return $this->hasMeta()
-			? $this->getResource()->getAllMetaValues($this)
-			: false;
-	}
-	
-	/**
-	 * Retrieve all of the meta data as an array
-	 *
-	 * @return false|array
-	 */
-	public function getMetaData()
-	{
-		if ($this->hasMeta()) {
-			return $this->_meta;
-		}
-		
-		return false;
-	}
-	
-	/**
-	 * Changes the wp_ to the correct table prefix
-	 *
-	 * @param string $key
-	 * @return string
-	 */
-	protected function _getRealMetaKey($key)
-	{
-		if ($this->_metaHasPrefix) {
-			$tablePrefix = $this->_app->getTablePrefix();
-
-			if ($tablePrefix !== 'wp_') {
-				if (preg_match('/^(wp_)(.*)$/', $key, $matches)) {
-					return $tablePrefix . $matches[2];
-				}
-			}
-		}
-		
-		return $key;	
 	}
 	
 	/**
@@ -210,5 +57,87 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	public function getPostCollection()
 	{
 		return $this->_factory->getFactory('Post')->create()->getCollection()->setFlag('source', $this);
+	}
+	
+	/**
+	 * Get the page title
+	 *
+	 * @return string
+	**/
+	public function getPageTitle()
+	{
+		return sprintf('%s | %s', $this->getName(), $this->_viewHelper->getBlogName());
+	}
+	
+	/**
+	 * Get the image
+	 *
+	 * @return false|string|FishPig\WordPress\Model\Image
+	**/
+	public function getImage()
+	{
+		return false;
+	}
+	
+	/**
+	 * Get the content
+	 *
+	 * @return string
+	**/
+	public function getContent()
+	{
+		return '';
+	}
+	
+	/**
+	 * Get the meta description
+	 *
+	 * @return string
+	**/
+	public function getMetaDescription()
+	{
+		if (($content = trim(strip_tags($this->getContent()))) !== '') {
+			$max = 155;
+			
+			if (strlen($content) > $max) {
+				$content = substr($content, 0, $max);
+			}
+			
+			return $content;
+		}
+		
+		return $this->_viewHelper->getBlogDescription();
+	}
+	
+	/**
+	 * Get the meta keywords
+	 *
+	 * @return string
+	**/
+	public function getMetaKeywords()
+	{
+		return '';
+	}
+	
+	/**
+	 * Get the robots meta value
+	 *
+	 * @return string
+	**/
+	public function getRobots()
+	{
+		return $this->_viewHelper->canDiscourageSearchEngines()
+			? 'noindex,nofollow'
+			: 'index,follow';
+	}
+	
+	/**
+	 * Get the canonical URL
+	 *
+	 * @return string
+	**/
+	public function getCanonicalUrl()
+	{
+		return $this->getUrl();
 	}
 }
