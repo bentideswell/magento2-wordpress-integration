@@ -72,11 +72,53 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	public function renderPost(\FishPig\WordPress\Model\Post $post)
 	{
 		$this->_registry->register($post::ENTITY, $post);	
+
+		/*
+		 * Hack required until Magento accept pull request:
+		 * https://github.com/magento/magento2/pull/4919
+		**/
+		$html = '';
+		$rendererName = false;
 		
-		$html = $this->getChildHtml('renderer', false);
+		if ($childNames = $this->getChildNames()) {
+			foreach($childNames as $childName) {
+				if (strpos($childName, 'renderer') !== false) {
+					$rendererName = $childName;
+					break;
+				}
+			}
+		}
+		
+		if ($rendererName) {
+			$html = $this->_renderContainerFix($rendererName);
+		}
+		/**
+		 * end of Hack
+		**/
+		
+		# This can be used when the pull request is accepted
+		# $html = $this->getChildHtml('renderer', false);
 		
 		$this->_registry->unregister($post::ENTITY);
 		
 		return $html;
+	}
+	
+	protected function _renderContainerFix($containerName)
+	{
+		$html = '';
+		$layout = $this->getLayout();
+
+		foreach($layout->getChildNames($containerName) as $childName) {
+			if ($layout->isBlock($childName)) {
+				$html .= $layout->getBlock($childName)->toHtml();
+			}
+			else {
+				$html .= $this->_renderContainerFix($childName);
+			}
+		}
+		
+		return $html;
+
 	}
 }
