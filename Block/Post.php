@@ -45,7 +45,7 @@ class Post extends \FishPig\WordPress\Block\AbstractBlock
 	 *
 	 * @return $this
 	 */
-	protected function _beforeToHtml()
+	protected function _beforeToHtmlIgnore()
 	{
 		if ($this->getPost() && $this->_getBlockForPostPrepare() !== false) {
 			$this->_prepareChildBlocks($this->_getBlockForPostPrepare());

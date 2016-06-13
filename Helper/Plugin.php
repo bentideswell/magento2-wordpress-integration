@@ -6,10 +6,22 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-namespace \FishPig\WordPress\Helper;
+namespace FishPig\WordPress\Helper;
 
-class Plugin extends AbstractHelper
+use \Magento\Framework\App\Helper\Context;
+use \FishPig\WordPress\Model\App\ResourceConnection;
+use \FishPig\WordPress\Model\Config;
+
+class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 {
+	public function __construct(Context $context, ResourceConnection $wpResource, Config $config)
+	{
+		$this->_wpResource = $wpResource;
+		$this->_config = $config;
+		
+		parent::__construct($context);
+	}
+	
 	/**
 	 * Install a plugin
 	 * 
@@ -57,17 +69,17 @@ class Plugin extends AbstractHelper
 			return true;
 		}
 		
-		if ($db = Mage::helper('wordpress/app')->getDbConnection()) {
-			if ($plugins = $this->getWpOption('active_plugins')) {
+		if ($db = $this->_wpResource->getConnection()) {
+			if ($plugins = $this->_config->getOption('active_plugins')) {
 				$db->update(
-					Mage::getSingleton('core/resource')->getTableName('wordpress/option'),
+					$this->_wpResource->getTable('wordpress/option'),
 					array('option_value' => serialize(array_merge(unserialize($plugins), array($plugin)))),
 					$db->quoteInto('option_name=?', 'active_plugins')
 				);
 			}
 			else {
 				$db->insert(
-					Mage::getSingleton('core/resource')->getTableName('wordpress/option'),
+					$this->_wpResource->getTable('wordpress/option'),
 					array(
 						'option_name' => 'active_plugins',
 						'option_value' => serialize(array($plugin))
@@ -92,15 +104,15 @@ class Plugin extends AbstractHelper
 	{
 		$plugins = array();
 
-		if ($plugins = $this->getApp()->getOption('active_plugins')) {
+		if ($plugins = $this->_config->getOption('active_plugins')) {
 			$plugins = unserialize($plugins);
 		}
 		
-		if ($this->getApp()->isWordPressMU() && Mage::helper('wpmultisite')->canRun()) {
-			if ($networkPlugins = Mage::helper('wpmultisite')->getWpSiteOption('active_sitewide_plugins')) {
-				$plugins += (array)unserialize($networkPlugins);
-			}
-		}
+#		if ($this->getApp()->isWordPressMU() && Mage::helper('wpmultisite')->canRun()) {
+#			if ($networkPlugins = Mage::helper('wpmultisite')->getWpSiteOption('active_sitewide_plugins')) {
+#				$plugins += (array)unserialize($networkPlugins);
+#			}
+#		}
 
 		if ($plugins) {
 			foreach($plugins as $a => $b) {
@@ -122,7 +134,7 @@ class Plugin extends AbstractHelper
 	 */
 	public function getOption($plugin, $key = null)
 	{
-		$options = $this->getApp()->getWpOption($plugin);
+		$options = $this->_config->getOption($plugin);
 		
 		if (($data = @unserialize($options)) !== false) {
 			if (is_null($key)) {

@@ -39,6 +39,9 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
         $pageConfig->setDescription($entity->getMetaDescription());	
         $pageConfig->setKeywords($entity->getMetaKeywords());
 
+		#TODO: Hook this up so it displays on page
+		$pageConfig->setRobots($entity->getRobots());
+		
         $pageMainTitle = $this->_layout->getBlock('page.main.title');
         
         if ($pageMainTitle) {
@@ -130,8 +133,11 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 	  */
 	public function getDefaultDateFormat()
 	{
+		if ($format = $this->_config->getOption('date_format')) {
+			return $format;
+		}
+		
 		return 'F jS, Y';
-		return $this->getWpOption('date_format', 'F jS, Y');
 	}
 	
 	/**
@@ -140,7 +146,15 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 	  */
 	public function getDefaultTimeFormat()
 	{
+		if ($format = $this->_config->getOption('time_format')) {
+			return $format;
+		}
+
 		return 'g:ia';
-		return $this->getWpOption('time_format', 'g:ia');
+	}
+	
+	public function getSearchTerm()
+	{
+		return $this->_request->getParam('s');
 	}
 }

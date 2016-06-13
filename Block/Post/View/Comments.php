@@ -40,7 +40,6 @@ class Comments extends \FishPig\WordPress\Block\Post\View\Comment\AbstractCommen
 	public function getChildrenCommentsHtml(\FishPig\WordPress\Model\Post\Comment $comment)
 	{
 		return $this->getLayout()
-#			->createBlock('FishPig\WordPress\Block\Post\View\Comments')
 			->createBlock(get_class($this))
 			->setTemplate($this->getTemplate())
 			->setParentId($comment->getId())
