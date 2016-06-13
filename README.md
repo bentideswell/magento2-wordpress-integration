@@ -22,3 +22,9 @@ You should also setup custom permalinks in the Settings > Permalinks section.
 - Enter 'wp' for the path configuration and save.
 
 You should now see your blog at http://www.example.com/blog/
+
+#Yoast SEO
+You can and should install the Yoast SEO plugin in the WordPress Admin. This is a completely free WordPress plugin that gives you complete control over your blogs SEO data (page titles, meta tags, robots, canonicals etc). For this to work when integrated into Magento 2, you will need the following add-on extension:
+
+<a href="https://github.com/bentideswell/magento1-wordpress-integration-yoastseo" target="_blank">FishPig_WordPress_Yoast</a>
+(https://github.com/bentideswell/magento1-wordpress-integration-yoastseo)
