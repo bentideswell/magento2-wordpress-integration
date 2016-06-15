@@ -22,7 +22,7 @@ class Sidebar extends AbstractBlock
 	 *
 	 * @param string $name
 	 * @param string $block
-	 * @return \FishPig_WordPress\Block\Sidebar
+	 * @return \FishPig\WordPress\Block\Sidebar
 	 */
 	public function addWidgetType($name, $class)
 	{
@@ -47,7 +47,7 @@ class Sidebar extends AbstractBlock
 	/**
 	 * Load all enabled widgets
 	 *
-	 * @return \FishPig_WordPress\Block\Sidebar
+	 * @return \FishPig\WordPress\Block\Sidebar
 	 */
 	protected function _beforeToHtml()
 	{

@@ -89,7 +89,7 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 	/**
 	 * Retrieve a collection of blog posts
 	 *
-	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getPostCollection()
 	{

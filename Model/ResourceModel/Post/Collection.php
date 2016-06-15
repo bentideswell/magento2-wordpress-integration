@@ -87,7 +87,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 		}
 
 		if (!$this->hasPostTypeFilter()) {
-			if ($this->getFlag('source') instanceof \FishPig_WordPress\Model\Term) {
+			if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
 				if ($postTypes = $this->_app->getPostTypes()) {
 					$supportedTypes = array();
 	

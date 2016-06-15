@@ -8,7 +8,7 @@
 
 namespace FishPig\WordPress\Block\Term;
 
-use FishPig\WordPress\Model\Term;
+use \FishPig\WordPress\Model\Term;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
@@ -21,7 +21,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 * Returns the current Wordpress category
 	 * This is just a wrapper for getCurrentCategory()
 	 *
-	 * @return \FishPig_WordPress\Model\Term
+	 * @return \FishPig\WordPress\Model\Term
 	 */
 	public function getTerm()
 	{
@@ -35,7 +35,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	/**
 	 * Generates and returns the collection of posts
 	 *
-	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */
 	protected function _getPostCollection()
 	{

@@ -17,16 +17,12 @@ class oEmbed extends AbstractShortcode
 	    \FishPig\WordPress\Model\App\Factory $factory,
     	\Magento\Framework\View\Element\Context $context, 
 	    \Magento\Framework\HTTP\Client\Curl $curl,
-		\Magento\Framework\App\CacheInterface $cache,
-		\Magento\Framework\App\Cache\StateInterface $cacheState,
     	array $data = []
     )
     {
 	    parent::__construct($factory, $context, $data);
 		
 		$this->_curl = $curl;
-		$this->_cache = $cache;
-		$this->_cacheState = $cacheState;
     }
     
 	/**

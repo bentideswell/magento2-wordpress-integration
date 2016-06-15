@@ -41,6 +41,14 @@ class ResourceConnection
 	{
 		$this->_connectionFactory = $connectionFactory;
 	}
+
+	/**
+	 * @var 
+	**/
+	public function getBlogId()
+	{
+		return 1;
+	}
 	
 	/**
 	 *
@@ -56,23 +64,38 @@ class ResourceConnection
 	
 			$prefix = $this->_tablePrefix;
 			
-			if (!empty($this->_mappingData['before_connect'])) {
-				$tables = $this->_mappingData['before_connect'];
-	
-				foreach($tables as $alias => $table) {
-					$this->_tables[$alias] = $prefix . $table;
-				}
-			}
-
+			$this->_applyMapping('before_connect', $this->getBlogId());
+			
 			$this->_connection = $this->_connectionFactory->create($config);
 			$this->_connection->query('SET NAMES UTF8');
+			
+			$this->_applyMapping('after_connect', $this->getBlogId());
 		}
 		catch (\Exception $e) {
 			\FishPig\WordPress\Model\App\Integration\Exception::throwException(
-				'DB',
 				'Error connecting to the WordPress database. Check the WordPress database details in wp-config.php.',
 				$e->getMessage()
 			);
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 *
+	 *
+	 * @param string
+	 * @param int $blogId = 1
+	 * @return $this
+	**/
+	protected function _applyMapping($type, $blogId = 1)
+	{
+		if (!empty($this->_mappingData[$type])) {
+			$tables = $this->_mappingData[$type];
+
+			foreach($tables as $alias => $table) {
+				$this->_tables[$alias] = $this->_tablePrefix . sprintf($table, $blogId > 1 ? $blogId . '_' : '');
+			}
 		}
 		
 		return $this;

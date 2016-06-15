@@ -53,9 +53,10 @@ class Config
 
 		    foreach($config as $key => $value) {
 				$value = $value['@attributes'];
+				$useBlogId = isset($value['use_blog_id']) && $value['use_blog_id'] === 'true';
 				
 				if ($value['when'] === $when) {
-					$map[$value['id']] = $value['name'];
+					$map[$value['id']] = ($useBlogId ? '%s' : '') .$value['name'];
 
 					if (isset($value['meta'])) {
 						$map[$value['id'] . '_meta'] = $value['meta'];

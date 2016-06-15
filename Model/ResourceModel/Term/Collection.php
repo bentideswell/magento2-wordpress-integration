@@ -102,7 +102,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	/**
 	 * Filter the collection on the parent field
 	 *
-	 * @param int|\FishPig_WordPress\Model\Term
+	 * @param int|\FishPig\WordPress\Model\Term
 	 * @return $this
 	 */
 	public function addParentFilter($parentId)

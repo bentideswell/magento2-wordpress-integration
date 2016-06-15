@@ -29,6 +29,16 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	protected $_factory = null;
 	
 	/**
+	 * @var Magento\Framework\View\Layout
+	**/
+	protected $_cache = null;
+	
+	/**
+	 * @var Magento\Framework\View\Layout
+	**/
+	protected $_cacheState = null;
+
+	/**
 	 * Function that handles generating the HTML
 	 *
 	 * @return $this
@@ -48,6 +58,8 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 		
 		$this->_factory = $factory;
 		$this->_layout = $context->getLayout();
+		$this->_cache = $context->getCache();
+		$this->_cacheState = $context->getCacheState();
     }
     
     /**

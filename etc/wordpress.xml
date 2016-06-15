@@ -2,12 +2,12 @@
 <wordpress>
 	<database>
 		<tables>
-			<table id="wordpress_post" name="posts" when="before_connect" meta="postmeta"/>
-			<table id="wordpress_post_comment" name="comments" when="before_connect" meta="commentmeta" />
-			<table id="wordpress_option" name="options" when="before_connect" />
-			<table id="wordpress_term" name="terms" when="before_connect" />
-			<table id="wordpress_term_relationship" name="term_relationships" when="before_connect" />
-			<table id="wordpress_term_taxonomy" name="term_taxonomy" when="before_connect" />
+			<table id="wordpress_post" name="posts" when="before_connect" meta="postmeta" use_blog_id="true"/>
+			<table id="wordpress_post_comment" name="comments" when="before_connect" meta="commentmeta" use_blog_id="true"/>
+			<table id="wordpress_option" name="options" when="before_connect" use_blog_id="true"/>
+			<table id="wordpress_term" name="terms" when="before_connect" use_blog_id="true"/>
+			<table id="wordpress_term_relationship" name="term_relationships" when="before_connect" use_blog_id="true"/>
+			<table id="wordpress_term_taxonomy" name="term_taxonomy" when="before_connect"  multi="true"/>
 			<table id="wordpress_user" name="users" when="before_connect" meta="usermeta"/>
 		</tables>
 	</database>

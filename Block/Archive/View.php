@@ -6,8 +6,20 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-class Fishpig_Wordpress_Block_Archive_View extends Fishpig_Wordpress_Block_Post_List_Wrapper_Abstract
+namespace FishPig\WordPress\Block\Archive;
+
+use \FishPig\WordPress\Model\Archive;
+
+class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
+	/**
+	 * @return \FishPig\WordPress\Model\Archive
+	**/
+	public function getEntity()
+	{
+		return $this->getArchive();
+	}
+	
 	/**
 	 * Caches and returns the archive model
 	 *
@@ -43,8 +55,7 @@ class Fishpig_Wordpress_Block_Archive_View extends Fishpig_Wordpress_Block_Post_
 	 */
 	protected function _getPostCollection()
 	{
-		return parent::_getPostCollection()
-			->addArchiveDateFilter($this->getArchiveId(), $this->getArchive()->getIsDaily());
+		return parent::_getPostCollection()->addArchiveDateFilter($this->getArchiveId(), $this->getArchive()->getIsDaily());
 	}
 
 	/**
@@ -56,6 +67,6 @@ class Fishpig_Wordpress_Block_Archive_View extends Fishpig_Wordpress_Block_Post_
 	 */
 	public function translateDate($date, $splitter = ' ')
 	{
-		return $this->getApp()->translateDate($date, $splitter);
+		return $this->_viewHelper->translateDate($date, $splitter);
 	}
 }

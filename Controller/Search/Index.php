@@ -13,11 +13,6 @@ class Index extends \Magento\Framework\App\Action\Action
 	/**
 	 * @var
 	**/
-	protected $_resultFactory = null;
-	
-	/**
-	 * @var
-	**/
 	protected $_searchFactory = null;
 	
     /**
@@ -26,17 +21,16 @@ class Index extends \Magento\Framework\App\Action\Action
      * @param Context $context
      * @param PageFactory $resultPageFactory
      */
-    public function __construct(Context $context, ResultFactory $resultFactory, SearchFactory $searchFactory)
+    public function __construct(Context $context, SearchFactory $searchFactory)
     {
         parent::__construct($context);
         
-        $this->_resultFactory = $resultFactory;
         $this->_searchFactory = $searchFactory;
     }	
     
     public function execute()
     {
-		return $this->_resultFactory->create(ResultFactory::TYPE_REDIRECT)
+		return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
 			->setUrl($this->_searchFactory->create()->getUrl());
     }
 }

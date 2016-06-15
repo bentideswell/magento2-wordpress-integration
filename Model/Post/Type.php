@@ -114,7 +114,7 @@ class Type extends Type\AbstractType
 	/**
 	 * Retrieve the post collection for this post type
 	 *
-	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getPostCollection()
 	{

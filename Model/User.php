@@ -70,7 +70,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Load the WordPress user model associated with the current logged in customer
 	 *
-	 * @return \FishPig_WordPress\Model\User
+	 * @return \FishPig\WordPress\Model\User
 	 */
 	public function loadCurrentLoggedInUser()
 	{

@@ -278,14 +278,14 @@ class Post extends AbstractMeta
 									$uri = '';
 								}
 								else {
-									throw new Exception('Ignore me #1');
+									throw new \Exception('Ignore me #1');
 								}
 							}
 							else if (substr($uri, 0, strlen($token)) === $token) {
 								$uri = substr($uri, strlen($token));
 							}
 							else {
-								throw new Exception('Ignore me #2');
+								throw new \Exception('Ignore me #2');
 							}
 							
 							unset($tokens[$key]);
@@ -374,10 +374,10 @@ class Post extends AbstractMeta
 	/**
 	 * Determine whether the given post has any children posts
 	 *
-	 * @param \FishPig_WordPress\Model\Post $post
+	 * @param \FishPig\WordPress\Model\Post $post
 	 * @return bool
 	 */
-	public function hasChildrenPosts(\FishPig_WordPress\Model\Post $post)
+	public function hasChildrenPosts(\FishPig\WordPress\Model\Post $post)
 	{
 		$select = $this->getConnection()
 			->select()
@@ -393,8 +393,8 @@ class Post extends AbstractMeta
 /**
 	 * Retrieve a collection of post comments
 	 *
-	 * @param \FishPig_WordPress\Model\Post $post
-	 * @return \FishPig_WordPress\Model\ResourceModel\Post_Comment_Collection
+	 * @param \FishPig\WordPress\Model\Post $post
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post_Comment_Collection
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
@@ -408,8 +408,8 @@ class Post extends AbstractMeta
 	/**
 	 * Retrieve the featured image for the post
 	 *
-	 * @param \FishPig_WordPress\Model\Post $post
-	 * @return \FishPig_WordPress\Model\Image $image
+	 * @param \FishPig\WordPress\Model\Post $post
+	 * @return \FishPig\WordPress\Model\Image $image
 	 */
 	public function getFeaturedImage(\FishPig\WordPress\Model\Post $post)
 	{

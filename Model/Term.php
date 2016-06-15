@@ -40,7 +40,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Get the taxonomy object for this term
 	 *
-	 * @return \FishPig_WordPress\Model\Term\Taxonomy
+	 * @return \FishPig\WordPress\Model\Term\Taxonomy
 	 */
 	public function getTaxonomyInstance()
 	{
@@ -64,7 +64,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Retrieve the parent term
 	 *
-	 * @reurn false|\FishPig_WordPress\Model\Term
+	 * @reurn false|\FishPig\WordPress\Model\Term
 	 */
 	public function getParentTerm()
 	{
@@ -86,7 +86,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Retrieve a collection of children terms
 	 *
-	 * @return \FishPig_WordPress\Model\ResourceModel\Term\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Term\Collection
 	 */
 	public function getChildrenTerms()
 	{
@@ -96,7 +96,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	/**
 	 * Loads the posts belonging to this category
 	 *
-	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */    
     public function getPostCollection()
     {

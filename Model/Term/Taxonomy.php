@@ -55,7 +55,7 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 	/**
 	 * Retrieve the URI for $term
 	 *
-	 * @param \FishPig_WordPress\Model\Term $term
+	 * @param \FishPig\WordPress\Model\Term $term
 	 * @return false|string
 	 */
 	public function getUriById($id, $includePrefix = true)
@@ -109,10 +109,10 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 	/**
 	 * Get a collection of terms that belong this taxonomy and $post
 	 *
-	 * @param \FishPig_WordPress\Model\Post $post
-	 * @return \FishPig_WordPress\Model\ResourceModel\Post\Collection
+	 * @param \FishPig\WordPress\Model\Post $post
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */
-	public function getPostTermsCollection(\FishPig_WordPress\Model\Post $post)
+	public function getPostTermsCollection(\FishPig\WordPress\Model\Post $post)
 	{
 		return $this->_factory->getFactory('Term')->create()->getCollection()
 			->addTaxonomyFilter($this->getTaxonomyType())
