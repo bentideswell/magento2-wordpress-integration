@@ -41,14 +41,6 @@ class ResourceConnection
 	{
 		$this->_connectionFactory = $connectionFactory;
 	}
-
-	/**
-	 * @var 
-	**/
-	public function getBlogId()
-	{
-		return 1;
-	}
 	
 	/**
 	 *
@@ -64,12 +56,12 @@ class ResourceConnection
 	
 			$prefix = $this->_tablePrefix;
 			
-			$this->_applyMapping('before_connect', $this->getBlogId());
+			$this->_applyMapping('before_connect');
 			
 			$this->_connection = $this->_connectionFactory->create($config);
 			$this->_connection->query('SET NAMES UTF8');
 			
-			$this->_applyMapping('after_connect', $this->getBlogId());
+			$this->_applyMapping('after_connect');
 		}
 		catch (\Exception $e) {
 			\FishPig\WordPress\Model\App\Integration\Exception::throwException(
@@ -88,13 +80,13 @@ class ResourceConnection
 	 * @param int $blogId = 1
 	 * @return $this
 	**/
-	protected function _applyMapping($type, $blogId = 1)
+	protected function _applyMapping($type)
 	{
 		if (!empty($this->_mappingData[$type])) {
 			$tables = $this->_mappingData[$type];
 
 			foreach($tables as $alias => $table) {
-				$this->_tables[$alias] = $this->_tablePrefix . sprintf($table, $blogId > 1 ? $blogId . '_' : '');
+				$this->_tables[$alias] = $this->_tablePrefix . $table;
 			}
 		}
 		

@@ -156,7 +156,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			$this->joinTermTables('category');
 		}
 		
-		$readAdapter = $this->_app->getDbConnection();
+		$readAdapter = $this->getConnection();
 
 		$postSql = $readAdapter->quoteInto("`main_table`.`ID` IN (?)", $postIds);
 		$categorySql = $readAdapter->quoteInto("`tax_category`.`term_id` IN (?)", $categoryIds);
@@ -226,9 +226,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {
-				$select = $this->_app->getDbConnection()
+				$select = $this->getConnection()
 					->select()
-					->from($this->getTable('wordpress_post'), new Zend_Db_Expr(1))
+					->from($this->getTable('wordpress_post'), new \Zend_Db_Expr(1))
 					->where('main_table.ID IN (?)', $stickyIds)
 					->limit(1);
 				

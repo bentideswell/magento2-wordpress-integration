@@ -121,19 +121,28 @@ class Url
 			}
 			
 			if (!$url) {
-				#MULTISITE!!
-#				if ($this->isWordPressMU() && !Mage::helper('wpmultisite')->isDefaultBlog() && Mage::helper('wpmultisite')->getBlogId()) {
-#					$url = $this->getBaseUrl('wp-content/uploads/sites/' . Mage::helper('wpmultisite')->getBlogId() . '/');
-#				}
-#				else {
-					$url = $this->getSiteUrl() . '/wp-content/uploads/';
-#				}
+				$url = $this->getBaseFileUploadUrl();
 			}
 		}
 		
 		return rtrim($url, '/') . '/';
 	}
 	
+	/**
+	 *
+	 *
+	 * @return 
+	**/
+	public function getBaseFileUploadUrl()
+	{
+		return $this->getSiteUrl() . '/wp-content/uploads/';
+	}
+
+	/**
+	 *
+	 *
+	 * @return 
+	**/
 	public function getUrlAlias(\Magento\Framework\App\RequestInterface $request)
 	{
 		$pathInfo = strtolower(trim($request->getPathInfo(), '/'));	

@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * @category Fishpig
+ * @package Fishpig_Wordpress
+ * @license http://fishpig.co.uk/license.txt
+ * @author Ben Tideswell <ben@fishpig.co.uk>
+ */
 namespace FishPig\WordPress\Model;
 
 class Config
@@ -46,6 +51,25 @@ class Config
 		return $this->_options[$key];
     }
     
+    /**
+	 * Get a site option.
+	 * This is implemented in Multisite
+	 *
+	 * @param string $key
+	 * @return mixed
+	**/
+	public function getSiteOption($key)
+	{
+		return false;
+	}
+
+    /**
+	 * Get the DB mapping
+	 * This is implemented in Multisite
+	 *
+	 * @param string $when = 'before_connect'
+	 * @return array|false
+	**/
     public function getDbTableMapping($when = 'before_connect')
     {
 	    if ($config = $this->_reader->getValue('database/tables/table')) {
@@ -53,10 +77,9 @@ class Config
 
 		    foreach($config as $key => $value) {
 				$value = $value['@attributes'];
-				$useBlogId = isset($value['use_blog_id']) && $value['use_blog_id'] === 'true';
 				
 				if ($value['when'] === $when) {
-					$map[$value['id']] = ($useBlogId ? '%s' : '') .$value['name'];
+					$map[$value['id']] = $value['name'];
 
 					if (isset($value['meta'])) {
 						$map[$value['id'] . '_meta'] = $value['meta'];
@@ -72,6 +95,22 @@ class Config
 	    return false;
     }
     
+    /**
+	 * Get the network tables
+	 * This is implemented in Multisite
+	 *
+	 * @return array|false
+	**/
+    public function getNetworkTables()
+    {
+	    return false;
+    }
+    
+    /**
+	 * Get the configured shortcodes
+	 *
+	 * @return array|false
+	**/
     public function getShortcodes()
     {
 	    if ($config = $this->_reader->getValue('shortcodes')) {
@@ -105,6 +144,11 @@ class Config
 		return false;
     }
     
+    /**
+	 * Get the configured widgets
+	 *
+	 * @return array|false
+	**/
     public function getWidgets()
     {
 	    if ($config = $this->_reader->getValue('sidebar/widgets')) {
@@ -120,8 +164,65 @@ class Config
 		return false;
     }
     
+	/**
+	 * Get the blog ID
+	 *
+	 * @return int
+	**/
+	public function getBlogId()
+	{
+		return 1;
+	}
+	
+	/**
+	 * Get the site ID
+	 *
+	 * @return int
+	**/
+
+	public function getSiteId()
+	{
+		return 1;
+	}
+
+    /**
+	 * Get the Reader object
+	 *
+	 * @return false
+	**/
+	public function getSiteAndBlogObjects()
+	{
+		return false;
+	}
+	
+	/**
+	 * Get a value from the blog table
+	 *
+	 * @param string $key
+	 * @return mixed
+	**/
+	public function getBlogTableValue($key)
+	{
+		return false;
+	}
+	
+    /**
+	 * Determine whether the customer is logged in
+	 *
+	 * @return bool
+	**/
     public function isLoggedIn()
     {
 	    return $this->_customerSession->isLoggedIn();
+    }
+
+    /**
+	 * Get the Reader object
+	 *
+	 * @return \FishPig\WordPress\Model\Config\Reader
+	**/
+    public function getReader()
+    {
+	    return $this->_reader;
     }
 }

@@ -1,20 +1,22 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category Fishpig
+ * @package Fishpig_Wordpress
+ * @license http://fishpig.co.uk/license.txt
+ * @author Ben Tideswell <ben@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Helper;
 
 use \Magento\Framework\App\Helper\Context;
+use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\App\ResourceConnection;
 use \FishPig\WordPress\Model\Config;
 
 class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 {
-	public function __construct(Context $context, ResourceConnection $wpResource, Config $config)
+	public function __construct(Context $context, App $app, ResourceConnection $wpResource, Config $config)
 	{
+		$this->_app = $app;
 		$this->_wpResource = $wpResource;
 		$this->_config = $config;
 		
@@ -106,12 +108,12 @@ class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 		if ($plugins = $this->_config->getOption('active_plugins')) {
 			$plugins = unserialize($plugins);
 		}
-		
-#		if ($this->getApp()->isWordPressMU() && Mage::helper('wpmultisite')->canRun()) {
-#			if ($networkPlugins = Mage::helper('wpmultisite')->getWpSiteOption('active_sitewide_plugins')) {
-#				$plugins += (array)unserialize($networkPlugins);
-#			}
-#		}
+
+		if ($this->_app->isMultisite()) {
+			if ($networkPlugins = $this->_config->getSiteOption('active_sitewide_plugins')) {
+				$plugins += (array)unserialize($networkPlugins);
+			}
+		}
 
 		if ($plugins) {
 			foreach($plugins as $a => $b) {

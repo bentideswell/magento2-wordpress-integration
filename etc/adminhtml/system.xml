@@ -15,7 +15,7 @@
             <label>WordPress</label>
             <tab>fishpig</tab>
             <resource>FishPig_WordPress::config_wordpress</resource>
-            <group id="setup" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="setup" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>WordPress Integration Setup</label>
                 <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="0" showInStore="1">
                     <label>Enabled</label>

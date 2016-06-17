@@ -310,27 +310,18 @@ class App
 				$this->_taxonomies = $axonomies;
 			}
 			else {
-				
-				/*
-				TODO
-				$blogPrefix = Mage::helper('wordpress')->isWordPressMU()
-					 && Mage::helper('wp_addon_multisite')->canRun()
-					 && Mage::helper('wp_addon_multisite')->isDefaultBlog();
-				*/
+				$blogPrefix = $this->isMultisite() && $this->_config->getBlogId() === 1;
 				
 				$bases = array(
 					'category' => $this->_config->getOption('category_base') ? $this->_config->getOption('category_base') : 'category',
 					'post_tag' => $this->_config->getOption('tag_base') ? $this->_config->getOption('tag_base') : 'tag',
 				);
-				
-				/*
-					TODO
+
 				foreach($bases as $baseType => $base) {
 					if ($blogPrefix && $base && strpos($base, '/blog') === 0) {
 						$bases[$baseType] = substr($base, strlen('/blog'));	
 					}
 				}
-				*/
 
 				$this->_taxonomies = array(
 					'category' => $this->_factory->getFactory('Term\Taxonomy')->create(),
@@ -462,6 +453,16 @@ class App
 			}
 		}
 		
+		return false;
+	}
+	
+	/**
+	 *
+	 *
+	 * @return bool
+	**/
+	public function isMultisite()
+	{
 		return false;
 	}
 }
