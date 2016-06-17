@@ -12,6 +12,8 @@ use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Archive extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
 {
+	const ENTITY = 'wordpress_archive';
+	
 	public function _construct()
 	{
 		$this->_init('\FishPig\WordPress\Model\ResourceModel\Archive');
@@ -19,7 +21,7 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 	
 	public function getName()
 	{
-		return $this->_getData('name');
+		return 'Archives: ' . $this->_getData('name');
 		return $this->_app->translateDate($this->_getData('name'));
 	}
 	
@@ -32,22 +34,26 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 	public function load($modelId, $field = NULL)
 	{
 		$this->setId($modelId);
-		
-		if (strlen($modelId) == 7) {
-			$this->setName(date('F Y', strtotime($modelId.'/01 01:01:01')));
-			$this->setDateString(strtotime(str_replace('/', '-', $modelId) . ' 01:01:01'));
+		$extra = '';
+
+		while(strlen($modelId . $extra) < 10) {
+			$extra .= '/01';
+		}
+
+		if (strlen($modelId) === 7) {
+			$format = 'F Y';
 		}
 		else if (strlen($modelId) === 4) {
-			$this->setName(date('Y', strtotime($modelId.'-01-01 01:01:01')));
-			$this->setDateString(strtotime(str_replace('/', '-', $modelId) . '-01-01 01:01:01'));
-			
+			$format = 'Y';
 		}
 		else {
-			$this->setName(date('F j, Y', strtotime($modelId.' 01:01:01')));
-			$this->setDateString(strtotime(str_replace('/', '-', $modelId) . '-01 01:01:01'));
+			$format = 'F j, Y';
 			$this->setIsDaily(true);
 		}
-		
+
+		$this->setName(date($format, strtotime($modelId . $extra . ' 01:01:01')));
+		$this->setDateString(strtotime(str_replace('/', '-', $modelId . $extra) . ' 01:01:01'));
+
 		return $this;
 	}
 

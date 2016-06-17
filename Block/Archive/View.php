@@ -28,7 +28,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	public function getArchive()
 	{
 		if (!$this->hasArchive()) {
-			$this->setArchive(Mage::registry('wordpress_archive'));
+			$this->setArchive($this->_registry->registry('wordpress_archive'));
 		}
 		
 		return $this->_getData('archive');
