@@ -112,7 +112,7 @@ class App
 			$this->_initResource();
 			
 			// This will load the wp-config.php values
-			$this->_getWpConfigValue();
+			$this->getWpConfigValue();
 			
 			// Use the wp-config.php values to connect to the DB
 			$this->_initResource();
@@ -121,6 +121,9 @@ class App
 			$this->_validateIntegration();
 			
 			$this->_themeHelper->setPath($this->getPath())->validate();
+			
+			// Plugins can use this to check other things
+			$this->performOtherChecks();
 			
 			// Mark the state as true. This means all is well
 			$this->_state = true;
@@ -166,17 +169,41 @@ class App
 	 * @param string|null $key = null
 	 * @return mixed
 	 */
-	protected function _getWpConfigValue($key = null)
+	public function getWpConfigValue($key = null)
 	{
 		if (is_null($this->_wpconfig)) {
 			$wpConfig = file_get_contents($this->getPath() . '/wp-config.php');
+			
+			# Cleanup comments
+			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
+			$wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
+			$wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
+			$wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
 
 			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
 				throw new Exception('Unable to extract values from wp-config.php');
 			}
-		
+
 			$this->_wpconfig = array_combine($matches[1], $matches[3]);
 			
+			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {
+				throw new Exception('Unable to extract values from wp-config.php');
+			}
+			
+			$temp = array_combine($matches[1], $matches[2]);
+			
+			foreach($temp as $k => $v) {
+				if ($v === 'true') {
+					$this->_wpconfig[$k] = true;
+				}
+				else if ($v === 'false') {
+					$this->_wpconfig[$k] = false;
+				}
+				else {
+					$this->_wpconfig[$k] = $v;
+				}
+			}
+
 			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-z0-9_]+)\\1/', $wpConfig, $match)) {
 				$this->_wpconfig['DB_TABLE_PREFIX'] = $match[2];
 			}
@@ -185,6 +212,7 @@ class App
 			}
 		}
 		
+#		print_r($this->_wpconfig);exit;
 		if (is_null($key)) {
 			return $this->_wpconfig;
 		}
@@ -200,16 +228,16 @@ class App
 	protected function _initResource()
 	{
 		if (!$this->_resource->isConnected()) {
-			$this->_resource->setTablePrefix($this->_getWpConfigValue('DB_TABLE_PREFIX'))
+			$this->_resource->setTablePrefix($this->getWpConfigValue('DB_TABLE_PREFIX'))
 				->setMappingData(array(
 					'before_connect' => $this->_config->getDbTableMapping('before_connect'),
 					'after_connect' => $this->_config->getDbTableMapping('after_connect'),
 				))
 				->connect(array(
 			        'host' => 'localhost',
-			        'dbname' => $this->_getWpConfigValue('DB_NAME'),
-			        'username' => $this->_getWpConfigValue('DB_USER'),
-			        'password' => $this->_getWpConfigValue('DB_PASSWORD'),
+			        'dbname' => $this->getWpConfigValue('DB_NAME'),
+			        'username' => $this->getWpConfigValue('DB_USER'),
+			        'password' => $this->getWpConfigValue('DB_PASSWORD'),
 			        'active' => '1',	
 				)
 			);
@@ -464,5 +492,15 @@ class App
 	public function isMultisite()
 	{
 		return false;
+	}
+	
+	/**
+	 * Can be implemented by plugins to carry out integration tests
+	 *
+	 * @return bool
+	**/
+	public function performOtherChecks()
+	{
+		return true;
 	}
 }
