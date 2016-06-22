@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+	<default>
+		<wordpress>
+			<setup>
+				<enabled>1</enabled>
+				<path>wp</path>
+			</setup>
+		</wordpress>
+	</default>
+</config>

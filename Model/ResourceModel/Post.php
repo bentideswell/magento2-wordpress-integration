@@ -201,24 +201,6 @@ class Post extends AbstractMeta
 			$fields = $this->getPermalinkSqlFields();
 
 			foreach($postTypes as $postType) {
-				if (false && $postType->isHierarchical()) {
-					$tokens = $postType->getExplodedPermalinkStructure();
-					
-					if (count($tokens) === 2 && $tokens[0] === '%postname%' && strpos($tokens[1], '%') === false) {
-						$hierarchicalRoutes = $postType->getHierarchicalPostNames();
-	
-						if ($hierarchicalRoutes) {
-							foreach($hierarchicalRoutes as $routeId => $route) {
-								if ($route === $originalUri) {
-									$permalinks += array($routeId => $route);
-								}
-							}
-						}
-
-						continue;
-					}
-				}
-				
 				if (!($tokens = $postType->getExplodedPermalinkStructure())) {
 					continue;
 				}
@@ -242,7 +224,6 @@ class Post extends AbstractMeta
 					
 					array_pop($tokens);
 				}
-
 
 				try {
 					for($i = 0; $i <= 1; $i++) {

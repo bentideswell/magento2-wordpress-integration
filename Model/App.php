@@ -261,12 +261,21 @@ class App
 			);
 		}
 
-		if (strpos($this->_wpUrlBuilder->getHomeUrl(), $magentoUrl) !== 0) {
-			IntegrationException::throwException('Your home URL is invalid.');
+		if ($this->isRoot()) {
+			if ($this->_wpUrlBuilder->getHomeUrl() !== $magentoUrl) {
+				IntegrationException::throwException(
+					sprintf('Your home URL is incorrect and should match your Magento URL. Change to. %s', $magentoUrl)
+				);
+			}
 		}
-		
-		if ($this->_wpUrlBuilder->getHomeUrl() === $magentoUrl) {
-			IntegrationException::throwException('Your WordPress Home URL matches your Magento URL. Try changing your Home URL to something like ' . $magentoUrl . '/blog');
+		else {
+			if (strpos($this->_wpUrlBuilder->getHomeUrl(), $magentoUrl) !== 0) {
+				IntegrationException::throwException('Your home URL is invalid.');
+			}
+			
+			if ($this->_wpUrlBuilder->getHomeUrl() === $magentoUrl) {
+				IntegrationException::throwException('Your WordPress Home URL matches your Magento URL. Try changing your Home URL to something like ' . $magentoUrl . '/blog');
+			}
 		}
 		
 		return $this;
@@ -494,6 +503,16 @@ class App
 		return false;
 	}
 	
+	/**
+	 *
+	 *
+	 * @return bool
+	**/
+	public function isRoot()
+	{
+		return false;
+	}
+
 	/**
 	 * Can be implemented by plugins to carry out integration tests
 	 *

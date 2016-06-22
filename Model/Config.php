@@ -33,6 +33,11 @@ class Config
 	    return $this->_scopeConfig->getValue($key);
     }
     
+    public function getStoreConfigFlag($key)
+    {
+	    return (int)$this->_scopeConfig->getValue($key) === 1;
+    }
+    
     /**
 	 * Get a WordPress option value
 	 *
