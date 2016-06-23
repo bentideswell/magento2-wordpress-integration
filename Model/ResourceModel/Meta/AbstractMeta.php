@@ -16,7 +16,7 @@ abstract class AbstractMeta extends \FishPig\WordPress\Model\ResourceModel\Abstr
 	 * This only works if the model is setup to work a meta table
 	 * If not, null will be returned
 	 *
-	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
+	 * @param \FishPig\WordPress\Model\Meta\AbstractMeta $object
 	 * @param string $metaKey
 	 * @param string $selectField
 	 * @return null|mixed
@@ -41,11 +41,11 @@ abstract class AbstractMeta extends \FishPig\WordPress\Model\ResourceModel\Abstr
 	 * Save a meta value to the database
 	 * This only works if the model is setup to work a meta table
 	 *
-	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
+	 * @param \FishPig\WordPress\Model\Meta\AbstractMeta $object
 	 * @param string $metaKey
 	 * @param string $metaValue
 	 */
-	public function setMetaValue(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object, $metaKey, $metaValue)
+	public function setMetaValue(\FishPig\WordPress\Model\Meta\AbstractMeta $object, $metaKey, $metaValue)
 	{
 		$metaValue = trim($metaValue);
 		$metaData = array(
@@ -65,10 +65,10 @@ abstract class AbstractMeta extends \FishPig\WordPress\Model\ResourceModel\Abstr
 	/**
 	 * Get an array of all of the meta values associated with this post
 	 *
-	 * @param \FishPig\WordPress\Api\Data\Entity\MetaInterface $object
+	 * @param \FishPig\WordPress\Model\Meta\AbstractMeta $object
 	 * @return false|array
 	 */
-	public function getAllMetaValues(\FishPig\WordPress\Api\Data\Entity\MetaInterface $object)
+	public function getAllMetaValues(\FishPig\WordPress\Model\Meta\AbstractMeta $object)
 	{
 		$select = $this->getConnection()
 			->select()

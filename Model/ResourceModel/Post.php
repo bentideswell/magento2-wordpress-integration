@@ -108,7 +108,7 @@ class Post extends AbstractMeta
 			->from(array('_relationship' => $this->getTable('wordpress_term_relationship')), 'object_id')
 			->where('object_id = (?)', $postId)
 			->order('_term.term_id ASC');
-			
+
 		$select->join(
 			array('_taxonomy' => $this->getTable('wordpress_term_taxonomy')),
 			$this->getConnection()->quoteInto("_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?", $taxonomy),
@@ -121,9 +121,7 @@ class Post extends AbstractMeta
 			'name'
 		);
 		
-		if (Mage::helper('wordpress')->isAddonInstalled('WordPressSEO')) {
-			Mage::helper('wp_addon_yoastseo')->addPrimaryCategoryToSelect($select, $postId);
-		}
+		$this->addPrimaryCategoryToSelect($select, $postId);
 
 		$select->reset('columns')
 			->columns(array(
@@ -147,6 +145,11 @@ class Post extends AbstractMeta
 		return $this->getConnection()->fetchAll($wrapper);
 	}
 		
+	public function addPrimaryCategoryToSelect($select, $postId)
+	{
+		return $this;
+	}
+
 	/**
 	 * Get the permalink SQL as a SQL string
 	 *
