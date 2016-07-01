@@ -412,7 +412,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getPostDate($format = null)
 	{
 		if (($date = $this->getData('post_date_gmt')) === '0000-00-00 00:00:00' || $date === '') {
-			$date = now();
+			$date = date('Y-m-d H:i:s');
 		}
 		
 		return $this->_viewHelper->formatDate($date, $format);
@@ -427,7 +427,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getPostModifiedDate($format = null)
 	{
 		if (($date = $this->getData('post_modified_gmt')) === '0000-00-00 00:00:00' || $date === '') {
-			$date = now();
+			$date = date('Y-m-d H:i:s');
 		}
 		
 		return $this->_viewHelper->formatDate($date, $format);
@@ -442,7 +442,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getPostTime($format = null)
 	{
 		if (($date = $this->getData('post_date_gmt')) === '0000-00-00 00:00:00' || $date === '') {
-			$date = now();
+			$date = date('Y-m-d H:i:s');
 		}
 		
 		return $this->_viewHelper->formatDate($date, $format);

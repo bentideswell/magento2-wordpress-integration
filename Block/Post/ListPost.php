@@ -26,18 +26,23 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	 */
 	public function getPosts()
 	{
-		if ($this->_postCollection === null && $this->getWrapperBlock()) {
-			if ($this->_postCollection = $this->getWrapperBlock()->getPostCollection()) {
-				if ($this->getPostType()) {
-					$this->_postCollection->addPostTypeFilter($this->getPostType());
-				}
-
-				if ($pager = $this->getChildBlock('pager')) {
-					$pager->setPostListBlock($this)->setCollection($this->_postCollection);
+		if ($this->_postCollection === null) {
+			if ($this->getWrapperBlock()) {
+				if ($this->_postCollection = $this->getWrapperBlock()->getPostCollection()) {
+					if ($this->getPostType()) {
+						$this->_postCollection->addPostTypeFilter($this->getPostType());
+					}
 				}
 			}
+			else {
+				$this->_postCollection = $this->_factory->getFactory('Post')->create()->getCollection();
+			}
+
+			if ($this->_postCollection && ($pager = $this->getChildBlock('pager'))) {
+				$pager->setPostListBlock($this)->setCollection($this->_postCollection);
+			}
 		}
-		
+
 		return $this->_postCollection;
 	}
 	
