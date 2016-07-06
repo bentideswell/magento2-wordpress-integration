@@ -182,7 +182,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected function _getTeaserAnchor()
 	{
 		// Allows translation
-		return stripslashes($this->_app->__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
+		return stripslashes(__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
 	}
 	
 	/**
