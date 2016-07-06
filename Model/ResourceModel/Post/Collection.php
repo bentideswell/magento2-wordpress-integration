@@ -215,9 +215,10 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	}
 	
 	/**
-	 * Add sticky posts to the filter
+	 * Add the is_sticky field to the posts.
+	 * This returns all posts but sticky posts will be at the start of the collection
+	 * To only return sticky posts, see self::addIsStickyPostFilter
 	 *
-	 * @param bool $isSticky = true
 	 * @return $this
 	 */
 	public function addStickyPostsToCollection()
@@ -228,13 +229,32 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			if (count($stickyIds) > 0) {
 				$select = $this->getConnection()
 					->select()
-					->from($this->getTable('wordpress_post'), new \Zend_Db_Expr(1))
+					->from($this->getTable('wordpress_post'), array('value' => new \Zend_Db_Expr(1)))
 					->where('main_table.ID IN (?)', $stickyIds)
 					->limit(1);
 				
 				$this->getSelect()
-					->columns(array('is_sticky' => '(' . $select . ')'))
+					->columns(array('is_sticky' => new \Zend_Db_Expr('(' . $select . ')')))
 					->order('is_sticky DESC');
+			}
+		}
+		
+		return $this;
+	}
+	
+	/**
+	 * Filter the collection so that only sticky posts are returned
+	 *
+	 * @param bool $flag = true
+	 * @return $this
+	 */
+	public function addIsStickyPostFilter($flag = true)
+	{
+		if (($sticky = trim($this->_app->getConfig()->getOption('sticky_posts'))) !== '') {
+			$stickyIds = unserialize($sticky);
+			
+			if (count($stickyIds) > 0) {
+				$this->getSelect()->where('ID ' . ($flag ? 'IN' : ' NOT IN') . ' (?)', $stickyIds);
 			}
 		}
 		
