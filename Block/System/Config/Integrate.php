@@ -8,21 +8,68 @@ namespace FishPig\WordPress\Block\System\Config;
 
 class Integrate extends \Magento\Backend\Block\Template
 {
+	/**
+	 * @
+	**/
 	protected $_app = null;
+	
+	/**
+	 * @
+	**/
 	protected $_wpUrlBuilder = null;
 	
+	/**
+	 * @
+	**/
+	protected $_storeManager = null;
+	
+	/**
+	 * @
+	**/
+	protected $_emulator = null;
+	
+	/**
+	 * @
+	**/
     public function __construct(
     	\Magento\Backend\Block\Template\Context $context,
     	\FishPig\WordPress\Model\AppFactory $appFactory, 
     	\FishPig\WordPress\Model\App\Url $urlBuilder,
+		\Magento\Store\Model\StoreManager $storeManager,
+		\Magento\Store\Model\App\Emulation $emulator,
     	array $data = []
     ) {
 	    parent::__construct($context, $data);
 
-	    $this->_wpUrlBuilder = $urlBuilder;	    
-
+	    $this->_wpUrlBuilder = $urlBuilder;	   
+	    $this->_storeManager = $storeManager; 
+		$this->_emulator = $emulator;
+		
 		if ($this->_request->getParam('section') === 'wordpress') {
-		    $this->_app = $appFactory->create();;
+			try {
+				$storeId = 0;
+
+				if (($websiteId = (int)$this->_request->getParam('website')) !== 0) {
+					$storeId = (int)$this->_storeManager->getWebsite($websiteId)->getDefaultStore()->getId();
+				}
+				
+				if ($storeId === 0) {
+					$storeId = (int)$this->_request->getParam('store');
+				}
+
+				if ($storeId === 0) {
+					$storeId = (int)$this->_storeManager->getDefaultStoreView()->getId();
+				}
+
+				$this->_emulator->startEnvironmentEmulation($storeId);
+				
+				$this->_app = $appFactory->create();
+				
+				$this->_emulator->stopEnvironmentEmulation();
+			}
+			catch (\Exception $e) {
+				$this->_emulator->stopEnvironmentEmulation();
+			}
 		}
 	}
 	

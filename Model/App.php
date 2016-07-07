@@ -270,7 +270,9 @@ class App
 		}
 		else {
 			if (strpos($this->_wpUrlBuilder->getHomeUrl(), $magentoUrl) !== 0) {
-				IntegrationException::throwException('Your home URL is invalid.');
+				IntegrationException::throwException(
+					sprintf('Your home URL (%s) is invalid.', $this->_wpUrlBuilder->getHomeUrl())
+				);
 			}
 			
 			if ($this->_wpUrlBuilder->getHomeUrl() === $magentoUrl) {

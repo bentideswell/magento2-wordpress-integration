@@ -18,11 +18,6 @@ class Url
 	 * @var 
 	**/
 	protected $_storeManager = null;
-
-	/**
-	 * @var array
-	**/
-	protected $_cache = array();
 	
 	/**
 	 * Constructor
@@ -40,14 +35,10 @@ class Url
 	 **/
 	public function getMagentoUrl()
 	{
-		if (!isset($this->_cache[__METHOD__])) {
-			$this->_cache[__METHOD__] = rtrim(
+		return rtrim(
 				$this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK), 
 				'/'
 			);
-		}
-		
-		return $this->_cache[__METHOD__];
 	}
 	
 	/**
@@ -57,11 +48,7 @@ class Url
 	 **/
 	public function getBlogRoute()
 	{
-		if (!isset($this->_cache[__METHOD__])) {
-			$this->_cache[__METHOD__] = trim(substr($this->getHomeUrl(), strlen($this->getMagentoUrl())), '/');
-		}
-
-		return $this->_cache[__METHOD__];
+		return trim(substr($this->getHomeUrl(), strlen($this->getMagentoUrl())), '/');
 	}
 
 	/**

@@ -30,12 +30,18 @@ class Config
 	
     public function getStoreConfigValue($key)
     {
-	    return $this->_scopeConfig->getValue($key);
+	    return $this->_scopeConfig->getValue(
+	    	$key,
+	    	\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+	    );
     }
     
     public function getStoreConfigFlag($key)
     {
-	    return (int)$this->_scopeConfig->getValue($key) === 1;
+	    return (int)$this->_scopeConfig->getValue(
+	    	$key,
+	    	\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+	    ) === 1;
     }
     
     /**
