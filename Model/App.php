@@ -234,7 +234,7 @@ class App
 					'after_connect' => $this->_config->getDbTableMapping('after_connect'),
 				))
 				->connect(array(
-			        'host' => 'localhost',
+			        'host' => $this->getWpConfigValue('DB_HOST'),
 			        'dbname' => $this->getWpConfigValue('DB_NAME'),
 			        'username' => $this->getWpConfigValue('DB_USER'),
 			        'password' => $this->getWpConfigValue('DB_PASSWORD'),
