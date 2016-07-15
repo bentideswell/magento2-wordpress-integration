@@ -1,5 +1,5 @@
 {
-  "name": "FishPig/WordPress",
+  "name": "fishpig/module-wordpress",
   "description": "Magento WordPress Integration",
   "type": "magento2-module",
   "require": {
