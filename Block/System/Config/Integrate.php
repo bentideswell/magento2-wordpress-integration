@@ -63,7 +63,7 @@ class Integrate extends \Magento\Backend\Block\Template
 
 				$this->_emulator->startEnvironmentEmulation($storeId);
 				
-				$this->_app = $appFactory->create();
+				$this->_app = $appFactory->create()->init();
 				
 				$this->_emulator->stopEnvironmentEmulation();
 			}

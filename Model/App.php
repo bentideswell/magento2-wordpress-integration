@@ -85,8 +85,11 @@ class App
 		$this->_wpUrlBuilder = $urlBuilder;
 		$this->_factory = $factory;
 		$this->_themeHelper = $themeHelper;
-		
-		$this->_init();
+	}
+	
+	public function init()
+	{
+		return $this->_init();
 	}
 	
 	/**
@@ -302,6 +305,8 @@ class App
 	 */
 	public function getPostType($key = null)
 	{
+		$this->_init();
+		
 		if (is_null($this->_postTypes)) {
 			if ($postTypes = $this->_config->getOption('fp_post_types')) {
 				$this->_postTypes = unserialize($postTypes);
@@ -344,6 +349,8 @@ class App
 	 */
 	public function getTaxonomy($key = null)
 	{
+		$this->_init();
+		
 		if (is_null($this->_taxonomies)) {
 			if ($taxonomies = $this->_config->getOption('fp_taxonomies')) {
 				$this->_taxonomies = $axonomies;
@@ -440,6 +447,8 @@ class App
 	**/
     public function canRun()
     {
+		$this->_init();
+		
 	    return $this->_state === true;
     }
     
@@ -523,5 +532,12 @@ class App
 	public function performOtherChecks()
 	{
 		return true;
+	}
+	
+	public function getResourceConnection()
+	{
+		$this->_init();
+		
+		return $this->_resource;
 	}
 }
