@@ -114,7 +114,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 				$filename = $sizes[$type]['file'];
 			}
 		}
-	
+
 		if (!$filename) {
 			return null;
 		}

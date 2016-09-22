@@ -107,8 +107,14 @@ class Url
 				}
 			}
 			
+
 			if (!$url) {
-				$url = $this->getBaseFileUploadUrl();
+				if ($this->_config->getBlogId() !== 1) {
+					$url = $this->getBaseFileUploadUrl() . 'sites/' . $this->_config->getBlogId() . '/';
+				}
+				else {
+					$url = $this->getBaseFileUploadUrl();
+				}
 			}
 		}
 		
