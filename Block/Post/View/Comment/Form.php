@@ -84,4 +84,24 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	{
 		return $this->_config->isLoggedIn();
 	}
+	
+	/**
+	 * Retrieve the current post object
+	 *
+	 * @return null|Fishpig_Wordpress_Model_Post
+	 */
+	public function getPost()
+	{
+		return $this->hasPost() ? $this->_getData('post') : $this->_registry->registry('wordpress_post');
+	}
+	
+	/**
+	 * Returns the ID of the currently loaded post
+	 *
+	 * @return int|false
+	 */
+	public function getPostId()
+	{
+		return $this->getPost() ? $this->getPost()->getId() : false;
+	}
 }

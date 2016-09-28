@@ -67,9 +67,9 @@ class Url
 	 *
 	 * @return string
 	 **/
-	public function getSiteurl()
+	public function getSiteurl($extra = '')
 	{
-		return $this->_config->getOption('siteurl');
+		return rtrim($this->_config->getOption('siteurl'), '/') . '/' . ltrim($extra, '/');
 	}
 	
 	/**
