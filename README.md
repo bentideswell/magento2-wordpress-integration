@@ -18,7 +18,7 @@ You should also setup custom permalinks in the Settings > Permalinks section.
 #Install the Extension
 - Either download the files from GitHub or fork/clone this repo.
 - The files should be saved at app/code/FishPig/WordPress in your Magento 2 installation.
-- Login to the Magento Admin and select the WordPress menu option.
+- Login to the Magento Admin and select the WordPress menu option. If you don't see the Wordpress menu option try running `php bin/magento setup:upgrade`
 - Enter 'wp' for the path configuration and save.
 
 You should now see your blog at http://www.example.com/blog/
