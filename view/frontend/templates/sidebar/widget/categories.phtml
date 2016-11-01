@@ -1,9 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category Fishpig
+ * @package Fishpig_Wordpress
+ * @license http://fishpig.co.uk/license.txt
+ * @author Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
 <?php $categories = $this->getCategories() ?>
@@ -18,8 +18,8 @@
 			<ul class="level0" id="wp-category-list">
 				<?php if ($this->getDropdown()): ?>
 					<li class="level0 item">
-						<select name="blog-archive-dropdown" onchange="setLocation(this.value);">
-							<option value="<?php echo $this->helper('wordpress')->getUrl() ?>"><?php echo __('Select Category') ?></option>
+						<select name="blog-archive-dropdown" onchange="if (this.value!=='#'){window.location.href=this.value;}">
+							<option value="#"><?php echo __('Select Category') ?></option>
 							<?php foreach($categories as $category): ?>
 								<option value="<?php echo $category->getUrl() ?>"<?php if ($this->isCurrentCategory($category)): ?> selected="selected"<?php endif; ?>><?php echo $category->getName() ?> <?php if ($this->getCount()): ?> (<?php echo $category->getPostCount() ?>)<?php endif; ?></option>
 								<?php if ($this->getHierarchical()): ?>
