@@ -15,7 +15,16 @@ This installation guide will use http://www.example.com as your Magento URL and 
 
 You should also setup custom permalinks in the Settings > Permalinks section.
 
-#Install the Extension
+#Install the Extension (Composer)
+In the root of your magento 2 installation:
+<pre>composer config repositories.fishpig-wordpress vcs https://github.com/bentideswell/magento2-wordpress-integration</pre>
+<pre>composer require fishpig/module-wordpress:dev-master</pre>
+<pre>php bin/magento module:enable FishPig_WordPress -c</pre>
+<pre>php bin/magento setup:upgrade</pre>
+
+You will need to run your deploy commands, based on the setup you have.
+
+#Install the Extension (Copy-Paste)
 - Either download the files from GitHub or fork/clone this repo.
 - The files should be saved at app/code/FishPig/WordPress in your Magento 2 installation.
 - Login to the Magento Admin and select the WordPress menu option.
