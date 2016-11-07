@@ -534,10 +534,25 @@ class App
 		return true;
 	}
 	
+	/**
+	 * 
+	 *
+	 * @return \FishPig\WordPress\Model\App\ResourceConnection
+	**/
 	public function getResourceConnection()
 	{
 		$this->_init();
 		
 		return $this->_resource;
+	}
+	
+	/**
+	 * 
+	 *
+	 * @return \FishPig\WordPress\Model\App\Url
+	**/
+	public function getWpUrlBuilder()
+	{
+		return $this->_wpUrlBuilder;
 	}
 }

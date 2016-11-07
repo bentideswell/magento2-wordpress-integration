@@ -11,4 +11,20 @@ class View extends \FishPig\WordPress\Controller\Action
 	{
 		return $this->_factory->getFactory('Search')->create();
 	}
+	
+    /**
+	  * Get the blog breadcrumbs
+	  *
+	  * @return array
+	 **/
+    protected function _getBreadcrumbs()
+    {
+	    return array_merge(	
+		    parent::_getBreadcrumbs(), [
+			'archives' => [
+				'label' => __($this->_getEntity()->getName()),
+				'title' => __($this->_getEntity()->getName())
+			]]
+		);
+    }
 }

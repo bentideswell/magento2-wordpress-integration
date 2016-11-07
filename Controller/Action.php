@@ -1,6 +1,6 @@
 <?php
 /**
- * @var 
+ * @ 
 **/
 
 namespace FishPig\WordPress\Controller;
@@ -102,7 +102,34 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    
 	    $this->getPage()->addHandle('wordpress_default');
 
+		if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {	    
+		    if ($crumbs = $this->_getBreadcrumbs()) {
+			    foreach($crumbs as $key => $crumb) {
+				    $breadcrumbsBlock->addCrumb($key, $crumb);
+			    }
+		    }
+		}
+
 	    return $this;
+    }
+    
+    /**
+	  * Get the breadcrumbs
+	  *
+	  * @return array
+	 **/
+    protected function _getBreadcrumbs()
+    {
+	    return [
+		    'home' => [
+			'label' => __('Home'),
+			'title' => __('Go to Home Page'),
+			'link' => $this->_app->getWpUrlBuilder()->getMagentoUrl()
+		],
+		'blog' => [
+			'label' => __('Blog'),
+			'link' => $this->_app->getWpUrlBuilder()->getHomeUrl()
+		]];
     }
     
     /**

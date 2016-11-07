@@ -20,4 +20,20 @@ class View extends \FishPig\WordPress\Controller\Action
 
 		return $post->getId() ? $post : false;
     }
+    
+    /**
+	  * Get the blog breadcrumbs
+	  *
+	  * @return array
+	 **/
+    protected function _getBreadcrumbs()
+    {
+	    return array_merge(	
+		    parent::_getBreadcrumbs(), [
+			'archives' => [
+				'label' => __($this->_getEntity()->getName()),
+				'title' => __($this->_getEntity()->getName())
+			]]
+		);
+    }
 }
