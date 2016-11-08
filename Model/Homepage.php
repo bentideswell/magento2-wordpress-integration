@@ -10,7 +10,7 @@ namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Homepage extends AbstractModel
+class Homepage extends AbstractModel implements ViewableInterface
 {
 	/**
 	 * @var string
