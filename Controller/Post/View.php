@@ -28,12 +28,21 @@ class View extends \FishPig\WordPress\Controller\Action
 	 **/
     protected function _getBreadcrumbs()
     {
-	    return array_merge(	
-		    parent::_getBreadcrumbs(), [
-			'archives' => [
-				'label' => __($this->_getEntity()->getName()),
-				'title' => __($this->_getEntity()->getName())
-			]]
-		);
+		$crumbs = parent::_getBreadcrumbs();
+		
+		/**
+		 * Handle post type breadcrumb
+		**/
+		$postType = $this->getEntityObject()->getTypeInstance();
+		
+		if (!$postType->isDefault() && $postType->hasArchive()) {
+			$crumbs['post_type'] = [
+				'label' => __($postType->getName()),
+				'title' => __($postType->getName()),
+				'link' => $postType->getUrl(),
+			];
+		}
+		
+		return $crumbs;
     }
 }

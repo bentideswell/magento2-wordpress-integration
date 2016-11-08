@@ -2,7 +2,6 @@
 /**
  * @ 
 **/
-
 namespace FishPig\WordPress\Controller;
 
 abstract class Action extends \Magento\Framework\App\Action\Action
@@ -61,7 +60,6 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     public function execute()
     {
 	    try {
-
 		    $this->_beforeExecute();
 
 		    $this->_initLayout();
@@ -83,7 +81,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    }
 	    
 	    if ($entity !== null) {
-		    $this->_getRegistry()->register($entity::ENTITY, $entity);
+		    $this->_registry->register($entity::ENTITY, $entity);
 		}
 
 		return $this;	
@@ -94,14 +92,22 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
     protected function _initLayout()
     {
+	    
 		// Add blog feed URL
 		// Add blog comments feed URL
 		// Add canonical
-		// Add breadcrumbs
+
+	    
+	    if ($handles = $this->getLayoutHandles()) {
+			$handles = array_reverse($handles);
+
+		    foreach($handles as $handle) {
+				$this->getPage()->addHandle($handle);
+			}
+		}
+
 	    $this->getPage()->getConfig()->addBodyClass('is-blog');
 	    
-	    $this->getPage()->addHandle('wordpress_default');
-
 		if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {	    
 		    if ($crumbs = $this->_getBreadcrumbs()) {
 			    foreach($crumbs as $key => $crumb) {
@@ -113,6 +119,16 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    return $this;
     }
     
+    /**
+	 * Get an array of extra layout handles to apply
+	 *
+	 * @return array
+	**/
+    public function getLayoutHandles()
+    {
+	    return ['wordpress_default'];
+    }
+
     /**
 	  * Get the breadcrumbs
 	  *
@@ -161,7 +177,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		    return $this->_entity;
 	    }
 
-	    return $this->_entity = $this->_getEntityObject();
+	    return $this->_entity = $this->_getEntity();
     }
     
 	/**

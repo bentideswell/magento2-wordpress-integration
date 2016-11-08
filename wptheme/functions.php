@@ -8,8 +8,6 @@
  *
  */
 
-
-
 if (!function_exists('fishpig_setup')) {
 	function fishpig_setup() {
 		add_theme_support( 'post-thumbnails' );
@@ -22,7 +20,6 @@ if (!function_exists('fishpig_setup')) {
 }
 
 add_action( 'after_setup_theme', 'fishpig_setup' );
-
 
 function fishpig_widgets_init() {
 	register_sidebar(array(
@@ -37,6 +34,8 @@ function fishpig_widgets_init() {
 }
 
 add_action( 'widgets_init', 'fishpig_widgets_init' );
+
+@include(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
 
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';

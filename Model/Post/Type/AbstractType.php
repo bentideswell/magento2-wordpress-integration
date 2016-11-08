@@ -1,18 +1,35 @@
 <?php
-	
+/**
+  *
+ **/
 namespace FishPig\WordPress\Model\Post\Type;
 
 use FishPig\WordPress\Model\App;
 
 abstract class AbstractType extends \Magento\Framework\DataObject
 {
-     protected $_app = null;
+	/**
+	  *
+	 **/
+    protected $_app = null;
 	 
-	 protected $_resource = null;
-	 
+	/**
+	  *
+	 **/
+	protected $_resource = null;
+	
+	/**
+	  *
+	 **/ 
+	protected $_factory = null;
+	
+	/**
+	  *
+	 **/
     public function __construct(
     	\FishPig\WordPress\Model\App $app, 
     	\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection, 
+    	\FishPig\WordPress\Model\App\Factory $factory, 
     	$data = []
     )
     {
@@ -20,6 +37,7 @@ abstract class AbstractType extends \Magento\Framework\DataObject
 	    
 	    $this->_app = $app;
     	$this->_resource = $resourceConnection;
+    	$this->_factory = $factory;
     }
 	
 	/**
@@ -118,5 +136,61 @@ abstract class AbstractType extends \Magento\Framework\DataObject
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * @return 
+	**/
+	public function getContent()
+	{
+		return '';
+	}
+
+	/**
+	 * @return 
+	**/	
+	public function getImage()
+	{
+		return false;
+	}
+
+	/**
+	 * @return 
+	**/
+	public function getPageTitle()
+	{
+		return $this->getName();
+	}
+
+	/**
+	 * @return 
+	**/	
+	public function getMetaDescription()
+	{
+		return '';
+	}
+
+	/**
+	 * @return 
+	**/
+	public function getMetaKeywords()
+	{
+		return '';
+	}
+	
+	/**
+	 * @return 
+	**/
+	public function getCanonicalUrl()
+	{
+		return $this->getUrl();
+	}
+	
+	/**
+	 * @return 
+	**/
+	public function getRobots()
+	{
+		return null;
 	}
 }

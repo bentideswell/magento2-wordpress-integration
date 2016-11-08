@@ -76,7 +76,9 @@ class Router implements \Magento\Framework\App\RouterInterface
 			$this->addRouteCallback(array($this, '_getSimpleRoutes'));
 			$this->addRouteCallback(array($this, '_getPostRoutes'));
 			$this->addRouteCallback(array($this, '_getTaxonomyRoutes'));
-
+			
+			$this->addExtraRoutesToQueue();
+			
 			if (($route = $this->_matchRoute($requestUri)) !== false) {
 				$request->setModuleName($route['path']['module'])
 					->setControllerName($route['path']['controller'])
@@ -294,6 +296,15 @@ class Router implements \Magento\Framework\App\RouterInterface
 			}
 		}
 
+		return $this;
+	}
+	
+	/**
+	 *
+	 * @return $this
+	**/
+	public function addExtraRoutesToQueue()
+	{
 		return $this;
 	}
 }

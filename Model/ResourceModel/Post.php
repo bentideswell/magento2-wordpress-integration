@@ -176,9 +176,9 @@ class Post extends AbstractMeta
 					$sqlFields[] = "'" . $token . "'";
 				}
 			}	
-	
+
 			if (count($sqlFields) > 0) {
-				$sqlColumns[$postType->getPostType()] = 'WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
+				$sqlColumns[$postType->getPostType()] = ' WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
 			}
 		}
 

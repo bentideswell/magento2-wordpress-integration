@@ -3,9 +3,15 @@
 namespace FishPig\WordPress\Model\Post;
 
 use FishPig\WordPress\App;
+use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Type extends Type\AbstractType
+class Type extends Type\AbstractType implements ViewableInterface
 {
+	/**
+	 *
+	**/
+	const ENTITY = 'wordpress_post_type';
+
 	/**
 	 * Cache of URI's for hierarchical post types
 	 *
@@ -108,7 +114,7 @@ class Type extends Type\AbstractType
 	 */
 	public function getUrl()
 	{
-		return $this->_wpUrlBuilder->getUrl($this->getArchiveSlug() . '/');
+		return $this->_app->getWpUrlBuilder()->getUrl($this->getArchiveSlug() . '/');
 	}
 	
 	/**
@@ -294,12 +300,26 @@ class Type extends Type\AbstractType
 	}
 	
 	/**
-	 * Determine whether this post type has an archive
-	 *
 	 * @return bool
 	 */
 	public function hasArchive()
 	{
 		return $this->getHasArchive() && $this->getHasArchive() !== '0';
+	}
+	
+	/**
+	 * @return string
+	**/
+	public function getPostType()
+	{
+		return $this->_getData('name');
+	}
+
+	/**
+	 * @return string
+	**/	
+	public function getPluralName()
+	{
+		return $this->getData('labels/name');
 	}
 }

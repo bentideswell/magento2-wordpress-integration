@@ -87,6 +87,11 @@ class App
 		$this->_themeHelper = $themeHelper;
 	}
 	
+	/**
+	 *
+	 *
+	 * @return void
+	**/
 	public function init()
 	{
 		return $this->_init();
@@ -306,32 +311,9 @@ class App
 	public function getPostType($key = null)
 	{
 		$this->_init();
-		
+
 		if (is_null($this->_postTypes)) {
-			if ($postTypes = $this->_config->getOption('fp_post_types')) {
-				$this->_postTypes = unserialize($postTypes);
-			}
-			else {
-				$this->_postTypes = array(
-					'post' => $this->_factory->getFactory('Post\Type')->create(),
-					'page' => $this->_factory->getFactory('Post\Type')->create(),
-				);
-				
-				$this->_postTypes['post']->addData(array(
-					'post_type' => 'post',
-					'rewrite' => array('slug' => $this->_config->getOption('permalink_structure')),
-					'taxonomies' => array('category', 'post_tag'),
-					'_builtin' => true,
-				));
-				
-				$this->_postTypes['page']->addData(array(
-					'post_type' => 'page',
-					'rewrite' => array('slug' => '%postname%/'),
-					'hierarchical' => true,
-					'taxonomies' => array(),
-					'_builtin' => true,
-				));
-			}
+			$this->_postTypes = $this->getAllPostTypes();
 		}
 		
 		if (is_null($key)) {
@@ -339,6 +321,33 @@ class App
 		}
 		
 		return isset($this->_postTypes[$key]) ? $this->_postTypes[$key]: false;
+	}
+	
+	public function getAllPostTypes()
+	{
+		$postTypes = array();
+		
+		$postTypes = array(
+			'post' => $this->_factory->getFactory('Post\Type')->create(),
+			'page' => $this->_factory->getFactory('Post\Type')->create(),
+		);
+		
+		$postTypes['post']->addData(array(
+			'post_type' => 'post',
+			'rewrite' => array('slug' => $this->_config->getOption('permalink_structure')),
+			'taxonomies' => array('category', 'post_tag'),
+			'_builtin' => true,
+		));
+		
+		$postTypes['page']->addData(array(
+			'post_type' => 'page',
+			'rewrite' => array('slug' => '%postname%/'),
+			'hierarchical' => true,
+			'taxonomies' => array(),
+			'_builtin' => true,
+		));
+		
+		return $postTypes;
 	}
 	
     /**
