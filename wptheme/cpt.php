@@ -155,6 +155,7 @@ class Fishpig_M2_PostTypesAndTaxonimes
 	}
 }
 
+if (function_exists('add_action')) {
 	/**
 	 * Setup object
 	 *
@@ -166,3 +167,4 @@ class Fishpig_M2_PostTypesAndTaxonimes
 	 *
 	 */
 	add_action('init', array($fpM2PTT, 'run'), 9999);
+}
