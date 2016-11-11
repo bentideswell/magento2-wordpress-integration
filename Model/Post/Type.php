@@ -312,7 +312,7 @@ class Type extends Type\AbstractType implements ViewableInterface
 	**/
 	public function getPostType()
 	{
-		return $this->_getData('name');
+		return $this->_getData('post_type') ? $this->_getData('post_type') : $this->_getData('name');
 	}
 
 	/**
