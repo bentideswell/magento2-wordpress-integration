@@ -18,6 +18,8 @@ You should also setup custom permalinks in the Settings > Permalinks section.
 #Install the Extension
 - Either download the files from GitHub or fork/clone this repo.
 - The files should be saved at app/code/FishPig/WordPress in your Magento 2 installation.
+- Either enable the module in the backend or using the command php bin/magento module:enable FishPig_WordPress
+- Clear the Magento cache
 - Login to the Magento Admin and select the WordPress menu option.
 - Enter 'wp' for the path configuration and save.
 
@@ -27,3 +29,10 @@ You should now see your blog at http://www.example.com/blog/
 You can and should install the Yoast SEO plugin in the WordPress Admin. This is a completely free WordPress plugin that gives you complete control over your blogs SEO data (page titles, meta tags, robots, canonicals etc). For this to work when integrated into Magento 2, you will need the following add-on extension:
 
 <a href="https://github.com/bentideswell/magento2-wordpress-integration-yoastseo" target="_blank">FishPig_WordPress_Yoast</a>
+
+#WordPress Integration Add-ons
+The following add-ons are currently available and more are on the way.
+
+- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/multisite/" target="_blank">FishPig_WordPress_Multisite</a>
+- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/root/" target="_blank">FishPig_WordPress_Root</a>
+- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/post-types-taxonomies/" target="_blank">FishPig_WordPress_PostTypeTaxonomy</a>
