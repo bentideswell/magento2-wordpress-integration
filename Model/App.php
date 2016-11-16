@@ -141,6 +141,8 @@ class App
 			$this->_state = false;
 #			echo sprintf('<h1>%s</h1><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());exit;
 		}
+		
+		return $this;
 	}
 
    /**
