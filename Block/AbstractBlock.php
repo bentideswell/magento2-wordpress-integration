@@ -23,7 +23,7 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     	array $data = []
     )
     {
-	    $this->_app = $wpContext->getApp();
+	    $this->_app = $wpContext->getApp()->init();
 	    $this->_config = $wpContext->getConfig();
 	    $this->_registry = $wpContext->getRegistry();
 	    $this->_wpUrlBuilder = $wpContext->getUrlBuilder();
