@@ -36,3 +36,21 @@ The following add-ons are currently available and more are on the way.
 - <a href="https://fishpig.co.uk/magento-2/wordpress-integration/multisite/" target="_blank">FishPig_WordPress_Multisite</a>
 - <a href="https://fishpig.co.uk/magento-2/wordpress-integration/root/" target="_blank">FishPig_WordPress_Root</a>
 - <a href="https://fishpig.co.uk/magento-2/wordpress-integration/post-types-taxonomies/" target="_blank">FishPig_WordPress_PostTypeTaxonomy</a>
+
+#Config for NGINX
+
+Please add this part to your Magento 2 NGINX config.
+```nginx
+		location ^~ /wp {
+		    root $MAGE_ROOT;
+		    index index.php index.html index.htm;
+		    try_files $uri $uri/ /wp/index.php;
+
+		    location ~ \.php {
+		        fastcgi_split_path_info ^(.*\.php)(.*)$;
+						fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+				    include        fastcgi_params;
+				    fastcgi_pass   fastcgi_backend;
+		    }
+		}
+```
