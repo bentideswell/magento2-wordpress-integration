@@ -35,10 +35,16 @@ class Url
 	 **/
 	public function getMagentoUrl()
 	{
-		return rtrim(
-				$this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK), 
-				'/'
-			);
+		/**
+		 * Add this dirty hack for get correct url.
+		 */
+		$url = str_ireplace(
+		    'index.php',
+		    '',
+		    $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK)
+		);
+
+		return rtrim($url, '/');
 	}
 	
 	/**
