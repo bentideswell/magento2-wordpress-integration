@@ -36,3 +36,7 @@ The following add-ons are currently available and more are on the way.
 - <a href="https://fishpig.co.uk/magento-2/wordpress-integration/multisite/" target="_blank">FishPig_WordPress_Multisite</a>
 - <a href="https://fishpig.co.uk/magento-2/wordpress-integration/root/" target="_blank">FishPig_WordPress_Root</a>
 - <a href="https://fishpig.co.uk/magento-2/wordpress-integration/post-types-taxonomies/" target="_blank">FishPig_WordPress_PostTypeTaxonomy</a>
+- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/visual-composer/" target="_blank">FishPig_WordPress_VisualComposer</a>
+- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/advanced-custom-fields/" target="_blank">FishPig_WordPress_ACF</a>
+
+For an up to date list, check the <a href="https://fishpig.co.uk/magento-2/wordpress-integration/add-ons/" target="_blank">Magento 2 WordPress Integration Add-ons page</a>.
