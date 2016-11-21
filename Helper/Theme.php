@@ -15,12 +15,34 @@ use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
 
 class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 {
+	/**
+	 * @var
+	**/
 	const THEME_NAME = 'fishpig';
+	
+	/**
+	 * @var
+	**/
 	const DS = DIRECTORY_SEPARATOR;
 	
+	/**
+	 * @var
+	**/
 	protected $_path = '';
+	
+	/**
+	 * @var
+	**/
 	protected $_config = null;
 	
+	/**
+	 * @var
+	**/
+	protected $_autoInstall = true;
+	
+	/**
+	 * @
+	**/
     public function __construct(Context $context, Config $config, ModuleDirReader $moduleDirReader)
     {
 		parent::__construct($context);
@@ -28,14 +50,20 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	    $this->_config = $config;
 	    $this->_moduleDirReader = $moduleDirReader;
     }
-    
+
+	/**
+	 * @
+	**/
 	public function setPath($path)
 	{
 		$this->_path = $path;
 		
 		return $this;
 	}
-	
+
+	/**
+	 * @
+	**/
 	public function validate()
 	{
 		$ds = DIRECTORY_SEPARATOR;
@@ -49,7 +77,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 		$targetDir = $this->getTargetDir();
 
 		if (!is_dir($targetDir)) {
-			if ((int)$this->_request->getParam('install-theme') !== 1) {
+			if (!$this->canAutoInstallTheme()) {
 				IntegrationException::throwException(
 					'The FishPig WordPress theme is not installed. <a href="?install-theme=1">Click here to install it</a>.'
 				);
@@ -98,24 +126,44 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 		return $this;
 	}
 	
+	/**
+	 * @
+	**/
 	public function isFileWriteable($file)
 	{
 		return is_file($file) && is_writeable($file) || !is_file($file) && is_writable(dirname($file));
 	}
 	
+	/**
+	 * @
+	**/
 	public function isActive()
 	{
 		return $this->_config->getOption('template') === self::THEME_NAME
 			&& $this->_config->getOption('stylesheet') === self::THEME_NAME;
 	}
 	
+	/**
+	 * @
+	**/
 	public function getTargetDir()
 	{
 		return $this->_path . self::DS . 'wp-content' . self::DS . 'themes' . self::DS . self::THEME_NAME;
 	}
 	
+	/**
+	 * @
+	**/
 	public function getSourceDir()
 	{
 		return $this->_moduleDirReader->getModuleDir('', 'FishPig_WordPress') . self::DS . 'wptheme';
+	}
+	
+	/**
+	 * @
+	**/
+	public function canAutoInstallTheme()
+	{
+		return (int)$this->_request->getParam('install-theme') === 1 || $this->_autoInstall === true;
 	}
 }
