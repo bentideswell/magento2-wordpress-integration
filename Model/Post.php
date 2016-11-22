@@ -25,6 +25,9 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected $_eventPrefix = 'wordpress_post';
 	protected $_eventObject = 'post';
 	
+	/**
+	 *
+	**/
 	public function _construct()
 	{
         $this->_init('FishPig\WordPress\Model\ResourceModel\Post');
@@ -32,21 +35,33 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
         return parent::_construct();
 	}
 
+	/**
+	 *
+	**/
 	public function getName()
 	{
 		return $this->_getData('post_title');
 	}
 	
+	/**
+	 *
+	**/
 	public function getMetaDescription()
 	{
 		return $this->getExcerpt(20);
 	}
 
+	/**
+	 *
+	**/
 	public function isType($type)
 	{
 		return $this->getPostType() === $type;
 	}
 	
+	/**
+	 *
+	**/
 	public function getTypeInstance()
 	{
 		if (!$this->hasTypeInstance() && $this->getPostType()) {
@@ -225,6 +240,9 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 				->addPostIdFilter($this->getId());
 	}
 	
+	/**
+	 *
+	**/
 	public function getTermCollectionAsString($taxonomy)
 	{
 		$key = 'term_collection_as_string_' . $taxonomy;

@@ -20,7 +20,7 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
         \FishPig\WordPress\Helper\Filter $filterHelper
 	)
 	{
-		$this->_app = $app;
+		$this->_app = $app->init();
 		$this->_resourceConnection = $resourceConnection;
 		$this->_config = $config;
 		$this->_urlBuilder = $urlBuilder;
