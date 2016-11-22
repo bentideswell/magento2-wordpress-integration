@@ -1,13 +1,17 @@
 {
-    "name": "FishPig_WordPress",
+    "name": "fishpig/module-wordpress",
     "description": "Magento WordPress Integration",
     "type": "magento2-module",
-    "extra": {
-        "map": [
-            [
-                "*",
-                "FishPig_WordPress"
-            ]
-        ]
-    }
+	"require": {
+		"php": "~5.5.0|~5.6.0|~7.0.0",
+		"magento\/product-community-edition": "^2.0.0"
+	},
+	"autoload": {
+		"files": [
+			"registration.php"
+		],
+		"psr-4": {
+			"FishPig\\WordPress\\": ""
+		}
+	}
 }
