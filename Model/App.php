@@ -158,8 +158,8 @@ class App
 		
 		$this->_path = false;
 		
-		if (!($path = trim($this->_config->getStoreConfigValue('wordpress/setup/path')))) {
-			return $this->_path;;
+		if (!($path = trim($this->getConfig()->getStoreConfigValue('wordpress/setup/path')))) {
+			return $this->_path;
 		}
 		
 		if (substr($path, 0, 1) !== '/') {
@@ -240,8 +240,8 @@ class App
 		if (!$this->_resource->isConnected()) {
 			$this->_resource->setTablePrefix($this->getWpConfigValue('DB_TABLE_PREFIX'))
 				->setMappingData(array(
-					'before_connect' => $this->_config->getDbTableMapping('before_connect'),
-					'after_connect' => $this->_config->getDbTableMapping('after_connect'),
+					'before_connect' => $this->getConfig()->getDbTableMapping('before_connect'),
+					'after_connect' => $this->getConfig()->getDbTableMapping('after_connect'),
 				))
 				->connect(array(
 			        'host' => $this->getWpConfigValue('DB_HOST'),
@@ -336,7 +336,7 @@ class App
 		
 		$postTypes['post']->addData(array(
 			'post_type' => 'post',
-			'rewrite' => array('slug' => $this->_config->getOption('permalink_structure')),
+			'rewrite' => array('slug' => $this->getConfig()->getOption('permalink_structure')),
 			'taxonomies' => array('category', 'post_tag'),
 			'_builtin' => true,
 		));
@@ -363,15 +363,15 @@ class App
 		$this->_init();
 		
 		if (is_null($this->_taxonomies)) {
-			if ($taxonomies = $this->_config->getOption('fp_taxonomies')) {
+			if ($taxonomies = $this->getConfig()->getOption('fp_taxonomies')) {
 				$this->_taxonomies = $axonomies;
 			}
 			else {
-				$blogPrefix = $this->isMultisite() && $this->_config->getBlogId() === 1;
+				$blogPrefix = $this->isMultisite() && $this->getConfig()->getBlogId() === 1;
 				
 				$bases = array(
-					'category' => $this->_config->getOption('category_base') ? $this->_config->getOption('category_base') : 'category',
-					'post_tag' => $this->_config->getOption('tag_base') ? $this->_config->getOption('tag_base') : 'tag',
+					'category' => $this->getConfig()->getOption('category_base') ? $this->getConfig()->getOption('category_base') : 'category',
+					'post_tag' => $this->getConfig()->getOption('tag_base') ? $this->getConfig()->getOption('tag_base') : 'tag',
 				);
 
 				foreach($bases as $baseType => $base) {
@@ -480,6 +480,8 @@ class App
 	**/
 	public function getConfig()
 	{
+		$this->_init();
+		
 		return $this->_config;
 	}
 	
@@ -490,8 +492,8 @@ class App
 	 */
 	public function getHomepagePageId()
 	{
-		if ($this->_config->getOption('show_on_front') === 'page') {
-			if ($pageId = $this->_config->getOption('page_on_front')) {
+		if ($this->getConfig()->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->getConfig()->getOption('page_on_front')) {
 				return $pageId;
 			}
 		}
@@ -564,6 +566,8 @@ class App
 	**/
 	public function getWpUrlBuilder()
 	{
+		$this->_init();
+		
 		return $this->_wpUrlBuilder;
 	}
 }
