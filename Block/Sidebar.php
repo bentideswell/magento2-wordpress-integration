@@ -141,87 +141,6 @@ class Sidebar extends AbstractBlock
 	public function getRealWidgetArea()
 	{
 		return 'sidebar-main';
-		if (!Mage::helper('wordpress')->isPluginEnabled('custom-sidebars/customsidebars.php')) {
-			return $this->getWidgetArea();
-		}
-
-		$settings = @unserialize(Mage::helper('wordpress')->getWpOption('cs_modifiable'));
-		
-		if (!$settings) {
-			return $this->getWidgetArea();
-		}
-
-		$handles = $this->getLayout()->getUpdate()->getHandles();
-
-		if (!isset($settings['modifiable']) || array_search($this->getWidgetArea(), $settings['modifiable']) === false) {
-			return $this->getWidgetArea();
-		}
-		
-		if ($post = Mage::registry('wordpress_post')) {
-			# Check post specific
-			if ($value = $post->getMetaValue('_cs_replacements')) {
-				$value = @unserialize($value);
-				
-				if (isset($value[$this->getWidgetArea()])) {
-					return $value[$this->getWidgetArea()];
-				}
-			}
-
-			# Single post by type
-			if ($widgetArea = $this->_getArrayValue($settings, 'post_type_single/' . $post->getPostType() . '/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}
-			
-			# Single post by category
-			if ($categoryIdResults = $post->getResource()->getParentTermsByPostId($post->getId(), $taxonomy = 'category')) {
-				$categoryIdResults = array_pop($categoryIdResults);
-
-				if (isset($categoryIdResults['category_ids'])) {
-					foreach(explode(',', $categoryIdResults['category_ids']) as $categoryId) {
-						if ($widgetArea = $this->_getArrayValue($settings, 'category_single/' . $categoryId . '/' . $this->getWidgetArea())) {
-							return $widgetArea;
-						}
-					}
-				}
-			}
-		}
-		else if ($postType = Mage::registry('wordpress_post_type')) {
-			if (isset($settings['post_type_archive']) && isset($settings['post_type_archive'][$postType->getPostType()]) && isset($settings['post_type_archive'][$postType->getPostType()][$this->getWidgetArea()])) {
-				return $settings['post_type_archive'][$postType->getPostType()][$this->getWidgetArea()];
-			}
-		}
-		else if ($term = Mage::registry('wordpress_term')) {
-			if ($widgetArea = $this->_getArrayValue($settings, $term->getTaxonomy() . '_archive/' . $term->getId() . '/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}
-		}
-		else if (in_array('wordpress_homepage', $handles)) {
-			if ($widgetArea = $this->_getArrayValue($settings, 'blog/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}	
-		}
-		else if ($author = Mage::registry('wordpress_author')) {
-			if ($widgetArea = $this->_getArrayValue($settings, 'authors/' . $author->getId() . '/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}
-		}
-		else if (in_array('wordpress_search_index', $handles)) {
-			if ($widgetArea = $this->_getArrayValue($settings, 'search/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}
-		}
-		else if (in_array('wordpress_archive_view', $handles)) {
-			if ($widgetArea = $this->_getArrayValue($settings, 'date/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}
-		}
-		else if (in_array('wordpress_post_tag_view', $handles)) {
-			if ($widgetArea = $this->_getArrayValue($settings, 'tags/' . $this->getWidgetArea())) {
-				return $widgetArea;
-			}
-		}
-		
-		return $this->getWidgetArea();
 	}
 	
 	/**
@@ -270,39 +189,5 @@ class Sidebar extends AbstractBlock
 	public function canDisplay()
 	{
 		return 1;
-	}
-	
-	/**
-	 * Set the widget area.
-	 * This allows for support for Simple Page Sidebars
-	 *
-	 * @param string $widgetArea
-	 * @return $this
-	 */
-	public function setWidgetArea($widgetArea)
-	{
-		if ($this->hasWidgetArea()) {
-			return $this;
-		}
-		
-		$this->setData('widget_area', $widgetArea);
-
-		$widgetArea = null;
-		
-		# Deprecated. Use Custom Sidebars plugin instead
-		if ($post = Mage::registry('wordpress_post')) {
-			$widgetArea = $post->getMetaValue('_sidebar_name');
-		}
-		else if ($page = Mage::registry('wordpress_page')) {
-			$widgetArea = $page->getMetaValue('_sidebar_name');
-		}
-		
-		if (!$widgetArea) {
-			return $this;
-		}
-
-		$widgetArea = 'page-sidebar-' . preg_replace('/([^a-z0-9_-]{1,})/', '', strtolower(trim($widgetArea)));
-		
-		return $this->setData('widget_area', $widgetArea);
 	}
 }

@@ -13,7 +13,7 @@
 		<legend class="legend"><?php echo __('Leave a Reply') ?></legend>
 		<?php if ($this->customerMustLogin()): ?>	
 			<div class="field note no-label"><?php echo __('Sorry, you must be logged in to post a comment.') ?></div>
-			<div class="field note no-label"><button class="button btn-login" type="button" onclick="setLocation('<?php echo $this->getLoginLink() ?>');"><span><span><?php echo __('Login') ?></span></span></button></div>
+			<div class="field note no-label"><button class="button btn-login" type="button" onclick="window.location.href=encodeURI('<?php echo $this->getLoginLink() ?>')"><span><span><?php echo __('Login') ?></span></span></button></div>
 		<?php else: ?>
 				<?php if (!$this->isCustomerLoggedIn()): ?>
 					<div class="field required">

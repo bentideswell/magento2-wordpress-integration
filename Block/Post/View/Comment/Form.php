@@ -56,7 +56,7 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	public function customerMustLogin()
 	{
 		if ($this->_config->getOption('comment_registration')) {
-			return !Mage::getSingleton('customer/session')->isLoggedIn();
+			return !$this->_config->isLoggedIn();
 		}
 		
 		return false;
@@ -70,8 +70,8 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	public function getLoginLink()
 	{
-		return Mage::getUrl('customer/account/login', array(
-			'referer' => $this->helper('core')->urlEncode($this->getPost()->getPermalink() . '#respond'),
+		return $this->getUrl('customer/account/login', array(
+			'referer' => base64_encode($this->getPost()->getPermalink() . '#respond'),
 		));
 	}
 
