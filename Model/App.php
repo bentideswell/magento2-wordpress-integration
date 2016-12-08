@@ -191,13 +191,13 @@ class App
 			$wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
 
 			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
-				throw new Exception('Unable to extract values from wp-config.php');
+				throw new \Exception('Unable to extract values from wp-config.php');
 			}
 
 			$this->_wpconfig = array_combine($matches[1], $matches[3]);
 			
 			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {
-				throw new Exception('Unable to extract values from wp-config.php');
+				throw new \Exception('Unable to extract values from wp-config.php');
 			}
 			
 			$temp = array_combine($matches[1], $matches[2]);
