@@ -16,6 +16,11 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 * @var string
 	**/
 	const ENTITY = 'wordpress_homepage';
+
+	/**
+	 * @var
+	**/    
+    protected $_blogPage = null;
     
 	/**
 	 *
@@ -34,6 +39,10 @@ class Homepage extends AbstractModel implements ViewableInterface
 	**/
 	public function getUrl()
 	{
+		if ($blogPage = $this->_getBlogPage()) {
+			return $blogPage->getUrl();	
+		}
+		
 		return $this->_wpUrlBuilder->getUrl();
 	}
 		
@@ -45,5 +54,32 @@ class Homepage extends AbstractModel implements ViewableInterface
 	public function getContent()
 	{
 		return $this->_viewHelper->getBlogDescription();
+	}
+	
+	/**
+	 *
+	 *
+	 * @return 
+	**/
+	protected function _getBlogPage()
+	{
+		if ($this->_blogPage !== null) {
+			return $this->_blogPage;
+			
+		}
+		
+		$this->_blogPage = false;
+
+		if ((int)$this->_app->getBlogPageId() > 0) {
+			$blogPage = $this->_factory->getFactory('Post')->create()->load(
+				$this->_app->getBlogPageId()
+			);
+			
+			if ($blogPage->getId()) {
+				$this->_blogPage = $blogPage;
+			}
+		}
+		
+		return $this->_blogPage;
 	}
 }

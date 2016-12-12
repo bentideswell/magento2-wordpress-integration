@@ -2,7 +2,6 @@
 /**
  * @
 **/
-
 namespace FishPig\WordPress\Controller\Post;
 
 class View extends \FishPig\WordPress\Controller\Action
@@ -20,7 +19,24 @@ class View extends \FishPig\WordPress\Controller\Action
 
 		return $post->getId() ? $post : false;
     }
-    
+
+	/**
+	 * @return
+	 **/
+	protected function _getForward()
+	{
+		if ($this->_getEntity() && (int)$this->_getEntity()->getId() === (int)$this->_app->getBlogPageId()) {
+			return $this->resultFactory
+				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+				->setModule('wordpress')
+				->setController('homepage')
+				->setParams(array('no_forward' => 1))
+				->forward('view');
+		}
+		
+		return parent::_getForward();
+	}
+	
     /**
 	  * Get the blog breadcrumbs
 	  *

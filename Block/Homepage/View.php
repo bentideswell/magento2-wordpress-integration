@@ -10,6 +10,9 @@ namespace FishPig\WordPress\Block\Homepage;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
+	/**
+	 * @return
+	 **/
 	public function getEntity()
 	{
 		return $this->_registry->registry('wordpress_homepage');

@@ -76,12 +76,20 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	 */
 	public function renderPost(\FishPig\WordPress\Model\Post $post)
 	{
+		if ($original = $this->_registry->registry($post::ENTITY)) {
+			$this->_registry->unregister($post::ENTITY);
+		}
+		
 		$this->_registry->register($post::ENTITY, $post);	
 
 		$html = $this->getChildHtml('renderer', false);
 
 		$this->_registry->unregister($post::ENTITY);
 		
+		if ($original) {
+			$this->_registry->register($post::ENTITY, $original);	
+		}
+
 		return $html;
 	}
 	

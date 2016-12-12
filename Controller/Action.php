@@ -38,17 +38,17 @@ abstract class Action extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
 	    \Magento\Framework\App\Action\Context $context, 
-	    \Magento\Framework\View\Result\PageFactory $resultPageFactory, 
+	    \Magento\Framework\Controller\ResultFactory $resultFactory, 
 	    \Magento\Framework\Registry $registry, 
 	    \FishPig\WordPress\Model\App $app,
 	    \FishPig\WordPress\Model\App\Factory $factory
 	   )
     {
-        $this->_resultPageFactory = $resultPageFactory;
+        $this->_resultFactory = $resultFactory;
 		$this->_registry = $registry;
 		$this->_app = $app;
 		$this->_factory = $factory;
-		
+        	
         parent::__construct($context);
     }	
 
@@ -60,8 +60,12 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     public function execute()
     {
 	    try {
-		    $this->_beforeExecute();
-
+			$this->_beforeExecute();
+			
+			if ($forward = $this->_getForward()) {
+				return $forward;
+			}
+			
 		    $this->_initLayout();
 
 		    $this->_afterExecute();
@@ -69,11 +73,16 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		    return $this->getPage();
 		}
 		catch (\Exception $e) {
-			echo 'Exception: ' . $e->getMessage();
+			echo 'Exception: ' . $e->getMessage() . '<br/><br/><pre>' . $e->getTraceAsString() . '</pre>';
 			exit;
 		}
     }
-    
+
+	protected function _getForward()
+	{
+		return false;
+	}
+	
 	protected function _beforeExecute()
 	{
 	    if (($entity = $this->_getEntity()) === false) {
@@ -162,7 +171,9 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	public function getPage()
 	{
 		if ($this->_resultPage === null) {
-			$this->_resultPage = $this->_resultPageFactory->create();
+			$this->_resultPage = $this->_resultFactory->create(
+				\Magento\Framework\Controller\ResultFactory::TYPE_PAGE
+			);
 		}
 		
 		return $this->_resultPage;

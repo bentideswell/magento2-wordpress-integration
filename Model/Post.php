@@ -25,6 +25,8 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected $_eventPrefix = 'wordpress_post';
 	protected $_eventObject = 'post';
 	
+	protected $_homepageModel = null;
+	
 	/**
 	 *
 	**/
@@ -542,8 +544,11 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		if (!$this->hasUrl()) {
 			$this->setUrl($this->getGuid());
-
-			if ($this->hasPermalink()) {
+			
+			if ($this->isHomepage()) {
+				$this->setUrl($this->_wpUrlBuilder->getUrl());
+			}
+			else if ($this->hasPermalink()) {
 				$this->setUrl($this->_wpUrlBuilder->getUrl(
 					$this->_urlEncode($this->_getData('permalink'))
 				));
@@ -688,5 +693,27 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getMetaTableObjectField()
 	{
 		return 'post_id';
+	}
+	
+	/**
+	 *
+	 * @return bool
+	**/
+	public function isHomepage()
+	{
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_app->getHomepagePageId();
+	}
+	
+	/**
+	 *
+	 * @return \FishPig\WordPress\Model\Homepage
+	**/
+	protected function _getHomepageModel()
+	{
+		if ($this->homepageModel === null) {
+			$this->homepageModel = $this->_factory->getFactory('Homepage')->create();
+		}
+		
+		return $this->homepageModel;
 	}
 }
