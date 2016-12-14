@@ -19,7 +19,7 @@ class InjectContent implements ObserverInterface
 	 **/
 	public function __construct(App $app, StoreManagerInterface $storeManager)
 	{
-		$this->_app = $app;
+		$this->_app = $app->init();
 		$this->_storeManager = $storeManager;
 	}
 	

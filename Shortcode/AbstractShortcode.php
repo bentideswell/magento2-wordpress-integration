@@ -19,6 +19,11 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	const EXPR_SHOTRCODE_CLOSE_TAG = '(\[\/{{shortcode}}[^\]]{0,}\])';
 	
 	/**
+	 * @var FishPig\WordPress\Model\App
+	**/
+	protected $_app;
+	
+	/**
 	 * @var Magento\Framework\View\Layout
 	**/
 	protected $_layout = null;
@@ -49,6 +54,7 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	 * Constructor
 	**/
     public function __construct(
+	    \FishPig\WordPress\Model\App $app,
 	    \FishPig\WordPress\Model\App\Factory $factory,
     	\Magento\Framework\View\Element\Context $context, 
     	array $data = []
@@ -56,6 +62,7 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
     {
 	    parent::__construct($data);
 		
+		$this->_app = $app;
 		$this->_factory = $factory;
 		$this->_layout = $context->getLayout();
 		$this->_cache = $context->getCache();
