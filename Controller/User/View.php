@@ -12,8 +12,8 @@ class View extends \FishPig\WordPress\Controller\Action
 	**/
     protected function _getEntity()
     {
-	    $object = $this->_factory->getFactory('User')->create()->load(
-	    	$this->_request->getParam('author'),
+	    $object = $this->getFactory('User')->create()->load(
+	    	$this->getRequest()->getParam('author'),
 	    	'user_login'
 	    );
 

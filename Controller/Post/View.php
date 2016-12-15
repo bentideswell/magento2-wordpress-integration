@@ -13,8 +13,8 @@ class View extends \FishPig\WordPress\Controller\Action
 	**/
     protected function _getEntity()
     {
-	    $post = $this->_factory->getFactory('Post')->create()->load(
-	    	$this->_request->getParam('id')
+	    $post = $this->getFactory('Post')->create()->load(
+	    	$this->getRequest()->getParam('id')
 	    );
 
 		return $post->getId() ? $post : false;
@@ -25,7 +25,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	 **/
 	protected function _getForward()
 	{
-		if ($this->_getEntity() && (int)$this->_getEntity()->getId() === (int)$this->_app->getBlogPageId()) {
+		if ($this->_getEntity() && (int)$this->_getEntity()->getId() === (int)$this->getApp()->getBlogPageId()) {
 			return $this->resultFactory
 				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
 				->setModule('wordpress')

@@ -9,7 +9,7 @@ class View extends \FishPig\WordPress\Controller\Action
 {
 	public function _getEntity()
 	{
-		return $this->_factory->getFactory('Search')->create();
+		return $this->getFactory('Search')->create();
 	}
 	
     /**

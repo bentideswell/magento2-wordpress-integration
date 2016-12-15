@@ -12,7 +12,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	**/
     protected function _getEntity()
     {
-	    $object = $this->_factory->getFactory('Term')->create()->load($this->_request->getParam('id'));
+	    $object = $this->getFactory('Term')->create()->load($this->getRequest()->getParam('id'));
 
 		return $object->getId() ? $object : false;
     }

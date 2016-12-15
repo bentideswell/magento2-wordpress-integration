@@ -9,21 +9,33 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	/**
 	 * @var 
 	**/
-	protected $_app = null;
+	protected $app = null;
 	
 	/**
 	 * @var 
 	**/
-	protected $_registry = null;
+	protected $registry = null;
 
 	/**
 	 * @var 
 	**/	
 	protected $_entity = null;
 	
-	protected $_resultPageFactory = null;
-	protected $_resultPage = null;
-	protected $_factory = null;
+	/**
+	 * @var 
+	**/	
+	protected $factory = null;
+
+	/**
+	 * @var 
+	**/	
+	protected $resultPage = null;
+	
+
+	/**
+	 * @var 
+	**/	
+	protected $entity = null;
 	
 	/**
 	 * @var 
@@ -38,16 +50,14 @@ abstract class Action extends \Magento\Framework\App\Action\Action
      */
     public function __construct(
 	    \Magento\Framework\App\Action\Context $context, 
-	    \Magento\Framework\Controller\ResultFactory $resultFactory, 
 	    \Magento\Framework\Registry $registry, 
 	    \FishPig\WordPress\Model\App $app,
 	    \FishPig\WordPress\Model\App\Factory $factory
 	   )
     {
-        $this->_resultFactory = $resultFactory;
-		$this->_registry = $registry;
-		$this->_app = $app;
-		$this->_factory = $factory;
+		$this->registry = $registry;
+		$this->app = $app;
+		$this->factory = $factory;
         	
         parent::__construct($context);
     }	
@@ -90,7 +100,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    }
 	    
 	    if ($entity !== null) {
-		    $this->_registry->register($entity::ENTITY, $entity);
+		    $this->registry->register($entity::ENTITY, $entity);
 		}
 
 		return $this;	
@@ -149,11 +159,11 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		    'home' => [
 			'label' => __('Home'),
 			'title' => __('Go to Home Page'),
-			'link' => $this->_app->getWpUrlBuilder()->getMagentoUrl()
+			'link' => $this->app->getWpUrlBuilder()->getMagentoUrl()
 		],
 		'blog' => [
 			'label' => __('Blog'),
-			'link' => $this->_app->getWpUrlBuilder()->getHomeUrl()
+			'link' => $this->app->getWpUrlBuilder()->getHomeUrl()
 		]];
     }
     
@@ -170,13 +180,13 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
 	public function getPage()
 	{
-		if ($this->_resultPage === null) {
-			$this->_resultPage = $this->_resultFactory->create(
+		if ($this->resultPage === null) {
+			$this->resultPage = $this->resultFactory->create(
 				\Magento\Framework\Controller\ResultFactory::TYPE_PAGE
 			);
 		}
 		
-		return $this->_resultPage;
+		return $this->resultPage;
 	}
 
 	/**
@@ -184,11 +194,19 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
 	public function getEntityObject()
     {
-	    if ($this->_entity !== null) {
-		    return $this->_entity;
+	    if ($this->entity !== null) {
+		    return $this->entity;
 	    }
 
-	    return $this->_entity = $this->_getEntity();
+	    return $this->entity = $this->_getEntity();
+    }
+    
+	/**
+	 * @var 
+	**/
+    public function getRegistry()
+    {
+	    return $this->registry;
     }
     
 	/**
@@ -196,7 +214,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
     protected function _getRegistry()
     {
-	    return $this->_registry;
+	    return $this->getRegistry();
     }
     
 	/**
@@ -204,6 +222,14 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
     public function getApp()
     {
-	    return $this->_app;
+	    return $this->app;
+    }
+    
+	/**
+	 * @var 
+	**/
+    public function getFactory($type)
+    {
+	    return $this->factory->getFactory($type);
     }
 }

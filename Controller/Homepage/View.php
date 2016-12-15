@@ -11,7 +11,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	 **/
 	protected function _getEntity()
 	{
-		return $this->_factory->getFactory('Homepage')->create();
+		return $this->getFactory('Homepage')->create();
 	}
 	
 	/**
@@ -19,7 +19,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	 **/
 	protected function _getForward()
 	{
-		if ($homepageId = (int)$this->_app->getHomepagePageId()) {
+		if ($homepageId = (int)$this->getApp()->getHomepagePageId()) {
 			if ((int)$this->getRequest()->getParam('no_forward') === 0) {
 				return $this->resultFactory
 					->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
