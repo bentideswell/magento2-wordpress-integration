@@ -32,4 +32,30 @@ class View extends \FishPig\WordPress\Controller\Action
 			]]
 		);
     }
+    
+    /**
+	 * @return array
+	**/
+    public function getLayoutHandles()
+    {
+	    $taxonomyType = $this->_getEntity()->getTaxonomyType();
+
+	    return array_merge(
+		    parent::getLayoutHandles(),
+		    array(
+			    'wordpress_term_view',
+				'wordpress_' . $taxonomyType . '_view',
+				'wordpress_' . $taxonomyType . '_view_' . $this->_getEntity()->getId(),
+		    )
+	    );
+    }
+    
+    /*
+	    		$this->_addCustomLayoutHandles(array(
+			'wordpress_post_list',
+			'wordpress_term_view',
+			'wordpress_' . $term->getTaxonomyType() . '_view',
+			'wordpress_' . $term->getTaxonomyType() . '_view_' . $term->getId(),
+		));
+		*/
 }

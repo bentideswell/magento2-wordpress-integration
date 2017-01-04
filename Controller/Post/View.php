@@ -61,4 +61,25 @@ class View extends \FishPig\WordPress\Controller\Action
 		
 		return $crumbs;
     }
+    
+    /**
+	 * @return array
+	**/
+    public function getLayoutHandles()
+    {
+	    $post = $this->_getEntity();
+	    $postType = $post->getPostType();
+	    
+		if ($post->getPostType() == 'revision' && $post->getParentPost()) {
+			$postType = $post->getParentPost()->getPostType();
+		}
+	    
+	    return array_merge(
+		    parent::getLayoutHandles(),
+		    array(
+				'wordpress_' . $postType . '_view',
+				'wordpress_' . $postType . '_view_' . $post->getId(),
+		    )
+	    );
+    }
 }
