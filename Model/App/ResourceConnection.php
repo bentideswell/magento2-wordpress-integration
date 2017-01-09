@@ -109,7 +109,7 @@ class ResourceConnection
 
 		return isset($this->_tables[$alias])
 			? $this->_tables[$alias]
-			: false;
+			: $this->getTablePrefix() . $alias;
 	}
 	
 	/**
