@@ -29,7 +29,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	/**
 	 * Retrieve the post that this comment is associated to
 	 *
-	 * @return Fishpig_Wordpress_Model_Post
+	 * @return \FishPig\WordPress\Model\Post
 	 */
 	public function getPost()
 	{

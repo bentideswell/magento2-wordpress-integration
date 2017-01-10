@@ -88,7 +88,7 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	/**
 	 * Retrieve the current post object
 	 *
-	 * @return null|Fishpig_Wordpress_Model_Post
+	 * @return null|\FishPig\WordPress\Model\Post
 	 */
 	public function getPost()
 	{

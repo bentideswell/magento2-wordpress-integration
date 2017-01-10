@@ -13,7 +13,7 @@ class Post extends \FishPig\WordPress\Block\AbstractBlock
 	/**
 	 * Retrieve the current post object
 	 *
-	 * @return null|Fishpig_Wordpress_Model_Post
+	 * @return null|\FishPig\WordPress\Model\Post
 	 */
 	public function getPost()
 	{
@@ -57,7 +57,7 @@ class Post extends \FishPig\WordPress\Block\AbstractBlock
 	/**
 	 * Set the post as the current post in all child blocks
 	 *
-	 * @param Fishpig_Wordpress_Model_Post $post
+	 * @param \FishPig\WordPress\Model\Post $post
 	 * @return $this
 	 */
 	protected function _prepareChildBlocks($rootBlock)

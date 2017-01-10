@@ -116,7 +116,7 @@ class Posts extends AbstractWidget
 	/**
 	 * Retrieve the category model used to filter the posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Post_Category|false
+	 * @return \FishPig\WordPress\Model\Term|false
 	 */
 	public function getCategory()
 	{
@@ -231,10 +231,10 @@ class Posts extends AbstractWidget
 	/**
 	 * Retrieve a string indicating the number of comments
 	 *
-	 * @param Fishpig_Wordpress_Model_Post $post
+	 * @param \FishPig\WordPress\Model\Post $post
 	 * @return string
 	 */
-	public function getCommentCountString(Fishpig_Wordpress_Model_Post $post)
+	public function getCommentCountString(\FishPig\WordPress\Model\Post $post)
 	{
 		if ($post->getCommentCount() == 0) {
 			return __('No Comments');

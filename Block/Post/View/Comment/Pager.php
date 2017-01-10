@@ -61,7 +61,7 @@ class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager
 	/**
 	 * Retrieve the post object
 	 *
-	 * @return Fishpig_Wordpress_Model_Post
+	 * @return \FishPig\WordPress\Model\Post
 	 */
 	public function getPost()
 	{
