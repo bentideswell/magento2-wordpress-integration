@@ -220,7 +220,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 #		if (($pageId = $this->_getHomepagePageId()) !== false) {
 #			return $this->addRoute('', '*/post/view', array('id' => $pageId, 'post_type' => 'page', 'home' => 1));
 #		}
-	
+
 		$this->addRoute('', '*/homepage/view');
 		
 		return $this;

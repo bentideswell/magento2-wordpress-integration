@@ -46,6 +46,23 @@ class Url
 	}
 	
 	/**
+	 * Get the Magento base URL without the store code
+	 *
+	 * @return string
+	 **/
+	public function getMagentoBaseUrl()
+	{
+		return rtrim(
+			str_ireplace(
+				'index.php',
+				'',
+				$this->_config->getStoreConfigValue('web/unsecure/base_url')
+			),
+			'/'
+		);
+	}
+
+	/**
 	 * Get the blog route
 	 *
 	 * @return string

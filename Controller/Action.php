@@ -75,7 +75,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 			if ($forward = $this->_getForward()) {
 				return $forward;
 			}
-			
+
 		    $this->_initLayout();
 
 		    $this->_afterExecute();
