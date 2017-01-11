@@ -38,7 +38,6 @@ class Search extends AbstractWidget
 	public function getSearchTerm()
 	{
 		return '';
-		return $this->helper('wordpress/router')->getSearchTerm();
 	}
 	
 	/**

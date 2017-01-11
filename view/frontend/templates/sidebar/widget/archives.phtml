@@ -18,8 +18,8 @@
 			<ul id="wp-archive-list">
 			<?php if ($this->getDropdown()): ?>
 				<li class="item">
-					<select name="blog-archive-dropdown" onchange="setLocation(this.value);">
-							<option value="<?php echo $this->helper('wordpress')->getUrl() ?>"><?php echo __('Select Month') ?></option>
+					<select name="blog-archive-dropdown" onchange="window.location.href=this.value">
+							<option value="#"><?php echo __('Select Month') ?></option>
 						<?php foreach($archives as $archive): ?>
 							<option value="<?php echo $archive->getUrl() ?>"<?php if ($this->isCurrentArchive($archive)): ?> selected="selected"<?php endif; ?>>
 								<?php echo $this->translateDate($archive->getName()) ?> <?php if ($this->getCount()): ?> (<?php echo $archive->getPostCount() ?>)<?php endif; ?>

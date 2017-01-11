@@ -103,28 +103,7 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
 		}
 		
 		return $this;
-	}
-	
-	/**
-	 * Retrieve the current page URL
-	 *
-	 * @return string
-	 */
-	public function _getPageUrl()
-	{
-		if (!$this->hasData('_page_url')) {
-			$url = $this->helper('core/url')->getCurrentUrl();
-			
-			if (strpos($url, '?') !== false) {
-				$url = substr($url, 0, strpos($url, '?'));
-			}
-			
-			$this->setData('_page_url', $url);
-		}
-
-		return $this->_getData('_page_url');
-	}
-	
+	}	
 	
 	/**
 	 * Retrieve the current page title
