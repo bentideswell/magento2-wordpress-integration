@@ -15,13 +15,11 @@ class oEmbed extends AbstractShortcode
 	**/
     public function __construct(
 	    \FishPig\WordPress\Model\App $app,
-	    \FishPig\WordPress\Model\App\Factory $factory,
     	\Magento\Framework\View\Element\Context $context, 
-	    \Magento\Framework\HTTP\Client\Curl $curl,
-    	array $data = []
+	    \Magento\Framework\HTTP\Client\Curl $curl
     )
     {
-	    parent::__construct($app, $factory, $context, $data);
+	    parent::__construct($app, $context);
 		
 		$this->_curl = $curl;
     }

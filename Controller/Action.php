@@ -55,6 +55,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    \FishPig\WordPress\Model\App\Factory $factory
 	   )
     {
+	    
 		$this->registry = $registry;
 		$this->app = $app;
 		$this->factory = $factory;

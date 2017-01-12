@@ -42,7 +42,7 @@ class InjectContent implements ObserverInterface
 			$baseUrl = $this->_app->getWpUrlBuilder()->getSiteurl();
 			$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 	
-			array_unshift($content, sprintf($jsTemplate, $baseUrl . 'wp-includes/js/underscore.min.js?ver=1.6.0'));
+			array_unshift($content, sprintf($jsTemplate, $baseUrl . 'wp-includes/js/underscore.min.js?ver=1.8.3'));
 			array_unshift($content, sprintf($jsTemplate, $baseUrl . 'wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'));
 			array_unshift($content, sprintf($jsTemplate, $baseUrl . 'wp-includes/js/jquery/jquery.js?ver=1.12.4'));
 	

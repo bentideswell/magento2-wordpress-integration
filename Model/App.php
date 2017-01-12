@@ -570,4 +570,12 @@ class App
 		
 		return $this->_wpUrlBuilder;
 	}
+	
+	/**
+	 * @return \FishPig\WordPress\Model\App\Factory
+	**/
+	public function getFactory()
+	{
+		return $this->_factory;
+	}
 }

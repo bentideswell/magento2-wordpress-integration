@@ -45,7 +45,6 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			foreach($shortcodes as $alias => $class) {
 				$string = (string)\Magento\Framework\App\ObjectManager::getInstance()
 					->get($class)
-						->setApp($this->_app)
 						->setObject($object)
 						->setValue($string)
 						->process();

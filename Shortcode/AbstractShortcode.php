@@ -8,7 +8,7 @@
 
 namespace FishPig\WordPress\Shortcode;
 
-abstract class AbstractShortcode extends \Magento\Framework\DataObject
+abstract class AbstractShortcode
 {
 	/**
 	 * Regular expression patterns for identifying shortcodes and parameters
@@ -18,6 +18,11 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	const EXPR_SHOTRCODE_OPEN_TAG = '(\[{{shortcode}}[^\]]{0,}\])';
 	const EXPR_SHOTRCODE_CLOSE_TAG = '(\[\/{{shortcode}}[^\]]{0,}\])';
 	
+    /**
+     * @var array
+     */
+    protected $_data = [];
+    
 	/**
 	 * @var FishPig\WordPress\Model\App
 	**/
@@ -55,15 +60,11 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	**/
     public function __construct(
 	    \FishPig\WordPress\Model\App $app,
-	    \FishPig\WordPress\Model\App\Factory $factory,
-    	\Magento\Framework\View\Element\Context $context, 
-    	array $data = []
+    	\Magento\Framework\View\Element\Context $context
     )
     {
-	    parent::__construct($data);
-		
 		$this->_app = $app;
-		$this->_factory = $factory;
+		$this->_factory = $app->getFactory();
 		$this->_layout = $context->getLayout();
 		$this->_cache = $context->getCache();
 		$this->_cacheState = $context->getCacheState();
@@ -76,13 +77,7 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	**/
 	public function process()
 	{
-		try {
-			$this->_process();
-		}	
-		catch (\Exception $e) {
-			echo $e->getMessage();
-			exit;
-		}
+		$this->_process();
 		
 		return (string)$this->getValue();
 	}
@@ -181,5 +176,47 @@ abstract class AbstractShortcode extends \Magento\Framework\DataObject
 	public function getPostId()
 	{
 		return $this->getObject() ? (int)$this->getObject()->getId() : false;
+	}
+
+	/**
+	 * Set the target object
+	 *
+	 * @param mixed $object
+	 * @return $this
+	**/
+	public function setObject($object)
+	{
+		$this->_data['object'] = $object;
+		
+		return $this;
+	}
+	
+	/**
+	 * @return mixed
+	**/
+	public function getObject()
+	{
+		return isset($this->_data['object']) ? $this->_data['object'] : false;
+	}
+	
+	/**
+	 * Set the target value
+	 *
+	 * @param mixed value
+	 * @return $this
+	**/
+	public function setValue($value)
+	{
+		$this->_data['value'] = $value;
+		
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	**/	
+	public function getValue()
+	{
+		return isset($this->_data['value']) ? $this->_data['value'] : false;
 	}
 }
