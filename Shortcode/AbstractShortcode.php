@@ -219,4 +219,12 @@ abstract class AbstractShortcode
 	{
 		return isset($this->_data['value']) ? $this->_data['value'] : false;
 	}
+
+	/**
+	 * @return string
+	**/	
+	public function getShortcodeIdKey()
+	{
+		return '';
+	}
 }
