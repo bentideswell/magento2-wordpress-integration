@@ -183,7 +183,6 @@ class App
 	{
 		if (is_null($this->_wpconfig)) {
 			$wpConfig = file_get_contents($this->getPath() . '/wp-config.php');
-			$wpConfig = file_get_contents(getcwd() . '/test.php');
 
 			# Cleanup comments
 			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
