@@ -132,7 +132,7 @@ class App
 			
 			// Plugins can use this to check other things
 			$this->performOtherChecks();
-			
+
 			// Mark the state as true. This means all is well
 			$this->_state = true;
 		}
@@ -181,9 +181,11 @@ class App
 	 */
 	public function getWpConfigValue($key = null)
 	{
+		throw new \Exception('tr');
 		if (is_null($this->_wpconfig)) {
 			$wpConfig = file_get_contents($this->getPath() . '/wp-config.php');
-			
+			$wpConfig = file_get_contents(getcwd() . '/test.php');
+
 			# Cleanup comments
 			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
 			$wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
@@ -196,21 +198,19 @@ class App
 
 			$this->_wpconfig = array_combine($matches[1], $matches[3]);
 			
-			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {
-				throw new \Exception('Unable to extract values from wp-config.php');
-			}
-			
-			$temp = array_combine($matches[1], $matches[2]);
-			
-			foreach($temp as $k => $v) {
-				if ($v === 'true') {
-					$this->_wpconfig[$k] = true;
-				}
-				else if ($v === 'false') {
-					$this->_wpconfig[$k] = false;
-				}
-				else {
-					$this->_wpconfig[$k] = $v;
+			if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {			
+				$temp = array_combine($matches[1], $matches[2]);
+				
+				foreach($temp as $k => $v) {
+					if ($v === 'true') {
+						$this->_wpconfig[$k] = true;
+					}
+					else if ($v === 'false') {
+						$this->_wpconfig[$k] = false;
+					}
+					else {
+						$this->_wpconfig[$k] = $v;
+					}
 				}
 			}
 
@@ -221,8 +221,7 @@ class App
 				$this->_wpconfig['DB_TABLE_PREFIX'] = 'wp_';
 			}
 		}
-		
-#		print_r($this->_wpconfig);exit;
+
 		if (is_null($key)) {
 			return $this->_wpconfig;
 		}
