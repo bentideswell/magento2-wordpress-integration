@@ -100,7 +100,7 @@ class Url
 	 **/
 	public function getHomeUrl()
 	{
-		return $this->_config->getOption('home');
+		return rtrim($this->_config->getOption('home'), '/');
 	}
 
 	/**
