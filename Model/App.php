@@ -181,7 +181,6 @@ class App
 	 */
 	public function getWpConfigValue($key = null)
 	{
-		throw new \Exception('tr');
 		if (is_null($this->_wpconfig)) {
 			$wpConfig = file_get_contents($this->getPath() . '/wp-config.php');
 			$wpConfig = file_get_contents(getcwd() . '/test.php');
