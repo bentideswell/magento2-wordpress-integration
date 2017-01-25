@@ -156,16 +156,21 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	 **/
     protected function _getBreadcrumbs()
     {
-	    return [
+	    $crumbs = [
 		    'home' => [
 			'label' => __('Home'),
 			'title' => __('Go to Home Page'),
 			'link' => $this->app->getWpUrlBuilder()->getMagentoUrl()
-		],
-		'blog' => [
-			'label' => __('Blog'),
-			'link' => $this->app->getWpUrlBuilder()->getHomeUrl()
 		]];
+		
+		if (!$this->app->isRoot()) {
+			$crumbs['blog'] = [
+				'label' => __('Blog'),
+				'link' => $this->app->getWpUrlBuilder()->getHomeUrl()
+			];
+		}
+		
+		return $crumbs;
     }
     
     /**
