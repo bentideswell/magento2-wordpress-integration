@@ -47,7 +47,8 @@ class InjectContent implements ObserverInterface
 	
 			$baseUrl = $this->_app->getWpUrlBuilder()->getSiteurl();
 			$jsTemplate = '<script type="text/javascript" src="%s"></script>';
-	
+			$DS = DIRECTORY_SEPARATOR;
+			
 			$content = implode("\n", $content);
 			
 			$scripts = array(
@@ -83,8 +84,10 @@ class InjectContent implements ObserverInterface
 
 						// Check whether the script supports AMD
 						if (strpos($scriptContent, 'define.amd') !== false) {
-							$newScriptFile = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . md5($externalScriptUrlFull) . '.js';
-							$newScriptUrl = $this ->_storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . basename($newScriptFile);
+							$newScriptFile = $this->directoryList->getPath('media') . $DS . 'css' . $DS . md5($externalScriptUrlFull) . '.js';
+							$newScriptUrl = $this ->_storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'css/' . basename($newScriptFile);
+							
+							@mkdir(dirname($newScriptFile));
 							
 							// Only write data if new script doesn't exist or local file has been updated
 							if (!is_file($newScriptFile) || filemtime($localScriptFile) > filemtime($newScriptFile)) {

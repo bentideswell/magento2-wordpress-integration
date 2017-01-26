@@ -163,7 +163,12 @@ class App
 		}
 		
 		if (substr($path, 0, 1) !== '/') {
-			$path = BP . '/' . $path;
+			if (is_dir(BP . '/' . $path)) {
+				$path = BP . '/' . $path;
+			}
+			else if (is_dir(BP . '/pub/' . $path)) {
+				$path = BP . '/pub/' . $path;
+			}
 		}
 		
 		if (!is_dir($path) || !is_file($path . '/wp-config.php')) {
