@@ -90,7 +90,7 @@ class Url
 	 **/
 	public function getSiteurl($extra = '')
 	{
-		return rtrim($this->_config->getOption('siteurl'), '/') . '/' . ltrim($extra, '/');
+		return rtrim(rtrim($this->_config->getOption('siteurl'), '/') . '/' . ltrim($extra, '/'), '/');
 	}
 	
 	/**

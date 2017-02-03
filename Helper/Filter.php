@@ -41,6 +41,8 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	**/
 	public function process($string, $object = null)
 	{
+		$string = $this->addParagraphTagsToString($string);
+
 		if ($shortcodes = $this->_config->getShortcodes()) {
 			foreach($shortcodes as $alias => $class) {
 				$string = (string)\Magento\Framework\App\ObjectManager::getInstance()
@@ -50,8 +52,6 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 						->process();
 			}
 		}
-
-		$string = $this->addParagraphTagsToString($string);
 
 		return $string;
 	}
@@ -70,9 +70,13 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			'wp_html_split',
 			'get_html_split_regex',
 		))) {
-			return fp_wpautop($string);
+			$string = fp_wpautop($string);
+			
+			// Fix shortcodes that get P'd off!
+			$string = preg_replace('/<p>\[/', '[', $string);
+			$string = preg_replace('/\]<\/p>/', ']', $string);
 		}
-		
+
 		return $string;
 	}
 	
