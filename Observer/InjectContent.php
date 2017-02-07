@@ -50,6 +50,11 @@ class InjectContent implements ObserverInterface
 
 			$content = implode("\n", $content);
 			
+			if (trim($content) === '') {
+				return;
+			}
+
+			$scripts = array();
 			$scriptRegex = '<script.*<\/script>';
 			$regexes = array(
 				'<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $scriptRegex . '[\s]{0,}<!\[endif\]-->',
@@ -65,61 +70,72 @@ class InjectContent implements ObserverInterface
 					}
 				}
 			}
-
-			// Used to set paths for each JS file in requireJs
-			$requireJsPaths = array(
-				'jquery-migrate' => $this->_app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
-			);
 			
-			// JS Template for requireJs. This changes through foreach below
-			$requireJsTemplate = "require(['jquery', 'jquery-migrate', 'underscore'], function(jQuery, jQueryMigrate, _) {\n  %s\n});";
-			
-			// Used to set correct tabs
-			$level = 1;
-			
-			foreach($scripts as $skey => $script) {
-				$tabs = str_repeat("  ", $level);
+			if (count($scripts) > 0) {
+				// Used to set paths for each JS file in requireJs
+				$requireJsPaths = array(
+					'jquery-migrate' => $this->_app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
+				);
 				
-				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-					$originalScriptUrl = $matches[1];
+				// JS Template for requireJs. This changes through foreach below
+#				$requireJsTemplate = "require(['jquery', 'jquery-migrate', 'underscore'], function(jQuery, jQueryMigrate, _) {\n  %s\n});";
+
+				$requireJsTemplate = "require(['jquery'], function(jQuery) {
+	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
+		%s
+	});				
+});";
+				
+				// Used to set correct tabs
+				$level = 1;
+				
+				foreach($scripts as $skey => $script) {
+					$tabs = str_repeat("  ", $level);
 					
-					$newScriptUrl = $this->_getRealJsUrl($originalScriptUrl); // Script might be rewritten
-					$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-					$requireJsPaths[$requireJsAlias] = $newScriptUrl; // Used to set paths
-					
-					$requireJsTemplate = sprintf($requireJsTemplate, $tabs. "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . "%s\n" . $tabs . "});" . "\n");
-					$level++;
-					
-					$scripts[$skey] = str_replace($originalScriptUrl, $newScriptUrl, $script);
+					if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+						$originalScriptUrl = $matches[1];
+						
+						$newScriptUrl = $this->_getRealJsUrl($originalScriptUrl); // Script might be rewritten
+						$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
+						$requireJsPaths[$requireJsAlias] = $newScriptUrl; // Used to set paths
+						
+						$requireJsTemplate = sprintf($requireJsTemplate, $tabs. "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . "%s\n" . $tabs . "});" . "\n");
+						$level++;
+						
+						$scripts[$skey] = str_replace($originalScriptUrl, $newScriptUrl, $script);
+					}
+					else {
+						// Inline JS
+						$requireJsTemplate = sprintf($requireJsTemplate, strip_tags($script) . "\n%s\n");
+					}
 				}
-				else {
-					// Inline JS
-					$requireJsTemplate = sprintf($requireJsTemplate, strip_tags($script) . "\n%s\n");
+	
+				// Remove final template variable placeholder
+				$requireJsTemplate = str_replace('%s', '', $requireJsTemplate);
+				
+				// Start of paths template
+				$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
+					
+				// Loop through paths, remove .js and set
+				foreach($requireJsPaths as $alias => $path) {
+					if (substr($path, -3) === '.js') {
+						$path = substr($path, 0, -3);
+					}
+	
+					$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
 				}
+					
+				$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
+				
+				// Final JS including wrapping script tag
+				$requireJsFinal = sprintf("<script type=\"text/javascript\">" . $requireJsConfig . "%s</script>", $requireJsTemplate);
+				
+				// Add the final requireJS code to the $content array
+				$content .= $requireJsFinal;
 			}
-
-			// Remove final template variable placeholder
-			$requireJsTemplate = str_replace('%s', '', $requireJsTemplate);
 			
-			// Start of paths template
-			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
-				
-			// Loop through paths, remove .js and set
-			foreach($requireJsPaths as $alias => $path) {
-				if (substr($path, -3) === '.js') {
-					$path = substr($path, 0, -3);
-				}
-
-				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
-			}
-				
-			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
-			
-			// Final JS including wrapping script tag
-			$requireJsFinal = sprintf("<script type=\"text/javascript\">" . $requireJsConfig . "%s</script>", $requireJsTemplate);
-
 			// Fingers crossed and let's go!
-			$observer->getEvent()->getResponse()->setBody(str_replace('</body>', $content . $requireJsFinal . '</body>', $bodyHtml));
+			$observer->getEvent()->getResponse()->setBody(str_replace('</body>', $content . '</body>', $bodyHtml));
 		}
 		
 		return $this;
@@ -161,8 +177,8 @@ class InjectContent implements ObserverInterface
 
 			// Check whether the script supports AMD
 			if (strpos($scriptContent, 'define.amd') !== false) {
-				$newScriptFile = $this->directoryList->getPath('media') . $DS . 'css' . $DS . md5($externalScriptUrlFull) . '.js';
-				$newScriptUrl = $this ->_storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'css/' . basename($newScriptFile);
+				$newScriptFile = $this->directoryList->getPath('media') . $DS . 'js' . $DS . md5($externalScriptUrlFull) . '.js';
+				$newScriptUrl = $this ->_storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 				
 				@mkdir(dirname($newScriptFile));
 				
