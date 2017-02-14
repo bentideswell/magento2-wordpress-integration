@@ -716,4 +716,30 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		
 		return $this->homepageModel;
 	}
+	
+	/**
+	 * Get the post format string (eg. video or aside)
+	 *
+	 * @return string
+	**/
+	public function getPostFormat()
+	{
+		if (!$this->hasPostFormat()) {
+			$this->setPostFormat('');
+
+			$formats = $this->_factory->getFactory('Term')->create()->getCollection()
+				->addTaxonomyFilter('post_format')
+				->setPageSize(1)
+				->addObjectIdFilter($this->getId())
+				->load();
+
+			if (count($formats) > 0) {
+				$this->setPostFormat(
+					str_replace('post-format-', '', $formats->getFirstItem()->getSlug())
+				);
+			}
+		}
+		
+		return $this->_getData('post_format');
+	}
 }
