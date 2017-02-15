@@ -59,6 +59,11 @@ class View extends \FishPig\WordPress\Controller\Action
 			];
 		}
 		
+		$crumbs['post'] = [
+				'label' => __($this->_getEntity()->getName()),
+				'title' => __($this->_getEntity()->getName())
+		];
+
 		return $crumbs;
     }
     

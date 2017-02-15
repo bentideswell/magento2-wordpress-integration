@@ -41,8 +41,16 @@ class View extends \FishPig\WordPress\Controller\Action
     protected function _getBreadcrumbs()
     {
 	    $crumbs = parent::_getBreadcrumbs();
-			
-		unset($crumbs['blog']['link']);
+		
+		if ($this->app->isRoot()) {
+			$crumbs['blog'] = [
+				'label' => __($this->_getEntity()->getName()),
+				'title' => __($this->_getEntity()->getName())
+			];
+		}
+		else {
+			unset($crumbs['blog']['link']);
+		}
 		
 		return $crumbs;
     }
