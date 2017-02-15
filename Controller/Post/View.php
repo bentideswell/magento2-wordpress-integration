@@ -58,7 +58,14 @@ class View extends \FishPig\WordPress\Controller\Action
 				'link' => $postType->getUrl(),
 			];
 		}
-		
+
+		else {
+			$crumbs['post'] = [
+				'label' => __($this->_getEntity()->getName()),
+				'title' => __($this->_getEntity()->getName())
+			];
+		}
+
 		return $crumbs;
     }
     
