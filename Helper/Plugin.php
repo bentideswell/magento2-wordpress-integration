@@ -73,14 +73,14 @@ class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 		if ($db = $this->_wpResource->getConnection()) {
 			if ($plugins = $this->_config->getOption('active_plugins')) {
 				$db->update(
-					$this->_wpResource->getTable('wordpress/option'),
+					$this->_wpResource->getTable('wordpress_option'),
 					array('option_value' => serialize(array_merge(unserialize($plugins), array($plugin)))),
 					$db->quoteInto('option_name=?', 'active_plugins')
 				);
 			}
 			else {
 				$db->insert(
-					$this->_wpResource->getTable('wordpress/option'),
+					$this->_wpResource->getTable('wordpress_option'),
 					array(
 						'option_name' => 'active_plugins',
 						'option_value' => serialize(array($plugin))
