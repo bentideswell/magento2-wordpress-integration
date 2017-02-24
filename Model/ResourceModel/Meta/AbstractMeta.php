@@ -55,10 +55,10 @@ abstract class AbstractMeta extends \FishPig\WordPress\Model\ResourceModel\Abstr
 		);
 						
 		if (($metaId = $this->getMetaValue($object, $metaKey, $object->getMetaPrimaryKeyField())) !== false) {
-			$this->_getWriteAdapter()->update($object->getMetaTable(), $metaData, $object->getMetaPrimaryKeyField() . '=' . $metaId);
+			$this->getConnection()->update($object->getMetaTable(), $metaData, $object->getMetaPrimaryKeyField() . '=' . $metaId);
 		}
 		else {
-			$this->_getWriteAdapter()->insert($object->getMetaTable(), $metaData);
+			$this->getConnection()->insert($object->getMetaTable(), $metaData);
 		}
 	}
 	
