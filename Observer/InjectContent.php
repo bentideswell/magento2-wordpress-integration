@@ -16,6 +16,11 @@ use \Magento\Framework\App\Filesystem\DirectoryList;
 class InjectContent implements ObserverInterface
 {
 	/**
+	 *
+	**/
+	const TMPL_TAG = '__FPTAG823434__';
+	
+	/**
 	  * @return
 	 **/
 	public function __construct(App $app, StoreManagerInterface $storeManager, DirectoryList $directoryList)
@@ -78,14 +83,12 @@ class InjectContent implements ObserverInterface
 				);
 				
 				// JS Template for requireJs. This changes through foreach below
-#				$requireJsTemplate = "require(['jquery', 'jquery-migrate', 'underscore'], function(jQuery, jQueryMigrate, _) {\n  %s\n});";
-
 				$requireJsTemplate = "require(['jquery'], function(jQuery) {
 	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
-		%s
+		" . self::TMPL_TAG . "
 	});				
 });";
-				
+
 				// Used to set correct tabs
 				$level = 1;
 				
@@ -99,19 +102,23 @@ class InjectContent implements ObserverInterface
 						$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
 						$requireJsPaths[$requireJsAlias] = $newScriptUrl; // Used to set paths
 						
-						$requireJsTemplate = sprintf($requireJsTemplate, $tabs. "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . "%s\n" . $tabs . "});" . "\n");
+						$requireJsTemplate = str_replace(
+							self::TMPL_TAG,
+							$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . "\n" . $tabs . "});" . "\n",
+							$requireJsTemplate
+						);
+						
 						$level++;
 						
 						$scripts[$skey] = str_replace($originalScriptUrl, $newScriptUrl, $script);
 					}
 					else {
-						// Inline JS
-						$requireJsTemplate = sprintf($requireJsTemplate, strip_tags($script) . "\n%s\n");
+						$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
 					}
 				}
 	
 				// Remove final template variable placeholder
-				$requireJsTemplate = str_replace('%s', '', $requireJsTemplate);
+				$requireJsTemplate = str_replace(self::TMPL_TAG, '', $requireJsTemplate);
 				
 				// Start of paths template
 				$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
@@ -128,7 +135,7 @@ class InjectContent implements ObserverInterface
 				$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
 				
 				// Final JS including wrapping script tag
-				$requireJsFinal = sprintf("<script type=\"text/javascript\">" . $requireJsConfig . "%s</script>", $requireJsTemplate);
+				$requireJsFinal = "<script type=\"text/javascript\">" . $requireJsConfig . $requireJsTemplate . "</script>";
 				
 				// Add the final requireJS code to the $content array
 				$content .= $requireJsFinal;
@@ -139,6 +146,24 @@ class InjectContent implements ObserverInterface
 		}
 		
 		return $this;
+	}
+	
+	/**
+	 *
+	 * @param string $s
+	 * @return string
+	**/
+	protected function _stripScriptTags($s)
+	{
+		return preg_replace(
+			'/<\/script>$/',
+			'',
+			preg_replace(
+				'/^<script[^>]{0,}>/',
+				'',
+				trim($s)
+			)
+		);
 	}
 	
 	/**
