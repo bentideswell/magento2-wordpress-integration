@@ -35,6 +35,8 @@ function fishpig_widgets_init() {
 
 add_action( 'widgets_init', 'fishpig_widgets_init' );
 
+remove_filter('template_redirect', 'redirect_canonical');
+
 @include(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
 
 /* Include local.php*/
