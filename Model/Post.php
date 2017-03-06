@@ -129,7 +129,14 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 				$this->setPostExcerpt($this->_getPostTeaser(true));
 			}
 			else if ((int)$maxWords > 1) {
-				$excerpt = explode(' ', trim(strip_tags(str_replace(array("\n", '  ', '  '), ' ', $this->_getData('post_content')))));
+				$excerpt = strip_tags($this->_getData('post_content'));
+				$excerpt = preg_replace('/[\s]{1,}/', ' ', $excerpt);
+				
+				if (strpos($excerpt, '[') !== false) {
+					$excerpt = preg_replace('/\[[^\]]{1,}\]/', '', $excerpt);
+				}
+
+				$excerpt = explode(' ', trim($excerpt));
 
 				if (count($excerpt) > $maxWords) {
 					$excerpt = rtrim(implode(' ', array_slice($excerpt, 0, $maxWords)), "!@£$%^&*()_-+=[{]};:'\",<.>/? ") . '...';
@@ -137,7 +144,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 				else {
 					$excerpt = implode(' ', $excerpt);
 				}
-				
+
 				return $excerpt;
 			}
 			else {
