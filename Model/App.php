@@ -283,7 +283,7 @@ class App
 		else {
 			if (strpos($this->_wpUrlBuilder->getHomeUrl(), $magentoUrl) !== 0) {
 				IntegrationException::throwException(
-					sprintf('Your home URL (%s) is invalid.', $this->_wpUrlBuilder->getHomeUrl())
+					sprintf('Your home URL (%s) is invalid as it does not start with the Magento base URL (%s).', $this->_wpUrlBuilder->getHomeUrl(), $magentoUrl)
 				);
 			}
 			
