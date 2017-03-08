@@ -50,6 +50,7 @@ class Url
 	 *
 	 * @return string
 	 **/
+	/*
 	public function getMagentoBaseUrl()
 	{
 		return rtrim(
@@ -61,7 +62,8 @@ class Url
 			'/'
 		);
 	}
-
+	*/
+	
 	/**
 	 * Get the blog route
 	 *

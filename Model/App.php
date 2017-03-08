@@ -265,7 +265,7 @@ class App
 	**/
 	protected function _validateIntegration()
 	{
-		$magentoUrl = $this->_wpUrlBuilder->getMagentoBaseUrl();
+		$magentoUrl = $this->_wpUrlBuilder->getMagentoUrl();
 
 		if ($this->_wpUrlBuilder->getHomeUrl() === $this->_wpUrlBuilder->getSiteurl()) {
 			IntegrationException::throwException(
