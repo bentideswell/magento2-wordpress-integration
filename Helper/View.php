@@ -35,6 +35,10 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 
 	public function applyPageConfigData($pageConfig, $entity)
 	{
+		if (!$pageConfig || !$entity) {
+			return $this;
+		}
+		
         $pageConfig->getTitle()->set($entity->getPageTitle());
         $pageConfig->setDescription($entity->getMetaDescription());	
         $pageConfig->setKeywords($entity->getMetaKeywords());
