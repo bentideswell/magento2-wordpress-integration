@@ -124,35 +124,31 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function getExcerpt($maxWords = 0)
 	{
-		if (!$this->getData('post_excerpt')) {
-			if ($this->hasMoreTag()) {
-				$this->setPostExcerpt($this->_getPostTeaser(true));
-			}
-			else if ((int)$maxWords > 1) {
-				$excerpt = strip_tags($this->_getData('post_content'));
-				$excerpt = preg_replace('/[\s]{1,}/', ' ', $excerpt);
-				
-				if (strpos($excerpt, '[') !== false) {
-					$excerpt = preg_replace('/\[[^\]]{1,}\]/', '', $excerpt);
-				}
-
-				$excerpt = explode(' ', trim($excerpt));
-
-				if (count($excerpt) > $maxWords) {
-					$excerpt = rtrim(implode(' ', array_slice($excerpt, 0, $maxWords)), "!@£$%^&*()_-+=[{]};:'\",<.>/? ") . '...';
-				}
-				else {
-					$excerpt = implode(' ', $excerpt);
-				}
-
-				return $excerpt;
+		if ($this->getData('post_excerpt')) {
+			return $this->getData('post_excerpt');
+		}
+		
+		if ($this->hasMoreTag() && ($excerpt = $this->_getPostTeaser(true))) {
+			return $excerpt;
+		}
+		
+		if ((int)$maxWords > 1) {
+			$excerpt = trim(strip_tags(str_replace(array("\n", '  ', '  '), ' ', $this->_getData('post_content'))));
+			$excerpt = preg_replace('/\[[\/]{0,1}[^\]]{1,}\]/', '', $excerpt);
+			$excerpt = preg_replace('/[\s]{1,}/', " ", $excerpt);
+			$excerpt = explode(' ', $excerpt);
+			
+			if (count($excerpt) > $maxWords) {
+				$excerpt = rtrim(implode(' ', array_slice($excerpt, 0, $maxWords)), "!@£$%^&*()_-+=[{]};:'\",<.>/? ") . '...';
 			}
 			else {
-				$this->setPostExcerpt($this->getPostContent('excerpt'));
+				$excerpt = implode(' ', $excerpt);
 			}
+			
+			return $excerpt;
 		}
 
-		return $this->getData('post_excerpt');
+		return $this->getContent('excerpt');
 	}
 	
 	/**
@@ -174,7 +170,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected function _getPostTeaser($includeSuffix = true)
 	{
 		if ($this->hasMoreTag()) {
-			$content = $this->getPostContent('excerpt');
+			$content = $this->getContent('excerpt');
 
 			if (preg_match('/<!--more (.*)-->/', $content, $matches)) {
 				$anchor = $matches[1];
