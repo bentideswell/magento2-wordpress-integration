@@ -95,6 +95,12 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 		return trim($this->getData('rewrite/slug'), '/');
 	}
 	
+	/**
+	 * Change the 'slug' value
+	 *
+	 * @param string $slug
+	 * @return $this
+	**/
 	public function setSlug($slug)
 	{
 		if (!isset($this->_data['rewrite'])) {

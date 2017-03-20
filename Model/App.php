@@ -366,7 +366,7 @@ class App
 		
 		if (is_null($this->_taxonomies)) {
 			if ($taxonomies = $this->getConfig()->getOption('fp_taxonomies')) {
-				$this->_taxonomies = $axonomies;
+				$this->_taxonomies = $taxonomies;
 			}
 			else {
 				$blogPrefix = $this->isMultisite() && $this->getConfig()->getBlogId() === 1;
@@ -418,9 +418,12 @@ class App
 					'_builtin' => true,
 				));
 			}
-	
-	/*
-		TODO
+			
+			foreach($this->_taxonomies as $tax) {
+				$tax->getSlug();
+			}
+			
+			/*
 			if (isset($this->_taxonomies['category'])) {
 				$helper = Mage::helper('wordpress');
 				
