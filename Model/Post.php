@@ -184,7 +184,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$excerpt = trim(substr($content, 0, strpos($content, $split)));
 
 			if ($excerpt !== '' && $includeSuffix && $anchor) {
-				$excerpt .= sprintf(' <a href="%s" class="read-more">%s</a>', $this->getPermalink(), $anchor);
+				$excerpt .= sprintf(' <a href="%s" class="read-more">%s</a>', $this->getUrl(), $anchor);
 			}
 			
 			return $excerpt;
