@@ -4,7 +4,9 @@
 **/
 ?>
 <?php if ($post = $this->getPost()): ?>
-	<div class="post-readmore">
-		<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getName()) ?>"><?php echo __($this->getReadMoreText()) ?></a>
-	</div>
+	<?php if (!$post->hasMoreTag()): ?>
+		<div class="post-readmore">
+			<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getName()) ?>"><?php echo __($this->getReadMoreText()) ?></a>
+		</div>
+	<?php endif; ?>
 <?php endif; ?>
