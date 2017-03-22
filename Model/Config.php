@@ -19,28 +19,38 @@ class Config
 		\FishPig\WordPress\Model\Config\Reader $reader,
 		\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
 		\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
-		\Magento\Customer\Model\Session $customerSession
+		\Magento\Customer\Model\Session $customerSession,
+		\Magento\Store\Model\StoreManagerInterface $storeManager
 	)
 	{
 		$this->_reader = $reader;
 		$this->_scopeConfig = $scopeConfig;
 		$this->_resource = $resourceConnection;
 		$this->_customerSession = $customerSession;
+		$this->_storeManager = $storeManager;
 	}	
 	
+	/**
+	 * @return string
+	**/
     public function getStoreConfigValue($key)
     {
 	    return $this->_scopeConfig->getValue(
 	    	$key,
-	    	\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+	    	\Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+	    	$this->_storeManager->getStore()->getId()
 	    );
     }
     
+	/**
+	 * @return string
+	**/
     public function getStoreConfigFlag($key)
     {
 	    return (int)$this->_scopeConfig->getValue(
 	    	$key,
-	    	\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+	    	\Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+	    	$this->_storeManager->getStore()->getId()
 	    ) === 1;
     }
     
