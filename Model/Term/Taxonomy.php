@@ -15,7 +15,7 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 		if ($uri && $this->getSlug() && strpos($uri, $this->getSlug()) === false) {
 			return false;
 		}
-		
+
 		return $this->getAllUris();
 	}
 	
@@ -123,5 +123,10 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 		return $this->_factory->getFactory('Term')->create()->getCollection()
 			->addTaxonomyFilter($this->getTaxonomyType())
 			->addPostIdFilter($post->getId());
+	}
+	
+	public function getTaxonomyType()
+	{
+		return $this->getData('taxonomy_type') ? $this->getData('taxonomy_type') : $this->getData('name');
 	}
 }

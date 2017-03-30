@@ -33,6 +33,9 @@ class Router implements \Magento\Framework\App\RouterInterface
 	 */
 	protected $_routes = array();
 	
+	/**
+	 * @var
+	 */
 	protected $_postResourceFactory = null;
 	
     /**

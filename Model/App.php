@@ -365,78 +365,11 @@ class App
 		$this->_init();
 		
 		if (is_null($this->_taxonomies)) {
-			if ($taxonomies = $this->getConfig()->getOption('fp_taxonomies')) {
-				$this->_taxonomies = $taxonomies;
-			}
-			else {
-				$blogPrefix = $this->isMultisite() && $this->getConfig()->getBlogId() === 1;
-				
-				$bases = array(
-					'category' => $this->getConfig()->getOption('category_base') ? $this->getConfig()->getOption('category_base') : 'category',
-					'post_tag' => $this->getConfig()->getOption('tag_base') ? $this->getConfig()->getOption('tag_base') : 'tag',
-				);
-
-				foreach($bases as $baseType => $base) {
-					if ($blogPrefix && $base && strpos($base, '/blog') === 0) {
-						$bases[$baseType] = substr($base, strlen('/blog'));	
-					}
-				}
-
-				$this->_taxonomies = array(
-					'category' => $this->_factory->getFactory('Term\Taxonomy')->create(),
-					'post_tag' => $this->_factory->getFactory('Term\Taxonomy')->create()
-				);
-				
-				$this->_taxonomies['category']->addData(array(
-					'type' => 'category',
-					'taxonomy_type' => 'category',
-					'labels' => array(
-						'name' => 'Categories',
-						'singular_name' => 'Category',
-					),
-					'public' => true,
-					'hierarchical' => true,
-					'rewrite' => array(
-						'hierarchical' => true,
-						'slug' => $bases['category'],
-					),
-					'_builtin' => true,
-				));
-				
-				$this->_taxonomies['post_tag']->addData(array(
-					'type' => 'post_tag',
-					'taxonomy_type' => 'post_tag',
-					'labels' => array(
-						'name' => 'Tags',
-						'singular_name' => 'Tag',
-					),
-					'public' => true,
-					'hierarchical' => false,
-					'rewrite' => array(
-						'slug' => $bases['post_tag'],
-					),
-					'_builtin' => true,
-				));
-			}
+			$this->_taxonomies = $this->getAllTaxonomies();
 			
 			foreach($this->_taxonomies as $tax) {
 				$tax->getSlug();
 			}
-			
-			/*
-			if (isset($this->_taxonomies['category'])) {
-				$helper = Mage::helper('wordpress');
-				
-				$canRemoveCategoryPrefix = $helper->isPluginEnabled('wp-no-category-base/no-category-base.php')
-					|| $helper->isPluginEnabled('wp-remove-category-base/wp-remove-category-base.php')
-					|| $helper->isPluginEnabled('remove-category-url/remove-category-url.php')
-					|| Mage::helper('wp_addon_wordpressseo')->canRemoveCategoryBase();
-				
-				if ($canRemoveCategoryPrefix) {
-					$this->_taxonomies['category']->setSlug('');
-				}
-			}
-			*/
 		}
 		
 		if (is_null($key)) {
@@ -444,6 +377,67 @@ class App
 		}
 		
 		return isset($this->_taxonomies[$key]) ? $this->_taxonomies[$key] : false;
+	}
+	
+	/**
+	 * Get all of the taxonomies
+	 *
+	 * @return array
+	 **/
+	public function getAllTaxonomies()
+	{
+		$this->_init();
+
+		$blogPrefix = $this->isMultisite() && $this->getConfig()->getBlogId() === 1;
+		
+		$bases = array(
+			'category' => $this->getConfig()->getOption('category_base') ? $this->getConfig()->getOption('category_base') : 'category',
+			'post_tag' => $this->getConfig()->getOption('tag_base') ? $this->getConfig()->getOption('tag_base') : 'tag',
+		);
+
+		foreach($bases as $baseType => $base) {
+			if ($blogPrefix && $base && strpos($base, '/blog') === 0) {
+				$bases[$baseType] = substr($base, strlen('/blog'));	
+			}
+		}
+
+		$taxonomies = array(
+			'category' => $this->_factory->getFactory('Term\Taxonomy')->create(),
+			'post_tag' => $this->_factory->getFactory('Term\Taxonomy')->create()
+		);
+		
+		$taxonomies['category']->addData(array(
+			'type' => 'category',
+			'taxonomy_type' => 'category',
+			'labels' => array(
+				'name' => 'Categories',
+				'singular_name' => 'Category',
+			),
+			'public' => true,
+			'hierarchical' => true,
+			'rewrite' => array(
+				'hierarchical' => true,
+				'slug' => $bases['category'],
+			),
+			'_builtin' => true,
+		));
+		
+		$taxonomies['post_tag']->addData(array(
+			'type' => 'post_tag',
+			'taxonomy_type' => 'post_tag',
+			'labels' => array(
+				'name' => 'Tags',
+				'singular_name' => 'Tag',
+			),
+			'public' => true,
+			'hierarchical' => false,
+			'rewrite' => array(
+				'slug' => $bases['post_tag'],
+			),
+			'_builtin' => true,
+		));
+
+		return $taxonomies;
 	}
 	
 	/**
