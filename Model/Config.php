@@ -246,4 +246,12 @@ class Config
     {
 	    return $this->_reader;
     }
+    
+    /**
+	 * @return string
+	 **/
+    public function getLocaleCode()
+    {
+	    return $this->_storeManager->getStore()->getLocaleCode();
+    }
 }
