@@ -75,16 +75,23 @@ class View extends \FishPig\WordPress\Controller\Action
 	    $post = $this->_getEntity();
 	    $postType = $post->getPostType();
 	    
-		if ($post->getPostType() == 'revision' && $post->getParentPost()) {
-			$postType = $post->getParentPost()->getPostType();
-		}
-	    
-	    return array_merge(
-		    parent::getLayoutHandles(),
-		    array(
-				'wordpress_' . $postType . '_view',
-				'wordpress_' . $postType . '_view_' . $post->getId(),
-		    )
-	    );
+        if ($post->getPostType() == 'revision' && $post->getParentPost()) {
+            $postType = $post->getParentPost()->getPostType();
+            $template = $post->getParentPost()->getMetaValue('_wp_page_template');
+        } else {
+            $template = $post->getMetaValue('_wp_page_template');
+        }
+
+        if (strpos($template, 'full-width') !== false) {
+            $this->getPage()->getConfig()->setPageLayout('1column');
+        }
+
+        return array_merge(
+            parent::getLayoutHandles(),
+            array(
+                'wordpress_' . $postType . '_view',
+                'wordpress_' . $postType . '_view_' . $post->getId(),
+            )
+        );
     }
 }
