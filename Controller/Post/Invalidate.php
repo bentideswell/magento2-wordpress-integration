@@ -69,14 +69,14 @@ class Invalidate extends \Magento\Framework\App\Action\Action
 	 */
 	protected function invalidateCache()
 	{
+		$postId = $this->getRequest()->getParam('id');
+
 		$nonce = $this->getRequest()->getParam('nonce');
-		if (!$this->verifyNonce($nonce)) {
+		if (!$this->verifyNonce($nonce, 'invalidate_' . $postId)) {
 			return false;
 		}
 
-		$post = $this->factory->getFactory('Post')->create()->load(
-			$this->getRequest()->getParam('id')
-		);
+		$post = $this->factory->getFactory('Post')->create()->load($postId);
 		if (!$post) {
 			return false;
 		}
@@ -90,7 +90,7 @@ class Invalidate extends \Magento\Framework\App\Action\Action
 	/**
 	 * Validate given nonce
 	 */
-	protected function verifyNonce($nonce)
+	protected function verifyNonce($nonce, $action)
 	{
 		$salt = $this->app->getConfig()->getOption('fishpig_salt');
 		if (!$salt) {
@@ -100,12 +100,12 @@ class Invalidate extends \Magento\Framework\App\Action\Action
 		$nonce_tick = ceil(time() / ( 86400 / 2 ));
 
 		// 0-12 hours
-		if (substr(hash_hmac('sha256', $nonce_tick . '|fishpig|invalidate', $salt), -12, 10) == $nonce) {
+		if (substr(hash_hmac('sha256', $nonce_tick . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
 			return true;
 		}
 
 		// 12-24 hours
-		if (substr(hash_hmac('sha256', ($nonce_tick - 1) . '|fishpig|invalidate', $salt), -12, 10) == $nonce) {
+		if (substr(hash_hmac('sha256', ($nonce_tick - 1) . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
 			return true;
 		}
 

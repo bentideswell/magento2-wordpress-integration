@@ -50,7 +50,9 @@ function fishpig_invalidate_cache( $post_id ) {
 
 	$nonce_tick = ceil(time() / ( 86400 / 2 ));
 
-	$nonce = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|invalidate', $salt ), -12, 10 );
+	$action = 'invalidate_' . $post_id;
+
+	$nonce = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|' . $action, $salt ), -12, 10 );
 
 	file_get_contents( home_url( '/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce ) );
 }
