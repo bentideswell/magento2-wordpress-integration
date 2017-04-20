@@ -8,7 +8,8 @@
 
 namespace FishPig\WordPress\Block;
 
-class Post extends \FishPig\WordPress\Block\AbstractBlock
+class Post extends \FishPig\WordPress\Block\AbstractBlock implements
+	\Magento\Framework\DataObject\IdentityInterface
 {
 	/**
 	 * Retrieve the current post object
@@ -97,5 +98,15 @@ class Post extends \FishPig\WordPress\Block\AbstractBlock
 	protected function _getBlockForPostPrepare()
 	{
 		return $this;
+	}
+
+	/**
+	 * Return identifiers for produced content
+	 *
+	 * @return array
+	 */
+	public function getIdentities()
+	{
+		return $this->getPost() ? $this->getPost()->getIdentities() : [];
 	}
 }

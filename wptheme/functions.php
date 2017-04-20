@@ -35,6 +35,28 @@ function fishpig_widgets_init() {
 
 add_action( 'widgets_init', 'fishpig_widgets_init' );
 
+function fishpig_invalidate_cache( $post_id ) {
+	// If this is just a revision, don't do anything
+	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+
+	// Make an invalidation call to Magento
+	$salt = get_option( 'fishpig_salt' );
+	if (!$salt) {
+		$salt = wp_generate_password( 64, true, true );
+		update_option( 'fishpig_salt', $salt );
+	}
+
+	$nonce_tick = ceil(time() / ( 86400 / 2 ));
+
+	$nonce = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|invalidate', $salt ), -12, 10 );
+
+	file_get_contents( home_url( '/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce ) );
+}
+
+add_action( 'save_post', 'fishpig_invalidate_cache' );
+
 remove_filter('template_redirect', 'redirect_canonical');
 
 add_filter('preview_post_link', 'fishpig_preview_post_link', 10, 2);
