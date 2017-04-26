@@ -90,7 +90,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 			// This block was probably included directly via PHP
 			// Fall back to post/list/renderer/default.phtml
 			$html = $this->getLayout()->createBlock('FishPig\WordPress\Block\Post')
-				->setTemplate('post/list/renderer/default.phtml')
+				->setTemplate($this->getRendererTemplate() ? $this->getRendererTemplate() : 'post/list/renderer/default.phtml')
 				->setPost($post)
 				->toHtml();
 		}
