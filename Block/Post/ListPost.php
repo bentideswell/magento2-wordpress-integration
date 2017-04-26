@@ -153,4 +153,16 @@ class ListPost extends \FishPig\WordPress\Block\Post
 		
 		return $this;
 	}
+	
+	/**
+	 *
+	**/
+	protected function _beforeToHtml()
+	{
+		if (!$this->getTemplate()) {
+			$this->setTemplate('post/list.phtml');
+		}
+		
+		return parent::_beforeToHtml();
+	}
 }
