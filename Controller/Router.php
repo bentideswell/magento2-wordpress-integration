@@ -46,13 +46,15 @@ class Router implements \Magento\Framework\App\RouterInterface
     	\Magento\Framework\App\ActionFactory $actionFactory, 	
     	\FishPig\WordPress\Model\App $app,
     	\FishPig\WordPress\Model\App\Url $urlBuilder,
-    	\FishPig\WordPress\Model\ResourceModel\PostFactory $postResourceFactory
+    	\FishPig\WordPress\Model\ResourceModel\PostFactory $postResourceFactory,
+    	\Magento\Framework\App\Request\Http $request
     )
     {
         $this->actionFactory = $actionFactory;
         $this->_app = $app;
         $this->_wpUrlBuilder = $urlBuilder;
         $this->_postResourceFactory = $postResourceFactory;
+        $this->request = $request;
     }
 
     /**
@@ -152,6 +154,14 @@ class Router implements \Magento\Framework\App\RouterInterface
 						if (isset($data['params']['__redirect_to'])) {
 							header('Location: ' . $data['params']['__redirect_to']);
 							exit;	
+						}
+
+						if ($this->request->getParam('preview') === 'true') {
+							$data['path']['controller'] = 'post';
+							$data['path']['action'] = 'preview';
+							$data['params'] = array(
+								'p' => (int)$this->request->getParam('p')
+							);
 						}
 
 						return $data;

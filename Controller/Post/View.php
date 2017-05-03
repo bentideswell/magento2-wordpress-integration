@@ -75,10 +75,11 @@ class View extends \FishPig\WordPress\Controller\Action
 	    $post = $this->_getEntity();
 	    $postType = $post->getPostType();
 	    
-        if ($post->getPostType() == 'revision' && $post->getParentPost()) {
+        if ($postType == 'revision' && $post->getParentPost()) {
             $postType = $post->getParentPost()->getPostType();
             $template = $post->getParentPost()->getMetaValue('_wp_page_template');
-        } else {
+        }
+        else {
             $template = $post->getMetaValue('_wp_page_template');
         }
 
