@@ -37,6 +37,7 @@ class Preview extends PostView
 			'p',
 			'preview_id',
 			'id',
+			'page_id'
 		);
 		
 		foreach($keysToTry as $key) {
