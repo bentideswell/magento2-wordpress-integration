@@ -18,6 +18,11 @@ class Homepage extends AbstractModel implements ViewableInterface
 	const ENTITY = 'wordpress_homepage';
 
 	/**
+	 * @const string
+	*/
+	const CACHE_TAG = 'wordpress_homepage';
+	
+	/**
 	 * @var
 	**/    
     protected $_blogPage = null;

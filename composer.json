@@ -2,7 +2,7 @@
     "name": "fishpig/module-wordpress",
     "description": "Magento WordPress Integration",
     "type": "magento2-module",
-    "version": "1.0.0.60",
+    "version": "1.0.0.61",
 	"require": {
 		"php": "~5.5.0|~5.6.0|~7.0.0",
 		"magento\/product-community-edition": "^2.0.0"

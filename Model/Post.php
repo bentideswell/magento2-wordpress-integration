@@ -16,6 +16,11 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 *
 	**/
 	const ENTITY = 'wordpress_post';
+
+	/**
+	 * @const string
+	*/
+	const CACHE_TAG = 'wordpress_post';
 	
 	/**
 	 * Event data

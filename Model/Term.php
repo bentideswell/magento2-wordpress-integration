@@ -12,8 +12,16 @@ use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
 {
+	/**
+	 *
+	**/
 	const ENTITY = 'wordpress_term';
-	
+
+	/**
+	 * @const string
+	*/
+	const CACHE_TAG = 'wordpress_term';
+
 	/**
 	 * Event data
 	 *

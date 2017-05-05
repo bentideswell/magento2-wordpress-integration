@@ -12,7 +12,15 @@ use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements ViewableInterface
 {
+	/**
+	 *
+	**/
 	const ENTITY = 'wordpress_user';
+
+	/**
+	 * @const string
+	*/
+	const CACHE_TAG = 'wordpress_user';
 
 	/**
 	 * Event information

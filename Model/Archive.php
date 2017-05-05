@@ -12,13 +12,27 @@ use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Archive extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
 {
+	/**
+	 *
+	**/
 	const ENTITY = 'wordpress_archive';
-	
+
+	/**
+	 * @const string
+	*/
+	const CACHE_TAG = 'wordpress_archive';
+
+	/**
+	 *
+	**/
 	public function _construct()
 	{
 		$this->_init('\FishPig\WordPress\Model\ResourceModel\Archive');
 	}
-	
+
+	/**
+	 *
+	**/	
 	public function getName()
 	{
 		return 'Archives: ' . $this->_getData('name');
