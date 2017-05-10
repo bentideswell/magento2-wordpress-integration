@@ -104,7 +104,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 	{
 		$filename = null;
 		
-		if ($type == null) {
+		if ($type == null || $type == 'full') {
 			$filename = basename($this->getFile());
 		}
 		else {
