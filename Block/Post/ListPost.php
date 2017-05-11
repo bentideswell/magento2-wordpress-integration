@@ -82,7 +82,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 		
 		$this->_registry->register($post::ENTITY, $post);	
 
-		if ($this->getChild('renderer')) {
+		if ($this->getChildHtml('renderer')) {
 			$html = $this->getChildHtml('renderer', false);
 		}
 		else {
