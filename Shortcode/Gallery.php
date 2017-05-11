@@ -36,7 +36,7 @@ class Gallery extends AbstractShortcode
 				}
 				
 				if ($params->getSize()) {
-					$params->setSize('thumbnail');
+					$params->setSize($params->getSize());
 				}
 				
 				if (!$params->getLink()) {
