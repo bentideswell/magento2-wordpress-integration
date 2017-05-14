@@ -82,8 +82,8 @@ class ListPost extends \FishPig\WordPress\Block\Post
 		
 		$this->_registry->register($post::ENTITY, $post);	
 
-		if ($this->getChild('renderer')) {
-			$html = $this->getChildHtml('renderer', false);
+		if ($html = $this->getChildHtml('renderer', false)) {
+			// Do nothing as we have generated the HTML from the render block above
 		}
 		else {
 			// No renderer child block set

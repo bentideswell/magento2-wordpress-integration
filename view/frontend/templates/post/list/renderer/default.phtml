@@ -17,7 +17,7 @@
 					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><img src="<?php echo $featuredImage->getAvailableImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/></a>
 				</div>
 			<?php endif; ?>
-			<div class="post-excerpt"><?php echo $post->getPostExcerpt(60) ?></div>
+			<div class="post-excerpt"><?php echo $post->getExcerpt(60) ?></div>
 		</div>
 		<?php echo $this->getMetaHtml() ?>
 	</div>
