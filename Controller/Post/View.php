@@ -82,16 +82,20 @@ class View extends \FishPig\WordPress\Controller\Action
             $template = $post->getMetaValue('_wp_page_template');
         }
 
-        if (strpos($template, 'full-width') !== false) {
-            $this->getPage()->getConfig()->setPageLayout('1column');
-        }
+		$layoutHandles = array(
+			'wordpress_' . $postType . '_view',
+			'wordpress_' . $postType . '_view_' . $post->getId(),
+		);
 
-        return array_merge(
-            parent::getLayoutHandles(),
-            array(
-                'wordpress_' . $postType . '_view',
-                'wordpress_' . $postType . '_view_' . $post->getId(),
-            )
+		if (strpos($template, 'full-width') !== false) {
+			$this->getPage()->getConfig()->setPageLayout('1column');
+			$layoutHandles[] = 'wordpress_' . $postType . '_full-width';
+			$layoutHandles[] = 'wordpress_' . $postType . '_full-width_' . $post->getId();
+		}
+
+		return array_merge(
+			parent::getLayoutHandles(),
+			$layoutHandles
         );
     }
 }
