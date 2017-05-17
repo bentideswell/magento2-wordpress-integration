@@ -72,7 +72,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	**/
     public function getLayoutHandles()
     {
-	    $post = $this->_getEntity();
+	    $post = $this->getEntityObject();
 	    $postType = $post->getPostType();
 	    
         if ($post->getPostType() == 'revision' && $post->getParentPost()) {
