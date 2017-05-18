@@ -90,8 +90,9 @@ class View extends \FishPig\WordPress\Controller\Action
 
 		if (strpos($template, 'full-width') !== false) {
 			$this->getPage()->getConfig()->setPageLayout('1column');
-			$layoutHandles[] = 'wordpress_' . $postType . '_full-width';
-			$layoutHandles[] = 'wordpress_' . $postType . '_full-width_' . $post->getId();
+
+			$layoutHandles[] = 'wordpress_' . $postType . '_view_full_width';
+			$layoutHandles[] = 'wordpress_' . $postType . '_view_full_width_' . $post->getId();
 		}
 
 		return array_merge(
