@@ -59,24 +59,12 @@ abstract class AbstractMeta extends \FishPig\WordPress\Model\AbstractModel
 	 */
 	public function getMetaValue($key)
 	{
-
 		if (!isset($this->_meta[$key])) {
 			$this->_meta[$key] = $value = $this->getResource()->getMetaValue($this, $this->_getRealMetaKey($key));
-			
-			/*
-			$meta = new \Magento\Framework\DataObject(array(
-				'key' => $key,
-				'value' => $value,
-			));
-
-			$this->_eventManager->dispatch($this->_eventPrefix . '_get_meta_value', array('object' => $this, $this->_eventObject => $this, 'meta' => $meta));
-			
-			$this->_meta[$key] = $meta->getValue();
-			*/
 		}
 		
 		return $this->_meta[$key];
-	}
+	}	
 	
 	/**
 	 * Get an array of all of the meta values associated with this post

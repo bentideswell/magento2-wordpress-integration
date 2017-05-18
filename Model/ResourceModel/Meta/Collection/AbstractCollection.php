@@ -45,6 +45,7 @@ abstract class AbstractCollection extends \FishPig\WordPress\Model\ResourceModel
 		if (($field = $this->_joinMetaField($metaKey)) !== false) {
 			$this->addFieldToFilter($field, $filter);
 		}
+
 		
 		return $this;
 	}
@@ -72,35 +73,31 @@ abstract class AbstractCollection extends \FishPig\WordPress\Model\ResourceModel
 	protected function _joinMetaField($field)
 	{
 		$model = $this->getNewEmptyItem();
+
+		if (!isset($this->_metaFieldsJoined[$field])) {
+			$alias = $this->_getMetaFieldAlias($field);
+
+			$meta = new \Magento\Framework\DataObject(array(
+				'key' => $field,
+				'alias' => $alias,
+			));
 			
-		if ($model->hasMeta()) {
-			if (!isset($this->_metaFieldsJoined[$field])) {
-				$alias = $this->_getMetaFieldAlias($field);
-
-				$meta = new \Magento\Framework\DataObject(array(
-					'key' => $field,
-					'alias' => $alias,
-				));
-				
-				$this->_eventManager->dispatch($model->getEventPrefix() . '_join_meta_field', ['collection' => $this, 'meta' => $meta]);
-				
-				if ($meta->getCanSkipJoin()) {
-					$this->_metaFieldsJoined[$field] = $meta->getAlias();
-				}
-				else {
-					$condition = "`{$alias}`.`{$model->getMetaTableObjectField()}`=`main_table`.`{$model->getResource()->getIdFieldName()}` AND "
-						. $this->getConnection()->quoteInto("`{$alias}`.`meta_key`=?", $field);
-						
-					$this->getSelect()->joinLeft(array($alias => $model->getMetaTable()), $condition, '');
-
-					$this->_metaFieldsJoined[$field] = $alias . '.meta_value';;
-				}
+			$this->_eventManager->dispatch($model->getEventPrefix() . '_join_meta_field', ['collection' => $this, 'meta' => $meta]);
+			
+			if ($meta->getCanSkipJoin()) {
+				$this->_metaFieldsJoined[$field] = $meta->getAlias();
 			}
-			
-			return $this->_metaFieldsJoined[$field];
-		}
+			else {
+				$condition = "`{$alias}`.`{$model->getMetaTableObjectField()}`=`main_table`.`{$model->getResource()->getIdFieldName()}` AND "
+					. $this->getConnection()->quoteInto("`{$alias}`.`meta_key`=?", $field);
+					
+				$this->getSelect()->joinLeft(array($alias => $model->getMetaTable()), $condition, '');
 
-		return false;
+				$this->_metaFieldsJoined[$field] = $alias . '.meta_value';;
+			}
+		}
+		
+		return $this->_metaFieldsJoined[$field];
 	}
 	
 	/**
