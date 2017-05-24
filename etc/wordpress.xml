@@ -25,7 +25,7 @@
 			<widget id="text" class="FishPig\WordPress\Block\Sidebar\Widget\Text" />
 			<widget id="meta" class="FishPig\WordPress\Block\Sidebar\Widget\Meta" />
 			<widget id="rss" class="FishPig\WordPress\Block\Sidebar\Widget\Rss" />
-			<!--<widget id="nav_menu" class="FishPig\WordPress\Block\Sidebar\Widget\NavMenu" />-->
+			<widget id="nav_menu" class="FishPig\WordPress\Block\Sidebar\Widget\NavMenu" />
 			<widget id="calendar" class="FishPig\WordPress\Block\Sidebar\Widget\Calendar" />
 		</widgets>
 	</sidebar>
