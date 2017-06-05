@@ -14,7 +14,7 @@ class View extends \FishPig\WordPress\Controller\Action
     {
 	    $object = $this->getFactory('User')->create()->load(
 	    	$this->getRequest()->getParam('author'),
-	    	'user_login'
+	    	'user_nicename'
 	    );
 
 		return $object->getId() ? $object : false;
