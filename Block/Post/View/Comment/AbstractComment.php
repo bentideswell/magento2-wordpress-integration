@@ -41,7 +41,7 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 	 */
 	public function getCommentCount()
 	{
-		return $this->getPost()->getCommentCount();
+		return $this->getPost() ? $this->getPost()->getCommentCount() : 0;
 	}
 	
 	/**
@@ -51,7 +51,7 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 	 */
 	public function isCommentsEnabled()
 	{
-		return $this->getPost()->getCommentStatus() !== 'closed';
+		return $this->getPost() && $this->getPost()->getCommentStatus() !== 'closed';
 	}
 		
 	/**

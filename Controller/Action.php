@@ -73,6 +73,10 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    try {
 			$this->_beforeExecute();
 			
+			if ($forward = $this->_getForwardForPreview()) {
+				return $forward;
+			}
+			
 			if ($forward = $this->_getForward()) {
 				return $forward;
 			}
@@ -89,11 +93,17 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		}
     }
 
+	/**
+	 *
+	**/
 	protected function _getForward()
 	{
 		return false;
 	}
-	
+
+	/**
+	 *
+	**/
 	protected function _beforeExecute()
 	{
 	    if (($entity = $this->_getEntity()) === false) {
@@ -112,12 +122,10 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
     protected function _initLayout()
     {
-	    
 		// Add blog feed URL
 		// Add blog comments feed URL
 		// Add canonical
 
-	    
 	    if ($handles = $this->getLayoutHandles()) {
 			$handles = array_reverse($handles);
 
@@ -237,5 +245,44 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     public function getFactory($type)
     {
 	    return $this->factory->getFactory($type);
+    }
+    
+    /**
+	  * @return bool
+	 **/
+    protected function _canPreview()
+    {
+	    return false;
+    }
+    
+	/**
+	 *
+	**/
+    protected function _getForwardForPreview()
+    {
+	    if (!$this->_canPreview()) {
+		    return false;
+	    }
+
+		if ($this->getRequest()->getParam('preview') !== 'true') {
+			return false;
+		}
+		
+		if ($entity = $this->_getEntity()) {
+			$this->registry->unregister($entity::ENTITY);
+		}
+
+		foreach(['p', 'page_id', 'preview_id'] as $previewIdKey) {
+			if (0 !== (int)$this->getRequest()->getParam($previewIdKey))	{
+				return $this->resultFactory
+					->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+					->setModule('wordpress')
+					->setController('post')
+					->setParams(['preview_id' => (int)$this->getRequest()->getParam($previewIdKey)])
+					->forward('preview');
+			}
+		}
+
+		return false;
     }
 }

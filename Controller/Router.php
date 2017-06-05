@@ -156,6 +156,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 							exit;	
 						}
 
+/*
 						if ($this->request->getParam('preview') === 'true') {
 							$data['path']['controller'] = 'post';
 							$data['path']['action'] = 'preview';
@@ -163,6 +164,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 								'p' => (int)$this->request->getParam('p')
 							);
 						}
+						*/
 
 						return $data;
 					}

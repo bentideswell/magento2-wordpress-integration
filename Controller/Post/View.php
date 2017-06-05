@@ -20,6 +20,14 @@ class View extends \FishPig\WordPress\Controller\Action
 		return $post->getId() ? $post : false;
     }
 
+    /**
+	  * @return bool
+	 **/
+    protected function _canPreview()
+    {
+	    return true;
+    }
+
 	/**
 	 * @return
 	 **/
@@ -33,6 +41,7 @@ class View extends \FishPig\WordPress\Controller\Action
 				->setParams(array('no_forward' => 1))
 				->forward('view');
 		}
+		
 		
 		return parent::_getForward();
 	}

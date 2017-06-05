@@ -15,44 +15,25 @@ class Preview extends PostView
 	**/
     protected function _getEntity()
     {
-	    if (0 === ($previewId = $this->_getPreviewId())) {
-		    return false;
-	    }
-	    
 	    $post = $this->getFactory('Post')->create()->load(
-	    	$previewId
+	    	$this->getRequest()->getParam('preview_id')
 	    );
 
 		return $post->getId() ? $post : false;
     }
 
 	/**
-	 * Get the correct preview ID
-	 *
-	 * @return int
-	**/
-	protected function _getPreviewId()
+	 * @return false
+	 **/
+	protected function _getForward()
 	{
-		$keysToTry = array(
-			'p',
-			'preview_id',
-			'id',
-			'page_id'
-		);
-		
-		foreach($keysToTry as $key) {
-			if ($value = (int)$this->getRequest()->getParam($key)) {
-				return $value;
-			}
-		}
-		
 		return false;
 	}
 	
 	/**
 	 * @return false
 	 **/
-	protected function _getForward()
+	protected function _canPreview()
 	{
 		return false;
 	}
