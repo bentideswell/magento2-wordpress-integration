@@ -55,7 +55,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 		
 		return parent::_construct();
 	}
-
+	
     /**
      * Init collection select
      *
@@ -464,4 +464,27 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 		
 		return $this;
 	}
+	
+	/**
+	 * Ensure correct size is calculated
+	 *
+	 * @return int
+	**/
+    public function getSize()
+    {
+        if ($this->_totalRecords === null) {
+	        $this->_renderFilters();
+	
+	        $countSelect = clone $this->getSelect();
+	        $countSelect->reset(\Magento\Framework\DB\Select::ORDER);
+	        $countSelect->reset(\Magento\Framework\DB\Select::LIMIT_COUNT);
+	        $countSelect->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
+	        $countSelect->reset(\Magento\Framework\DB\Select::COLUMNS);
+			$countSelect->columns(new \Zend_Db_Expr('main_table.ID'));
+	
+			$this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));  
+	    }
+        
+        return intval($this->_totalRecords);
+    }
 }
