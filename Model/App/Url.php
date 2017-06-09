@@ -20,6 +20,11 @@ class Url
 	protected $_storeManager = null;
 	
 	/**
+	  *
+	  **/
+	 protected $_pathInfo = null;
+	 
+	/**
 	 * Constructor
 	**/
 	public function __construct(\FishPig\WordPress\Model\Config $config, \Magento\Store\Model\StoreManagerInterface $storeManager)
@@ -157,13 +162,38 @@ class Url
 	/**
 	 *
 	 *
+	 * @return string
+	**/
+	public function getPathInfo(\Magento\Framework\App\RequestInterface $request)
+	{
+		if (null === $this->_pathInfo) {	
+			$pathInfo = strtolower(trim($request->getPathInfo(), '/'));
+			
+			if ($magentoUrlPath = parse_url($this->getMagentoUrl(), PHP_URL_PATH)) {
+				$magentoUrlPath = ltrim($magentoUrlPath, '/');
+				
+				if (strpos($pathInfo, $magentoUrlPath) === 0) {
+					$pathInfo = ltrim(substr($pathInfo, strlen($magentoUrlPath)), '/');
+				}
+				
+			}
+			
+			$this->_pathInfo = $pathInfo;
+		}
+		
+		return $this->_pathInfo;
+	}
+
+	/**
+	 *
+	 *
 	 * @return 
 	**/
 	public function getUrlAlias(\Magento\Framework\App\RequestInterface $request)
 	{
-		$pathInfo = strtolower(trim($request->getPathInfo(), '/'));	
+		$pathInfo = $this->getPathInfo($request);
 		$blogRoute = $this->getBlogRoute();
-		
+
 		if ($blogRoute && strpos($pathInfo, $blogRoute) !== 0) {
 			return false;
 		}

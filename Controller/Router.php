@@ -67,7 +67,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 				return false;
 			}
 
-			$fullRequestUri = trim($request->getPathInfo(), '/');
+			$fullRequestUri = $this->_wpUrlBuilder->getPathInfo($request);
 			$blogRoute = $this->_wpUrlBuilder->getBlogRoute();
 
 			if ($blogRoute && ($blogRoute !== $fullRequestUri && strpos($fullRequestUri, $blogRoute . '/') !== 0)) {
