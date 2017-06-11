@@ -42,7 +42,6 @@ class View extends \FishPig\WordPress\Controller\Action
 				->forward('view');
 		}
 		
-		
 		return parent::_getForward();
 	}
 	

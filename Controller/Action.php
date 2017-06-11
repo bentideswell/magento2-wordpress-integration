@@ -86,6 +86,8 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 				return $forward;
 			}
 
+			$this->checkForAmp();
+			
 		    $this->_initLayout();
 
 		    $this->_afterExecute();
@@ -293,5 +295,15 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		}
 
 		return false;
+    }
+    
+    /**
+	  *
+	  * @return bool
+	  *
+	 **/
+    public function checkForAmp()
+    {
+	    return false;
     }
 }

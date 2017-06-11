@@ -55,10 +55,17 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 		if ($entity->getCanonicalUrl()) {
 			$pageConfig->addRemotePageAsset($entity->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
 		}
-
+		
+		$this->applyExtraConfigData($pageConfig, $entity);
+		
         return $this;
 	}
 	
+	public function applyExtraConfigData($pageConfig, $entity)
+	{
+		return $this;
+	}
+
 	public function canDiscourageSearchEngines()
 	{
 		return (int)$this->_config->getOption('blog_public') === 0;
