@@ -750,4 +750,25 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		
 		return $this->_getData('post_format');
 	}
+	
+	/**
+	  * Get the latest revision of the post
+	  *
+	  * @return FishPig\WordPress\Model\Post
+	 **/
+	 public function getLatestRevision()
+	 {
+	 	if (!$this->hasLatestRevision()) {
+			$revision = $this->getCollection()
+				->addFieldToFilter('post_parent', $this->getId())
+				->addPostTypeFilter('revision')
+				->setPageSize(1)
+				->load()
+				->getFirstItem();
+		 	
+			$this->setLatestRevision($revision->getId() ? $revision : false);
+	 	}
+	 	
+	 	return $this->_getData('latest_revision');
+	 }
 }

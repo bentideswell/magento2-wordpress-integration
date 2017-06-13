@@ -18,6 +18,10 @@ class Preview extends PostView
 	    $post = $this->getFactory('Post')->create()->load(
 	    	$this->getRequest()->getParam('preview_id')
 	    );
+	    
+	    if ($revision = $post->getLatestRevision()) {
+		    return $revision;
+	    }
 
 		return $post->getId() ? $post : false;
     }
