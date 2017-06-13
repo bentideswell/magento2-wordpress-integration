@@ -37,6 +37,12 @@ add_action( 'widgets_init', 'fishpig_widgets_init' );
 
 remove_filter('template_redirect', 'redirect_canonical');
 
+add_filter('preview_post_link', 'fishpig_preview_post_link', 10, 2);
+
+function fishpig_preview_post_link($previewLink, $post) {
+	return $previewLink . '&fishpig=' . time();
+}
+
 @include(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
 
 /* Include local.php*/
