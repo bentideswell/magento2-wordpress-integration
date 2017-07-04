@@ -6,103 +6,103 @@ namespace FishPig\WordPress\Controller;
 
 abstract class Action extends \Magento\Framework\App\Action\Action
 {
-	/**
+	/*
 	 * @const bool
-	**/
+	 */
 	const DEBUG = false;
 
-	/**
+	/*
 	 * @var 
-	**/
+	 */
 	protected $app = null;
 	
-	/**
+	/*
 	 * @var 
-	**/
+	 */
 	protected $registry = null;
 
-	/**
+	/*
 	 * @var 
-	**/	
+	 */	
 	protected $_entity = null;
 	
-	/**
+	/*
 	 * @var 
-	**/	
+	 */	
 	protected $factory = null;
 
-	/**
+	/*
 	 * @var 
-	**/	
+	 */	
 	protected $resultPage = null;
 	
 
-	/**
+	/*
 	 * @var 
-	**/	
+	 */	
 	protected $entity = null;
 	
-	/**
+	/*
 	 * @var 
-	**/
+	 */
 	abstract protected function _getEntity();
 
-    /**
-     * Constructor
-     *
-     * @param Context $context
-     * @param PageFactory $resultPageFactory
-     */
-    public function __construct(
-	    \Magento\Framework\App\Action\Context $context, 
-	    \Magento\Framework\Registry $registry, 
-	    \FishPig\WordPress\Model\App $app,
-	    \FishPig\WordPress\Model\App\Factory $factory
-	   )
-    {
+  /*
+   * Constructor
+   *
+   * @param Context $context
+   * @param PageFactory $resultPageFactory
+   */
+  public function __construct(
+    \Magento\Framework\App\Action\Context $context, 
+    \Magento\Framework\Registry $registry, 
+    \FishPig\WordPress\Model\App $app,
+    \FishPig\WordPress\Model\App\Factory $factory
+   )
+  {
 	    
 		$this->registry = $registry;
 		$this->app = $app;
 		$this->factory = $factory;
         	
-        parent::__construct($context);
-    }	
+    parent::__construct($context);
+  }	
 
-    /**
-     * Load the page defined in view/frontend/layout/samplenewpage_index_index.xml
-     *
-     * @return \Magento\Framework\View\Result\Page
-     */
-    public function execute()
-    {
-	    try {
-			$this->_beforeExecute();
-			
-			if ($forward = $this->_getForwardForPreview()) {
-				return $forward;
-			}
-			
-			if ($forward = $this->_getForward()) {
-				return $forward;
-			}
+  /**
+   * Load the page defined in view/frontend/layout/samplenewpage_index_index.xml
+   *
+   * @return \Magento\Framework\View\Result\Page
+   */
+  public function execute()
+  {
+    try {
+      $this->_beforeExecute();
+  		
+  		if ($forward = $this->_getForwardForPreview()) {
+  			return $forward;
+  		}
+  		
+  		if ($forward = $this->_getForward()) {
+  			return $forward;
+  		}
+  
+  		$this->checkForAmp();
+		
+	    $this->_initLayout();
 
-			$this->checkForAmp();
-			
-		    $this->_initLayout();
+	    $this->_afterExecute();
 
-		    $this->_afterExecute();
-
-		    return $this->getPage();
-		}
-		catch (\Exception $e) {
-			if (self::DEBUG) {
-				echo 'Exception: ' . $e->getMessage() . '<br/><br/><pre>' . $e->getTraceAsString() . '</pre>';
-				exit;
-			}
-			
-			throw $e;
-		}
-    }
+	    return $this->getPage();
+  	}
+  	catch (\Exception $e) {
+  		if (self::DEBUG) {
+  			echo 'Exception: ' . $e->getMessage() . '<br/><br/><pre>' . $e->getTraceAsString() . '</pre>';
+  			exit;
+  		}
+  		
+  		return $this->_getNoRouteForward();
+  	}
+  }
 
 	/**
 	 *
@@ -117,12 +117,12 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
 	protected function _beforeExecute()
 	{
-	    if (($entity = $this->_getEntity()) === false) {
-		    throw new \Exception('Entity not found!');
-	    }
+    if (($entity = $this->_getEntity()) === false) {
+      throw new \Magento\Framework\Exception\NotFoundException(__('Entity not found!'));
+    }
 	    
-	    if ($entity !== null) {
-		    $this->registry->register($entity::ENTITY, $entity);
+    if ($entity !== null) {
+		  $this->registry->register($entity::ENTITY, $entity);
 		}
 
 		return $this;	
@@ -200,9 +200,9 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		return $this;
 	}
     
-	/**
+	/*
 	 * @var 
-	**/
+	 */
 	public function getPage()
 	{
 		if ($this->resultPage === null) {
@@ -214,9 +214,9 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		return $this->resultPage;
 	}
 
-	/**
+	/*
 	 * @var 
-	**/
+	 */
 	public function getEntityObject()
     {
 	    if ($this->entity !== null) {
@@ -226,33 +226,33 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    return $this->entity = $this->_getEntity();
     }
     
-	/**
+	/*
 	 * @var 
-	**/
+	 */
     public function getRegistry()
     {
 	    return $this->registry;
     }
     
-	/**
+	/*
 	 * @var 
-	**/
+	 */
     protected function _getRegistry()
     {
 	    return $this->getRegistry();
     }
     
-	/**
+	/*
 	 * @var 
-	**/
+	 */
     public function getApp()
     {
 	    return $this->app;
     }
     
-	/**
+	/*
 	 * @var 
-	**/
+	 */
     public function getFactory($type)
     {
 	    return $this->factory->getFactory($type);
@@ -306,4 +306,18 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     {
 	    return false;
     }
+  
+  /*
+   *
+   * @return \Magento\Framework\Controller\ResultForwardFactory
+   *
+   */
+  protected function _getNoRouteForward()
+  {
+		return $this->resultFactory
+			->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+			->setModule('cms')
+			->setController('noroute')
+			->forward('index');
+  }
 }

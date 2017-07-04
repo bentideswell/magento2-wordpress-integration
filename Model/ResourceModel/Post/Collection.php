@@ -304,7 +304,11 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addIsViewableFilter()
 	{
-		$fields = array('publish', 'private', 'protected');
+		$fields = ['publish', 'protected'];
+
+    if ($this->_app->getConfig()->isLoggedIn()) {
+      $fields[] = 'private';
+    }
 
 		return $this->addStatusFilter($fields);
 	}
