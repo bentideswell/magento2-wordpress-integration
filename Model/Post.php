@@ -771,4 +771,14 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 	
 	 	return $this->_getData('latest_revision');
 	 }
+
+	/**
+	 * Return cache identities
+	 *
+	 * @return string[]
+	 */
+	public function getIdentities()
+	{
+		return [self::CACHE_TAG . '_' . $this->getId()];
+	}
 }
