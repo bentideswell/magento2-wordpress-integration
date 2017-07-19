@@ -39,17 +39,11 @@ class InjectContent implements ObserverInterface
 			return $this;
 		}
 
-		if ($this->isApiRequest()) {
-			return $this;
-		}
-		
 		$content = $this->getHeadFooterContent();
 		
 		if (count($content) > 0) {
-			$bodyHtml = $observer->getEvent()
-					->getResponse()
-						->getBody();
-	
+			$bodyHtml = $observer->getEvent()->getTransport()->getOutput();
+
 			$baseUrl = $this->_app->getWpUrlBuilder()->getSiteurl();
 			$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 
@@ -142,7 +136,7 @@ class InjectContent implements ObserverInterface
 			}
 			
 			// Fingers crossed and let's go!
-			$observer->getEvent()->getResponse()->setBody(str_replace('</body>', $content . '</body>', $bodyHtml));
+			$observer->getEvent()->getTransport()->setOutput(str_replace('</body>', $content . '</body>', $bodyHtml));
 		}
 		
 		return $this;
@@ -221,23 +215,7 @@ class InjectContent implements ObserverInterface
 		
 		return $externalScriptUrl;
 	}
-	
-	/**
-	 * Determine whether the request is an API request
-	 *
-	 * @return bool
-	**/
-	public function isApiRequest()
-	{
-		$pathInfo = str_replace(
-			$this->_storeManager->getStore()->getBaseUrl(), 
-			'', 
-			$this->_storeManager->getStore()->getCurrentUrl()
-		);
 
-		return strpos($pathInfo, 'api/') === 0;
-	}
-	
 	/**
 	  * @return
 	 **/

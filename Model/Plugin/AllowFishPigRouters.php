@@ -2,11 +2,11 @@
 /**
  *
 **/
-namespace FishPig\WordPress\Model;
+namespace FishPig\WordPress\Model\Plugin;
 
 use \Magento\Framework\App\Router\ActionList;
 
-class Plugin
+class AllowFishPigRouters
 {
 	/**
 	 * Magento 2 doesn't allow underscore in the module name
@@ -28,7 +28,7 @@ class Plugin
 		}
 
 		return str_replace('FishPig_', 'FishPig\\', $module)
-			 . '\\Controller' 
+			 . '\\Controller'
 			 . ($area ? '\\' . $area : $area)
 			 . '\\' . ucwords($namespace)
 			 . '\\' . ucwords($action);

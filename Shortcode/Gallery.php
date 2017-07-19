@@ -21,7 +21,16 @@ class Gallery extends AbstractShortcode
 	}
 	
 	/**
+	 * Return true if we need to use InjectContent
 	 *
+	 * @return bool
+	 */
+	public function getRequiresInjectContent()
+	{
+		return false;
+	}
+
+	/**
 	 *
 	 * @return 
 	**/

@@ -227,4 +227,14 @@ abstract class AbstractShortcode
 	{
 		return '';
 	}
+
+	/**
+	 * Return true if we need to use InjectContent
+	 *
+	 * @return bool
+	 */
+	public function getRequiresInjectContent()
+	{
+		return true;
+	}
 }
