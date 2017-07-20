@@ -43,107 +43,113 @@ class InjectContent implements ObserverInterface
 			return $this;
 		}
 		
+		if ($this->isAjaxRequest()) {
+			return $this;
+		}
+		
 		$content = $this->getHeadFooterContent();
 		
-		if (count($content) > 0) {
-			$bodyHtml = $observer->getEvent()
-					->getResponse()
-						->getBody();
-	
-			$baseUrl = $this->_app->getWpUrlBuilder()->getSiteurl();
-			$jsTemplate = '<script type="text/javascript" src="%s"></script>';
-
-			$content = implode("\n", $content);
-			
-			if (trim($content) === '') {
-				return;
-			}
-
-			$scripts = array();
-			$scriptRegex = '<script.*<\/script>';
-			$regexes = array(
-				'<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $scriptRegex . '[\s]{0,}<!\[endif\]-->',
-				$scriptRegex
-			);
+		if (count($content) === 0) {
+			return $this;
+		}
 		
-			// Extract all JS from $content
-			foreach($regexes as $regex) {
-				if (preg_match_all('/' . $regex . '/sUi', $content, $matches)) {
-					foreach($matches[0] as $v) {
-						$content = str_replace($v, '', $content);
-						$scripts[] = $v;
-					}
+		$bodyHtml = $observer->getEvent()
+				->getResponse()
+					->getBody();
+
+		$baseUrl = $this->_app->getWpUrlBuilder()->getSiteurl();
+		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
+
+		$content = implode("\n", $content);
+		
+		if (trim($content) === '') {
+			return;
+		}
+
+		$scripts = array();
+		$scriptRegex = '<script.*<\/script>';
+		$regexes = array(
+			'<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $scriptRegex . '[\s]{0,}<!\[endif\]-->',
+			$scriptRegex
+		);
+	
+		// Extract all JS from $content
+		foreach($regexes as $regex) {
+			if (preg_match_all('/' . $regex . '/sUi', $content, $matches)) {
+				foreach($matches[0] as $v) {
+					$content = str_replace($v, '', $content);
+					$scripts[] = $v;
 				}
 			}
+		}
+		
+		if (count($scripts) > 0) {
+			// Used to set paths for each JS file in requireJs
+			$requireJsPaths = array(
+				'jquery-migrate' => $this->_app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
+			);
 			
-			if (count($scripts) > 0) {
-				// Used to set paths for each JS file in requireJs
-				$requireJsPaths = array(
-					'jquery-migrate' => $this->_app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
-				);
-				
-				// JS Template for requireJs. This changes through foreach below
-				$requireJsTemplate = "require(['jquery'], function(jQuery) {
-	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
-		" . self::TMPL_TAG . "
-	});				
+			// JS Template for requireJs. This changes through foreach below
+			$requireJsTemplate = "require(['jquery'], function(jQuery) {
+require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
+	" . self::TMPL_TAG . "
+});				
 });";
 
-				// Used to set correct tabs
-				$level = 1;
-				
-				foreach($scripts as $skey => $script) {
-					$tabs = str_repeat("  ", $level);
-					
-					if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-						$originalScriptUrl = $matches[1];
-						
-						$newScriptUrl = $this->_getRealJsUrl($originalScriptUrl); // Script might be rewritten
-						$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-						$requireJsPaths[$requireJsAlias] = $newScriptUrl; // Used to set paths
-						
-						$requireJsTemplate = str_replace(
-							self::TMPL_TAG,
-							$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . "\n" . $tabs . "});" . "\n",
-							$requireJsTemplate
-						);
-						
-						$level++;
-						
-						$scripts[$skey] = str_replace($originalScriptUrl, $newScriptUrl, $script);
-					}
-					else {
-						$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
-					}
-				}
-	
-				// Remove final template variable placeholder
-				$requireJsTemplate = str_replace(self::TMPL_TAG, '', $requireJsTemplate);
-				
-				// Start of paths template
-				$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
-					
-				// Loop through paths, remove .js and set
-				foreach($requireJsPaths as $alias => $path) {
-					if (substr($path, -3) === '.js') {
-						$path = substr($path, 0, -3);
-					}
-	
-					$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
-				}
-					
-				$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
-				
-				// Final JS including wrapping script tag
-				$requireJsFinal = "<script type=\"text/javascript\">" . $requireJsConfig . $requireJsTemplate . "</script>";
-				
-				// Add the final requireJS code to the $content array
-				$content .= $requireJsFinal;
-			}
+			// Used to set correct tabs
+			$level = 1;
 			
-			// Fingers crossed and let's go!
-			$observer->getEvent()->getResponse()->setBody(str_replace('</body>', $content . '</body>', $bodyHtml));
+			foreach($scripts as $skey => $script) {
+				$tabs = str_repeat("  ", $level);
+				
+				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+					$originalScriptUrl = $matches[1];
+					
+					$newScriptUrl = $this->_getRealJsUrl($originalScriptUrl); // Script might be rewritten
+					$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
+					$requireJsPaths[$requireJsAlias] = $newScriptUrl; // Used to set paths
+					
+					$requireJsTemplate = str_replace(
+						self::TMPL_TAG,
+						$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . "\n" . $tabs . "});" . "\n",
+						$requireJsTemplate
+					);
+					
+					$level++;
+					
+					$scripts[$skey] = str_replace($originalScriptUrl, $newScriptUrl, $script);
+				}
+				else {
+					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
+				}
+			}
+
+			// Remove final template variable placeholder
+			$requireJsTemplate = str_replace(self::TMPL_TAG, '', $requireJsTemplate);
+			
+			// Start of paths template
+			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
+				
+			// Loop through paths, remove .js and set
+			foreach($requireJsPaths as $alias => $path) {
+				if (substr($path, -3) === '.js') {
+					$path = substr($path, 0, -3);
+				}
+
+				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
+			}
+				
+			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
+			
+			// Final JS including wrapping script tag
+			$requireJsFinal = "<script type=\"text/javascript\">" . $requireJsConfig . $requireJsTemplate . "</script>";
+			
+			// Add the final requireJS code to the $content array
+			$content .= $requireJsFinal;
 		}
+		
+		// Fingers crossed and let's go!
+		$observer->getEvent()->getResponse()->setBody(str_replace('</body>', $content . '</body>', $bodyHtml));
 		
 		return $this;
 	}
@@ -222,11 +228,11 @@ class InjectContent implements ObserverInterface
 		return $externalScriptUrl;
 	}
 	
-	/**
+	/*
 	 * Determine whether the request is an API request
 	 *
 	 * @return bool
-	**/
+	 */
 	public function isApiRequest()
 	{
 		$pathInfo = str_replace(
@@ -238,9 +244,21 @@ class InjectContent implements ObserverInterface
 		return strpos($pathInfo, 'api/') === 0;
 	}
 	
-	/**
-	  * @return
-	 **/
+	/*
+	 * Determine whether the current request is an ajax request
+	 *
+	 * @return bool
+	 */
+	public function isAjaxRequest()
+	{
+		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+	}
+
+	/*
+	 * This method is extended via add-on extensions
+	 *
+	 * @return array
+	 */
 	public function getHeadFooterContent()
 	{
 		return array();
