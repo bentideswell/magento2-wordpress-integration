@@ -17,4 +17,7 @@
 			</argument>
 		</arguments>
 	</type>
+	<type name="Magento\Framework\View\Result\Layout">
+		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Plugin\TriggerInjectContent" />
+	</type>
 </config>

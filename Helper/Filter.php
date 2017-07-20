@@ -25,13 +25,15 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	public function __construct(
 		\Magento\Framework\App\Helper\Context $context, 
 		\FishPig\WordPress\Model\App $app,
-		\FishPig\WordPress\Model\Config $config
+		\FishPig\WordPress\Model\Config $config,
+		\Magento\Framework\Registry $registry
 	)
 	{
 		parent::__construct($context);
 		
 		$this->_app = $app;
 		$this->_config = $config;
+		$this->_registry = $registry;
 	}
 	
 	/**
@@ -44,12 +46,27 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 		$string = $this->addParagraphTagsToString($string);
 
 		if ($shortcodes = $this->_config->getShortcodes()) {
+			$requiresInjectContent = false;
+
 			foreach($shortcodes as $alias => $class) {
-				$string = (string)\Magento\Framework\App\ObjectManager::getInstance()
-					->get($class)
-						->setObject($object)
-						->setValue($string)
-						->process();
+				$shortCodeInstance = \Magento\Framework\App\ObjectManager::getInstance()
+					->get($class);
+
+				if ($shortCodeInstance->getRequiresInjectContent()) {
+					$requiresInjectContent = true;
+				}
+
+				$string = (string)$shortCodeInstance
+					->setObject($object)
+					->setValue($string)
+					->process();
+			}
+
+			if ($requiresInjectContent) {
+				// Flag that we require InjectContent
+				if (!$this->_registry->registry('fishpig_wordpress_requires_injectcontent')) {
+					$this->_registry->register('fishpig_wordpress_requires_injectcontent', true);
+				}
 			}
 		}
 
