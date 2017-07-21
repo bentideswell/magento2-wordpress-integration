@@ -135,34 +135,41 @@ class Config
     public function getShortcodes()
     {
 	    if ($config = $this->_reader->getValue('shortcodes')) {
-		    $shortcodes = array();
+		    $shortcodes = [];
+				$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
-			foreach($config['shortcode'] as $shortcode) {
-				$shortcode = $shortcode['@attributes'];
-				
-				if (!isset($shortcode['sortOrder'])) {
-					$shortcode['sortOrder'] = 9999;
+				foreach((array)$config['shortcode'] as $shortcode) {
+					$shortcode = $shortcode['@attributes'];
+					
+					$shortcodeInstance = $objectManager->get($shortcode['class']);
+
+					if (!$shortcodeInstance->isPluginEnabled()) {
+						continue;
+					}
+
+					if (!isset($shortcode['sortOrder'])) {
+						$shortcode['sortOrder'] = 9999;
+					}
+					
+					$sortOrder = (int)$shortcode['sortOrder'];
+					
+					if (!isset($shortcodes[$sortOrder])) {
+						$shortcodes[$sortOrder] = array();
+					}
+					
+					$shortcodes[$sortOrder][$shortcode['id']] = $shortcodeInstance;
 				}
 				
-				$sortOrder = (int)$shortcode['sortOrder'];
+				$final = array();
 				
-				if (!isset($shortcodes[$sortOrder])) {
-					$shortcodes[$sortOrder] = array();
+				foreach($shortcodes as $groupedShortcodes) {
+					$final = array_merge($final, $groupedShortcodes);
 				}
-				
-				$shortcodes[$sortOrder][$shortcode['id']] = $shortcode['class'];
+
+				return $final;
 			}
 			
-			$final = array();
-			
-			foreach($shortcodes as $groupedShortcodes) {
-				$final = array_merge($final, $groupedShortcodes);
-			}
-			
-			return $final;
-		}
-		
-		return false;
+			return false;
     }
     
     /**

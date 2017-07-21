@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * @category    Fishpig
  * @package     Fishpig_Wordpress
  * @license     http://fishpig.co.uk/license.txt
@@ -8,9 +8,12 @@
 
 namespace FishPig\WordPress\Shortcode;
 
+use \FishPig\WordPress\Model\App;
+use \Magento\Framework\View\Element\Context;
+
 abstract class AbstractShortcode
 {
-	/**
+	/*
 	 * Regular expression patterns for identifying shortcodes and parameters
 	 *
 	 * @const string
@@ -18,63 +21,60 @@ abstract class AbstractShortcode
 	const EXPR_SHOTRCODE_OPEN_TAG = '(\[{{shortcode}}[^\]]{0,}\])';
 	const EXPR_SHOTRCODE_CLOSE_TAG = '(\[\/{{shortcode}}[^\]]{0,}\])';
 	
-    /**
-     * @var array
-     */
-    protected $_data = [];
+  /*
+   * @var array
+   */
+  protected $_data = [];
     
-	/**
+	/*
 	 * @var FishPig\WordPress\Model\App
-	**/
+	 */
 	protected $_app;
 	
-	/**
+	/*
 	 * @var Magento\Framework\View\Layout
-	**/
+	 */
 	protected $_layout = null;
 	
-	/**
+	/*
 	 * @var Magento\Framework\View\Layout
-	**/
+	 */
 	protected $_factory = null;
 	
-	/**
+	/*
 	 * @var Magento\Framework\View\Layout
-	**/
+	 */
 	protected $_cache = null;
 	
-	/**
+	/*
 	 * @var Magento\Framework\View\Layout
-	**/
+	 */
 	protected $_cacheState = null;
 
-	/**
+	/*
 	 * Function that handles generating the HTML
 	 *
 	 * @return $this
-	**/
+	 */
 	abstract protected function _process();
 	
-	/**
+	/*
 	 * Constructor
-	**/
-    public function __construct(
-	    \FishPig\WordPress\Model\App $app,
-    	\Magento\Framework\View\Element\Context $context
-    )
-    {
+	 */
+  public function __construct(App $app, Context $context)
+  {
 		$this->_app = $app;
 		$this->_factory = $app->getFactory();
 		$this->_layout = $context->getLayout();
 		$this->_cache = $context->getCache();
 		$this->_cacheState = $context->getCacheState();
-    }
+  }
     
-    /**
+  /*
 	 * Generate the HTML and return it
 	 *
 	 * @return string
-	**/
+	 */
 	public function process()
 	{
 		$this->_process();
@@ -82,11 +82,11 @@ abstract class AbstractShortcode
 		return (string)$this->getValue();
 	}
 	
-    /**
+  /*
 	 * Find the shortcodes for $tag
 	 *
 	 * @return array|false
-	**/
+	 */
 	protected function _getShortcodesByTag($tag)
 	{
 		$shortcodes = array();
@@ -125,7 +125,7 @@ abstract class AbstractShortcode
 		return count($shortcodes) > 0 ? $shortcodes : false;
 	}
 	
-	/**
+	/*
 	 * Extract parameters from a shortcode opening tag
 	 *
 	 * @param string $openingTag
@@ -158,7 +158,7 @@ abstract class AbstractShortcode
 		return new \Magento\Framework\DataObject($parameters);
 	}
 
-	/**
+	/*
 	 * Retrieve the parameter regex
 	 *
 	 * @return string
@@ -168,22 +168,22 @@ abstract class AbstractShortcode
 		return '/([a-z]{1,})=([^\s ]{1,})/i';
 	}
 	
-    /**
+    /*
 	 * Get the post ID if the post is set
 	 *
 	 * @return int|false
-	**/
+	 */
 	public function getPostId()
 	{
 		return $this->getObject() ? (int)$this->getObject()->getId() : false;
 	}
 
-	/**
+	/*
 	 * Set the target object
 	 *
 	 * @param mixed $object
 	 * @return $this
-	**/
+	 */
 	public function setObject($object)
 	{
 		$this->_data['object'] = $object;
@@ -191,20 +191,20 @@ abstract class AbstractShortcode
 		return $this;
 	}
 	
-	/**
+	/*
 	 * @return mixed
-	**/
+	 */
 	public function getObject()
 	{
 		return isset($this->_data['object']) ? $this->_data['object'] : false;
 	}
 	
-	/**
+	/*
 	 * Set the target value
 	 *
 	 * @param mixed value
 	 * @return $this
-	**/
+	 */
 	public function setValue($value)
 	{
 		$this->_data['value'] = $value;
@@ -212,19 +212,41 @@ abstract class AbstractShortcode
 		return $this;
 	}
 
-	/**
+	/*
 	 * @return mixed
-	**/	
+	 */	
 	public function getValue()
 	{
 		return isset($this->_data['value']) ? $this->_data['value'] : false;
 	}
 
-	/**
+	/*
 	 * @return string
-	**/	
+	 */	
 	public function getShortcodeIdKey()
 	{
 		return '';
+	}
+	
+	/**
+	 * Determine whether shortcode requires asset injection
+	 *
+	 * @param string $content = null
+	 * @return bool
+	 */
+	public function requiresAssetInjection()
+	{
+		return false;
+	}
+	
+	/*
+	 * Check if the plugin associated with the shortcode is enabled
+	 * For default shortcodes, they don't rely on a plugin so return true
+	 *
+	 * @return bool
+	 */
+	public function isPluginEnabled()
+	{
+		return true;
 	}
 }

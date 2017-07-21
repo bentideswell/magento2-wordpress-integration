@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * @category    Fishpig
  * @package     Fishpig_Wordpress
  * @license     http://fishpig.co.uk/license.txt
@@ -8,59 +8,106 @@
 
 namespace FishPig\WordPress\Helper;
 
+use \Magento\Framework\App\Helper\Context;
+use \FishPig\WordPress\Model\App;
+use \FishPig\WordPress\Model\Config;
+
 class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 {
-	/**
+	/*
 	 *
+	 * @var \FishPig\WordPress\Model\App
+	 */
+	protected $app = null;
+	
+	/*
 	 *
-	 * @return 
-	**/
-	protected $_app = null;
+	 * @var \FishPig\WordPress\Model\Config
+	 */
+	protected $config = null;
 
-	/**
+	/*
+	 *
+	 * @var array
+	 */
+	protected $assetInjectionShortcodes = [];
+	
+	/*
 	 *
 	 *
 	 * @return 
-	**/
-	public function __construct(
-		\Magento\Framework\App\Helper\Context $context, 
-		\FishPig\WordPress\Model\App $app,
-		\FishPig\WordPress\Model\Config $config
-	)
+	 */
+	public function __construct(Context $context, App $app, Config $config)
 	{
 		parent::__construct($context);
 		
-		$this->_app = $app;
-		$this->_config = $config;
+		$this->app = $app;
+		$this->config = $config;
 	}
 	
-	/**
+	/*
+	 * Call autop on the string
+	 * Then go through each shortcode and try to apply
+	 * Finally go through each shortcode again to check if another shortcode
+	 * has handled it and if so add it to the assetInjectionShortcodes array
 	 *
-	 *
-	 * @return 
-	**/
+	 * @param $string
+	 * @param $object = null
+	 * @return string
+	 */
 	public function process($string, $object = null)
 	{
-		$string = $this->addParagraphTagsToString($string);
+		$content = trim($this->addParagraphTagsToString($string));
+		
+		if ($shortcodes = $this->config->getShortcodes()) {
+			foreach($shortcodes as $alias => $shortcodeInstance) {
+				// Parse $content and try to inject shortcode HTML
+				$newContent = trim((string)$shortcodeInstance->setObject($object)->setValue($content)->process());
+				
+				// Content has changed so check for injection
+				if ($content !== $newContent) {
+					// Update $content with the updated content
+					$content = $newContent;
 
-		if ($shortcodes = $this->_config->getShortcodes()) {
-			foreach($shortcodes as $alias => $class) {
-				$string = (string)\Magento\Framework\App\ObjectManager::getInstance()
-					->get($class)
-						->setObject($object)
-						->setValue($string)
-						->process();
+					// Check if shortcode requires JS/CSS injection
+					if ($shortcodeInstance->requiresAssetInjection()) {
+						$this->assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
+					}
+				}
+			}
+
+			// We might not need this
+			// Keep it from running for now
+			if (false) {
+				// Now go through shortcodes and check for required assets against $content
+				foreach($shortcodes as $alias => $shortcodeInstance) {
+					if (!isset($this->assetInjectionShortcodes[get_class($shortcodeInstance)])) {
+						if ($shortcodeInstance->requiresAssetInjection($content)) {
+							$this->assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
+						}
+					}
+				}
 			}
 		}
 
-		return $string;
+		return $content;
 	}
-	
-	/**
+
+	/*
 	 *
 	 *
 	 * @return 
-	**/
+	 */
+	public function getAssetInjectionShortcodes()
+	{
+		return $this->assetInjectionShortcodes;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function addParagraphTagsToString($string)
 	{
 		if ($this->_getFunctionFromWordPress('wpautop', 'wp-includes' . DIRECTORY_SEPARATOR . 'formatting.php', array(
@@ -80,11 +127,11 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 		return $string;
 	}
 	
-	/**
+	/*
 	 *
 	 *
 	 * @return 
-	**/
+	 */
 	protected function _getFunctionFromWordPress($function, $file, $depends = array())
 	{
 		$newFunction = 'fp_' . $function;
@@ -93,7 +140,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			return true;
 		}
 
-		$targetFile = $this->_app->getPath() . DIRECTORY_SEPARATOR . $file;
+		$targetFile = $this->app->getPath() . DIRECTORY_SEPARATOR . $file;
 
 		if (!is_file($targetFile)) {
 			return false;

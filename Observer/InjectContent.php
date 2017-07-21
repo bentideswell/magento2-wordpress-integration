@@ -12,6 +12,7 @@ use \Magento\Framework\Registry;
 use \Magento\Framework\Event\ObserverInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use \Magento\Framework\App\Filesystem\DirectoryList;
+use \FishPig\WordPress\Helper\Filter;
 
 class InjectContent implements ObserverInterface
 {
@@ -20,52 +21,74 @@ class InjectContent implements ObserverInterface
 	**/
 	const TMPL_TAG = '__FPTAG823434__';
 	
-	/**
-	  * @return
-	 **/
-	public function __construct(App $app, StoreManagerInterface $storeManager, DirectoryList $directoryList)
+	/*
+	 * @return
+	 */
+	public function __construct(App $app, StoreManagerInterface $storeManager, DirectoryList $directoryList, Filter $filter)
 	{
-		$this->_app = $app->init();
-		$this->_storeManager = $storeManager;
+		$this->app = $app->init();
+		$this->storeManager = $storeManager;
 		$this->directoryList = $directoryList;
+		$this->filter = $filter;
 	}
 	
-	/**
-	  * @return
-	 **/
+	/*
+	 * @return
+	 */
 	public function execute(\Magento\Framework\Event\Observer $observer)
 	{
-		if (!$this->_app->canRun()) {
+		if (!$this->app->canRun() || $this->isApiRequest() || $this->isAjaxRequest()) {
 			return $this;
 		}
 
-		if ($this->isApiRequest()) {
+		if (!($shortcodes = $this->filter->getAssetInjectionShortcodes())) {
 			return $this;
 		}
-		
-		if ($this->isAjaxRequest()) {
-			return $this;
-		}
-		
-		$content = $this->getHeadFooterContent();
-		
-		if (count($content) === 0) {
-			return $this;
-		}
-		
-		$bodyHtml = $observer->getEvent()
-				->getResponse()
-					->getBody();
 
-		$baseUrl = $this->_app->getWpUrlBuilder()->getSiteurl();
-		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
-
-		$content = implode("\n", $content);
+		$assets = [];
+		$inline = [];
 		
+		// Get assets from plugins
+		foreach($shortcodes as $class => $shortcodeInstance) {
+			if ($buffer = $shortcodeInstance->getRequiredAssets()) {
+				$assets = array_merge($assets, $buffer);
+			}
+		}
+		
+		// Get inline JS/CSS
+		foreach($shortcodes as $class => $shortcodeInstance) {
+			if ($buffer = $shortcodeInstance->getInlineJs()) {
+				$inline = array_merge($inline, $buffer);
+			}
+		}
+
+		// Remove any JS/CSS that is in $inline from $assets to prevent duplication
+		if (count($inline) > 0) {
+			foreach($inline as $asset) {
+				if (($key = array_search($asset, $assets)) !== false) {
+					unset($assets[$key]);
+				}
+			}
+		}
+		
+		// Merge inline into assets
+		$assets = array_merge($assets, $inline);
+		
+		if (count($assets) === 0) {
+			return $this;
+		}
+
+		$content = implode("\n", $assets);
+
 		if (trim($content) === '') {
 			return;
 		}
 
+		// Now let's build the requireJS from $assets
+		$bodyHtml = $observer->getEvent()->getResponse()->getBody();
+
+		$baseUrl = $this->app->getWpUrlBuilder()->getSiteurl();
+		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 		$scripts = array();
 		$scriptRegex = '<script.*<\/script>';
 		$regexes = array(
@@ -86,7 +109,7 @@ class InjectContent implements ObserverInterface
 		if (count($scripts) > 0) {
 			// Used to set paths for each JS file in requireJs
 			$requireJsPaths = array(
-				'jquery-migrate' => $this->_app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
+				'jquery-migrate' => $this->app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
 			);
 			
 			// JS Template for requireJs. This changes through foreach below
@@ -202,14 +225,14 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 			: substr($externalScriptUrlFull, 0, strpos($externalScriptUrlFull, '?'));
 
 		// Check that the script is a local file
-		if (strpos($externalScriptUrl, $this->_app->getWpUrlBuilder()->getSiteUrl()) !== false) {
-			$localScriptFile = $this->_app->getPath() . '/' . substr($externalScriptUrl, strlen($this->_app->getWpUrlBuilder()->getSiteUrl()));
+		if (strpos($externalScriptUrl, $this->app->getWpUrlBuilder()->getSiteUrl()) !== false) {
+			$localScriptFile = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
 			$scriptContent = file_get_contents($localScriptFile);
 
 			// Check whether the script supports AMD
 			if (strpos($scriptContent, 'define.amd') !== false) {
 				$newScriptFile = $this->directoryList->getPath('media') . $DS . 'js' . $DS . md5($externalScriptUrlFull) . '.js';
-				$newScriptUrl = $this ->_storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
+				$newScriptUrl = $this ->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 				
 				@mkdir(dirname($newScriptFile));
 				
@@ -236,9 +259,9 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 	public function isApiRequest()
 	{
 		$pathInfo = str_replace(
-			$this->_storeManager->getStore()->getBaseUrl(), 
+			$this->storeManager->getStore()->getBaseUrl(), 
 			'', 
-			$this->_storeManager->getStore()->getCurrentUrl()
+			$this->storeManager->getStore()->getCurrentUrl()
 		);
 
 		return strpos($pathInfo, 'api/') === 0;
@@ -252,15 +275,5 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 	public function isAjaxRequest()
 	{
 		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
-	}
-
-	/*
-	 * This method is extended via add-on extensions
-	 *
-	 * @return array
-	 */
-	public function getHeadFooterContent()
-	{
-		return array();
 	}
 }
