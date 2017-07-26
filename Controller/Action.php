@@ -131,70 +131,70 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     /**
 	 * @
 	**/
-    protected function _initLayout()
-    {
-		// Add blog feed URL
-		// Add blog comments feed URL
-		// Add canonical
+  protected function _initLayout()
+  {
+	// Add blog feed URL
+	// Add blog comments feed URL
+	// Add canonical
 
-	    if ($handles = $this->getLayoutHandles()) {
+    if ($handles = $this->getLayoutHandles()) {
 			$handles = array_reverse($handles);
-
+	
 		    foreach($handles as $handle) {
 				$this->getPage()->addHandle($handle);
 			}
 		}
 
-	    $this->getPage()->getConfig()->addBodyClass('is-blog');
-	    
+    $this->getPage()->getConfig()->addBodyClass('is-blog');
+
 		if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {	    
-		    if ($crumbs = $this->_getBreadcrumbs()) {
-			    foreach($crumbs as $key => $crumb) {
-				    $breadcrumbsBlock->addCrumb($key, $crumb);
-			    }
+	    if ($crumbs = $this->_getBreadcrumbs()) {
+		    foreach($crumbs as $key => $crumb) {
+			    $breadcrumbsBlock->addCrumb($key, $crumb);
 		    }
+	    }
 		}
 
-	    return $this;
-    }
+    return $this;
+  }
     
-    /**
+  /*
 	 * Get an array of extra layout handles to apply
 	 *
 	 * @return array
-	**/
-    public function getLayoutHandles()
-    {
-	    return ['wordpress_default'];
-    }
+	 */
+  public function getLayoutHandles()
+  {
+	  return ['wordpress_default'];
+  }
 
-    /**
-	  * Get the breadcrumbs
-	  *
-	  * @return array
-	 **/
-    protected function _getBreadcrumbs()
-    {
-	    $crumbs = [
-		    'home' => [
+ /*
+  * Get the breadcrumbs
+  *
+  * @return array
+  */
+  protected function _getBreadcrumbs()
+  {
+    $crumbs = [
+	    'home' => [
 			'label' => __('Home'),
 			'title' => __('Go to Home Page'),
 			'link' => $this->app->getWpUrlBuilder()->getMagentoUrl()
 		]];
-		
+	
 		if (!$this->app->isRoot()) {
 			$crumbs['blog'] = [
-				'label' => __('Blog'),
+				'label' => $this->app->getConfig()->getBlogBreadcrumbsLabel(),
 				'link' => $this->app->getWpUrlBuilder()->getHomeUrl()
 			];
 		}
-		
+	
 		return $crumbs;
-    }
-    
-    /**
-	 * @
-	**/
+	}
+  
+  /*
+	 *
+	 */
 	protected function _afterExecute()
 	{
 		return $this;
@@ -218,53 +218,53 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	 * @var 
 	 */
 	public function getEntityObject()
-    {
-	    if ($this->entity !== null) {
-		    return $this->entity;
-	    }
+  {
+    if ($this->entity !== null) {
+	    return $this->entity;
+    }
 
-	    return $this->entity = $this->_getEntity();
-    }
+    return $this->entity = $this->_getEntity();
+  }
     
 	/*
 	 * @var 
 	 */
-    public function getRegistry()
-    {
-	    return $this->registry;
-    }
+  public function getRegistry()
+  {
+    return $this->registry;
+  }
     
 	/*
 	 * @var 
 	 */
-    protected function _getRegistry()
-    {
-	    return $this->getRegistry();
-    }
+  protected function _getRegistry()
+  {
+    return $this->getRegistry();
+  }
     
 	/*
 	 * @var 
 	 */
-    public function getApp()
-    {
-	    return $this->app;
-    }
+  public function getApp()
+  {
+    return $this->app;
+  }
     
 	/*
 	 * @var 
 	 */
-    public function getFactory($type)
-    {
-	    return $this->factory->getFactory($type);
-    }
+  public function getFactory($type)
+  {
+    return $this->factory->getFactory($type);
+  }
     
-    /**
-	  * @return bool
-	 **/
-    protected function _canPreview()
-    {
-	    return false;
-    }
+  /*
+	 * @return bool
+	 */
+  protected function _canPreview()
+  {
+    return false;
+  }
     
 	/**
 	 *

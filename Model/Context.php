@@ -11,13 +11,13 @@ namespace FishPig\WordPress\Model;
 class Context implements \Magento\Framework\ObjectManager\ContextInterface
 {
 	public function __construct(
-    	\FishPig\WordPress\Model\App $app,
-    	\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
-    	\FishPig\WordPress\Model\Config $config,
-    	\FishPig\WordPress\Model\App\Url $urlBuilder,
-    	\FishPig\WordPress\Model\App\Factory $factory,
-    	\FishPig\WordPress\Helper\View $viewHelper,
-        \FishPig\WordPress\Helper\Filter $filterHelper
+		\FishPig\WordPress\Model\App $app,
+		\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
+		\FishPig\WordPress\Model\Config $config,
+		\FishPig\WordPress\Model\App\Url $urlBuilder,
+		\FishPig\WordPress\Model\App\Factory $factory,
+		\FishPig\WordPress\Helper\View $viewHelper,
+    \FishPig\WordPress\Helper\Filter $filterHelper
 	)
 	{
 		$this->_app = $app->init();
