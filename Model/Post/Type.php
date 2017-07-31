@@ -2,10 +2,11 @@
 	
 namespace FishPig\WordPress\Model\Post;
 
-use FishPig\WordPress\App;
+use \FishPig\WordPress\App;
+use \FishPig\WordPress\Model\Post\Type\AbstractType as AbstractPostType;
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Type extends Type\AbstractType implements ViewableInterface
+class Type extends AbstractPostType implements ViewableInterface
 {
 	/**
 	 *
