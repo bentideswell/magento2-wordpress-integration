@@ -161,7 +161,7 @@ class Integrate extends \Magento\Backend\Block\Template
 	{
 		$yoastPluginEnabled = $this->pluginHelper->isEnabled('wordpress-seo/wp-seo.php');
 		$yoastModuleEnabled = $this->moduleManager->isEnabled('FishPig_WordPress_Yoast');
-		$yoastModuleEnabled = false;
+
 		if (!$yoastPluginEnabled && !$yoastModuleEnabled) {
 			return $this->_getMessage(
 				sprintf(
