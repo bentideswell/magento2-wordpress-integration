@@ -11,23 +11,26 @@ namespace FishPig\WordPress\Helper;
 use \Magento\Framework\App\Helper\Context;
 use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\Config;
+use \Magento\Cms\Model\Template\FilterProvider;
 
 class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 {
 	/*
-	 *
 	 * @var \FishPig\WordPress\Model\App
 	 */
 	protected $app = null;
 	
 	/*
-	 *
 	 * @var \FishPig\WordPress\Model\Config
 	 */
 	protected $config = null;
 
+  /*
+   * @var \Magento\Cms\Model\Template\FilterProvider
+   */
+  protected $_filterProvider;
+    
 	/*
-	 *
 	 * @var array
 	 */
 	protected $assetInjectionShortcodes = [];
@@ -35,14 +38,15 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	/*
 	 *
 	 *
-	 * @return 
+	 * @return void
 	 */
-	public function __construct(Context $context, App $app, Config $config)
+	public function __construct(Context $context, App $app, Config $config, FilterProvider $filterProvider)
 	{
 		parent::__construct($context);
 		
 		$this->app = $app;
 		$this->config = $config;
+		$this->filterProvider = $filterProvider;
 	}
 	
 	/*
@@ -90,7 +94,8 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			}
 		}
 
-		return $content;
+		// Filter the content for {{block and {{widget
+		return $this->filterProvider->getPageFilter()->filter($content);
 	}
 
 	/*
