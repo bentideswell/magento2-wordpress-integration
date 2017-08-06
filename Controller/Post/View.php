@@ -74,7 +74,19 @@ class View extends \FishPig\WordPress\Controller\Action
         'link' => $postType->getUrl(),
       ];
     }
-  
+		
+		if ($postType->isHierarchical()) {
+			$parent = $this->_getEntity();
+			
+			while(($parent = $parent->getParentPost()) !== false) {
+		    $crumbs['parent_post_' . $parent->getId()] = [
+		      'label' => __($parent->getName()),
+		      'title' => __($parent->getName()),
+		      'link'  => $parent->getUrl()
+		    ];
+			}
+		}
+
     $crumbs['post'] = [
       'label' => __($this->_getEntity()->getName()),
       'title' => __($this->_getEntity()->getName())
