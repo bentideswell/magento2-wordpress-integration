@@ -104,9 +104,19 @@ class Sidebar extends AbstractBlock
 		return false;
 	}
 	
+	/*
+	 * Get the widget area
+	 * Set a custom widget area by calling $this->setWidgetArea('your-custom-area')
+	 *
+	 * @return string
+	 */
 	public function getWidgetArea()
 	{
-		return 'sidebar-main';
+		if (!$this->hasWidgetArea()) {
+			$this->_setData('widget_area', 'sidebar-main');
+		}
+
+		return $this->_getData('widget_area');
 	}
 	
 	/**
@@ -121,8 +131,8 @@ class Sidebar extends AbstractBlock
 
 			if ($widgets) {
 				$widgets = unserialize($widgets);
-				
-				$realWidgetArea = $this->getRealWidgetArea();
+
+				$realWidgetArea = $this->getWidgetArea();
 
 				if (isset($widgets[$realWidgetArea])) {
 					return $widgets[$realWidgetArea];
@@ -131,16 +141,6 @@ class Sidebar extends AbstractBlock
 		}
 
 		return false;
-	}
-	
-	/**
-	 * Get the real widget area by using the Custom Sidebars plugin
-	 *
-	 * @return string
-	 */
-	public function getRealWidgetArea()
-	{
-		return 'sidebar-main';
 	}
 	
 	/**
