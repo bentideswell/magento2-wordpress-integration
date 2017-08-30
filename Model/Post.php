@@ -216,7 +216,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 * If Yoast SEO is installed, the primary category will be used (if $taxonomy === category)
 	 *
 	 * @param string $taxonomy
-	 * @return \FishPig/WordPress\Model\Term
+	 * @return \FishPig\WordPress\Model\Term
 	 **/
 	public function getParentTerm($taxonomy)
 	{
@@ -240,7 +240,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 * Get a collection of terms by the taxonomy
 	 *
 	 * @param string $taxonomy
-	 * @return \FishPig/WordPress\Model\ResourceModel\Term\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Term\Collection
 	 */
 	public function getTermCollection($taxonomy)
 	{
@@ -287,7 +287,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Retrieve the previous post
 	 *
-	 * @return false|\FishPig/WordPress\Model\Post
+	 * @return false|\FishPig\WordPress\Model\Post
 	 */
 	public function getPreviousPost()
 	{
@@ -314,7 +314,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Retrieve the next post
 	 *
-	 * @return false|\FishPig/WordPress\Model\Post
+	 * @return false|\FishPig\WordPress\Model\Post
 	 */
 	public function getNextPost()
 	{
@@ -367,7 +367,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Returns a collection of comments for this post
 	 *
-	 * @return \FishPig/WordPress\Model\ResourceModel\Post\Comment\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection
 	 */
 	public function getComments()
 	{
@@ -381,7 +381,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Returns a collection of images for this post
 	 * 
-	 * @return \FishPig/WordPress\Model\ResourceModel\Image\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Image\Collection
 	 *
 	 * NB. This function has not been thoroughly tested
 	 *        Please report any bugs
@@ -403,17 +403,29 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 *
 	 * This image must be uploaded and assigned in the WP Admin
 	 *
-	 * @return \FishPig/WordPress\Model\Image
+	 * @return \FishPig\WordPress\Model\Image
 	 */
 	public function getImage()
 	{
 		return $this->getResource()->getFeaturedImage($this);
 	}
-
+	
+	/*
+	 * Get the featured image
+	 *
+	 * @return \FishPig\WordPress\Model\Image
+	 * @deprecated 1.0.0.0
+	 * @replace self::getImage()
+	 */
+	public function getFeaturedImage()
+	{
+		return $this->getImage();
+	}
+	
 	/**
 	 * Get the model for the author of this post
 	 *
-	 * @return \FishPig/WordPress\Model\User
+	 * @return \FishPig\WordPress\Model\User
 	 */
 	public function getUser()
 	{
@@ -607,7 +619,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Retrieve the parent page
 	 *
-	 * @return false|\FishPig/WordPress\Model\Post
+	 * @return false|\FishPig\WordPress\Model\Post
 	 */
 	public function getParentPost()
 	{
@@ -631,7 +643,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	/**
 	 * Retrieve the page's children pages
 	 *
-	 * @return \FishPig/WordPress\Model\ResourceModel\Post\Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getChildrenPosts()
 	{
