@@ -113,7 +113,7 @@ class Sidebar extends AbstractBlock
 	public function getWidgetArea()
 	{
 		if (!$this->hasWidgetArea()) {
-			$this->_setData('widget_area', 'sidebar-main');
+			$this->setData('widget_area', 'sidebar-main');
 		}
 
 		return $this->_getData('widget_area');

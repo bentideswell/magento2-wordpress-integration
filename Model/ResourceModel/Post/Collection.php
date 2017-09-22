@@ -401,6 +401,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addTermIdFilter($termId, $type)
 	{
+		echo __METHOD__ . '<br/>';
 		$this->joinTermTables($type);
 
 		if (is_array($termId)) {
