@@ -9,20 +9,21 @@
 namespace FishPig\WordPress\Block\Post;
 
 use \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
+use \FishPig\WordPress\Model\ResourceModel\Post\Collection as PostCollection;
 
 class ListPost extends \FishPig\WordPress\Block\Post
 {
 	/**
 	 * Cache for post collection
 	 *
-	 * @var Fishpig_Wordpress_Model_Resource_Post_Collection
+	 * @var PostCollection
 	 */
 	protected $_postCollection = null;
 	
-	/**
+	/*
 	 * Returns the collection of posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return 
 	 */
 	public function getPosts()
 	{
@@ -46,7 +47,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 		return $this->_postCollection;
 	}
 	
-	/**
+	/*
 	 * Sets the parent block of this block
 	 * This block can be used to auto generate the post list
 	 *
@@ -68,7 +69,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 		return $this->getChildHtml('pager');
 	}
 	
-	/**
+	/*
 	 * Retrieve the correct renderer and template for $post
 	 *
 	 * @param \FishPig\WordPress\Model\Post $post
@@ -76,91 +77,35 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	 */
 	public function renderPost(\FishPig\WordPress\Model\Post $post)
 	{
-		if ($original = $this->_registry->registry($post::ENTITY)) {
-			$this->_registry->unregister($post::ENTITY);
-		}
-		
-		$this->_registry->register($post::ENTITY, $post);	
-
-		if ($html = $this->getChildHtml('renderer', false)) {
-			// Do nothing as we have generated the HTML from the render block above
-		}
-		else {
-			// No renderer child block set
-			// This block was probably included directly via PHP
-			// Fall back to post/list/renderer/default.phtml
-			$html = $this->getLayout()->createBlock('FishPig\WordPress\Block\Post')
-				->setTemplate($this->getRendererTemplate() ? $this->getRendererTemplate() : 'post/list/renderer/default.phtml')
-				->setPost($post)
-				->toHtml();
-		}
-		
-		$this->_registry->unregister($post::ENTITY);
-		
-		if ($original) {
-			$this->_registry->register($post::ENTITY, $original);	
-		}
-
-		return $html;
-	}
-	
-	/**
-	 * Hack required to get containers to clear the cache
-	 *
-	 * @param string $alias = ''
-	 * @param bool $useCache = true
-	 * @return string
-	**/
-	public function getChildHtml($alias = '', $useCache = true)
-	{
-		if (!$useCache && $alias !== '') {	
-			$childName = $this->getLayout()->getChildName($this->getNameInLayout(), $alias);
+		// Create post block
+		$postBlock = $this->getLayout()->createBlock('FishPig\WordPress\Block\Post')->setPost($post);
 			
-			if (!$childName) {
-				$childName = $alias;
-			}
-			
-			$this->_clearCacheOnContainers($childName);
-		}
+		// First try post type specific template then fall back to default
+		$templatesToTry = [
+			'FishPig_WordPress::post/list/renderer/' . $post->getPostType() . '.phtml',
+			'FishPig_WordPress::post/list/renderer/default.phtml'
+		];
 		
-		return parent::getChildHtml($alias, $useCache);
-	}
-	
-	/**
-	 * This method clears the block cache on child containers.
-	 * It does this by going through each block and regenerating the HTML
-	 * When the container is loaded, it always use the cache
-	 * As the cache has been regenerated with the correct content, this is okay
-	 *
-	 * @param string $containerName
-	 * @return $this
-	**/
-	protected function _clearCacheOnContainers($blockName)
-	{
-		$layout = $this->getLayout();
-		
-		if ($childNames = $layout->getChildNames($blockName)) {
-			foreach($childNames as $childName) {
-				if ($layout->isBlock($childName)) {
-					$layout->renderElement($childName, false);
-				}
-				else {
-					$this->_clearCacheOnContainers($childName);
-					$layout->renderElement($childName, false);
-				}
+		foreach($templatesToTry as $templateToTry) {
+			if ($this->getTemplateFile($templateToTry)) {
+				$postBlock->setTemplate($templateToTry);
+				break;
 			}
 		}
-		
-		return $this;
+
+		// Get HTML and return
+		return $postBlock->toHtml();
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 *
+	 *
+	 */
 	protected function _beforeToHtml()
 	{
 		if (!$this->getTemplate()) {
-			$this->setTemplate('post/list.phtml');
+			$this->setTemplate('FishPig_WordPress::post/list.phtml');
 		}
 		
 		return parent::_beforeToHtml();

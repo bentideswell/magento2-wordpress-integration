@@ -8,9 +8,34 @@
 ?>
 <?php if ($post = $this->getPost()): ?>
 	<div class="post-view">
-		<div class="post-entry std<?php if ($post->getFeaturedImage()): ?> post-entry-with-image<?php endif; ?>">
-			<div class="post-content"><?php echo $post->getPostContent() ?></div>
+		<div class="post-entry">
+			<?php if ($image = $post->getImage()): ?>
+				<div class="post-image">
+					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><img src="<?php echo $image->getAvailableImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/></a>
+				</div>
+			<?php endif; ?>
+			<?php if (($content = trim($post->getContent())) !== ''): ?>
+				<div class="post-content"><?php echo $content ?></div>
+			<?php endif; ?>
 		</div>
-		<?php echo $this->getChildHtml('meta') ?>
+		<div class="post-meta">
+			<?php if ($categoryString = $post->getTermCollectionAsString('category')): ?>
+				<div class="post-categories post-meta-item">
+					<strong><?php echo __('Categories') ?>:</strong> <?php echo $categoryString ?>
+				</div>
+			<?php endif; ?>
+			<?php if ($tagString = $post->getTermCollectionAsString('post_tag')): ?>
+				<div class="post-tags post-meta-item">
+					<strong><?php echo __('Tags') ?>:</strong> <?php echo $tagString ?>
+				</div>
+			<?php endif; ?>
+			<div class="post-date post-meta-item">
+				<strong><?php echo __('Posted On') ?>:</strong> <?php echo $post->getPostDate() ?>
+			</div>
+			<div class="post-user post-meta-item">
+				<strong><?php echo __('Posted By') ?>:</strong> <a href="<?php echo $post->getUser()->getUrl() ?>"><?php echo $post->getUser() ->getDisplayName() ?></a>
+			</div>
+		</div>
+		<?php echo $this->getChildHtml('comments') ?>
 	</div>
 <?php endif; ?>

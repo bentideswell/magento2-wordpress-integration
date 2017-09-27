@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!--
+/*
+ * This is the default layout for all post type view pages.
+ * All post types inherit this layout and have their own specific layout file
+ * Create any wordpress_posttype_view.xml files (where posttype is the actual post type) to target a specific post type
+ * To target the default posts, create wordpress_post_view.xml
+ */
+-->
+<page layout="2columns-left" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<body>
+		<referenceContainer name="content">
+			<block class="FishPig\WordPress\Block\Post\View" name="wp.post.view">
+				<block class="FishPig\WordPress\Block\Post\View\Comment\Wrapper" name="wp.post.view.comments" as="comments">
+					<block class="FishPig\WordPress\Block\Post\View\Comments" name="wp.post.view.comments.list" as="comment_list" template="post/view/comments.phtml" />
+					<block class="FishPig\WordPress\Block\Post\View\Comment\Pager" name="wp.post.view.comments.pager" as="pager"/>
+					<block class="FishPig\WordPress\Block\Post\View\Comment\Form" name="wp.post.view.comments.form" as="form" />
+				</block>
+			</block>
+		</referenceContainer>
+	</body>
+</page>

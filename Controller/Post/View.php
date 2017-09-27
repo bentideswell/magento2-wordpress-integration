@@ -111,6 +111,7 @@ class View extends \FishPig\WordPress\Controller\Action
     }
     
     $layoutHandles = array(
+      'wordpress_post_view_default',
       'wordpress_' . $postType . '_view',
       'wordpress_' . $postType . '_view_' . $post->getId(),
     );

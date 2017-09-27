@@ -1,0 +1,23 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     FishPig_WordPress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <ben@fishpig.co.uk>
+ */
+?>
+<?php if ($post = $this->getPost()): ?>
+	<div class="post-view">
+		<div class="post-entry">
+			<?php if ($image = $post->getImage()): ?>
+				<div class="post-image">
+					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><img src="<?php echo $image->getAvailableImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/></a>
+				</div>
+			<?php endif; ?>
+			<?php if (($content = trim($post->getContent())) !== ''): ?>
+				<div class="post-content"><?php echo $content ?></div>
+			<?php endif; ?>
+		</div>
+		<?php echo $this->getChildHtml('comments') ?>
+	</div>
+<?php endif; ?>
