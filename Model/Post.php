@@ -347,7 +347,17 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		return rtrim($this->getUrl(), '/') . '/feed/';
 	}
-	 
+
+	/*
+	 * Wrapper for self::getContent
+	 *
+	 * @return string
+	 */
+	public function getPostContent($context = 'default')
+	{
+		return $this->getContent($context);
+	}
+	
 	/**
 	 * Gets the post content
 	 *
