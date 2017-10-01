@@ -7,11 +7,6 @@ namespace FishPig\WordPress\Controller;
 abstract class Action extends \Magento\Framework\App\Action\Action
 {
 	/*
-	 * @const bool
-	 */
-	const DEBUG = false;
-
-	/*
 	 * @var 
 	 */
 	protected $app = null;
@@ -95,11 +90,6 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    return $this->getPage();
   	}
   	catch (\Exception $e) {
-  		if (self::DEBUG) {
-  			echo 'Exception: ' . $e->getMessage() . '<br/><br/><pre>' . $e->getTraceAsString() . '</pre>';
-  			exit;
-  		}
-  		
   		return $this->_getNoRouteForward();
   	}
   }

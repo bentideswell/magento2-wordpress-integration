@@ -103,8 +103,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 			}
 		}
 		catch (\Exception $e) {
-			echo sprintf('<h1>Exception</h1><p>%s</p><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
-			exit;
+			throw $e;
 		}
 		
 		return false;

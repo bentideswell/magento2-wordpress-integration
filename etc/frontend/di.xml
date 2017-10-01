@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
--->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<type name="Magento\Framework\App\RouterList">
 		<arguments>
@@ -16,5 +10,9 @@
 				</item>
 			</argument>
 		</arguments>
+	</type>
+	<!-- Inject any required assets -->
+	<type name="Magento\Framework\Controller\ResultInterface">
+		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\InjectContentAfterCache"  sortOrder="0" disabled="false"/>
 	</type>
 </config>

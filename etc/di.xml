@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
--->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<!-- Setup dynamic router -->
-    <type name="Magento\Framework\App\Router\ActionList">
-        <plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Plugin" sortOrder="10" disabled="false"/>
-    </type>
-    <!-- Add command line actions -->
-    <!--
-	<type name="Magento\Framework\Console\CommandList">
-		<arguments>
-			<argument name="commands" xsi:type="array">
-				<item name="fishpig_wordpress_install_theme" xsi:type="object">FishPig\WordPress\Console\Command\InstallThemeCommand</item>
-			</argument>
-		</arguments>
+	<type name="Magento\Framework\App\Router\ActionList">
+		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Plugin" sortOrder="10" disabled="false"/>
 	</type>
-	-->
 </config>

@@ -1,11 +1,12 @@
 <?php
-/**
- * @category Fishpig
- * @package Fishpig_Wordpress
- * @license http://fishpig.co.uk/license.txt
- * @author Ben Tideswell <ben@fishpig.co.uk>
+/*
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-namespace FishPig\WordPress\Observer;
+
+namespace FishPig\WordPress\Helper;
 
 use \FishPig\WordPress\Model\App;
 use \Magento\Framework\Registry;
@@ -14,12 +15,19 @@ use \Magento\Store\Model\StoreManagerInterface;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use \FishPig\WordPress\Helper\Filter;
 
-class InjectContent implements ObserverInterface
+class AssetInjector
 {
-	/**
+	/*
 	 *
-	**/
+	 */
 	const TMPL_TAG = '__FPTAG823434__';
+	
+	/*
+	 * Status determines whether already ran
+	 *
+	 * @var bool
+	 */
+	static protected $status = false;
 	
 	/*
 	 * @return
@@ -35,16 +43,22 @@ class InjectContent implements ObserverInterface
 	/*
 	 * @return
 	 */
-	public function execute(\Magento\Framework\Event\Observer $observer)
+	public function process($bodyHtml)
 	{
+		if (self::$status === true) {
+			return false;
+		}
+		
 		if (!$this->app->canRun() || $this->isApiRequest() || $this->isAjaxRequest()) {
-			return $this;
+			return false;
 		}
-
+		
 		if (!($shortcodes = $this->filter->getAssetInjectionShortcodes())) {
-			return $this;
+			return false;
 		}
-
+		
+		self::$status = true;
+		
 		$assets = [];
 		$inline = [];
 		
@@ -75,18 +89,16 @@ class InjectContent implements ObserverInterface
 		$assets = array_merge($assets, $inline);
 		
 		if (count($assets) === 0) {
-			return $this;
+			return false;
 		}
 
 		$content = implode("\n", $assets);
 
 		if (trim($content) === '') {
-			return;
+			return false;
 		}
 
 		// Now let's build the requireJS from $assets
-		$bodyHtml = $observer->getEvent()->getResponse()->getBody();
-
 		$baseUrl = $this->app->getWpUrlBuilder()->getSiteurl();
 		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 		$scripts = array();
@@ -172,9 +184,9 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 		}
 		
 		// Fingers crossed and let's go!
-		$observer->getEvent()->getResponse()->setBody(str_replace('</body>', $content . '</body>', $bodyHtml));
+		$bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
 		
-		return $this;
+		return $bodyHtml;
 	}
 	
 	/**
