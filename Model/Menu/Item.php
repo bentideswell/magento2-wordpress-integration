@@ -210,4 +210,60 @@ class Item extends Post
 		
 		return $this->_children;
 	}
+	
+	/*
+	 * Get menu item title
+	 *
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->getData('post_excerpt');
+	}
+	
+	/*
+	 * Get menu item description
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->getData('post_content');
+	}
+
+	/*
+	 * Get an array of custom CSS classes
+	 *
+	 * @return string
+	 */
+	public function getCssClass()
+	{
+		if (!$this->hasCssClass()) {
+			if ($classString = $this->getMetaValue('_menu_item_classes')) {
+				$this->setCssClass(implode(' ', unserialize($classString)));
+			}
+		}
+		
+		return $this->getData('css_class');
+	}
+	
+	/*
+	 * Get the item target parameter
+	 *
+	 * @return string
+	 */
+	public function getTarget()
+	{
+		return $this->getMetaValue('_menu_item_target');
+	}
+	
+	/*
+	 * Get the link relationship
+	 *
+	 * @return string
+	 */
+	public function getLinkRelationship()
+	{
+		return $this->getMetaValue('_menu_item_xfn');
+	}
 }

@@ -77,6 +77,10 @@ class Menu extends Term
 			'id' => 'wp-' . $node->getId(),
 			'label' => $node->getLabel(),
 			'url' => $node->getUrl(),
+			'css_class' => $node->getCssClass(),
+			'title' => $node->getTitle(),
+			'description' => $node->getDescription(),
+			'target' => $node->getTarget(),
 		);
 		
 		$children = $node->getChildrenItems();
