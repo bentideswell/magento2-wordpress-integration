@@ -13,6 +13,6 @@
 	</type>
 	<!-- Inject any required assets -->
 	<type name="Magento\Framework\Controller\ResultInterface">
-		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\InjectContentAfterCache"  sortOrder="0" disabled="false"/>
+		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Controller\Result\RequiredAssetsPlugin"  sortOrder="0" disabled="false"/>
 	</type>
 </config>
