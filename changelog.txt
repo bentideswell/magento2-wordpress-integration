@@ -1,2 +1,5 @@
+04/10/2017 - 1.2.0.7
+- Fixed issue with Magento 2.1.9 and lower
+
 01/10/2017 - 1.2.0.2
 - Modified asset injection to work with FPC
