@@ -43,8 +43,8 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	public function __construct(Context $context, App $app, Config $config, FilterProvider $filterProvider)
 	{
 		parent::__construct($context);
-		
-		$this->app = $app;
+
+		$this->app = $app->init();
 		$this->config = $config;
 		$this->filterProvider = $filterProvider;
 	}
