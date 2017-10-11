@@ -5,19 +5,24 @@
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block;
 
-class Context implements \Magento\Framework\ObjectManager\ContextInterface
+use \FishPig\WordPress\Model\App;
+use \FishPig\WordPress\Model\Config;
+use \FishPig\WordPress\Model\App\Url;
+use \FishPig\WordPress\Model\App\Factory;
+use \FishPig\WordPress\Helper\View;
+use \FishPig\WordPress\Helper\Plugin;
+use \Magento\Framework\Registry;
+use \Magento\Framework\ObjectManager\ContextInterface;
+
+class Context implements ContextInterface
 {
-	public function __construct(
-    	\FishPig\WordPress\Model\App $app,
-    	\FishPig\WordPress\Model\Config $config,
-    	\FishPig\WordPress\Model\App\Url $urlBuilder,
-    	\FishPig\WordPress\Model\App\Factory $factory,
-    	\FishPig\WordPress\Helper\View $viewHelper,
-		\Magento\Framework\Registry $registry
-	)
+	/*
+	 *
+	 *
+	 */
+	public function __construct(App $app, Config $config, Url $urlBuilder, Factory $factory, View $viewHelper, Plugin $pluginHelper, Registry $registry)
 	{
 		$this->_app = $app;
 		$this->_config = $config;
@@ -25,37 +30,76 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 		$this->_factory = $factory;
 		$this->_viewHelper = $viewHelper;
 		$this->_registry = $registry;
+		$this->_pluginHelper = $pluginHelper;
 	}	
 	
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getApp()
 	{
 		return $this->_app;
 	}
 	
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getConfig()
 	{
 		return $this->_config;
 	}
 	
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getUrlBuilder()
 	{
 		return $this->_urlBuilder;
 	}
 	
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getFactory()
 	{
 		return $this->_factory;
 	}
 	
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getViewHelper()
 	{
 		return $this->_viewHelper;
 	}
 	
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getRegistry()
 	{
 		return $this->_registry;
 	}
+	
+	/*
+	 *
+	 *
+	 * @return
+	 */
+	public function getPluginHelper()
+	{
+		return $this->_pluginHelper;
+	}
 }
-
-
