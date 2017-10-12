@@ -32,6 +32,11 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 	{
 		return $this->_request;
 	}
+	
+	public function getLayout()
+	{
+		return $this->_layout;
+	}
 
 	public function applyPageConfigData($pageConfig, $entity)
 	{

@@ -1,3 +1,6 @@
+12/10/2017 - 1.2.0.10
+- Added support for Yoast SEO template tags: %%page%%, %%pagenumber%% and %%pagetotal%%
+
 11/10/2017 - 1.2.0.9
 - Added support for the custom sidebars plugin
 

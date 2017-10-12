@@ -24,20 +24,20 @@ class Pager extends \Magento\Theme\Block\Html\Pager
 	**/	
 	protected $_config = null;
 	
-    /**
-     * Constructor
-     *
-     * @param Context $context
-     * @param App
-     * @param array $data
-     */
-    public function __construct(Context $context, App $app, Config $config, array $data = [])
-    {
-	    $this->_app = $app;
-	    $this->_config = $config;
+  /**
+   * Constructor
+   *
+   * @param Context $context
+   * @param App
+   * @param array $data
+   */
+  public function __construct(Context $context, App $app, Config $config, array $data = [])
+  {
+    $this->_app = $app;
+    $this->_config = $config;
 
-        parent::__construct($context, $data);
-    }
+    parent::__construct($context, $data);
+  }
     
     /**
 	 * Get the App model
