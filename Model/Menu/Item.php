@@ -240,7 +240,11 @@ class Item extends Post
 	{
 		if (!$this->hasCssClass()) {
 			if ($classString = $this->getMetaValue('_menu_item_classes')) {
-				$this->setCssClass(implode(' ', unserialize($classString)));
+				if (!is_array($classString)) {
+					$classString = unserialize($classString);
+				}
+				
+				$this->setCssClass(trim(implode(' ', $classString)));
 			}
 		}
 		
