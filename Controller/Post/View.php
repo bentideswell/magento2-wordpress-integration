@@ -115,14 +115,13 @@ class View extends \FishPig\WordPress\Controller\Action
       'wordpress_' . $postType . '_view',
       'wordpress_' . $postType . '_view_' . $post->getId(),
     );
-    
-    if (strpos($template, 'full-width') !== false) {
-      $this->getPage()->getConfig()->setPageLayout('1column');
-    
-      $layoutHandles[] = 'wordpress_' . $postType . '_view_full_width';
-      $layoutHandles[] = 'wordpress_' . $postType . '_view_full_width_' . $post->getId();
+
+    if ($template) {
+    	$templateName = str_replace('.php', '', $template);
+    	$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName;
+    	$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName . '_' . $post->getId();
     }
-    
+
     return array_merge(
       parent::getLayoutHandles(),
       $layoutHandles
