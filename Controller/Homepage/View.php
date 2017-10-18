@@ -44,8 +44,18 @@ class View extends \FishPig\WordPress\Controller\Action
 		return $crumbs;
 	}
 	
+	/*
+	 * Set the 'wordpress_front_page' handle if this is the front page
+	 *
+	 *
+	 * @return array
+	 */
 	public function getLayoutHandles()
 	{
+		if (!$this->getApp()->getBlogPageId()) {
+			return array_merge(['wordpress_front_page'], parent::getLayoutHandles());
+		}
+		
 		return parent::getLayoutHandles();
 	}
 }

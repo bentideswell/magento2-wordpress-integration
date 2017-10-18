@@ -112,9 +112,14 @@ class View extends \FishPig\WordPress\Controller\Action
     
     $layoutHandles = array(
       'wordpress_post_view_default',
-      'wordpress_' . $postType . '_view',
-      'wordpress_' . $postType . '_view_' . $post->getId(),
     );
+    
+		if ((int)$post->getId() === (int)$this->getApp()->getHomepagePageId()) {
+			$layoutHandles[] = 'wordpress_front_page';
+		}
+		
+    $layoutHandles[] = 'wordpress_' . $postType . '_view';
+    $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $post->getId();
 
     if ($template) {
     	$templateName = str_replace('.php', '', $template);
@@ -122,9 +127,7 @@ class View extends \FishPig\WordPress\Controller\Action
     	$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName . '_' . $post->getId();
     }
 
-    return array_merge(
-      parent::getLayoutHandles(),
-      $layoutHandles
-    );
+
+    return array_merge(parent::getLayoutHandles(), $layoutHandles);
   }
 }
