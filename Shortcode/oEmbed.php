@@ -10,21 +10,23 @@ namespace FishPig\WordPress\Shortcode;
 
 class oEmbed extends AbstractShortcode
 {
-	/**
-	 * Constructor
-	**/
-    public function __construct(
-	    \FishPig\WordPress\Model\App $app,
-    	\Magento\Framework\View\Element\Context $context, 
-	    \Magento\Framework\HTTP\Client\Curl $curl
-    )
-    {
-	    parent::__construct($app, $context);
-		
+	/*
+	 *
+	 *
+	 *
+	 */
+  public function __construct(
+    \FishPig\WordPress\Model\App $app,
+  	\Magento\Framework\View\Element\Context $context, 
+    \Magento\Framework\HTTP\Client\Curl $curl
+  )
+  {
+    parent::__construct($app, $context);
+	
 		$this->_curl = $curl;
-    }
+  }
     
-	/**
+	/*
 	 *
 	 *
 	 * @return 

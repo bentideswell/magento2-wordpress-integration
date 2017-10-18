@@ -144,6 +144,8 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		    }
 	    }
 		}
+		
+#		echo sprintf('<pre>%s</pre>', print_r($this->getPage()->getLayout()->getUpdate()->getHandles(), true));exit;
 
     return $this;
   }

@@ -13,6 +13,7 @@ use \Magento\Store\Model\StoreManager;
 use \Magento\Store\Model\App\Emulation;
 use \Magento\Framework\Module\Manager as ModuleManager;
 use \FishPig\WordPress\Helper\Plugin as PluginHelper;
+use \Magento\Framework\Module\ResourceInterface;
 
 class Integrate extends \Magento\Backend\Block\Template
 {
@@ -70,14 +71,31 @@ class Integrate extends \Magento\Backend\Block\Template
 	 * @var \Magento\Framework\Module\Manager
 	 *
 	 */
-	protected $moduleManager = null;
+	protected $moduleManager;
+
+	/*
+	 *
+	 * @var \Magento\Framework\Module\ResourceInterface
+	 *
+	 */
+	protected $resourceInterface;
 
 	/*
 	 *
 	 * 
 	 *
 	 */
-  public function __construct(Context $context, AppFactory $appFactory, WpUrlBuilder $urlBuilder, StoreManager $storeManager, Emulation $emulator, ModuleManager $moduleManager, PluginHelper $pluginHelper, array $data = [])
+  public function __construct(
+  	Context $context,
+  	AppFactory $appFactory,
+  	WpUrlBuilder $urlBuilder,
+  	StoreManager $storeManager,
+  	Emulation $emulator,
+  	ModuleManager $moduleManager,
+  	PluginHelper $pluginHelper,
+  	ResourceInterface $resourceInterface,
+  	array $data = []
+  )
   {
 		parent::__construct($context, $data);
 
@@ -86,6 +104,7 @@ class Integrate extends \Magento\Backend\Block\Template
 		$this->emulator = $emulator;
 		$this->moduleManager = $moduleManager;
 		$this->pluginHelper = $pluginHelper;
+		$this->resourceInterface = $resourceInterface;
 		
 		if ($this->_request->getParam('section') === 'wordpress') {
 			try {
@@ -149,7 +168,27 @@ class Integrate extends \Magento\Backend\Block\Template
 			}
 		}
 
-		return '<div class="messages">' . implode("\n", $messages) . '</div>';
+		return '<div class="messages">' . implode("\n", $messages) . '</div>'. $this->_getExtraHtml();
+	}
+
+	/*
+	 *
+	 * 
+	 *
+	 */
+	protected function _getExtraHtml()
+	{
+		$moduleVersion = $this->resourceInterface->getDbVersion('FishPig_WordPress');
+		
+		return "
+		<script>
+			require(['jquery'], function($){
+				$(document).ready(function() {
+					document.getElementById('wordpress_setup-head').innerHTML = 'Magento WordPress Integration - v" . $moduleVersion . "';
+				});
+			});
+		</script>
+		";	
 	}
 	
 	/*
