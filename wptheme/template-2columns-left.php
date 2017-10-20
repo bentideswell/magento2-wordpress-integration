@@ -1,6 +1,6 @@
 <?php
 /**
- * Template Name: Full Width (1 Column)
+ * Template Name: 2 Columns Left
  */
 
 get_template_part('index');

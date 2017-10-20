@@ -128,7 +128,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	// Add canonical
 
     if ($handles = $this->getLayoutHandles()) {
-			$handles = array_reverse($handles);
+#			$handles = array_reverse($handles);
 	
 		    foreach($handles as $handle) {
 				$this->getPage()->addHandle($handle);
