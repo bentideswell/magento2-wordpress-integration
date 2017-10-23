@@ -123,14 +123,12 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	**/
   protected function _initLayout()
   {
-	// Add blog feed URL
-	// Add blog comments feed URL
-	// Add canonical
-
+	  // Remove the default action layout handle
+	  // This allows controller to add handles in chosen order
+		$this->getPage()->getLayout()->getUpdate()->removeHandle($this->getPage()->getDefaultLayoutHandle());
+		
     if ($handles = $this->getLayoutHandles()) {
-#			$handles = array_reverse($handles);
-	
-		    foreach($handles as $handle) {
+	    foreach($handles as $handle) {
 				$this->getPage()->addHandle($handle);
 			}
 		}
@@ -144,8 +142,6 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		    }
 	    }
 		}
-		
-#		echo sprintf('<pre>%s</pre>', print_r($this->getPage()->getLayout()->getUpdate()->getHandles(), true));exit;
 
     return $this;
   }

@@ -106,13 +106,12 @@ class View extends \FishPig\WordPress\Controller\Action
     if ($postType == 'revision' && $post->getParentPost()) {
       $postType = $post->getParentPost()->getPostType();
       $template = $post->getParentPost()->getMetaValue('_wp_page_template');
-    } else {
+    }
+    else {
       $template = $post->getMetaValue('_wp_page_template');
     }
     
-    $layoutHandles = array(
-      'wordpress_post_view_default',
-    );
+    $layoutHandles = ['wordpress_post_view_default'];
     
 		if ((int)$post->getId() === (int)$this->getApp()->getHomepagePageId()) {
 			$layoutHandles[] = 'wordpress_front_page';
