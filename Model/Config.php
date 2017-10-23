@@ -1,33 +1,54 @@
 <?php
-/**
- * @category Fishpig
- * @package Fishpig_Wordpress
- * @license http://fishpig.co.uk/license.txt
- * @author Ben Tideswell <ben@fishpig.co.uk>
+/*
+ *
  */
 namespace FishPig\WordPress\Model;
 
+use \FishPig\WordPress\Model\Config\Reader;
+use \Magento\Framework\App\Config\ScopeConfigInterface;
+use \FishPig\WordPress\Model\App\ResourceConnection;
+use \Magento\Customer\Model\Session as CustomerSession;
+use \Magento\Store\Model\StoreManagerInterface;
+		
 class Config
 {
-	protected $_reader = null;
-	protected $_db = null;
-	protected $_scopeConfig = null;
-	protected $_customerSession = null;
-	protected $_options = array();
+	/*
+	 *
+	 */
+	protected $reader;
+	
+	/*
+	 *
+	 */
+	protected $db;
+	
+	/*
+	 *
+	 */
+	protected $scopeConfig;
+	
+	/*
+	 *
+	 */
+	protected $customerSession;
+	
+	/*
+	 *
+	 */
+	protected $resourceConnection;
+	
+	/*
+	 *
+	 */
+	protected $options = array();
 
-	public function __construct(
-		\FishPig\WordPress\Model\Config\Reader $reader,
-		\Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-		\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
-		\Magento\Customer\Model\Session $customerSession,
-		\Magento\Store\Model\StoreManagerInterface $storeManager
-	)
+	public function __construct(Reader $reader, ScopeConfigInterface $scopeConfig, ResourceConnection $resourceConnection, CustomerSession $customerSession, StoreManagerInterface $storeManager)
 	{
-		$this->_reader = $reader;
-		$this->_scopeConfig = $scopeConfig;
-		$this->_resource = $resourceConnection;
-		$this->_customerSession = $customerSession;
-		$this->_storeManager = $storeManager;
+		$this->reader = $reader;
+		$this->scopeConfig = $scopeConfig;
+		$this->resourceConnection = $resourceConnection;
+		$this->customerSession = $customerSession;
+		$this->storeManager = $storeManager;
 	} 
 
 	/**
@@ -35,10 +56,10 @@ class Config
 	 **/
 	public function getStoreConfigValue($key)
 	{
-		return $this->_scopeConfig->getValue(
+		return $this->scopeConfig->getValue(
 			$key,
 			\Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-			$this->_storeManager->getStore()->getId()
+			$this->storeManager->getStore()->getId()
 		);
 	}
 
@@ -47,10 +68,10 @@ class Config
 	 **/
 	public function getStoreConfigFlag($key)
 	{
-		return (int)$this->_scopeConfig->getValue(
+		return (int)$this->scopeConfig->getValue(
 			$key,
 			\Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-			$this->_storeManager->getStore()->getId()
+			$this->storeManager->getStore()->getId()
 		) === 1;
 	}
 
@@ -61,15 +82,23 @@ class Config
 	 */
 	public function getOption($key)
 	{
-		if (!isset($this->_options[$key])) {
-			$select = $this->_resource->getConnection()->select()
-				->from($this->_resource->getTable('wordpress_option'), 'option_value')
-				->where('option_name = ?', $key);
-
-			$this->_options[$key] = $this->_resource->getConnection()->fetchOne($select);
+		$storeId = $this->storeManager->getStore()->getId();
+		
+		if (!isset($this->options[$storeId])) {
+			$this->options[$storeId] = [];
 		}
 
-		return $this->_options[$key];
+		if (!isset($this->options[$storeId][$key])) {
+			$resource = $this->resourceConnection;
+			
+			$select = $resource->getConnection()->select()
+				->from($resource->getTable('wordpress_option'), 'option_value')
+				->where('option_name = ?', $key);
+
+			$this->options[$storeId][$key] = $resource->getConnection()->fetchOne($select);
+		}
+
+		return $this->options[$storeId][$key];
 	}
 
 	/**
@@ -93,7 +122,7 @@ class Config
 	 **/
 	public function getDbTableMapping($when = 'before_connect')
 	{
-		if ($config = $this->_reader->getValue('database/tables/table')) {
+		if ($config = $this->reader->getValue('database/tables/table')) {
 			$map = array();
 
 			foreach($config as $key => $value) {
@@ -134,7 +163,7 @@ class Config
 	 **/
 	public function getShortcodes()
 	{
-		if ($config = $this->_reader->getValue('shortcodes')) {
+		if ($config = $this->reader->getValue('shortcodes')) {
 			$shortcodes = [];
 			$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
 
@@ -179,7 +208,7 @@ class Config
 	 **/
 	public function getWidgets()
 	{
-		if ($config = $this->_reader->getValue('sidebar/widgets')) {
+		if ($config = $this->reader->getValue('sidebar/widgets')) {
 			$widgets = array();
 
 			foreach($config['widget'] as $widget) {
@@ -241,7 +270,7 @@ class Config
 	 **/
 	public function isLoggedIn()
 	{
-		return $this->_customerSession->isLoggedIn();
+		return $this->customerSession->isLoggedIn();
 	}
 
 	/**
@@ -251,7 +280,7 @@ class Config
 	 **/
 	public function getReader()
 	{
-		return $this->_reader;
+		return $this->reader;
 	}
 
 	/**
@@ -259,7 +288,7 @@ class Config
 	 **/
 	public function getLocaleCode()
 	{
-		return $this->_storeManager->getStore()->getLocaleCode();
+		return $this->storeManager->getStore()->getLocaleCode();
 	}
 	
   /*

@@ -4,4 +4,12 @@
 	<type name="Magento\Framework\App\Router\ActionList">
 		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Plugin" sortOrder="10" disabled="false"/>
 	</type>
+	<!-- Add blog links to XML sitemap -->
+	<type name="Magento\Sitemap\Model\ItemProvider\Composite">
+		<arguments>
+			<argument name="itemProviders" xsi:type="array">
+				<item name="wordpressPostProvider" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\Post</item>
+			</argument>
+		</arguments>
+	</type>
 </config>
