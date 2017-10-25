@@ -1,3 +1,6 @@
+25/10/2017 - 1.2.0.18
+- Added XML sitemap fix so that it works with Magento 2.2 and below.
+
 23/10/2017 - 1.2.0.17
 - Fixed issue that stopped the 'layout' attribute in some layout XML files from working.
 

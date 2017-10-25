@@ -7,11 +7,11 @@ namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\AppFactory;
 use \FishPig\WordPress\Model\App\Factory as WpFactory;
-use \Magento\Sitemap\Model\ItemProvider\ItemProviderInterface;
-use \Magento\Sitemap\Model\SitemapItemInterfaceFactory;
+/*use \Magento\Sitemap\Model\SitemapItemInterfaceFactory;*/
 use \Magento\Store\Model\App\Emulation;
+use \Magento\Framework\App\ObjectManager;
 
-abstract class AbstractItemProvider implements ItemProviderInterface
+abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 {
 	/*
 	 * @var \FishPig\WordPress\Model\App
@@ -33,12 +33,14 @@ abstract class AbstractItemProvider implements ItemProviderInterface
 	 * @param \FishPig\WordPress\Model\App
 	 * @param \Magento\Store\Model\App\Emulation
 	 */
-	public function __construct(AppFactory $appFactory, WpFactory $wpFactory, Emulation $emulation, SitemapItemInterfaceFactory $itemFactory)
+	public function __construct(AppFactory $appFactory, WpFactory $wpFactory, Emulation $emulation)
 	{
 		$this->appFactory = $appFactory;
 		$this->emulation  = $emulation;
 		$this->wpFactory  = $wpFactory;
-		$this->itemFactory = $itemFactory;
+		
+		// OM required as SitemapItemInterfaceFactory is not present in Magento 2.2 and below so constructor injection breaks compilation
+		$this->itemFactory = ObjectManager::getInstance()->create('Magento\Sitemap\Model\SitemapItemInterfaceFactory');
 	}
 	
 	/*
