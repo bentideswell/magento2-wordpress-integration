@@ -52,10 +52,12 @@ class View extends \FishPig\WordPress\Controller\Action
 	 */
 	public function getLayoutHandles()
 	{
+		$handles = ['wordpress_homepage_view'];
+		
 		if (!$this->getApp()->getBlogPageId()) {
-			return array_merge(['wordpress_front_page'], parent::getLayoutHandles());
+			$handles[] = 'wordpress_front_page';
 		}
 		
-		return parent::getLayoutHandles();
+		return array_merge($handles, parent::getLayoutHandles());
 	}
 }

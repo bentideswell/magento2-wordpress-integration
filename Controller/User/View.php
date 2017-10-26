@@ -29,10 +29,22 @@ class View extends \FishPig\WordPress\Controller\Action
     {
 	    return array_merge(	
 		    parent::_getBreadcrumbs(), [
-			'archives' => [
+				'archives' => [
 				'label' => __($this->_getEntity()->getName()),
 				'title' => __($this->_getEntity()->getName())
-			]]
-		);
+			]]);
     }
+    
+  /*
+	 *
+	 * @return array
+	 */
+  public function getLayoutHandles()
+  {
+    return array_merge(
+	    parent::getLayoutHandles(),
+	    ['wordpress_user_view']
+    );
+  }
+
 }

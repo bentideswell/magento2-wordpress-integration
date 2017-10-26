@@ -2,16 +2,15 @@
 /**
  *
 **/
-
 namespace FishPig\WordPress\Controller\Archive;
 
 class View extends \FishPig\WordPress\Controller\Action
 {    
-	/**
+	/*
 	 * Load the Archive model
 	 *
 	 * @return \FishPig\WordPress\Model\Archive
-	**/
+	 */
 	protected function _getEntity()
 	{
 		return $this->getFactory('Archive')->create()->load(
@@ -19,19 +18,30 @@ class View extends \FishPig\WordPress\Controller\Action
 		);
 	}
 	
-    /**
-	  * Get the blog breadcrumbs
-	  *
-	  * @return array
-	 **/
-    protected function _getBreadcrumbs()
-    {
-	    return array_merge(	
-		    parent::_getBreadcrumbs(), [
+  /*
+	 * Get the blog breadcrumbs
+	 *
+	 * @return array
+	 */
+  protected function _getBreadcrumbs()
+  {
+    return array_merge(	
+	    parent::_getBreadcrumbs(), [
 			'archives' => [
-				'label' => __($this->_getEntity()->getName()),
-				'title' => __($this->_getEntity()->getName())
-			]]
-		);
-    }
+			'label' => __($this->_getEntity()->getName()),
+			'title' => __($this->_getEntity()->getName())
+		]]);
+  }
+    
+  /*
+	 *
+	 * @return array
+	 */
+  public function getLayoutHandles()
+  {
+    return array_merge(
+	    parent::getLayoutHandles(),
+	    ['wordpress_archive_view']
+    );
+  }
 }

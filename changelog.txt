@@ -1,3 +1,6 @@
+26/10/2017 - 1.2.0.19
+- Fixed issue that stopped search, archive and homepage from displaying posts
+
 25/10/2017 - 1.2.0.18
 - Added XML sitemap fix so that it works with Magento 2.2 and below.
 
