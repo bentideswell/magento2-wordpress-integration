@@ -25,10 +25,11 @@ class View extends \FishPig\WordPress\Block\Post
 	protected function _beforeToHtml()
 	{
 		if (!$this->getTemplate()) {
+			$postTypeInstance = $this->getPost()->getTypeInstance();
 			$this->setTemplate('FishPig_WordPress::post/view.phtml');
-			
-			if ($this->getPost()->getPostType() !== 'post') {
-				$postTypeTemplate = 'FishPig_WordPress::' . $this->getPost()->getPostType() . '/view.phtml';
+
+			if ($postTypeInstance->getData('post_type') !== 'post') {
+				$postTypeTemplate = 'FishPig_WordPress::' . $postTypeInstance->getData('post_type') . '/view.phtml';
 
 				if ($this->getTemplateFile($postTypeTemplate)) {
 					$this->setTemplate($postTypeTemplate);
