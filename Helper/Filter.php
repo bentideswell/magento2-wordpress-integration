@@ -33,7 +33,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	/*
 	 * @var array
 	 */
-	protected $assetInjectionShortcodes = [];
+	static protected $assetInjectionShortcodes = [];
 	
 	/*
 	 *
@@ -90,7 +90,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 
 					// Check if shortcode requires JS/CSS injection
 					if ($shortcodeInstance->requiresAssetInjection()) {
-						$this->assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
+						self::$assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
 					}
 				}
 			}
@@ -100,9 +100,9 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			if (false) {
 				// Now go through shortcodes and check for required assets against $content
 				foreach($shortcodes as $alias => $shortcodeInstance) {
-					if (!isset($this->assetInjectionShortcodes[get_class($shortcodeInstance)])) {
+					if (!isset(self::$assetInjectionShortcodes[get_class($shortcodeInstance)])) {
 						if ($shortcodeInstance->requiresAssetInjection($content)) {
-							$this->assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
+							self::$assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
 						}
 					}
 				}
@@ -120,7 +120,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getAssetInjectionShortcodes()
 	{
-		return $this->assetInjectionShortcodes;
+		return self::$assetInjectionShortcodes;
 	}
 	
 	/*

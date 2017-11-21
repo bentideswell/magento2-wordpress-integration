@@ -13,6 +13,7 @@ use \FishPig\WordPress\Model\App\Url;
 use \FishPig\WordPress\Model\App\Factory;
 use \FishPig\WordPress\Helper\View;
 use \FishPig\WordPress\Helper\Plugin;
+use \FishPig\WordPress\Helper\Filter;
 use \Magento\Framework\Registry;
 use \Magento\Framework\ObjectManager\ContextInterface;
 
@@ -22,7 +23,7 @@ class Context implements ContextInterface
 	 *
 	 *
 	 */
-	public function __construct(App $app, Config $config, Url $urlBuilder, Factory $factory, View $viewHelper, Plugin $pluginHelper, Registry $registry)
+	public function __construct(App $app, Config $config, Url $urlBuilder, Factory $factory, View $viewHelper, Plugin $pluginHelper, Registry $registry, Filter $filterHelper)
 	{
 		$this->_app = $app;
 		$this->_config = $config;
@@ -31,6 +32,7 @@ class Context implements ContextInterface
 		$this->_viewHelper = $viewHelper;
 		$this->_registry = $registry;
 		$this->_pluginHelper = $pluginHelper;
+		$this->_filterHelper = $filterHelper;
 	}	
 	
 	/*
@@ -101,5 +103,15 @@ class Context implements ContextInterface
 	public function getPluginHelper()
 	{
 		return $this->_pluginHelper;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return
+	 */
+	public function getFilterHelper()
+	{
+		return $this->_filterHelper;
 	}
 }
