@@ -8,4 +8,4 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
 		<?php wp_head() ?>
 	</head>
-	<body>
+	<body <?php body_class() ?>>

@@ -62,7 +62,21 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	public function process($string, $object = null)
 	{
 		$content = trim($this->addParagraphTagsToString($string));
-		
+
+		return $this->doShortcode($string, $object);
+	}
+
+	/*
+	 * Go through each shortcode and try to apply
+	 * Finally go through each shortcode again to check if another shortcode
+	 * has handled it and if so add it to the assetInjectionShortcodes array
+	 *
+	 * @param $string
+	 * @param $object = null
+	 * @return string
+	 */
+	public function doShortcode($content, $object = null)
+	{
 		if ($shortcodes = $this->config->getShortcodes()) {
 			foreach($shortcodes as $alias => $shortcodeInstance) {
 				// Parse $content and try to inject shortcode HTML
@@ -70,6 +84,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 				
 				// Content has changed so check for injection
 				if ($content !== $newContent) {
+
 					// Update $content with the updated content
 					$content = $newContent;
 
@@ -93,11 +108,11 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 				}
 			}
 		}
-
+		
 		// Filter the content for {{block and {{widget
 		return $this->filterProvider->getPageFilter()->filter($content);
 	}
-
+	
 	/*
 	 *
 	 *
