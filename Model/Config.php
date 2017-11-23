@@ -189,6 +189,8 @@ class Config
 				$shortcodes[$sortOrder][$shortcode['id']] = $shortcodeInstance;
 			}
 
+			ksort($shortcodes, SORT_NUMERIC);
+
 			$final = array();
 
 			foreach($shortcodes as $groupedShortcodes) {
