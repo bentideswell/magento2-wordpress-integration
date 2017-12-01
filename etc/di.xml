@@ -12,4 +12,15 @@
 			</argument>
 		</arguments>
 	</type>
+	<!-- Add theme installation console command -->	
+	<!--
+	<type name="Magento\Framework\Console\CommandList">
+		<arguments>
+			<argument name="commands" xsi:type="array">
+				<item name="fishpig_wrdpress_theme_install" xsi:type="object">FishPig\WordPress\Console\Command\Theme\InstallCommand</item>
+				<item name="fishpig_wrdpress_theme_update"  xsi:type="object">FishPig\WordPress\Console\Command\Theme\UpdateCommand</item>
+			</argument>
+		</arguments>
+	</type>
+	-->
 </config>
