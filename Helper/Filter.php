@@ -12,6 +12,7 @@ use \Magento\Framework\App\Helper\Context;
 use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\Config;
 use \Magento\Cms\Model\Template\FilterProvider;
+use \Magento\Framework\Module\Dir\Reader;
 
 class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 {
@@ -30,6 +31,11 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
    */
   protected $_filterProvider;
     
+  /*
+	 * @var \Magento\Framework\Module\Dir\Reader
+	 */
+  protected $dirReader;
+  
 	/*
 	 * @var array
 	 */
@@ -40,13 +46,14 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 *
 	 * @return void
 	 */
-	public function __construct(Context $context, App $app, Config $config, FilterProvider $filterProvider)
+	public function __construct(Context $context, App $app, Config $config, FilterProvider $filterProvider, Reader $dirReader)
 	{
 		parent::__construct($context);
 
 		$this->app = $app->init();
 		$this->config = $config;
 		$this->filterProvider = $filterProvider;
+		$this->dirReader = $dirReader;
 	}
 	
 	/*
@@ -160,12 +167,16 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			return true;
 		}
 
-		$targetFile = $this->app->getPath() . DIRECTORY_SEPARATOR . $file;
+		// Get file from WordPress
+//	$targetFile = $this->app->getPath() . DIRECTORY_SEPARATOR . $file;
 
+		// Get file from Magento
+		$targetFile = $this->dirReader->getModuleDir('', 'FishPig_WordPress') . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
+		
 		if (!is_file($targetFile)) {
 			return false;
 		}
-		
+
 		$code = preg_replace('/\/\*\*.*\*\//Us', '', file_get_contents($targetFile));
 
 		$depends = array_flip($depends);
