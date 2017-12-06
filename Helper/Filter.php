@@ -68,7 +68,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function process($string, $object = null)
 	{
-		$content = trim($this->addParagraphTagsToString($string));
+		$string = trim($this->addParagraphTagsToString($string));
 
 		return $this->doShortcode($string, $object);
 	}

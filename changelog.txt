@@ -1,3 +1,7 @@
+06/12/2017 - 1.2.0.28
+- Fixed issue that stopped post content being converted to HTML.
+- Created WordPress code directory to store WP code files required by integration.
+
 26/10/2017 - 1.2.0.19
 - Fixed issue that stopped search, archive and homepage from displaying posts
 
