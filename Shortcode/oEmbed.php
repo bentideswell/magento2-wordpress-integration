@@ -66,6 +66,8 @@ class oEmbed extends AbstractShortcode
 			$value = "\n" . $this->getValue() . "\n";
 
 			foreach($sources as $source) {
+				$value = preg_replace('/<p>(' . $source['regex'] . ')<\/p>/Us', '$1', $value);
+				
 				if (preg_match_all('/\n(' . $source['regex'] . ')\n/', $value, $matches)) {
 					$urls = $matches[1];
 					
@@ -82,8 +84,7 @@ class oEmbed extends AbstractShortcode
 			
 			$this->setValue($value);
 		}
-		
-		
+
 		return $this;
 	}
 	
