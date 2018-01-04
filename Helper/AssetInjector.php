@@ -117,8 +117,24 @@ class AssetInjector
 				}
 			}
 		}
-		
+
 		if (count($scripts) > 0) {
+			/*
+			 * Migrate JS to Magento
+			 * Add define if required
+			 * Modify jQuery document ready events
+			 */
+			foreach($scripts as $skey => $script) {
+				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+					$originalScriptUrl = $matches[1];
+					$scripts[$skey] = str_replace($originalScriptUrl, $this->_migrateJsAndReturnUrl($originalScriptUrl), $script);
+				}
+			}
+
+			if ($this->canMergeGroups()) {
+				$scripts = $this->_mergeGroups($scripts);
+			}
+
 			// Used to set paths for each JS file in requireJs
 			$requireJsPaths = array(
 				'jquery-migrate' => $this->app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
@@ -126,33 +142,29 @@ class AssetInjector
 			
 			// JS Template for requireJs. This changes through foreach below
 			$requireJsTemplate = "require(['jquery'], function(jQuery) {
-require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
-	" . self::TMPL_TAG . "
+	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
+		" . self::TMPL_TAG . "
 });				
 });";
 
-			// Used to set correct tabs
-			$level = 1;
+			$level = 2;
 			
 			foreach($scripts as $skey => $script) {
-				$tabs = str_repeat("  ", $level);
+				$tabs = str_repeat("	", $level);
 				
 				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
 					$originalScriptUrl = $matches[1];
 					
-					$newScriptUrl = $this->_getRealJsUrl($originalScriptUrl); // Script might be rewritten
 					$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-					$requireJsPaths[$requireJsAlias] = $newScriptUrl; // Used to set paths
+					$requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
 					
 					$requireJsTemplate = str_replace(
 						self::TMPL_TAG,
-						$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . "\n" . $tabs . "});" . "\n",
+						$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . $tabs . "});" . "\n",
 						$requireJsTemplate
 					);
 					
 					$level++;
-					
-					$scripts[$skey] = str_replace($originalScriptUrl, $newScriptUrl, $script);
 				}
 				else {
 					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
@@ -160,7 +172,7 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 			}
 
 			// Remove final template variable placeholder
-			$requireJsTemplate = str_replace(self::TMPL_TAG, '', $requireJsTemplate);
+			$requireJsTemplate = str_replace(self::TMPL_TAG, 'jQuery(document).trigger(\'fishpig_ready\');', $requireJsTemplate);
 			
 			// Start of paths template
 			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
@@ -177,7 +189,7 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
 			
 			// Final JS including wrapping script tag
-			$requireJsFinal = "<script type=\"text/javascript\">" . $requireJsConfig . $requireJsTemplate . "</script>";
+			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
 			
 			// Add the final requireJS code to the $content array
 			$content .= $requireJsFinal;
@@ -187,24 +199,6 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 		$bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
 		
 		return $bodyHtml;
-	}
-	
-	/**
-	 *
-	 * @param string $s
-	 * @return string
-	**/
-	protected function _stripScriptTags($s)
-	{
-		return preg_replace(
-			'/<\/script>$/',
-			'',
-			preg_replace(
-				'/^<script[^>]{0,}>/',
-				'',
-				trim($s)
-			)
-		);
 	}
 	
 	/**
@@ -229,38 +223,81 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 	 * @param string $externalScriptUrlFull
 	 * @return string
 	**/
-	protected function _getRealJsUrl($externalScriptUrlFull)
+	protected function _migrateJsAndReturnUrl($externalScriptUrlFull)
+	{
+		// Check that the script is a local file
+		if (!$this->_isWordPressUrl($externalScriptUrlFull)) {
+			return $externalScriptUrlFull;
+		}
+
+		$forceRefresh			 = false;
+		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
+		$localScriptFile 	 = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
+		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . md5($externalScriptUrlFull) . '.js';
+		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
+
+		if (!$forceRefresh && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
+			return $newScriptUrl;
+		}
+			
+		$scriptContent = file_get_contents($localScriptFile);
+
+		$docReady = 'jQuery(document).ready(';
+		
+		if (stripos($scriptContent, $docReady) !== false) {
+			$scriptContent = str_replace($docReady, 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);
+		}
+
+		// Check whether the script supports AMD
+		if (strpos($scriptContent, 'define.amd') !== false) {
+			$scriptContent = "__d=define;define=null;\n" . $scriptContent . "\ndefine=__d;__d=null;";
+		}
+
+		@mkdir(dirname($newScriptFile));
+			
+		// Only write data if new script doesn't exist or local file has been updated
+		file_put_contents($newScriptFile, $scriptContent);
+			
+		return $newScriptUrl;
+	}
+
+	/**
+	 * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
+	 *
+	 * @param string $externalScriptUrlFull
+	 * @return string
+	**/
+	protected function _getMergedJsUrl(array $externalScriptUrlFulls)
 	{
 		$DS = DIRECTORY_SEPARATOR;
-		$externalScriptUrl = strpos($externalScriptUrlFull, '?') === false 
-			? $externalScriptUrlFull 
-			: substr($externalScriptUrlFull, 0, strpos($externalScriptUrlFull, '?'));
-
-		// Check that the script is a local file
-		if (strpos($externalScriptUrl, $this->app->getWpUrlBuilder()->getSiteUrl()) !== false) {
-			$localScriptFile = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
-			$scriptContent = file_get_contents($localScriptFile);
-
-			// Check whether the script supports AMD
-			if (strpos($scriptContent, 'define.amd') !== false) {
-				$newScriptFile = $this->directoryList->getPath('media') . $DS . 'js' . $DS . md5($externalScriptUrlFull) . '.js';
-				$newScriptUrl = $this ->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
-				
-				@mkdir(dirname($newScriptFile));
-				
-				// Only write data if new script doesn't exist or local file has been updated
-				if (!is_file($newScriptFile) || filemtime($localScriptFile) > filemtime($newScriptFile)) {
-					file_put_contents(
-						$newScriptFile, 
-						"__d=define;define=null;\n" . $scriptContent . "\ndefine=__d;__d=null;"
-					);
-				}
-				
-				return $newScriptUrl;
+		$baseMergedPath = $this->directoryList->getPath('media') . $DS . 'js' . $DS;
+		$scriptContents = array();
+		
+		foreach($externalScriptUrlFulls as $externalScriptUrlFull) {
+			$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
+			
+			if ($this->_isMigratedUrl($externalScriptUrl)) {
+				$localScriptFile = $baseMergedPath . basename($externalScriptUrl);
 			}
+			else {
+				$localScriptFile = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
+			}
+			
+			$scriptContents[] = file_get_contents($localScriptFile);
 		}
 		
-		return $externalScriptUrl;
+		$scriptContent = implode("\n\n", $scriptContents);
+		$newScriptFile = $baseMergedPath . md5(implode('-', $externalScriptUrlFulls) . rand(1, 99999)) . '.js';
+		$newScriptUrl = $this ->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
+				
+		@mkdir(dirname($newScriptFile));
+				
+		// Only write data if new script doesn't exist or local file has been updated
+		if (!is_file($newScriptFile) || filemtime($localScriptFile) > filemtime($newScriptFile)) {
+			file_put_contents($newScriptFile, $scriptContent);
+		}
+
+		return $newScriptUrl;
 	}
 	
 	/*
@@ -288,4 +325,103 @@ require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
 	{
 		return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
 	}
+
+	/*
+	 * Determine whether the URL is a WordPress URL
+	 *
+	 * @param string $url
+	 * @return bool
+	 */
+	protected function _isWordPressUrl($url)
+	{
+		return strpos($this->_cleanQueryString($url), $this->app->getWpUrlBuilder()->getSiteUrl()) === 0;
+	}
+
+	/*
+	 * Determine whether the URL is a JS URL from WordPress that has been migrated into Magento
+	 *
+	 * @param string $url
+	 * @return bool
+	 */
+	protected function _isMigratedUrl($url)
+	{
+		return strpos($this->_cleanQueryString($url), $this->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/') === 0;		
+	}
+	
+	/*
+	 * Clean the query string from the url
+	 *
+	 * @param string $url
+	 * @return string
+	 */
+	protected function _cleanQueryString($url)
+	{
+		return strpos($url, '?') === false ? $url : substr($url, 0, strpos($url, '?'));
+	}
+
+	/**
+	 *
+	 * @param string $s
+	 * @return string
+	**/
+	protected function _stripScriptTags($s)
+	{
+		return preg_replace(
+			'/<\/script>$/',
+			'',
+			preg_replace(
+				'/^<script[^>]{0,}>/',
+				'',
+				trim($s)
+			)
+		);
+	}
+
+	/*
+	 * Determine whether to merge groups
+	 * This is currently disabled
+	 *
+	 * @return bool
+	 */
+	public function canMergeGroups()
+	{
+		return false;
+	}
+
+	/*
+	 * Merge JS files where possible
+	 *
+	 * @param array $scripts
+	 * @return array
+	 */
+	protected function _mergeGroups($scripts)
+	{
+		$buffer = array();
+		$bkey = 1;
+		
+		// Create $buffer for merged groups
+		foreach($scripts as $skey => $script) {
+			if (preg_match('/<script[^>]+src=[\'"]{1}(.*)[\'"]{1}/U', $script, $smatch)) {
+				if ($this->_isWordPressUrl($smatch[1]) || $this->_isMigratedUrl($smatch[1])) {
+					$buffer[$bkey][] = $smatch[1];
+					continue;
+				}
+			}
+
+			$bkey++;
+			$buffer[$bkey] = $script;
+			$bkey++;
+		}
+
+		$scripts = $buffer;
+
+		// Merge groups
+		foreach($scripts as $skey => $script) {
+			if (is_array($script)) {
+				$scripts[$skey] = '<script type="text/javascript" src="' . $this->_getMergedJsUrl($script) . '"></script>';
+			}
+		}
+		
+		return $scripts;
+	} 
 }
