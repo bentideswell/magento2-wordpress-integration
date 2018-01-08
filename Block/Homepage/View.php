@@ -10,15 +10,22 @@ namespace FishPig\WordPress\Block\Homepage;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
-	/**
+	/*
+	 *
 	 * @return
-	 **/
+	 */
 	public function getEntity()
 	{
-		return $this->_registry->registry('wordpress_homepage');
+		if (!$this->hasEntity()) {
+			$homepage = $this->_registry->registry('wordpress_homepage');
+			
+			$this->setData('entity', $homepage->getBlogPage() ? $homepage->getBlogPage() : $homepage);
+		}
+		
+		return $this->getData('entity');
 	}
 	
-	/**
+	/*
 	 * Retrieve the tag line set in the WordPress Admin
 	 *
 	 * @return string
@@ -28,7 +35,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 		return trim($this->getEntity()->getContent());
 	}
 	
-	/**
+	/*
 	 * Returns the blog homepage URL
 	 *
 	 * @return string
@@ -38,7 +45,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 		return $this->getEntity()->getUrl();
 	}
 	
-	/**
+	/*
 	 * Determine whether the first page of posts are being displayed
 	 *
 	 * @return bool
@@ -48,15 +55,13 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 		return $this->getRequest()->getParam('page', '1') === '1';
 	}
 	
-	/**
+	/*
 	 * Generates and returns the collection of posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return 
 	 */
 	protected function _getPostCollection()
 	{
-		return parent::_getPostCollection()
-			->addStickyPostsToCollection()
-			->addPostTypeFilter('post');
+		return parent::_getPostCollection()->addStickyPostsToCollection()->addPostTypeFilter('post');
 	}
 }

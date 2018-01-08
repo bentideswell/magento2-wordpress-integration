@@ -10,15 +10,27 @@ namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 
 abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 {
+	/*
+	 *
+	 *
+	 */
 	abstract public function getEntity();
-	
+
+	/*
+	 *
+	 *
+	 */	
 	protected function _prepareLayout()
 	{
 		$this->_viewHelper->applyPageConfigData($this->pageConfig, $this->getEntity());
 
 		return parent::_prepareLayout();
 	}
-	
+
+	/*
+	 *
+	 *
+	 */
 	public function getIntroText()
 	{
 		return $this->getEntity()->getContent();
@@ -38,9 +50,6 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 			
 			$collection->setFlag('after_load_event_name', $this->_getPostCollectionEventName() . '_after_load');
 			$collection->setFlag('after_load_event_block', $this);
-
-#			Mage::dispatchEvent('wordpress_post_collection_before_load', array('block' => $this, 'collection' => $collection));
-#			Mage::dispatchEvent($this->_getPostCollectionEventName() . '_before_load', array('block' => $this, 'collection' => $collection));
 		}
 
 		return $this->_getData('post_collection');

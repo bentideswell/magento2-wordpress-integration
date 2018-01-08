@@ -44,7 +44,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	**/
 	public function getUrl()
 	{
-		if ($blogPage = $this->_getBlogPage()) {
+		if ($blogPage = $this->getBlogPage()) {
 			return $blogPage->getUrl();	
 		}
 		
@@ -66,7 +66,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 *
 	 * @return 
 	**/
-	protected function _getBlogPage()
+	public function getBlogPage()
 	{
 		if ($this->_blogPage !== null) {
 			return $this->_blogPage;
