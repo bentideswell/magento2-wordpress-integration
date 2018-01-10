@@ -122,7 +122,9 @@ function fishpig_preview_post_link($previewLink, $post) {
 	return $previewLink . '&fishpig=' . time();
 }
 
-@include(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
+if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php')) {
+	@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
+}
 
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
