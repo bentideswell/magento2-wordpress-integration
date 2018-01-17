@@ -323,4 +323,14 @@ class Type extends AbstractPostType implements ViewableInterface
 	{
 		return $this->getData('labels/name');
 	}
+	
+	/*
+	 * Determine whether post's of this type are included in the search
+	 *
+	 * @return bool
+	 */
+	public function isSearchable()
+	{
+		return (int)$this->getData('exclude_from_search') === 0;
+	}
 }

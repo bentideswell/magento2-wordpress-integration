@@ -38,5 +38,4 @@ class View extends \FishPig\WordPress\Controller\Action
 	    ['wordpress_search_view']
     );
   }
-
 }

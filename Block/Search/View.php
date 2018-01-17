@@ -10,6 +10,11 @@ namespace FishPig\WordPress\Block\Search;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
+	/*
+	 *
+	 *
+	 * @return
+	 */
 	public function getEntity()
 	{
 		return $this->_registry->registry('wordpress_search');
@@ -24,14 +29,24 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	{
 		$collection = parent::_getPostCollection()->addSearchStringFilter($this->_getParsedSearchString(), array('post_title', 'post_content'));
 				
-		if ($postTypes = $this->getRequest()->getParam('post_type')) {
-			$collection->addPostTypeFilter($postTypes);
-		}
-		else {
-			$collection->addPostTypeFilter(array('post', 'page'));
+		$searchablePostTypes = $this->getRequest()->getParam('post_type');
+		
+		if (!$searchablePostTypes) {
+			$postTypes = $this->_app->getPostTypes();
+			$searchablePostTypes = array();
+			
+			foreach($postTypes as $postType) {
+				if ($postType->isSearchable()) {
+					$searchablePostTypes[] = $postType->getPostType();
+				}
+			}
 		}
 		
-		return $collection;
+		if (!$searchablePostTypes) {
+			$searchablePostTypes = array('post', 'page');
+		}
+		
+		return $collection->addPostTypeFilter($searchablePostTypes);
 	}
 	
 	/**
@@ -66,7 +81,6 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	public function getSearchTerm($escape = false)
 	{
 		return $this->getEntity()->getSearchTerm($escape);
-		return urldecode($this->helper('wordpress/router')->getSearchTerm($escape, $this->getSearchVar()));
 	}
 	
 	/**

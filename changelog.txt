@@ -1,3 +1,6 @@
+17/01/2018 - 1.2.2.2
+- Any custom post types that don't have exclude_from_search=1 will be included in the search.
+
 04/01/2018 - 1.2.1.0
 - Improved AssetInjector to fix issue around jQuery document event types. This fixes issues with Visual Composer
 
