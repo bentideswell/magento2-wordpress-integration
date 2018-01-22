@@ -1,3 +1,6 @@
+22/01/2018 - 1.2.2.3
+- Added fix for limiting search to specific post types (<input type="hidden" name="post_type[]" value="your_post_type"/>)
+
 17/01/2018 - 1.2.2.2
 - Any custom post types that don't have exclude_from_search=1 will be included in the search.
 
