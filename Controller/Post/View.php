@@ -68,11 +68,15 @@ class View extends \FishPig\WordPress\Controller\Action
     $postType = $this->getEntityObject()->getTypeInstance();
   
     if (!$postType->isDefault() && $postType->hasArchive()) {
-      $crumbs['post_type'] = [
-        'label' => __($postType->getName()),
-        'title' => __($postType->getName()),
-        'link' => $postType->getUrl(),
-      ];
+	    if ($crumbObjects = $postType->getBreadcrumbStructure($this->getEntityObject())) {
+		    foreach($crumbObjects as $crumbType => $crumbObject) {
+		      $crumbs[$crumbType] = [
+		        'label' => __($crumbObject->getName()),
+		        'title' => __($crumbObject->getName()),
+		        'link' => $crumbObject->getUrl(),
+		      ];
+		    }
+	    }
     }
 		
 		if ($postType->isHierarchical()) {

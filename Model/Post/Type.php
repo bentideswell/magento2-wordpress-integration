@@ -333,4 +333,28 @@ class Type extends AbstractPostType implements ViewableInterface
 	{
 		return (int)$this->getData('exclude_from_search') === 0;
 	}
+	
+	public function getBreadcrumbStructure($post)
+	{
+		$tokens = explode('/', trim($this->getSlug(), '/'));
+
+		$objects = [];
+		
+		foreach($tokens as $token) {
+			if ($token === $this->getPostType()) {
+				if ($this->hasArchive()) {
+					$objects['post_type'] = $this;
+				}
+			}
+			else if (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
+				if ($taxonomy = $this->_app->getTaxonomy(substr($token, 1, -1))) {
+					if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
+						$objects[$taxonomy->getTaxonomy()] = $term;
+					}
+				}
+			}
+		}
+
+		return $objects ? $objects : false;
+	}
 }
