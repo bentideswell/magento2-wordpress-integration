@@ -66,30 +66,16 @@ class View extends \FishPig\WordPress\Controller\Action
   
     // Handle post type breadcrumb
     $postType = $this->getEntityObject()->getTypeInstance();
-  
-    if (!$postType->isDefault() && $postType->hasArchive()) {
-	    if ($crumbObjects = $postType->getBreadcrumbStructure($this->getEntityObject())) {
-		    foreach($crumbObjects as $crumbType => $crumbObject) {
-		      $crumbs[$crumbType] = [
-		        'label' => __($crumbObject->getName()),
-		        'title' => __($crumbObject->getName()),
-		        'link' => $crumbObject->getUrl(),
-		      ];
-		    }
+
+    if ($crumbObjects = $postType->getBreadcrumbStructure($this->getEntityObject())) {
+	    foreach($crumbObjects as $crumbType => $crumbObject) {
+	      $crumbs[$crumbType] = [
+	        'label' => __($crumbObject->getName()),
+	        'title' => __($crumbObject->getName()),
+	        'link' => $crumbObject->getUrl(),
+	      ];
 	    }
     }
-		
-		if ($postType->isHierarchical()) {
-			$parent = $this->_getEntity();
-			
-			while(($parent = $parent->getParentPost()) !== false) {
-		    $crumbs['parent_post_' . $parent->getId()] = [
-		      'label' => __($parent->getName()),
-		      'title' => __($parent->getName()),
-		      'link'  => $parent->getUrl()
-		    ];
-			}
-		}
 
     $crumbs['post'] = [
       'label' => __($this->_getEntity()->getName()),

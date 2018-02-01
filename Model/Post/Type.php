@@ -342,16 +342,24 @@ class Type extends AbstractPostType implements ViewableInterface
 		
 		foreach($tokens as $token) {
 			if ($token === $this->getPostType()) {
-				if ($this->hasArchive()) {
+				if (!$this->isDefault() && $this->hasArchive()) {
 					$objects['post_type'] = $this;
 				}
 			}
 			else if (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
 				if ($taxonomy = $this->_app->getTaxonomy(substr($token, 1, -1))) {
 					if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
-						$objects[$taxonomy->getTaxonomy()] = $term;
+						$objects[$taxonomy->getTaxonomyType()] = $term;
 					}
 				}
+			}
+		}
+		
+		if ($this->isHierarchical()) {
+			$parent = $post;
+			
+			while(($parent = $parent->getParentPost()) !== false) {
+		    $objects['parent_post_' . $parent->getId()] = $parent;
 			}
 		}
 
