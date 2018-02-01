@@ -78,7 +78,9 @@ class Url
 	 **/
 	public function getSiteurl($extra = '')
 	{
-		return rtrim(rtrim($this->_config->getOption('siteurl'), '/') . '/' . ltrim($extra, '/'), '/');
+		$siteUrl = defined('FISHPIG_WP_SITEURL') ? FISHPIG_WP_SITEURL : $this->_config->getOption('siteurl');
+		
+		return rtrim(rtrim($siteUrl, '/') . '/' . ltrim($extra, '/'), '/');
 	}
 	
 	/**
@@ -88,7 +90,9 @@ class Url
 	 **/
 	public function getHomeUrl()
 	{
-		return rtrim($this->_config->getOption('home'), '/');
+		$home = defined('FISHPIG_WP_HOME') ? FISHPIG_WP_HOME : $this->_config->getOption('home');
+		
+		return rtrim($home, '/');
 	}
 
 	/**

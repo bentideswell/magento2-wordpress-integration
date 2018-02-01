@@ -117,6 +117,9 @@ class App
 			// This will load the wp-config.php values
 			$this->getWpConfigValue();
 			
+			// Define the WP config values globally as WP does
+			$this->_defineWpConfigValues();
+			
 			// Use the wp-config.php values to connect to the DB
 			$this->_initResource();
 			
@@ -224,6 +227,24 @@ class App
 		}
 		
 		return isset($this->wpconfig[$key]) ? $this->wpconfig[$key] : false;
+	}
+	
+	/*
+	 * Define the WP Config definitions 
+	 *
+	 * @return $this
+	 */
+	protected function _defineWpConfigValues()
+	{
+		foreach($this->getWpConfigValue() as $key => $value) {
+			$key = 'FISHPIG_' . $key;
+			
+			if (!defined($key))	{
+				define($key, $value);
+			}
+		}
+		
+		return $this;
 	}
 	
 	/*

@@ -8,10 +8,10 @@ use Magento\Framework\App\RequestInterface;
 
 class Router implements \Magento\Framework\App\RouterInterface
 {
-    /**
-     * @var ActionFactory
-     */
-    protected $actionFactory;
+  /**
+   * @var ActionFactory
+   */
+  protected $actionFactory;
 
 	/**
 	 * @var FishPig\WordPress\Model\App
@@ -50,11 +50,11 @@ class Router implements \Magento\Framework\App\RouterInterface
     	\Magento\Framework\App\Request\Http $request
     )
     {
-        $this->actionFactory = $actionFactory;
-        $this->_app = $app;
-        $this->_wpUrlBuilder = $urlBuilder;
-        $this->_postResourceFactory = $postResourceFactory;
-        $this->request = $request;
+      $this->actionFactory = $actionFactory;
+      $this->_app = $app;
+      $this->_wpUrlBuilder = $urlBuilder;
+      $this->_postResourceFactory = $postResourceFactory;
+      $this->request = $request;
     }
 
     /**

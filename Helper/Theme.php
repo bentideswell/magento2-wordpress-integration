@@ -66,6 +66,16 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 		
 		return $this;
 	}
+	
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function getPath()
+	{
+		return $this->_path;
+	}
 
 	/*
 	 *
