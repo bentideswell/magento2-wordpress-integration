@@ -21,7 +21,8 @@ class NavMenu extends AbstractWidget
 			$this->setMenu(false);
 
 			$menu = $this->_factory->getFactory('Menu')->create()->load($this->_getData('nav_menu'));
-			if ($menu) {
+
+			if ($menu->getId()) {
 				$this->setMenu($menu);
 			}
 		}
@@ -59,7 +60,11 @@ class NavMenu extends AbstractWidget
 	 */
 	public function getTreeHtml()
 	{
-		return $this->_getTreeHtmlLevel(0, $this->getMenu()->getMenuTreeObjects());
+		if ($this->getMenu()) {
+			return $this->_getTreeHtmlLevel(0, $this->getMenu()->getMenuTreeObjects());
+		}
+		
+		return '';
 	}
 
 	/**
