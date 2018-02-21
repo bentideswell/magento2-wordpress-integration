@@ -17,9 +17,12 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	public function getEntity()
 	{
 		if (!$this->hasEntity()) {
-			$homepage = $this->_registry->registry('wordpress_homepage');
-			
-			$this->setData('entity', $homepage->getBlogPage() ? $homepage->getBlogPage() : $homepage);
+			if ($homepage = $this->_registry->registry('wordpress_homepage')) {
+				$this->setData('entity', $homepage->getBlogPage() ? $homepage->getBlogPage() : $homepage);
+			}
+			else {
+				$this->setData('entity', false);
+			}
 		}
 		
 		return $this->getData('entity');
