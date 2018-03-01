@@ -157,7 +157,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	public function addObjectIdFilter($objectId)
 	{
 		if (is_array($objectId)) {
-			$objectId = array('IN' => $objectId);
+			$objectId = array('in' => $objectId);
 		}
 		
 		return $this->_joinRelationshipTable()->addFieldToFilter('object_id', $objectId);

@@ -23,6 +23,26 @@ class View extends \FishPig\WordPress\Controller\Action
 	}
 
 	/*
+	 * @return
+	 */
+	protected function _getForward()
+	{
+  	if ($entity = $this->_getEntity()) {
+  		if ($homepageId = (int)$this->getApp()->getHomepagePageId()) {
+  			return $this->resultFactory
+  				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+  				->setModule('wordpress')
+  				->setController('post')
+  				->setParams(array('no_forward' => 1, 'id' => $homepageId))
+  				->forward('view');
+  		}
+
+		}
+		
+		return parent::_getForward();
+	}
+	
+	/*
 	 * Get the blog breadcrumbs
 	 *
 	 * @return array

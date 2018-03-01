@@ -214,7 +214,7 @@ class App
 				}
 			}
 
-			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-z0-9_]+)\\1/', $wpConfig, $match)) {
+			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
 				$this->wpconfig['DB_TABLE_PREFIX'] = $match[2];
 			}
 			else {
