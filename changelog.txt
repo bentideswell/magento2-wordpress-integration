@@ -1,5 +1,6 @@
-01/03/2018 - 1.2.2.9
+01/03/2018 - 1.2.2.10
 - Added fix for using page as WordPress homepage
+- Added Blog breadcrumb when using /blog/ in permalink structure.
 
 22/01/2018 - 1.2.2.3
 - Added fix for limiting search to specific post types (<input type="hidden" name="post_type[]" value="your_post_type"/>)

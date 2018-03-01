@@ -353,6 +353,13 @@ class Type extends AbstractPostType implements ViewableInterface
 					}
 				}
 			}
+			else if (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
+				$parent = $this->_app->getFactory()->getFactory('Post')->create()->setPostType('page')->load($token, 'post_name');
+				
+				if ($parent->getId()) {
+		    	$objects['parent_post_' . $parent->getId()] = $parent;
+				}
+			}
 		}
 		
 		if ($this->isHierarchical()) {
