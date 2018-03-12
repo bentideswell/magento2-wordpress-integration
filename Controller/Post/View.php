@@ -62,6 +62,10 @@ class View extends \FishPig\WordPress\Controller\Action
    */
   protected function _getBreadcrumbs()
   {
+ 		if ((int)$this->_getEntity()->getId() === (int)$this->getApp()->getHomepagePageId()) {
+	 		return [];
+	 	}
+	 	
     $crumbs = parent::_getBreadcrumbs();
   
     // Handle post type breadcrumb
@@ -80,8 +84,8 @@ class View extends \FishPig\WordPress\Controller\Action
     $crumbs['post'] = [
       'label' => __($this->_getEntity()->getName()),
       'title' => __($this->_getEntity()->getName())
-    ];
-  
+    ];  
+
     return $crumbs;
   }
     
