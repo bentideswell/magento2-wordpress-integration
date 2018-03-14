@@ -64,7 +64,7 @@ class AssetInjector
 		
 		// Get assets from plugins
 		foreach($shortcodes as $class => $shortcodeInstance) {
-			if ($buffer = $shortcodeInstance->getRequiredAssets()) {
+			if ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml)) {
 				$assets = array_merge($assets, $buffer);
 			}
 		}

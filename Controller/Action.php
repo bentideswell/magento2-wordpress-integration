@@ -90,6 +90,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    return $this->getPage();
   	}
   	catch (\Exception $e) {
+	  	echo $e->getMessage() . '<br/><pre>' . $e->getTraceAsString();exit;
   		return $this->_getNoRouteForward();
   	}
   }

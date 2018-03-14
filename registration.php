@@ -11,7 +11,7 @@
 		'FishPig_WordPress',
 		__DIR__
 	);
-	
+
 	/*
 	 * Protection against installing module in incorrect directory
 	**/
