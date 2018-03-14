@@ -125,9 +125,35 @@ class AssetInjector
 			 * Modify jQuery document ready events
 			 */
 			foreach($scripts as $skey => $script) {
+				if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
+					if ($match[2] !== 'text/javascript') {
+						unset($scripts[$skey]);
+						continue;
+					}
+				}
+				
 				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
 					$originalScriptUrl = $matches[1];
-					$scripts[$skey] = str_replace($originalScriptUrl, $this->_migrateJsAndReturnUrl($originalScriptUrl), $script);
+					
+					// This is needed to fix ../ in URLs
+					$realPathUrl = $originalScriptUrl;
+					
+					if (strpos($originalScriptUrl, '../') !== false) {
+						$urlParts = explode('/', $originalScriptUrl);
+						
+						while(($key = array_search('..', $urlParts)) !== false) {
+							if (!isset($urlParts[$key-1])) {
+								break;
+							}
+
+							unset($urlParts[$key-1]);
+							unset($urlParts[$key]);
+						}
+						
+						$realPathUrl = implode('/', $urlParts);
+					}
+
+					$scripts[$skey] = str_replace($originalScriptUrl, $this->_migrateJsAndReturnUrl($realPathUrl), $script);
 				}
 			}
 
