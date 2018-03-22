@@ -34,6 +34,9 @@ class Homepage extends AbstractModel implements ViewableInterface
 	**/
 	public function getName()
 	{
+		if ($blogPage = $this->_getBlogPage()) {
+			return $blogPage->getName();
+		}
 		return $this->_viewHelper->getBlogName();
 	}
 
