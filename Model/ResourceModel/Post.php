@@ -378,7 +378,7 @@ class Post extends AbstractMeta
 	 * Retrieve a collection of post comments
 	 *
 	 * @param \FishPig\WordPress\Model\Post $post
-	 * @return \FishPig\WordPress\Model\ResourceModel\Post_Comment_Collection
+	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
