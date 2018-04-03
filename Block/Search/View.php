@@ -27,8 +27,9 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	protected function _getPostCollection()
 	{
-		$collection = parent::_getPostCollection()->addSearchStringFilter($this->_getParsedSearchString(), array('post_title', 'post_content'));
-				
+		$collection = parent::_getPostCollection()	
+			->addSearchStringFilter($this->_getParsedSearchString(), array('post_title' => 5, 'post_content' => 1));
+
 		$searchablePostTypes = $this->getRequest()->getParam('post_type');
 		
 		if (!$searchablePostTypes) {

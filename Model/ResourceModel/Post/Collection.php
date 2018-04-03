@@ -374,23 +374,66 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	public function addSearchStringFilter(array $words, array $fields)
 	{
 		if (count($words) > 0) {
-			foreach($words as $word) {
+			$db = $this->getConnection();
+			
+			// Set word as key and weight (value) to 1
+			$words = array_fill_keys(array_unique($words), 1);
+
+			// Ensure main query only contains correct posts
+			foreach($words as $word => $wordWeight) {
 				$conditions = array();
 
-				foreach($fields as $key => $field) {
-					$conditions[] = $this->getConnection()->quoteInto('`main_table`.`' . $field . '` LIKE ?', '%' . $word . '%');
+				foreach($fields as $field => $fieldWeight) {
+					$conditions[] = $db->quoteInto('`main_table`.`' . $field . '` LIKE ?', '%' . $this->_escapeSearchString($word) . '%');
 				}
 
-				$this->getSelect()->where(join(' ' . \Zend_Db_Select::SQL_OR . ' ', $conditions));
+				$this->getSelect()->where(join(' OR ', $conditions));
 			}
+
+			if (count($words) > 1) {
+				// Add full word into words array with higher weight
+				$words = array(implode(' ', array_keys($words)) => 5) + $words;
+			}
+
+			// Calculate weight
+			$weightSql = array();
 			
+			foreach($words as $word => $wordWeight) {
+				foreach($fields as $field => $fieldWeight) {
+					$weightSql[] = $db->quoteInto(
+						'IF (`main_table`.`' . $field . '` LIKE ?, ' . ($wordWeight + $fieldWeight) . ', 0)', '%' . $this->_escapeSearchString($word) . '%'
+					);
+				}
+			}
+
+			$expression = new \Zend\Db\Sql\Expression('(' . implode(' + ', $weightSql) . ')');
+
+			// Add Weight column to query
+			$this->getSelect()->columns(array('weight' => $expression->getExpression()));			
+			
+			// Reset order then add order by weight
+			$this->getSelect()->reset(\Zend\Db\Sql\Select::ORDER)->order('weight DESC');
+			
+			// Ensure password protected posts aren't included
 			$this->addFieldToFilter('post_password', '');
 		}
 		else {
+			// Empty search so force no results
 			$this->getSelect()->where('1=2');
 		}
-
+		
 		return $this;
+	}
+
+	/*
+	 * Fix search issue when searching for: "%FF%FE"
+	 *
+	 * @param string
+	 * @return string
+	**/
+	protected function _escapeSearchString($s)
+	{
+		return htmlspecialchars($s);
 	}
 	
 	/**
