@@ -155,16 +155,6 @@ class Router implements \Magento\Framework\App\RouterInterface
 							exit;	
 						}
 
-/*
-						if ($this->request->getParam('preview') === 'true') {
-							$data['path']['controller'] = 'post';
-							$data['path']['action'] = 'preview';
-							$data['params'] = array(
-								'p' => (int)$this->request->getParam('p')
-							);
-						}
-						*/
-
 						return $data;
 					}
 				}	
@@ -263,7 +253,9 @@ class Router implements \Magento\Framework\App\RouterInterface
 #		$this->addRoute('robots.txt', '*/index/robots');
 		$this->addRoute('comments', '*/index/commentsFeed');
 		$this->addRoute(array('/^newbloguser\/(.*)$/' => array('code')), '*/index/forwardNewBlogUser');
-
+		$this->addRoute(array('/^wp-json\/(.*)$/' => array('json_route_data')), '*/json/view');
+		
+		
 		return $this;
 	}
 

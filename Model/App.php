@@ -592,4 +592,14 @@ class App
 	{
 		return $this->factory;
 	}
+	
+	/*
+	 *
+	 *
+	 * @return false
+	 */
+	public function getCoreHelper()
+	{
+		return false;
+	}
 }
