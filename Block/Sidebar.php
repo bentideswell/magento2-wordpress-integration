@@ -119,6 +119,17 @@ class Sidebar extends AbstractBlock
 		return $this->_getData('widget_area');
 	}
 	
+	/*
+	 * Set the widget area
+	 *
+	 * @param  string $widgetArea
+	 * @return $this
+	 */
+	public function setWidgetArea($widgetArea)
+	{
+		return $this->setData('widget_area', $widgetArea);
+	}
+	
 	/**
 	 * Retrieve the sidebar widgets as an array
 	 *
