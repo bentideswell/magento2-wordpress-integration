@@ -175,7 +175,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected function _getPostTeaser($includeSuffix = true)
 	{
 		if ($this->hasMoreTag()) {
-			$content = $this->getContent('excerpt');
+			$content = strip_tags($this->getContent('excerpt'));
 
 			if (preg_match('/<!--more (.*)-->/', $content, $matches)) {
 				$anchor = $matches[1];
