@@ -68,7 +68,7 @@ class AssetInjector
 				$assets = array_merge($assets, $buffer);
 			}
 		}
-		
+
 		// Get inline JS/CSS
 		foreach($shortcodes as $class => $shortcodeInstance) {
 			if ($buffer = $shortcodeInstance->getInlineJs()) {
@@ -87,7 +87,7 @@ class AssetInjector
 		
 		// Merge inline into assets
 		$assets = array_merge($assets, $inline);
-		
+
 		if (count($assets) === 0) {
 			return false;
 		}
@@ -202,7 +202,7 @@ class AssetInjector
 			
 			// Start of paths template
 			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
-				
+
 			// Loop through paths, remove .js and set
 			foreach($requireJsPaths as $alias => $path) {
 				if (substr($path, -3) === '.js') {
@@ -235,12 +235,18 @@ class AssetInjector
 	protected function _getRequireJsAlias($url)
 	{
 		$alias = basename($url);
-		
+
 		if (strpos($alias, '?') !== false) {
 			$alias = substr($alias, 0, strpos($alias, '?'));
 		}
-			
-		return str_replace('.', '_', basename(basename($alias, '.js'), '.min'));
+
+		$requireJsAlias = str_replace('.', '_', basename(basename($alias, '.js'), '.min'));
+		
+		if ($requireJsAlias) {
+			return $requireJsAlias;
+		}					
+
+		return md5($url);
 	}
 	
 	/**
