@@ -24,6 +24,27 @@ if (!function_exists('fishpig_setup')) {
 
 add_action( 'after_setup_theme', 'fishpig_setup' );
 
+function fishpig_comment_redirect($location)
+{
+	if (strpos($location, '#') !== false) {
+		if (preg_match('/^(.*)(\#comment-([0-9]{1,}))$/', $location, $match)) {
+			$commentId = (int)$match[3];
+			$hash      = $match[2];
+			$query     = array('comment-id' => $commentId);
+			
+			if ($comment = get_comment($commentId)) {
+				$query['comment-status'] = (int)$comment->comment_approved;
+			}
+
+			$location = $match[1] . '?' . http_build_query($query) . $match[2];
+		}
+	}
+
+	return $location;
+}
+
+add_filter( 'comment_post_redirect', 'fishpig_comment_redirect' );
+
 function fishpig_widgets_init() {
 	register_sidebar(array(
 		'name' => __( 'Main Sidebar', 'fishpig' ),
