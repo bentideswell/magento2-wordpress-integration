@@ -56,7 +56,7 @@ class AssetInjector
 		if (!($shortcodes = $this->filter->getAssetInjectionShortcodes())) {
 			return false;
 		}
-		
+
 		self::$status = true;
 		
 		$assets = [];
@@ -220,7 +220,7 @@ class AssetInjector
 			// Add the final requireJS code to the $content array
 			$content .= $requireJsFinal;
 		}
-		
+
 		// Fingers crossed and let's go!
 		$bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
 		
@@ -269,6 +269,8 @@ class AssetInjector
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 
 		if (!$forceRefresh && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
+			/* Debug */
+#			return preg_replace('/\.js$/', '', preg_replace('/\?.*$/', '', $externalScriptUrlFull));
 			return $newScriptUrl;
 		}
 			

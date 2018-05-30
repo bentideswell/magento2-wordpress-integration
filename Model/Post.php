@@ -365,13 +365,22 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function getContent($context = 'default')
 	{
-		$contextKey = 'post_content_' . $context;
-		
-		if (!$this->_getData($contextKey)) {
-			$this->setData($contextKey, $this->_filter->process($this->_getData('post_content'), $this));
-		}
+		if (!$this->hasProcessedPostContent()) {
+			$transport = new \Magento\Framework\DataObject();
 
-		return $this->_getData($contextKey);
+			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_get_post_content', array('transport' => $transport, 'post' => $this));
+			
+			if ($transport->getPostContent()) {
+				$this->setProcessedPostContent($transport->getPostContent());
+			}
+			else {
+				$this->setProcessedPostContent(
+					$this->_filter->process($this->_getData('post_content'))
+				);
+			}
+		}
+		
+		return $this->_getData('processed_post_content');
 	}
 
 	/**
@@ -802,5 +811,27 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getIdentities()
 	{
 		return [self::CACHE_TAG . '_' . $this->getId()];
+	}
+	
+	
+	/*
+	 *
+	 *
+	 * @return
+	 */
+	public function setAsGlobal()
+	{
+		if (!$this->getWpPostObject()) {
+			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_post_setasglobal_before', array('post' => $this));
+		}
+
+		if ($this->getWpPostObject()) {
+			$GLOBALS['post'] = $this->getWpPostObject();			
+		}
+		else {
+			$GLOBALS['post'] = json_decode(json_encode(array('ID' => $this->getId())));
+		}
+		
+		return $this;
 	}
 }

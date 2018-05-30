@@ -127,6 +127,12 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getAssetInjectionShortcodes()
 	{
+		$shortcodes = $this->config->getShortcodes();
+		
+		if (isset($shortcodes['pluginshortcodewidget'])) {
+			return ['pluginshortcodewidget' => $shortcodes['pluginshortcodewidget']];
+		}
+		
 		return self::$assetInjectionShortcodes;
 	}
 	

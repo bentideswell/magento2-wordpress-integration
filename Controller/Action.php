@@ -102,9 +102,9 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		return false;
 	}
 
-	/**
+	/*
 	 *
-	**/
+	 */
 	protected function _beforeExecute()
 	{
     if (($entity = $this->_getEntity()) === false) {
@@ -118,9 +118,9 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		return $this;	
 	}
 	
-    /**
-	 * @
-	**/
+  /*
+	 *
+	 */
   protected function _initLayout()
   {
 	  // Remove the default action layout handle

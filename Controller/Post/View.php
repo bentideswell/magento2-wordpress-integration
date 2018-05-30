@@ -56,6 +56,27 @@ class View extends \FishPig\WordPress\Controller\Action
 	}
 	
   /*
+	 *
+	 */
+  protected function _initLayout()
+  {
+	  parent::_initLayout();
+	  
+	  if ($commentId = (int)$this->getRequest()->getParam('comment-id')) {
+		  $commentStatus = (int)$this->getRequest()->getParam('comment-status');
+		  
+		  if ($commentStatus === 0) {
+				$this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));
+		  }
+		  else {
+				$this->messageManager->addSuccess(__('Your comment has been posted.'));			  
+		  }
+	  }
+		
+		return $this;
+  }
+
+  /*
    * Get the blog breadcrumbs
    *
    * @return array
