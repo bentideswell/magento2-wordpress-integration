@@ -1,3 +1,6 @@
+01/06/2018 - 1.3.0.15
+- Added exception printing for module exceptions. This should help diagnose integration errors quicker.
+
 30/05/2018 - 1.3.0.14
 - Added session messages for successful comments and for comments awaiting moderation
 

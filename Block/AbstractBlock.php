@@ -49,6 +49,9 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 			return parent::toHtml();
 		}
 		catch (\Exception $e) {
+			echo sprintf('<h1>%s</h1><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
+			exit;
+			
 			throw $e;
 		}
 	}
