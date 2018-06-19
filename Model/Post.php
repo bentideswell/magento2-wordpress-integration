@@ -132,8 +132,10 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		if ($this->getData('post_excerpt')) {
 			return $this->getData('post_excerpt');
 		}
-		
-		if ($this->hasMoreTag() && ($excerpt = $this->_getPostTeaser(true))) {
+
+		if ($excerpt = $this->_getPostTeaser(true)) {
+			$this->setData('post_excerpt', $excerpt);
+			
 			return $excerpt;
 		}
 		
@@ -175,7 +177,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected function _getPostTeaser($includeSuffix = true)
 	{
 		if ($this->hasMoreTag()) {
-			$content = strip_tags($this->getContent('excerpt'));
+			$content = $this->getContent('excerpt');
 
 			if (preg_match('/<!--more (.*)-->/', $content, $matches)) {
 				$anchor = $matches[1];
@@ -185,8 +187,8 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 				$split = '<!--more-->';
 				$anchor = $this->_getTeaserAnchor();
 			}
-			
-			$excerpt = trim(substr($content, 0, strpos($content, $split)));
+
+			$excerpt = strip_tags(trim(substr($content, 0, strpos($content, $split))));
 
 			if ($excerpt !== '' && $includeSuffix && $anchor) {
 				$excerpt .= sprintf(' <a href="%s" class="read-more">%s</a>', $this->getUrl(), $anchor);
@@ -365,22 +367,25 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function getContent($context = 'default')
 	{
-		if (!$this->hasProcessedPostContent()) {
+		$key = 'processed_post_content_' . $context;
+		
+		if (!$this->hasData($key)) {
 			$transport = new \Magento\Framework\DataObject();
 
 			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_get_post_content', array('transport' => $transport, 'post' => $this));
 			
 			if ($transport->getPostContent()) {
-				$this->setProcessedPostContent($transport->getPostContent());
+				$this->setData($key, $transport->getPostContent());
 			}
 			else {
-				$this->setProcessedPostContent(
+				$this->setData(
+					$key,
 					$this->_filter->process($this->_getData('post_content'))
 				);
 			}
 		}
 		
-		return $this->_getData('processed_post_content');
+		return $this->_getData($key);
 	}
 
 	/**
