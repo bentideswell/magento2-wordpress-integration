@@ -280,6 +280,10 @@ class App
 	 */
 	protected function _validateIntegration()
 	{
+		if (!$this->isThemeIntegrated()) {
+			return $this;
+		}
+
 		$magentoUrl = $this->wpUrlBuilder->getMagentoUrl();
 
 		if ($this->wpUrlBuilder->getHomeUrl() === $this->wpUrlBuilder->getSiteurl()) {
@@ -601,5 +605,15 @@ class App
 	public function getCoreHelper()
 	{
 		return false;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
+	public function isThemeIntegrated()
+	{
+		return $this->getConfig()->getStoreConfigFlag('wordpress/setup/theme_integration');
 	}
 }

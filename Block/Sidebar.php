@@ -161,7 +161,6 @@ class Sidebar extends AbstractBlock
 	 */
 	public function getRealWidgetArea()
 	{
-
 		if (!$this->_pluginHelper->isEnabled('custom-sidebars/customsidebars.php')) {
 			return $this->getWidgetArea();
 		}
@@ -179,7 +178,7 @@ class Sidebar extends AbstractBlock
 		if ($post = $this->_registry->registry('wordpress_post')) {
 			if ($value = $post->getMetaValue('_cs_replacements')) {
 				$value = @unserialize($value);
-				
+
 				if (isset($value[$this->getWidgetArea()])) {
 					return $value[$this->getWidgetArea()];
 				}

@@ -291,7 +291,8 @@ class AssetInjector
 			
 		// Only write data if new script doesn't exist or local file has been updated
 		file_put_contents($newScriptFile, $scriptContent);
-			
+		file_put_contents(dirname($newScriptFile) . DIRECTORY_SEPARATOR . basename($newScriptFile, '.js') . '.min.js', $scriptContent);
+		
 		return $newScriptUrl;
 	}
 

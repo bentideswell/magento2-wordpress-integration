@@ -19,8 +19,12 @@
           <label>Path</label>
           <comment>Enter the path to your WordPress installation.</comment>
         </field>
+        <field id="theme_integration" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+          <label>Theme Integration</label>
+          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        </field>
       </group>
-      <group id="license" sortOrder="0" showInDefault="1">
+      <group id="license" sortOrder="1" showInDefault="1">
 	      <label>Add-On Licenses</label>
       </group>
     </section>      

@@ -5,6 +5,7 @@
 			<setup>
 				<enabled>1</enabled>
 				<path>wp</path>
+				<theme_integration>1</theme_integration>
 			</setup>
 		</wordpress>
 	</default>
