@@ -126,7 +126,9 @@ class App
 			// Check that the integration is successful
 			$this->_validateIntegration();
 			
-			$this->themeHelper->setPath($this->getPath())->validate();
+			if ($this->isThemeIntegrated()) {
+				$this->themeHelper->setPath($this->getPath())->validate();
+			}
 			
 			// Plugins can use this to check other things
 			$this->performOtherChecks();
