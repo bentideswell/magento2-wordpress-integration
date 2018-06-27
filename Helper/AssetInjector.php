@@ -276,15 +276,16 @@ class AssetInjector
 			
 		$scriptContent = file_get_contents($localScriptFile);
 
-		$docReady = 'jQuery(document).ready(';
+		$docReady = '(document).ready(';
 		
-		if (stripos($scriptContent, $docReady) !== false) {
-			$scriptContent = str_replace($docReady, 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);
+		if (stripos($scriptContent, $docReady) !== false) {			
+			$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);			
+#			$scriptContent = str_replace($docReady, 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);
 		}
 
 		// Check whether the script supports AMD
 		if (strpos($scriptContent, 'define.amd') !== false) {
-			$scriptContent = "__d=define;define=null;\n" . $scriptContent . "\ndefine=__d;__d=null;";
+			$scriptContent = "__d=define;define=null;\ntry{\n" . $scriptContent . "}catch (e){console.error&&console.error(e.message);}\ndefine=__d;__d=null;";
 		}
 
 		@mkdir(dirname($newScriptFile));

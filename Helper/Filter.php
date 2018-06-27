@@ -117,7 +117,17 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 		}
 		
 		// Filter the content for {{block and {{widget
-		return $this->filterProvider->getPageFilter()->filter($content);
+		if (strpos($content, '{{') !== false) {
+			if (preg_match_all('/\{\{([^\n]{1,})\}\}/Us', $content, $matches)) {
+				foreach($matches[0] as $key => $value) {
+					$content = str_replace($value, html_entity_decode($value), $content);
+				}
+			}
+
+			$content = $this->filterProvider->getPageFilter()->filter($content);
+		}
+		
+		return $content;
 	}
 	
 	/*
