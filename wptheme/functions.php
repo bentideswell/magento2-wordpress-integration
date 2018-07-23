@@ -65,6 +65,17 @@ remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 remove_action( 'wp_print_styles', 'print_emoji_styles' ); 
 remove_action( 'admin_print_styles', 'print_emoji_styles' );
 
+/* Stop WP guessing URLs */
+function fp_remove_404_redirect($redirect_url) {
+	if (is_404()) {
+		return false;
+	}
+	
+	return $redirect_url;
+}
+
+add_filter('redirect_canonical', 'fp_remove_404_redirect');
+
 if (!function_exists('fishpig_comment')):
 function fishpig_comment( $comment, $args, $depth ) {
 	$GLOBALS['comment'] = $comment;

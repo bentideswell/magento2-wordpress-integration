@@ -13,6 +13,7 @@ use \Magento\Framework\Registry;
 use \Magento\Framework\Event\ObserverInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use \Magento\Framework\App\Filesystem\DirectoryList;
+use \Magento\Framework\Module\ModuleListInterface;
 use \FishPig\WordPress\Helper\Filter;
 
 class AssetInjector
@@ -21,7 +22,7 @@ class AssetInjector
 	 *
 	 */
 	const TMPL_TAG = '__FPTAG823434__';
-	
+
 	/*
 	 * Status determines whether already ran
 	 *
@@ -30,14 +31,28 @@ class AssetInjector
 	static protected $status = false;
 	
 	/*
+	 * Module version. This is used for generating md5 hashes.
+	 *
+	 * @var string
+	 */
+	protected $moduleVersion;
+	
+	/*
 	 * @return
 	 */
-	public function __construct(App $app, StoreManagerInterface $storeManager, DirectoryList $directoryList, Filter $filter)
+	public function __construct(
+		App $app, 
+		StoreManagerInterface $storeManager, 
+		DirectoryList $directoryList, 
+		Filter $filter, 
+		ModuleListInterface $moduleList
+	)
 	{
 		$this->app = $app->init();
 		$this->storeManager = $storeManager;
 		$this->directoryList = $directoryList;
 		$this->filter = $filter;
+		$this->moduleVersion = $moduleList->getOne('FishPig_WordPress')['setup_version'];
 	}
 	
 	/*
@@ -246,7 +261,7 @@ class AssetInjector
 			return $requireJsAlias;
 		}					
 
-		return md5($url);
+		return $this->_hashString($url);
 	}
 	
 	/**
@@ -265,7 +280,7 @@ class AssetInjector
 		$forceRefresh			 = false;
 		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
 		$localScriptFile 	 = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
-		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . md5($externalScriptUrlFull) . '.js';
+		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 
 		if (!$forceRefresh && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
@@ -323,7 +338,7 @@ class AssetInjector
 		}
 		
 		$scriptContent = implode("\n\n", $scriptContents);
-		$newScriptFile = $baseMergedPath . md5(implode('-', $externalScriptUrlFulls) . rand(1, 99999)) . '.js';
+		$newScriptFile = $baseMergedPath . $this->_hashString(implode('-', $externalScriptUrlFulls) . rand(1, 99999)) . '.js';
 		$newScriptUrl = $this ->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 				
 		@mkdir(dirname($newScriptFile));
@@ -460,4 +475,15 @@ class AssetInjector
 		
 		return $scripts;
 	} 
+	
+	/*
+	 * Hash a string (filename) with a version/salt
+	 *
+	 * @param  string
+	 * @return string
+	 */
+	protected function _hashString($s)
+	{
+		return md5($this->moduleVersion . $s);
+	}
 }
