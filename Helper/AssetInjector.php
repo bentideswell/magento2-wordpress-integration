@@ -24,6 +24,11 @@ class AssetInjector
 	const TMPL_TAG = '__FPTAG823434__';
 
 	/*
+	 * @var bool
+	 */
+	const DEBUG = false;
+
+	/*
 	 * Status determines whether already ran
 	 *
 	 * @var bool
@@ -170,6 +175,9 @@ class AssetInjector
 
 					$scripts[$skey] = str_replace($originalScriptUrl, $this->_migrateJsAndReturnUrl($realPathUrl), $script);
 				}
+				else {
+					$scripts[$skey] = $this->_fixDomReady($script);
+				}
 			}
 
 			if ($this->canMergeGroups()) {
@@ -212,9 +220,11 @@ class AssetInjector
 				}
 			}
 
+
+	
 			// Remove final template variable placeholder
 			$requireJsTemplate = str_replace(self::TMPL_TAG, 'jQuery(document).trigger(\'fishpig_ready\');', $requireJsTemplate);
-			
+
 			// Start of paths template
 			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
 
@@ -277,30 +287,30 @@ class AssetInjector
 			return $externalScriptUrlFull;
 		}
 
-		$forceRefresh			 = false;
 		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
 		$localScriptFile 	 = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
 		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 
-		if (!$forceRefresh && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
+		if (!self::DEBUG && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
 			/* Debug */
 #			return preg_replace('/\.js$/', '', preg_replace('/\?.*$/', '', $externalScriptUrlFull));
 			return $newScriptUrl;
 		}
 			
 		$scriptContent = file_get_contents($localScriptFile);
-
-		$docReady = '(document).ready(';
-		
-		if (stripos($scriptContent, $docReady) !== false) {			
-			$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);			
-#			$scriptContent = str_replace($docReady, 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);
-		}
+		$scriptContent = $this->_fixDomReady($scriptContent);
 
 		// Check whether the script supports AMD
 		if (strpos($scriptContent, 'define.amd') !== false) {
 			$scriptContent = "__d=define;define=null;\ntry{\n" . $scriptContent . "}catch (e){console.error&&console.error(e.message);}\ndefine=__d;__d=null;";
+		}
+
+		if (self::DEBUG) {
+			$debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->app->getPath()), '', $localScriptFile)), '-') . '.js';
+			$newScriptFile = dirname($newScriptFile) . DIRECTORY_SEPARATOR . $debugFilename;
+			$newScriptUrl = dirname($newScriptUrl) . '/' . $debugFilename;
+			$scriptContent = '/* ' . $externalScriptUrlFull . ' */' . PHP_EOL;
 		}
 
 		@mkdir(dirname($newScriptFile));
@@ -312,6 +322,20 @@ class AssetInjector
 		return $newScriptUrl;
 	}
 
+	/*
+	 * Fix DOM Ready calls
+	 *
+	 * @param  string $scriptContent
+	 * @return string
+	 */
+	protected function _fixDomReady($scriptContent)
+	{	
+		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);			
+		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'jQuery(document).on(\'fishpig_ready\', {}, function(', $scriptContent);
+		
+		return $scriptContent;
+	}
+	
 	/**
 	 * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
 	 *
