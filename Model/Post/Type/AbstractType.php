@@ -8,20 +8,25 @@ use FishPig\WordPress\Model\App;
 
 abstract class AbstractType extends \Magento\Framework\DataObject
 {
-	/**
-	  *
-	 **/
-    protected $_app = null;
+	/*
+	 *
+	 */
+  protected $_app = null;
 	 
-	/**
-	  *
-	 **/
+	/*
+	 *
+	 */
 	protected $_resource = null;
 	
-	/**
-	  *
-	 **/ 
+	/*
+	 *
+	 */
 	protected $_factory = null;
+
+	/*
+	 *
+	 */
+	protected $compatibilityHelper;
 	
 	/**
 	  *
@@ -30,6 +35,7 @@ abstract class AbstractType extends \Magento\Framework\DataObject
     	\FishPig\WordPress\Model\App $app, 
     	\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection, 
     	\FishPig\WordPress\Model\App\Factory $factory, 
+    	\FishPig\WordPress\Helper\Compatibility $compatibilityHelper, 
     	$data = []
     )
     {
@@ -38,6 +44,7 @@ abstract class AbstractType extends \Magento\Framework\DataObject
 	    $this->_app = $app;
     	$this->_resource = $resourceConnection;
     	$this->_factory = $factory;
+    	$this->compatibilityHelper = $compatibilityHelper;
     }
 	
 	/**

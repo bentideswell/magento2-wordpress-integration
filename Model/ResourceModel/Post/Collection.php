@@ -229,10 +229,14 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			if (count($stickyIds) > 0) {
 				$select = $this->getConnection()
 					->select()
-					->from($this->getTable('wordpress_post'), array('value' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression(1)))
+					->from($this->getTable('wordpress_post'), null)
 					->where('main_table.ID IN (?)', $stickyIds)
 					->limit(1);
 				
+				$select->columns(
+					array('value' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression("'1'"))
+				);
+
 				$this->getSelect()
 					->columns(array('is_sticky' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . $select . ')')))
 					->order('is_sticky DESC');

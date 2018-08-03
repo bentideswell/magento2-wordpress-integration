@@ -10,6 +10,11 @@ namespace FishPig\WordPress\Helper;
 
 class Compatibility extends \Magento\Framework\App\Helper\AbstractHelper
 {
+	/*
+	 *
+	 * @param  string $s
+	 * @return string
+	 */
 	public function createZendDbSqlExpression($s)
 	{
 		$exprClass = $this->getZendDbSqlExpressionClass();
@@ -28,12 +33,13 @@ class Compatibility extends \Magento\Framework\App\Helper\AbstractHelper
 	 * @return string
 	 */
 	private function getZendDbSqlExpressionClass()
-	{
+	{		
+		if ($this->classExists('\Zend_Db_Expr')) {
+			return \Zend_Db_Expr::class;
+		}
+		
 		if ($this->classExists('\Zend\Db\Sql\Expression')) {
 			return \Zend\Db\Sql\Expression::class;
-		}
-		else if ($this->classExists('\Zend_Db_Expr')) {
-			return \Zend_Db_Expr::class;
 		}
 		
 		throw new \Exception('Unable to find \Zend\Db\Sql\Expression class.');

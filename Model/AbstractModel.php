@@ -13,6 +13,11 @@ use Magento\Framework\DataObject\IdentityInterface;
 
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
+	/*
+	 *
+	 */
+	protected $context;
+	
 	public function __construct(
 		\Magento\Framework\Model\Context $context,
 		\Magento\Framework\Registry $registry,
@@ -28,12 +33,16 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 		$this->_factory = $wpContext->getFactory();
 		$this->_viewHelper = $wpContext->getViewHelper();
 		$this->_filter = $wpContext->getFilterHelper();
+		$this->context = $wpContext;
 	}
 
+	/*
+	 *
+	 */
 	public function getIdentities()
-    {
-        return [self::CACHE_TAG . '_' . $this->getId()];
-    }
+  {
+    return [self::CACHE_TAG . '_' . $this->getId()];
+  }
 	
 	/**
 	 * Get a collection of posts

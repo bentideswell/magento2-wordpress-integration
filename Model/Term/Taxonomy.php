@@ -33,17 +33,20 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 		$this->setAllUris(false);
 
 		$select = $this->_resource->getConnection()->select()
-			->from(array('term' => $this->_resource->getTable('wordpress_term')), array(
-				'id' => 'term_id', 
-				'url_key' => 'slug',
-				$this->context->getCompatibilityHelper()->createZendDbSqlExpression("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
+			->from(
+				array(
+					'term' => $this->_resource->getTable('wordpress_term')), 
+					array(
+						'id' => 'term_id', 
+						'url_key' => 'slug',
+						$this->compatibilityHelper->createZendDbSqlExpression("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
+					)
 				)
-			)
-			->join(
-				array('tax' => $this->_resource->getTable('wordpress_term_taxonomy')),
-				$this->_resource->getConnection()->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
-				'parent'
-			);
+				->join(
+					array('tax' => $this->_resource->getTable('wordpress_term_taxonomy')),
+					$this->_resource->getConnection()->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
+					'parent'
+				);
 
 		if ($results = $this->_resource->getConnection()->fetchAll($select)) {
 			$this->setAllUris($this->_generateRoutesFromArray($results, $this->getSlug()));
