@@ -131,18 +131,6 @@ class Post extends AbstractMeta
 			))->limit(1);
 
 		return $this->getConnection()->fetchAll($select);
-				
-		$wrapper = $this->getConnection()
-			->select()
-				->from(array('squery' => new Zend_Db_Expr('(' . (string)$select . ')')))
-				->group('squery.object_id')
-				->reset('columns')
-				->columns(array(
-					'object_id',
-					'category_ids' => new Zend_Db_Expr("GROUP_CONCAT(`squery`.`term_id` ORDER BY `squery`.`name` ASC)"
-				)));
-
-		return $this->getConnection()->fetchAll($wrapper);
 	}
 		
 	public function addPrimaryCategoryToSelect($select, $postId)
@@ -183,7 +171,7 @@ class Post extends AbstractMeta
 		}
 
 		return count($sqlColumns) > 0 
-			? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
+			? $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
 			: false;
 	}
 	

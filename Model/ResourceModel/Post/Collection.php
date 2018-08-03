@@ -229,12 +229,12 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			if (count($stickyIds) > 0) {
 				$select = $this->getConnection()
 					->select()
-					->from($this->getTable('wordpress_post'), array('value' => new \Zend_Db_Expr(1)))
+					->from($this->getTable('wordpress_post'), array('value' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression(1)))
 					->where('main_table.ID IN (?)', $stickyIds)
 					->limit(1);
 				
 				$this->getSelect()
-					->columns(array('is_sticky' => new \Zend_Db_Expr('(' . $select . ')')))
+					->columns(array('is_sticky' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . $select . ')')))
 					->order('is_sticky DESC');
 			}
 		}
@@ -406,13 +406,13 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 				}
 			}
 
-			$expression = new \Zend\Db\Sql\Expression('(' . implode(' + ', $weightSql) . ')');
+			$expression = $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . implode(' + ', $weightSql) . ')');
 
 			// Add Weight column to query
-			$this->getSelect()->columns(array('weight' => $expression->getExpression()));			
+			$this->getSelect()->columns(array('weight' => $expression));			
 			
 			// Reset order then add order by weight
-			$this->getSelect()->reset(\Zend\Db\Sql\Select::ORDER)->order('weight DESC');
+			$this->getSelect()->reset('order')->order('weight DESC');
 			
 			// Ensure password protected posts aren't included
 			$this->addFieldToFilter('post_password', '');
@@ -516,22 +516,23 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 * Ensure correct size is calculated
 	 *
 	 * @return int
-	**/
-    public function getSize()
-    {
-        if ($this->_totalRecords === null) {
-	        $this->_renderFilters();
+	 */
+	public function getSize()
+	{
+		if ($this->_totalRecords === null) {
+			$this->_renderFilters();
 	
-	        $countSelect = clone $this->getSelect();
-	        $countSelect->reset(\Magento\Framework\DB\Select::ORDER);
-	        $countSelect->reset(\Magento\Framework\DB\Select::LIMIT_COUNT);
-	        $countSelect->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
-	        $countSelect->reset(\Magento\Framework\DB\Select::COLUMNS);
-			$countSelect->columns(new \Zend_Db_Expr('main_table.ID'));
+			$countSelect = clone $this->getSelect();
+			$countSelect->reset(\Magento\Framework\DB\Select::ORDER);
+			$countSelect->reset(\Magento\Framework\DB\Select::LIMIT_COUNT);
+			$countSelect->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
+			$countSelect->reset(\Magento\Framework\DB\Select::COLUMNS);
+
+			$countSelect->columns($this->context->getCompatibilityHelper()->createZendDbSqlExpression('main_table.ID'));
 	
 			$this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));  
-	    }
-        
-        return intval($this->_totalRecords);
-    }
+		}
+
+		return intval($this->_totalRecords);
+	}
 }

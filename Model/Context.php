@@ -8,61 +8,107 @@
 
 namespace FishPig\WordPress\Model;
 
+use \FishPig\WordPress\Model\Config;
+use \FishPig\WordPress\Helper\View as ViewHelper;
+use \FishPig\WordPress\Helper\Filter as FilterHelper;
+use \FishPig\WordPress\Helper\Compatibility as CompatibilityHelper;
+
 class Context implements \Magento\Framework\ObjectManager\ContextInterface
 {
-	public function __construct(
-		\FishPig\WordPress\Model\App $app,
-		\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection,
-		\FishPig\WordPress\Model\Config $config,
-		\FishPig\WordPress\Model\App\Url $urlBuilder,
-		\FishPig\WordPress\Model\App\Factory $factory,
-		\FishPig\WordPress\Helper\View $viewHelper,
-    \FishPig\WordPress\Helper\Filter $filterHelper
-	)
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function __construct(App $app, App\ResourceConnection $resourceConnection, App\Url $urlBuilder, App\Factory $factory, Config $config, ViewHelper $viewHelper, FilterHelper $filterHelper, CompatibilityHelper $compatibilityHelper)
 	{
-		$this->_app = $app->init();
-		$this->_resourceConnection = $resourceConnection;
-		$this->_config = $config;
-		$this->_urlBuilder = $urlBuilder;
-		$this->_factory = $factory;
-		$this->_viewHelper = $viewHelper;
-		$this->_filterHelper = $filterHelper;
+		$this->app = $app->init();
+		$this->resourceConnection = $resourceConnection;
+		$this->config = $config;
+		$this->urlBuilder = $urlBuilder;
+		$this->factory = $factory;
+		$this->viewHelper = $viewHelper;
+		$this->filterHelper = $filterHelper;
+		$this->compatibilityHelper = $compatibilityHelper;
 	}	
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getApp()
 	{
-		return $this->_app;
+		return $this->app;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getResourceConnection()
 	{
-		return $this->_resourceConnection;
+		return $this->resourceConnection;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getConfig()
 	{
-		return $this->_config;
+		return $this->config;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getUrlBuilder()
 	{
-		return $this->_urlBuilder;
+		return $this->urlBuilder;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getFactory()
 	{
-		return $this->_factory;
+		return $this->factory;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getViewHelper()
 	{
-		return $this->_viewHelper;
+		return $this->viewHelper;
 	}
 	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getFilterHelper()
 	{
-		return $this->_filterHelper;
+		return $this->filterHelper;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getCompatibilityHelper()
+	{
+		return $this->compatibilityHelper;
 	}
 }
-
-

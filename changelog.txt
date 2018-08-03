@@ -1,3 +1,6 @@
+03/08/2018 - 1.3.0.26
+- Backwards compatibility changes for Zend_Db. 
+
 02/08/2018 - 1.3.0.25
 - Improved NextGEN Gallery support
 

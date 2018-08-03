@@ -36,7 +36,7 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 			->from(array('term' => $this->_resource->getTable('wordpress_term')), array(
 				'id' => 'term_id', 
 				'url_key' => 'slug',
-				new \Zend_Db_Expr("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
+				$this->context->getCompatibilityHelper()->createZendDbSqlExpression("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
 				)
 			)
 			->join(

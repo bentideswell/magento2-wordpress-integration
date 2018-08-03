@@ -6,25 +6,30 @@
  * @author		Ben Tideswell <help@fishpig.co.uk>
  * @info			http://fishpig.co.uk/wordpress-integration.html
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Collection;
 
 abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
-    public function __construct(
-        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \FishPig\WordPress\Model\Context $wpContext,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
-    ) {
-	    
-	    parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-	    
-	    $this->_app = $wpContext->getApp();
-	   }
+	/*
+	 *
+	 */
+	protected $context;
+	
+	public function __construct(
+		\Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
+		\Psr\Log\LoggerInterface $logger,
+		\Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
+		\Magento\Framework\Event\ManagerInterface $eventManager,
+		\FishPig\WordPress\Model\Context $wpContext,
+		\Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+		\Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
+	)
+	{
+		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
+	
+		$this->_app = $wpContext->getApp();
+		$this->context = $wpContext;
+	}
 
 
 	public function getConnection()
