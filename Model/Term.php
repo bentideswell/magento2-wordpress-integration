@@ -12,14 +12,14 @@ use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
 {
-	/**
+	/*
 	 *
-	**/
+	 */
 	const ENTITY = 'wordpress_term';
 
-	/**
+	/*
 	 * @const string
-	*/
+	 */
 	const CACHE_TAG = 'wordpress_term';
 
 	/**
@@ -30,16 +30,31 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	protected $_eventPrefix = 'wordpress_term';
 	protected $_eventObject = 'term';
 	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Term');
+    $this->_init('FishPig\WordPress\Model\ResourceModel\Term');
 	}
 
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->_getData('name');
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getContent()
 	{
 		return $this->_getData('description');
@@ -80,7 +95,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 			$this->setParentTerm(false);
 			
 			if ($this->getParentId()) {
-				$parentTerm = $this->_app->getFactory()->create('term')->load($this->getParentId());
+				$parentTerm = $this->_app->getFactory()->getFactory('Term')->create()->load($this->getParentId());
 				
 				if ($parentTerm->getId()) {
 					$this->setParentTerm($parentTerm);

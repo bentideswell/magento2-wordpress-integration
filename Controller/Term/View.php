@@ -24,13 +24,32 @@ class View extends \FishPig\WordPress\Controller\Action
 	 */
   protected function _getBreadcrumbs()
   {
-    return array_merge(	
-	    parent::_getBreadcrumbs(), [
-			'archives' => [
-				'label' => __($this->_getEntity()->getName()),
-				'title' => __($this->_getEntity()->getName())
-			]]
-		);
+	  $crumbs = parent::_getBreadcrumbs();
+	  $term   = $this->_getEntity();
+	  
+	  if ($taxonomy = $term->getTaxonomyInstance()) {
+		  if ($taxonomy->isHierarchical()) {
+				$buffer = $term;
+				
+				while($buffer->getParentTerm()) {
+					$buffer = $buffer->getParentTerm();
+					
+					$crumbs['term_' . $buffer->getId()] = [
+						'label' => __($buffer->getName()),
+						'title' => __($buffer->getName()),
+						'link' => $buffer->getUrl(),
+					];
+				}
+			  
+		  }
+	  }
+
+	  $crumbs['term'] = [
+			'label' => __($term->getName()),
+			'title' => __($term->getName())
+		];
+		
+		return $crumbs;
   }
     
   /*

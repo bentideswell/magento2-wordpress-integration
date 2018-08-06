@@ -1,3 +1,6 @@
+06/08/2018 - 1.3.0.28
+- Improved hierarchical term breadcrumbs.
+
 03/08/2018 - 1.3.0.27
 - Backwards compatibility changes for Zend_Db. 
 
