@@ -10,6 +10,7 @@ use \FishPig\WordPress\Model\App\ResourceConnection;
 use \FishPig\WordPress\Model\App\Url as WpUrlBuilder;
 use \FishPig\WordPress\Model\App\Factory as WpFactory;
 use \FishPig\WordPress\Helper\Theme as ThemeHelper;
+use \FishPig\WordPress\Model\App\Path as WordPressPath;
 
 class App
 {   
@@ -73,13 +74,14 @@ class App
 	/*
 	 *
 	 */
-	public function __construct(Config $config, ResourceConnection $resourceConnection, WpUrlBuilder $urlBuilder, WpFactory $factory, ThemeHelper $themeHelper)
+	public function __construct(Config $config, ResourceConnection $resourceConnection, WpUrlBuilder $urlBuilder, WpFactory $factory, ThemeHelper $themeHelper, WordPressPath $wpPath)
 	{
 		$this->config = $config;
 		$this->resourceConnection = $resourceConnection;
 		$this->wpUrlBuilder = $urlBuilder;
 		$this->factory = $factory;
 		$this->themeHelper = $themeHelper;
+		$this->wpPath = $wpPath;
 	}
 	
 	/*
@@ -151,30 +153,7 @@ class App
 	 */
   public function getPath()
   {
-		if (!is_null($this->path)) {
-			return $this->path;
-		}
-		
-		$this->path = false;
-		
-		if (!($path = trim($this->getConfig()->getStoreConfigValue('wordpress/setup/path')))) {
-			return $this->path;
-		}
-		
-		if (substr($path, 0, 1) !== '/') {
-			if (is_dir(BP . '/' . $path)) {
-				$path = BP . '/' . $path;
-			}
-			else if (is_dir(BP . '/pub/' . $path)) {
-				$path = BP . '/pub/' . $path;
-			}
-		}
-		
-		if (!is_dir($path) || !is_file($path . '/wp-config.php')) {
-			return $this->path;
-		}
-		
-		return $this->path = $path;
+	  return $this->wpPath->getPath();
   }
     
 	/*
