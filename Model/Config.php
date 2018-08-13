@@ -9,7 +9,8 @@ use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \FishPig\WordPress\Model\App\ResourceConnection;
 use \Magento\Customer\Model\Session as CustomerSession;
 use \Magento\Store\Model\StoreManagerInterface;
-		
+use \FishPig\WordPress\Model\App\WPConfig;
+
 class Config
 {
 	/*
@@ -42,26 +43,16 @@ class Config
 	 */
 	protected $options = array();
 
-	public function __construct(Reader $reader, ScopeConfigInterface $scopeConfig, ResourceConnection $resourceConnection, CustomerSession $customerSession, StoreManagerInterface $storeManager)
+	public function __construct(Reader $reader, ScopeConfigInterface $scopeConfig, ResourceConnection $resourceConnection, CustomerSession $customerSession, StoreManagerInterface $storeManager, WPConfig $wpConfig)
 	{
 		$this->reader = $reader;
 		$this->scopeConfig = $scopeConfig;
 		$this->resourceConnection = $resourceConnection;
 		$this->customerSession = $customerSession;
 		$this->storeManager = $storeManager;
+		
+		$wpConfig;
 	} 
-
-	/**
-	 * @return string
-	 **/
-	public function getStoreConfigValue($key)
-	{
-		return $this->scopeConfig->getValue(
-			$key,
-			\Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-			$this->storeManager->getStore()->getId()
-		);
-	}
 
 	/**
 	 * @return string
@@ -110,38 +101,6 @@ class Config
 	 **/
 	public function getSiteOption($key)
 	{
-		return false;
-	}
-
-	/**
-	 * Get the DB mapping
-	 * This is implemented in Multisite
-	 *
-	 * @param string $when = 'before_connect'
-	 * @return array|false
-	 **/
-	public function getDbTableMapping($when = 'before_connect')
-	{
-		if ($config = $this->reader->getValue('database/tables/table')) {
-			$map = array();
-
-			foreach($config as $key => $value) {
-				$value = $value['@attributes'];
-
-				if ($value['when'] === $when) {
-					$map[$value['id']] = $value['name'];
-
-					if (isset($value['meta'])) {
-							$map[$value['id'] . '_meta'] = $value['meta'];
-					}
-				}
-			}
-
-			if (count($map) > 0) {
-					return $map;
-			}
-		}
-
 		return false;
 	}
 

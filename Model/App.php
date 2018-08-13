@@ -10,7 +10,10 @@ use \FishPig\WordPress\Model\App\ResourceConnection;
 use \FishPig\WordPress\Model\App\Url as WpUrlBuilder;
 use \FishPig\WordPress\Model\App\Factory as WpFactory;
 use \FishPig\WordPress\Helper\Theme as ThemeHelper;
+
+
 use \FishPig\WordPress\Model\App\Path as WordPressPath;
+use \FishPig\WordPress\Model\App\WPConfig;
 
 class App
 {   
@@ -74,14 +77,15 @@ class App
 	/*
 	 *
 	 */
-	public function __construct(Config $config, ResourceConnection $resourceConnection, WpUrlBuilder $urlBuilder, WpFactory $factory, ThemeHelper $themeHelper, WordPressPath $wpPath)
+	public function __construct(Config $config, WpUrlBuilder $urlBuilder, WpFactory $factory, ThemeHelper $themeHelper, WordPressPath $wpPath, WPConfig $wpConfig)
 	{
 		$this->config = $config;
-		$this->resourceConnection = $resourceConnection;
+#		$this->resourceConnection = $resourceConnection;
 		$this->wpUrlBuilder = $urlBuilder;
 		$this->factory = $factory;
 		$this->themeHelper = $themeHelper;
 		$this->wpPath = $wpPath;
+		$this->wpConfig = $wpConfig;
 	}
 	
 	/*
@@ -108,28 +112,17 @@ class App
 		$this->state = false;
 
 		try {
+			$wpPath = $this->wpPath->getPath();
 			// Check that the path to WordPress is valid
-			if ($this->getPath() === false) {
+			if ($wpPath === false) {
 				throw new \Exception('Unable to find a WordPress installation at specified path.');
 			}
-			
-			// Connect to the WordPress database
-//			$this->_initResource();
-			
-			// This will load the wp-config.php values
-			$this->getWpConfigValue();
-			
-			// Define the WP config values globally as WP does
-			$this->_defineWpConfigValues();
-			
-			// Use the wp-config.php values to connect to the DB
-			$this->_initResource();
 			
 			// Check that the integration is successful
 			$this->_validateIntegration();
 			
 			if ($this->isThemeIntegrated()) {
-				$this->themeHelper->setPath($this->getPath())->validate();
+				$this->themeHelper->setPath($wpPath)->validate();
 			}
 			
 			// Plugins can use this to check other things
@@ -139,116 +132,13 @@ class App
 			$this->state = true;
 		}
 		catch (\Exception $e) {
+			if (php_sapi_name() === 'cli') {
+				echo $e->getMessage() . PHP_EOL . $e->getTraceAsString() . PHP_EOL . PHP_EOL;
+				exit;
+			}
+
 			$this->exception = $e;
 			$this->state = false;
-		}
-		
-		return $this;
-	}
-
-   /*
-	 * Get the absolute path to the WordPress installation
-	 *
-	 * @return false|string
-	 */
-  public function getPath()
-  {
-	  return $this->wpPath->getPath();
-  }
-    
-	/*
-	 * Get the wp-config.php definitions
-	 *
-	 * @param string|null $key = null
-	 * @return mixed
-	 */
-	public function getWpConfigValue($key = null)
-	{
-		if (is_null($this->wpconfig)) {
-			$wpConfig = file_get_contents($this->getPath() . '/wp-config.php');
-
-			# Cleanup comments
-			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
-			$wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
-			$wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
-			$wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
-
-			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
-				throw new \Exception('Unable to extract values from wp-config.php');
-			}
-
-			$this->wpconfig = array_combine($matches[1], $matches[3]);
-			
-			if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {			
-				$temp = array_combine($matches[1], $matches[2]);
-				
-				foreach($temp as $k => $v) {
-					if ($v === 'true') {
-						$this->wpconfig[$k] = true;
-					}
-					else if ($v === 'false') {
-						$this->wpconfig[$k] = false;
-					}
-					else {
-						$this->wpconfig[$k] = $v;
-					}
-				}
-			}
-
-			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
-				$this->wpconfig['DB_TABLE_PREFIX'] = $match[2];
-			}
-			else {
-				$this->wpconfig['DB_TABLE_PREFIX'] = 'wp_';
-			}
-		}
-
-		if (is_null($key)) {
-			return $this->wpconfig;
-		}
-		
-		return isset($this->wpconfig[$key]) ? $this->wpconfig[$key] : false;
-	}
-	
-	/*
-	 * Define the WP Config definitions 
-	 *
-	 * @return $this
-	 */
-	protected function _defineWpConfigValues()
-	{
-		foreach($this->getWpConfigValue() as $key => $value) {
-			$key = 'FISHPIG_' . $key;
-			
-			if (!defined($key))	{
-				define($key, $value);
-			}
-		}
-		
-		return $this;
-	}
-	
-	/*
-	 * Get the database connection
-	 *
-	 * @return false|Magento\Framework\DB\Adapter\Pdo\Mysql
-	 */
-	protected function _initResource()
-	{
-		if (!$this->resourceConnection->isConnected()) {
-			$this->resourceConnection->setTablePrefix($this->getWpConfigValue('DB_TABLE_PREFIX'))
-				->setMappingData(array(
-					'before_connect' => $this->getConfig()->getDbTableMapping('before_connect'),
-					'after_connect' => $this->getConfig()->getDbTableMapping('after_connect'),
-				))
-				->connect(array(
-	        'host' => $this->getWpConfigValue('DB_HOST'),
-	        'dbname' => $this->getWpConfigValue('DB_NAME'),
-	        'username' => $this->getWpConfigValue('DB_USER'),
-	        'password' => $this->getWpConfigValue('DB_PASSWORD'),
-	        'active' => '1',	
-				)
-			);
 		}
 		
 		return $this;
@@ -595,6 +485,7 @@ class App
 	 */
 	public function isThemeIntegrated()
 	{
+		
 		return $this->getConfig()->getStoreConfigFlag('wordpress/setup/theme_integration');
 	}
 }

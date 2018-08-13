@@ -6,62 +6,67 @@ namespace FishPig\WordPress\Model\App;
 
 use \Magento\Framework\App\ResourceConnection\ConnectionFactory;
 use \FishPig\WordPress\Model\Config;
+use \FishPig\WordPress\Model\App\WPConfig;
 
 class ResourceConnection
 {
 	/**
 	 * @var 
 	**/
-	protected $_tablePrefix = '';
+	protected $tablePrefix = '';
 	
 	/**
 	 * @var 
 	**/
-	protected $_connectionFactory = null;
+	protected $connection;
 	
 	/**
 	 * @var 
 	**/
-	protected $_connection = null;
+	protected $_tables = [];
 	
 	/**
 	 * @var 
 	**/
-	protected $_tables = array();
-	
-	/**
-	 * @var 
-	**/
-	protected $_mappingData = array();
-	
-	/**
-	 * @var 
-	**/
-	public function __construct(ConnectionFactory $connectionFactory)
-	{
-		$this->_connectionFactory = $connectionFactory;
-	}
-	
-	/**
-	 *
-	 *
-	 * @return 
-	**/
-	public function connect(array $config)
+	public function __construct(ConnectionFactory $connectionFactory, WPConfig $wpConfig)
 	{
 		try {
-			if ($this->_connection !== null) {
-				throw new \Exception('A database connection already exists.');
+			if ($this->connection === null) {
+
+				$this->setTablePrefix($wpConfig->getData('DB_TABLE_PREFIX'));
+				
+				$this->applyMapping([
+					'wordpress_menu' => 'terms',
+					'wordpress_menu_item' => 'posts',
+					'wordpress_post' => 'posts',
+					'wordpress_post_meta' => 'postmeta',
+					'wordpress_post_comment' => 'comments',
+					'wordpress_post_comment_meta' => 'commentmeta',
+					'wordpress_option' => 'options',
+					'wordpress_term' => 'terms',
+					'wordpress_term_relationship' => 'term_relationships',
+					'wordpress_term_taxonomy' => 'term_taxonomy',
+					'wordpress_user' => 'users',
+					'wordpress_user_meta' => 'usermeta',
+				]);
+
+				
+				$this->connection = $connectionFactory->create([
+		      'host' => $wpConfig->getData('DB_HOST'),
+		      'dbname' => $wpConfig->getData('DB_NAME'),
+		      'username' => $wpConfig->getData('DB_USER'),
+		      'password' => $wpConfig->getData('DB_PASSWORD'),
+		      'active' => '1',	
+				]);
+			
+				$this->connection->query('SET NAMES UTF8');
+				
+				$this->applyMapping([										
+					'wordpress_blogs' => 'blogs',
+					'wordpress_blogs_versions' => 'blogs_versions',
+					'wordpress_site' => 'site',
+				]);
 			}
-	
-			$prefix = $this->_tablePrefix;
-			
-			$this->_applyMapping('before_connect');
-			
-			$this->_connection = $this->_connectionFactory->create($config);
-			$this->_connection->query('SET NAMES UTF8');
-			
-			$this->_applyMapping('after_connect');
 		}
 		catch (\Exception $e) {
 			\FishPig\WordPress\Model\App\Integration\Exception::throwException(
@@ -69,9 +74,8 @@ class ResourceConnection
 				$e->getMessage()
 			);
 		}
-		
-		return $this;
 	}
+
 	
 	/**
 	 *
@@ -80,14 +84,10 @@ class ResourceConnection
 	 * @param int $blogId = 1
 	 * @return $this
 	**/
-	protected function _applyMapping($type)
+	protected function applyMapping($tables)
 	{
-		if (!empty($this->_mappingData[$type])) {
-			$tables = $this->_mappingData[$type];
-
-			foreach($tables as $alias => $table) {
-				$this->_tables[$alias] = $this->_tablePrefix . $table;
-			}
+		foreach($tables as $alias => $table) {
+			$this->_tables[$alias] = $this->tablePrefix . $table;
 		}
 		
 		return $this;
@@ -101,27 +101,15 @@ class ResourceConnection
 	 **/
 	public function getTable($alias)
 	{
-	    if (($key = array_search($alias, $this->_tables)) !== false) {
+		if (($key = array_search($alias, $this->_tables)) !== false) {
 			if (strpos($key, 'wordpress_') === 0) {
 				return $alias;
 			}
-	    }
-
+		}
+		
 		return isset($this->_tables[$alias])
 			? $this->_tables[$alias]
 			: $this->getTablePrefix() . $alias;
-	}
-	
-	/**
-	 *
-	 *
-	 * @return 
-	**/
-	public function setMappingData(array $data)
-	{
-		$this->_mappingData = $data;
-		
-		return $this;
 	}
 
 	/**
@@ -131,7 +119,7 @@ class ResourceConnection
 	**/
 	public function isConnected()
 	{
-		return $this->_connection !== null;
+		return $this->connection !== null;
 	}
 	
 	/**
@@ -141,7 +129,7 @@ class ResourceConnection
 	**/
 	public function getConnection()
 	{
-		return $this->isConnected() ? $this->_connection : false;
+		return $this->isConnected() ? $this->connection : false;
 	}
 	
 	/**
@@ -151,7 +139,7 @@ class ResourceConnection
 	**/
 	public function setTablePrefix($prefix)
 	{
-		$this->_tablePrefix = $prefix;
+		$this->tablePrefix = $prefix;
 		
 		return $this;
 	}
@@ -163,6 +151,6 @@ class ResourceConnection
 	**/
 	public function getTablePrefix()
 	{
-		return $this->_tablePrefix;
+		return $this->tablePrefix;
 	}
 }

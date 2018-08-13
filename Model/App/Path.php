@@ -5,14 +5,26 @@
 namespace FishPig\WordPress\Model\App;
 
 use FishPig\WordPress\Model\Config;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Path
 {   
+	/*
+	 *
+	 */
+	protected $scopeConfig;
+
+	/*
+	 *
+	 */
 	protected $path;
-	
-	public function __construct(Config $config)
+
+	/*
+	 *
+	 */
+	public function __construct(ScopeConfigInterface $scopeConfig)
 	{
-		$this->config = $config;
+		$this->scopeConfig = $scopeConfig;
 	}
 	
   public function getPath()
@@ -23,7 +35,7 @@ class Path
 		
 		$this->path = false;
 		
-		if (!($path = trim($this->config->getStoreConfigValue('wordpress/setup/path')))) {
+		if (!($path = trim($this->scopeConfig->getValue('wordpress/setup/path')))) {
 			return $this->path;
 		}
 		
@@ -39,7 +51,7 @@ class Path
 		if (!is_dir($path) || !is_file($path . '/wp-config.php')) {
 			return $this->path;
 		}
-		
+
 		return $this->path = $path;
   }
 	
