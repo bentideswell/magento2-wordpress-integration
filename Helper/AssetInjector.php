@@ -303,14 +303,15 @@ class AssetInjector
 
 		// Check whether the script supports AMD
 		if (strpos($scriptContent, 'define.amd') !== false) {
-			$scriptContent = "__d=define;define=null;\ntry{\n" . $scriptContent . "}catch (e){console.error&&console.error(e.message);}\ndefine=__d;__d=null;";
+			$scriptContent = "__d=define;define=undefined;try{" . $scriptContent . "}catch(e){console.error&&console.error(e.message);}define=__d;__d=undefined;";
 		}
 
 		if (self::DEBUG) {
 			$debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->app->getPath()), '', $localScriptFile)), '-') . '.js';
+			$debugFilename = preg_replace('/[_-]{1,}/', '-', $debugFilename);
 			$newScriptFile = dirname($newScriptFile) . DIRECTORY_SEPARATOR . $debugFilename;
 			$newScriptUrl = dirname($newScriptUrl) . '/' . $debugFilename;
-			$scriptContent = '/* ' . $externalScriptUrlFull . ' */' . PHP_EOL;
+			$scriptContent = '/* ' . $externalScriptUrlFull . ' */' . PHP_EOL . $scriptContent;
 		}
 
 		@mkdir(dirname($newScriptFile));
@@ -332,7 +333,7 @@ class AssetInjector
 	{	
 		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);			
 		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'jQuery(document).on(\'fishpig_ready\', {}, function(', $scriptContent);
-		
+
 		return $scriptContent;
 	}
 	
