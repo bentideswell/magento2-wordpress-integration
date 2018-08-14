@@ -13,9 +13,8 @@ class View extends \FishPig\WordPress\Controller\Action
 	**/
   protected function _getEntity()
   {
-    $post = $this->getFactory('Post')->create()->load(
-      $this->getRequest()->getParam('id')
-    );
+    $post = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostFactory')->create()
+    	->load((int)$this->getRequest()->getParam('id'));
 
     if (!$post->getId()) {
       return false;

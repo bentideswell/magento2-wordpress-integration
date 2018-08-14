@@ -9,13 +9,12 @@
 namespace FishPig\WordPress\Helper;
 
 use \FishPig\WordPress\Model\App;
-use \Magento\Framework\Registry;
-use \Magento\Framework\Event\ObserverInterface;
 use \Magento\Store\Model\StoreManagerInterface;
 use \Magento\Framework\App\Filesystem\DirectoryList;
 use \Magento\Framework\Module\ModuleListInterface;
-use \FishPig\WordPress\Helper\Filter;
 use \FishPig\WordPress\Model\App\Path as WordPressPath;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Model\Url as WordPressURL;
 
 class AssetInjector
 {
@@ -50,17 +49,19 @@ class AssetInjector
 		App $app, 
 		StoreManagerInterface $storeManager, 
 		DirectoryList $directoryList, 
-		Filter $filter, 
 		ModuleListInterface $moduleList,
-		WordPressPath $wpPath
+		WordPressPath $wpPath,
+		ShortcodeManager $shortcode,
+		WordPressURL $wpUrl
 	)
 	{
 		$this->app = $app->init();
 		$this->storeManager = $storeManager;
 		$this->directoryList = $directoryList;
-		$this->filter = $filter;
 		$this->moduleVersion = $moduleList->getOne('FishPig_WordPress')['setup_version'];
 		$this->wpPath = $wpPath;
+		$this->shortcodeManager = $shortcode;
+		$this->wpUrl = $wpUrl;
 	}
 	
 	/*
@@ -75,8 +76,8 @@ class AssetInjector
 		if (!$this->app->canRun() || $this->isApiRequest() || $this->isAjaxRequest()) {
 			return false;
 		}
-		
-		if (!($shortcodes = $this->filter->getAssetInjectionShortcodes())) {
+
+		if (!($shortcodes = $this->shortcodeManager->getShortcodesThatRequireAssets())) {
 			return false;
 		}
 
@@ -122,7 +123,7 @@ class AssetInjector
 		}
 
 		// Now let's build the requireJS from $assets
-		$baseUrl = $this->app->getWpUrlBuilder()->getSiteurl();
+		$baseUrl = $this->wpUrl->getSiteurl();
 		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 		$scripts = array();
 		$scriptRegex = '<script.*<\/script>';
@@ -189,7 +190,7 @@ class AssetInjector
 
 			// Used to set paths for each JS file in requireJs
 			$requireJsPaths = array(
-				'jquery-migrate' => $this->app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
+				'jquery-migrate' => $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
 			);
 			
 			// JS Template for requireJs. This changes through foreach below
@@ -291,7 +292,7 @@ class AssetInjector
 		}
 
 		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
-		$localScriptFile 	 = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
+		$localScriptFile 	 = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
 		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 
@@ -359,7 +360,7 @@ class AssetInjector
 				$localScriptFile = $baseMergedPath . basename($externalScriptUrl);
 			}
 			else {
-				$localScriptFile = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
+				$localScriptFile = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
 			}
 			
 			$scriptContents[] = file_get_contents($localScriptFile);
@@ -413,7 +414,7 @@ class AssetInjector
 	 */
 	protected function _isWordPressUrl($url)
 	{
-		return strpos($this->_cleanQueryString($url), $this->app->getWpUrlBuilder()->getSiteUrl()) === 0;
+		return strpos($this->_cleanQueryString($url), $this->wpUrl->getSiteUrl()) === 0;
 	}
 
 	/*

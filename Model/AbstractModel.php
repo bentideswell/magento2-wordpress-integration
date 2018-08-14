@@ -51,7 +51,9 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 */
 	public function getPostCollection()
 	{
-		return $this->_factory->getFactory('Post')->create()->getCollection()->setFlag('source', $this);
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
+			->create()
+				->setFlag('source', $this);
 	}
 	
 	/**

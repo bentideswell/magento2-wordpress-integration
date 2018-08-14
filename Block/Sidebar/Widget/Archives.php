@@ -25,11 +25,11 @@ class Archives extends AbstractWidget
 	public function getArchives()
 	{
 		if (is_null($this->_archiveCollection)) {
-			$dates = $this->_factory->getFactory('Archive')->create()->getResource()->getDatesForWidget();
+			$dates = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Archive')->getDatesForWidget();
 			$archiveCollection = array();
 			
 			foreach($dates as $date) {
-				$archiveCollection[] = $this->_factory->getFactory('Archive')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
+				$archiveCollection[] = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ArchiveFactory')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
 			}
 
 			$this->_archiveCollection = $archiveCollection;

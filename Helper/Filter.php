@@ -35,11 +35,6 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 * @var \Magento\Framework\Module\Dir\Reader
 	 */
   protected $dirReader;
-  
-	/*
-	 * @var array
-	 */
-	static protected $assetInjectionShortcodes = [];
 	
 	/*
 	 *
@@ -84,6 +79,10 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function doShortcode($content, $object = null)
 	{
+		return \Magento\Framework\App\ObjectManager::getInstance()
+			->get('FishPig\WordPress\Model\ShortcodeManager')
+				->renderShortcode($content, ['object' => $object]);
+
 		if ($shortcodes = $this->config->getShortcodes()) {
 			foreach($shortcodes as $alias => $shortcodeInstance) {
 				// Parse $content and try to inject shortcode HTML
@@ -137,13 +136,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getAssetInjectionShortcodes()
 	{
-		$shortcodes = $this->config->getShortcodes();
-		
-		if (isset($shortcodes['pluginshortcodewidget'])) {
-			return ['pluginshortcodewidget' => $shortcodes['pluginshortcodewidget']];
-		}
-		
-		return self::$assetInjectionShortcodes;
+		return [];
 	}
 	
 	/*

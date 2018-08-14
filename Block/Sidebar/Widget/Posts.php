@@ -64,11 +64,12 @@ class Posts extends AbstractWidget
 	protected function _getPostCollection()
 	{
 		if (is_null($this->_collection)) {
-			$collection = $this->_factory->getFactory('Post')->create()->getCollection()
-				->setOrderByPostDate()
-				->addIsViewableFilter()
-				->setPageSize($this->getNumber())
-				->setCurPage(1);
+			$collection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
+				->create()
+					->setOrderByPostDate()
+					->addIsViewableFilter()
+					->setPageSize($this->getNumber())
+					->setCurPage(1);
 	
 			if ($categoryId = $this->getCategoryId()) {
 				if (strpos($categoryId, ',') !== false) {

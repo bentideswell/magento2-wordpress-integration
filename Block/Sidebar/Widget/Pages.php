@@ -42,8 +42,9 @@ class Pages extends AbstractWidget
 	
 	public function getPosts()
 	{
-		$posts = $this->_factory->getFactory('Post')->create()->getCollection()
-			->addPostTypeFilter('page');
+		$posts = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
+			->create()
+				->addPostTypeFilter('page');
 
 		if ($this->hasParentId()) {
 			$posts->addPostParentIdFilter($this->getParentId());

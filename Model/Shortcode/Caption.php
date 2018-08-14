@@ -6,7 +6,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 
-namespace FishPig\WordPress\Shortcode;
+namespace FishPig\WordPress\Model\Shortcode;
 
 class Caption extends AbstractShortcode
 {

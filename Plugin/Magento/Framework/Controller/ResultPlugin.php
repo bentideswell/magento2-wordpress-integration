@@ -2,15 +2,15 @@
 /**
  *
 **/
-namespace FishPig\WordPress\Model\Controller\Result;
+namespace FishPig\WordPress\Plugin\Magento\Framework\Controller;
 
-use \FishPig\WordPress\Helper\AssetInjectorFactory;
-use \FishPig\WordPress\Helper\AssetInjector;
-use \Magento\Framework\Controller\ResultInterface;
-use \Magento\Framework\App\Response\Http as ResponseHttp;
+use FishPig\WordPress\Helper\AssetInjectorFactory;
+use FishPig\WordPress\Helper\AssetInjector;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\App\Response\Http as ResponseHttp;
 use Magento\Framework\App\ResponseInterface;
 
-class RequiredAssetsPlugin
+class ResultPlugin
 {
 	/*
 	 *

@@ -21,9 +21,9 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Post\Comment');
+		$this->_init('FishPig\WordPress\Model\ResourceModel\Post\Comment');
         
-        return parent::_construct();
+		return parent::_construct();
 	}
 
 	/**

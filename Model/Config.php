@@ -73,23 +73,7 @@ class Config
 	 */
 	public function getOption($key)
 	{
-		$storeId = $this->storeManager->getStore()->getId();
-		
-		if (!isset($this->options[$storeId])) {
-			$this->options[$storeId] = [];
-		}
-
-		if (!isset($this->options[$storeId][$key])) {
-			$resource = $this->resourceConnection;
-			
-			$select = $resource->getConnection()->select()
-				->from($resource->getTable('wordpress_option'), 'option_value')
-				->where('option_name = ?', $key);
-
-			$this->options[$storeId][$key] = $resource->getConnection()->fetchOne($select);
-		}
-
-		return $this->options[$storeId][$key];
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\Option')->getOption($key);
 	}
 
 	/**
@@ -112,53 +96,6 @@ class Config
 	 **/
 	public function getNetworkTables()
 	{
-		return false;
-	}
-
-	/**
-	 * Get the configured shortcodes
-	 *
-	 * @return array|false
-	 **/
-	public function getShortcodes()
-	{
-		if ($config = $this->reader->getValue('shortcodes')) {
-			$shortcodes = [];
-			$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-
-			foreach((array)$config['shortcode'] as $shortcode) {
-				$shortcode = $shortcode['@attributes'];
-
-				$shortcodeInstance = $objectManager->get($shortcode['class']);
-
-				if (!$shortcodeInstance->isPluginEnabled()) {
-					continue;
-				}
-
-				if (!isset($shortcode['sortOrder'])) {
-					$shortcode['sortOrder'] = 9999;
-				}
-
-				$sortOrder = (int)$shortcode['sortOrder'];
-
-				if (!isset($shortcodes[$sortOrder])) {
-					$shortcodes[$sortOrder] = array();
-				}
-
-				$shortcodes[$sortOrder][$shortcode['id']] = $shortcodeInstance;
-			}
-
-			ksort($shortcodes, SORT_NUMERIC);
-
-			$final = array();
-
-			foreach($shortcodes as $groupedShortcodes) {
-				$final = array_merge($final, $groupedShortcodes);
-			}
-
-			return $final;
-		}
-
 		return false;
 	}
 

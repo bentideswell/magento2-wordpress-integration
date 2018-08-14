@@ -17,10 +17,11 @@ class Categories extends AbstractWidget
 	 */
 	public function getCategories()
 	{
-		$collection = $this->_factory->getFactory('Term')->create()->getCollection()
-			->addTaxonomyFilter($this->getTaxonomy())
-			->addParentIdFilter($this->getParentId())
-			->addHasObjectsFilter();
+		$collection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory')
+			->create()
+				->addTaxonomyFilter($this->getTaxonomy())
+				->addParentIdFilter($this->getParentId())
+				->addHasObjectsFilter();
 
 		$collection->getSelect()
 			->reset('order')

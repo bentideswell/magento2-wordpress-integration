@@ -380,7 +380,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			else {
 				$this->setData(
 					$key,
-					$this->_filter->process($this->_getData('post_content'))
+					$this->_filter->process($this->_getData('post_content'), $this)
 				);
 			}
 		}

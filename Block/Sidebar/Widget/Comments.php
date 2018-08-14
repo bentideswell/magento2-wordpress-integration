@@ -18,9 +18,11 @@ class Comments extends AbstractWidget
 	public function getComments()
 	{
 		if (!$this->hasComments()) {
-			$comments = $this->_factory->getFactory('Post\Comment')->create()->getCollection()
-				->addCommentApprovedFilter()
-				->addOrderByDate('desc');
+
+			$comments = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')
+				->create()
+					->addCommentApprovedFilter()
+					->addOrderByDate('desc');
 			
 			$comments->getSelect()->limit($this->getNumber() ? $this->getNumber() : 5 );
 			

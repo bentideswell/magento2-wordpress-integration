@@ -1,9 +1,8 @@
 <?php
-/**
+/*
  *
-**/
-
-namespace FishPig\WordPress\Plugin;
+ */
+namespace FishPig\WordPress\Api\Data\Plugin;
 
 interface SeoInterface
 {	

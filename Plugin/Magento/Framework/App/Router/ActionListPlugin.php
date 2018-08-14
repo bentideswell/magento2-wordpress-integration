@@ -2,11 +2,11 @@
 /**
  *
 **/
-namespace FishPig\WordPress\Model;
+namespace FishPig\WordPress\Plugin\Magento\Framework\App\Router;
 
 use \Magento\Framework\App\Router\ActionList;
 
-class Plugin
+class ActionListPlugin
 {
 	/**
 	 * Magento 2 doesn't allow underscore in the module name

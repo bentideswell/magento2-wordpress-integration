@@ -2,7 +2,7 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
 	<!-- Setup dynamic router -->
 	<type name="Magento\Framework\App\Router\ActionList">
-		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Plugin" sortOrder="10" disabled="false"/>
+		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\Magento\Framework\App\Router\ActionListPlugin" sortOrder="10" disabled="false"/>
 	</type>
 	<!-- Add blog links to XML sitemap -->
 	<type name="Magento\Sitemap\Model\ItemProvider\Composite">
@@ -12,7 +12,14 @@
 			</argument>
 		</arguments>
 	</type>
-	
-	
-	
+	<!-- Shortcodes -->
+	<type name="FishPig\WordPress\Model\ShortcodeManager">
+		<arguments>
+			<argument name="shortcodes" xsi:type="array">
+				<!--<item name="oembed" xsi:type="object">FishPig\WordPress\Shortcode\oEmbed</item>-->
+				<item name="gallery" xsi:type="object">FishPig\WordPress\Model\Shortcode\Gallery</item>
+				<!--<item name="caption" xsi:type="object">FishPig\WordPress\Shortcode\Caption</item>-->
+			</argument>
+		</arguments>
+	</type>
 </config>

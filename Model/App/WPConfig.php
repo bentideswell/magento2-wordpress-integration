@@ -62,7 +62,6 @@ class WPConfig
 				$this->data['DB_TABLE_PREFIX'] = 'wp_';
 			}
 
-			/*
 			foreach($this->data as $key => $value) {
 				$key = 'FISHPIG_' . $key;
 				
@@ -70,7 +69,6 @@ class WPConfig
 					define($key, $value);
 				}
 			}
-			*/
 		}
 	}
 	
