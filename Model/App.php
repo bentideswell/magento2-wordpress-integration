@@ -8,7 +8,6 @@ use \FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
 use \FishPig\WordPress\Model\Config;
 use \FishPig\WordPress\Model\App\ResourceConnection;
 use \FishPig\WordPress\Model\App\Url as WpUrlBuilder;
-use \FishPig\WordPress\Model\App\Factory as WpFactory;
 use \FishPig\WordPress\Helper\Theme as ThemeHelper;
 
 
@@ -60,11 +59,6 @@ class App
 	protected $config;
 	
 	/*
-	 * @var FishPig\WordPress\Model\App\Factory
-	 */
-	protected $factory;
-	
-	/*
 	 * @var FishPig\WordPress\Model\App\Url
 	 */
 	protected $wpUrlBuilder;
@@ -77,12 +71,10 @@ class App
 	/*
 	 *
 	 */
-	public function __construct(Config $config, WpUrlBuilder $urlBuilder, WpFactory $factory, ThemeHelper $themeHelper, WordPressPath $wpPath, WPConfig $wpConfig)
+	public function __construct(Config $config, WpUrlBuilder $urlBuilder, ThemeHelper $themeHelper, WordPressPath $wpPath, WPConfig $wpConfig)
 	{
 		$this->config = $config;
-#		$this->resourceConnection = $resourceConnection;
 		$this->wpUrlBuilder = $urlBuilder;
-		$this->factory = $factory;
 		$this->themeHelper = $themeHelper;
 		$this->wpPath = $wpPath;
 		$this->wpConfig = $wpConfig;
@@ -219,11 +211,12 @@ class App
 	
 	public function getAllPostTypes()
 	{
+		$postTypeFactory = \Magento\Framework\App\ObjectManager::getInstance()->create('FishPig\WordPress\Model\Post\TypeFactory');
 		$postTypes = array();
 		
 		$postTypes = array(
-			'post' => $this->factory->getFactory('Post\Type')->create(),
-			'page' => $this->factory->getFactory('Post\Type')->create(),
+			'post' => $postTypeFactory->create(),
+			'page' => $postTypeFactory->create(),
 		);
 		
 		$postTypes['post']->addData(array(
@@ -276,6 +269,7 @@ class App
 	 */
 	public function getAllTaxonomies()
 	{
+		$taxonomyFactory = \Magento\Framework\App\ObjectManager::getInstance()->create('FishPig\WordPress\Model\Term\TaxonomyFactory');
 		$this->_init();
 
 		$blogPrefix = $this->isMultisite() && $this->getConfig()->getBlogId() === 1;
@@ -292,8 +286,8 @@ class App
 		}
 
 		$taxonomies = array(
-			'category' => $this->factory->getFactory('Term\Taxonomy')->create(),
-			'post_tag' => $this->factory->getFactory('Term\Taxonomy')->create()
+			'category' => $taxonomyFactory->create(),
+			'post_tag' => $taxonomyFactory->create()
 		);
 		
 		$taxonomies['category']->addData(array(
@@ -458,14 +452,6 @@ class App
 		$this->_init();
 		
 		return $this->wpUrlBuilder;
-	}
-	
-	/*
-	 * @return \FishPig\WordPress\Model\App\Factory
-	 */
-	public function getFactory()
-	{
-		return $this->factory;
 	}
 	
 	/*

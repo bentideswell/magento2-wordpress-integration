@@ -125,7 +125,9 @@ class Type extends AbstractPostType implements ViewableInterface
 	 */
 	public function getPostCollection()
 	{
-		return $this->_factory->getFactory('Post')->create()->getCollection()->addPostTypeFilter($this->getPostType());
+		return \Magento\Framework\App\ObjectManager::getInstance()
+			->create('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
+				->addPostTypeFilter($this->getPostType());
 	}
 
 	/**

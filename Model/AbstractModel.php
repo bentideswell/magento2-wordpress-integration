@@ -30,7 +30,6 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 		
 		$this->_app = $wpContext->getApp();
 		$this->_wpUrlBuilder = $wpContext->getUrlBuilder();
-		$this->_factory = $wpContext->getFactory();
 		$this->_viewHelper = $wpContext->getViewHelper();
 		$this->_filter = $wpContext->getFilterHelper();
 		$this->context = $wpContext;
@@ -135,5 +134,10 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	public function getCanonicalUrl()
 	{
 		return $this->getUrl();
+	}
+	
+	public function getFactory($type)
+	{
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('\FishPig\WordPress\Model\\' . $type . 'Factory');
 	}
 }

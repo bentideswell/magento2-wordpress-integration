@@ -183,9 +183,6 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			return true;
 		}
 
-		// Get file from WordPress
-//	$targetFile = $this->app->getPath() . DIRECTORY_SEPARATOR . $file;
-
 		// Get file from Magento
 		$targetFile = $this->dirReader->getModuleDir('', 'FishPig_WordPress') . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
 		

@@ -20,11 +20,6 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	 * @var 
 	 */	
 	protected $_entity = null;
-	
-	/*
-	 * @var 
-	 */	
-	protected $factory = null;
 
 	/*
 	 * @var 
@@ -51,14 +46,12 @@ abstract class Action extends \Magento\Framework\App\Action\Action
   public function __construct(
     \Magento\Framework\App\Action\Context $context, 
     \Magento\Framework\Registry $registry, 
-    \FishPig\WordPress\Model\App $app,
-    \FishPig\WordPress\Model\App\Factory $factory
+    \FishPig\WordPress\Model\App $app
    )
   {
 	    
 		$this->registry = $registry;
 		$this->app = $app;
-		$this->factory = $factory;
         	
     parent::__construct($context);
   }	
@@ -243,7 +236,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	 */
   public function getFactory($type)
   {
-    return $this->factory->getFactory($type);
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('\FishPig\WordPress\Model\\' . $type . 'Factory');
   }
     
   /*

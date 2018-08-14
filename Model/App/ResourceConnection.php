@@ -50,7 +50,6 @@ class ResourceConnection
 					'wordpress_user_meta' => 'usermeta',
 				]);
 
-				
 				$this->connection = $connectionFactory->create([
 		      'host' => $wpConfig->getData('DB_HOST'),
 		      'dbname' => $wpConfig->getData('DB_NAME'),

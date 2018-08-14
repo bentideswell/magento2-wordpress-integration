@@ -1,15 +1,13 @@
 <?php
-/**
+/*
  * @category    Fishpig
  * @package     Fishpig_Wordpress
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block;
 
-class Post extends \FishPig\WordPress\Block\AbstractBlock implements
-	\Magento\Framework\DataObject\IdentityInterface
+class Post extends \FishPig\WordPress\Block\AbstractBlock implements \Magento\Framework\DataObject\IdentityInterface
 {
 	/**
 	 * Retrieve the current post object

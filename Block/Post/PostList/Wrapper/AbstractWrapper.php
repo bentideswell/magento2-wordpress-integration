@@ -74,7 +74,7 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	protected function _getPostCollection()
 	{
-		return $this->_factory->getFactory('Post')->create()->getCollection();
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostFactory')->create()->getCollection();
 	}
 
 	/**

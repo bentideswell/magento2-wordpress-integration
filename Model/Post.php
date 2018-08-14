@@ -246,7 +246,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function getTermCollection($taxonomy)
 	{
-		return $this->_factory->getFactory('Term')->create()
+		return $this->getFactory('Term')->create()
 			->getCollection()
 				->addTaxonomyFilter($taxonomy)
 				->addPostIdFilter($this->getId());
@@ -414,7 +414,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		if (!$this->hasData('images')) {
 			$this->setImages(
-				$this->_factory->getFactory('Image')->create()
+				$this->getFactory('Image')->create()
 					->getCollection()->setParent($this->getData('ID'))
 			);
 		}
@@ -455,7 +455,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		if (!$this->hasUser()) {
 			$this->setUser(
-				$this->_factory->getFactory('User')->create()->load($this->getUserId())
+				$this->getFactory('User')->create()->load($this->getUserId())
 			);
 		}
 		
@@ -651,7 +651,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$this->setParentPost(false);
 
 			if ($this->getParentId()) {
-				$parent = $this->_factory->getFactory('Post')->create()
+				$parent = $this->getFactory('Post')->create()
 					->setPostType($this->getPostType() === 'revision' ? '*' : $this->getPostType())
 					->load($this->getParentId());
 				
@@ -755,7 +755,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected function _getHomepageModel()
 	{
 		if ($this->homepageModel === null) {
-			$this->homepageModel = $this->_factory->getFactory('Homepage')->create();
+			$this->homepageModel = $this->getFactory('Homepage')->create();
 		}
 		
 		return $this->homepageModel;
@@ -771,7 +771,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		if (!$this->hasPostFormat()) {
 			$this->setPostFormat('');
 
-			$formats = $this->_factory->getFactory('Term')->create()->getCollection()
+			$formats = $this->getFactory('Term')->create()->getCollection()
 				->addTaxonomyFilter('post_format')
 				->setPageSize(1)
 				->addObjectIdFilter($this->getId())

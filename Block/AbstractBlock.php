@@ -25,7 +25,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     $this->_config = $wpContext->getConfig();
     $this->_registry = $wpContext->getRegistry();
     $this->_wpUrlBuilder = $wpContext->getUrlBuilder();
-    $this->_factory = $wpContext->getFactory();
     $this->_viewHelper = $wpContext->getViewHelper();
     $this->_pluginHelper = $wpContext->getPluginHelper();
     $this->filterHelper = $wpContext->getFilterHelper();

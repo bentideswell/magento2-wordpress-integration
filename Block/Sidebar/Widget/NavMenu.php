@@ -20,7 +20,7 @@ class NavMenu extends AbstractWidget
 		if (!$this->hasMenu()) {
 			$this->setMenu(false);
 
-			$menu = $this->_factory->getFactory('Menu')->create()->load($this->_getData('nav_menu'));
+			$menu = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\MenuFactory')->create()->load($this->_getData('nav_menu'));
 
 			if ($menu->getId()) {
 				$this->setMenu($menu);

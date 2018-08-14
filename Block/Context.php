@@ -10,7 +10,6 @@ namespace FishPig\WordPress\Block;
 use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\Config;
 use \FishPig\WordPress\Model\App\Url;
-use \FishPig\WordPress\Model\App\Factory;
 use \FishPig\WordPress\Helper\View;
 use \FishPig\WordPress\Helper\Plugin;
 use \FishPig\WordPress\Helper\Filter;
@@ -23,12 +22,11 @@ class Context implements ContextInterface
 	 *
 	 *
 	 */
-	public function __construct(App $app, Config $config, Url $urlBuilder, Factory $factory, View $viewHelper, Plugin $pluginHelper, Registry $registry, Filter $filterHelper)
+	public function __construct(App $app, Config $config, Url $urlBuilder, View $viewHelper, Plugin $pluginHelper, Registry $registry, Filter $filterHelper)
 	{
 		$this->_app = $app;
 		$this->_config = $config;
 		$this->_urlBuilder = $urlBuilder;
-		$this->_factory = $factory;
 		$this->_viewHelper = $viewHelper;
 		$this->_registry = $registry;
 		$this->_pluginHelper = $pluginHelper;
@@ -63,16 +61,6 @@ class Context implements ContextInterface
 	public function getUrlBuilder()
 	{
 		return $this->_urlBuilder;
-	}
-	
-	/*
-	 *
-	 *
-	 * @return
-	 */
-	public function getFactory()
-	{
-		return $this->_factory;
 	}
 	
 	/*

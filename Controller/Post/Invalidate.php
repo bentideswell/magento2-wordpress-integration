@@ -12,11 +12,6 @@ class Invalidate extends \Magento\Framework\App\Action\Action
 	protected $app;
 
 	/**
-	 * @var \FishPig\WordPress\Model\App\Factory
-	 */
-	protected $factory;
-
-	/**
 	  * @var \Magento\Framework\App\CacheInterface
 	  */
 	protected $cacheManager;
@@ -31,19 +26,16 @@ class Invalidate extends \Magento\Framework\App\Action\Action
 	 *
 	 * @param \Magento\Framework\App\Action\Context $context
 	 * @param \FishPig\WordPress\Model\App $app
-	 * @param \FishPig\WordPress\Model\App\Factory $factory
 	 * @param \Magento\Framework\App\CacheInterface $cacheManager
 	 * @param \Magento\Framework\Event\ManagerInterface $eventManager
 	 */
 	public function __construct(
 		\Magento\Framework\App\Action\Context $context,
 		\FishPig\WordPress\Model\App $app,
-		\FishPig\WordPress\Model\App\Factory $factory,
 		\Magento\Framework\App\CacheInterface $cacheManager
 		)
 	{
 		$this->app = $app;
-		$this->factory = $factory;
 		$this->cacheManager = $cacheManager;
 		$this->eventManager = $context->getEventManager();
 
@@ -76,7 +68,8 @@ class Invalidate extends \Magento\Framework\App\Action\Action
 			return false;
 		}
 
-		$post = $this->factory->getFactory('Post')->create()->load($postId);
+		$post = \Magento\Framework\App\ObjectManager::getInstance()->get('\FishPig\WordPress\Model\PostFactory')->create()->load($postId);
+		
 		if (!$post) {
 			return false;
 		}

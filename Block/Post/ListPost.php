@@ -36,7 +36,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 				}
 			}
 			else {
-				$this->_postCollection = $this->_factory->getFactory('Post')->create()->getCollection();
+				$this->_postCollection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostFactory')->create()->getCollection();
 			}
 
 			if ($this->_postCollection && ($pager = $this->getChildBlock('pager'))) {

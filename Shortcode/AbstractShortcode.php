@@ -39,11 +39,6 @@ abstract class AbstractShortcode
 	/*
 	 * @var Magento\Framework\View\Layout
 	 */
-	protected $_factory = null;
-	
-	/*
-	 * @var Magento\Framework\View\Layout
-	 */
 	protected $_cache = null;
 	
 	/*
@@ -64,7 +59,6 @@ abstract class AbstractShortcode
   public function __construct(App $app, Context $context)
   {
 		$this->_app = $app;
-		$this->_factory = $app->getFactory();
 		$this->_layout = $context->getLayout();
 		$this->_cache = $context->getCache();
 		$this->_cacheState = $context->getCacheState();

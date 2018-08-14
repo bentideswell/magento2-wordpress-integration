@@ -17,11 +17,6 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 *
 	 */
 	protected $_resource = null;
-	
-	/*
-	 *
-	 */
-	protected $_factory = null;
 
 	protected $context;
 	
@@ -36,7 +31,6 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 
 		$this->_app = $wpContext->getApp();
 		$this->_resource = $wpContext->getResourceConnection();
-		$this->_factory = $wpContext->getFactory();
 		
 		$this->context = $wpContext;
 	}
@@ -69,15 +63,5 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	public function getTablePrefix()
 	{
 		return $this->_resource->getTablePrefix();
-	}
-
-	/*
-	 *
-	 *
-	 * @return
-	 */
-	public function getFactory()
-	{
-		return $this->_factory;
 	}
 }

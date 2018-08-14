@@ -20,13 +20,12 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	 *
 	 * @return 
 	 */
-	public function __construct(App $app, App\ResourceConnection $resourceConnection, App\Url $urlBuilder, App\Factory $factory, Config $config, ViewHelper $viewHelper, FilterHelper $filterHelper, CompatibilityHelper $compatibilityHelper)
+	public function __construct(App $app, App\ResourceConnection $resourceConnection, App\Url $urlBuilder, Config $config, ViewHelper $viewHelper, FilterHelper $filterHelper, CompatibilityHelper $compatibilityHelper)
 	{
 		$this->app = $app->init();
 		$this->resourceConnection = $resourceConnection;
 		$this->config = $config;
 		$this->urlBuilder = $urlBuilder;
-		$this->factory = $factory;
 		$this->viewHelper = $viewHelper;
 		$this->filterHelper = $filterHelper;
 		$this->compatibilityHelper = $compatibilityHelper;
@@ -70,16 +69,6 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	public function getUrlBuilder()
 	{
 		return $this->urlBuilder;
-	}
-
-	/*
-	 *
-	 *
-	 * @return 
-	 */
-	public function getFactory()
-	{
-		return $this->factory;
 	}
 
 	/*

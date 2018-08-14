@@ -163,7 +163,7 @@ class Menu extends Term
 	 */    
     protected function _getObjectResourceModel()
     {
-	    return $this->_app->getFactory()->getFactory('Menu\Item')
+	    return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\Menu\ItemFactory')
 	    	->create()
 	    	->getCollection()
 	    	->addParentItemIdFilter(0);
