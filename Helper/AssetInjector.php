@@ -88,14 +88,14 @@ class AssetInjector
 		
 		// Get assets from plugins
 		foreach($shortcodes as $class => $shortcodeInstance) {
-			if ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml)) {
+			if (method_exists($shortcodeInstance, 'getRequiredAssets') && ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml))) {
 				$assets = array_merge($assets, $buffer);
 			}
 		}
 
 		// Get inline JS/CSS
 		foreach($shortcodes as $class => $shortcodeInstance) {
-			if ($buffer = $shortcodeInstance->getInlineJs()) {
+			if (method_exists($shortcodeInstance, 'getInlineJs') && ($buffer = $shortcodeInstance->getInlineJs())) {
 				$inline = array_merge($inline, $buffer);
 			}
 		}
