@@ -9,7 +9,7 @@ namespace FishPig\WordPress\Block;
 
 use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\Config;
-use \FishPig\WordPress\Model\App\Url;
+use \FishPig\WordPress\Model\Url;
 use \FishPig\WordPress\Helper\View;
 use \FishPig\WordPress\Helper\Plugin;
 use \FishPig\WordPress\Helper\Filter;

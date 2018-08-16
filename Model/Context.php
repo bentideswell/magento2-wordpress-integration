@@ -20,7 +20,7 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	 *
 	 * @return 
 	 */
-	public function __construct(App $app, App\ResourceConnection $resourceConnection, App\Url $urlBuilder, Config $config, ViewHelper $viewHelper, FilterHelper $filterHelper, CompatibilityHelper $compatibilityHelper)
+	public function __construct(App $app, App\ResourceConnection $resourceConnection, Url $urlBuilder, Config $config, ViewHelper $viewHelper, FilterHelper $filterHelper, CompatibilityHelper $compatibilityHelper)
 	{
 		$this->app = $app->init();
 		$this->resourceConnection = $resourceConnection;

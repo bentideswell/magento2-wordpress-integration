@@ -16,27 +16,27 @@ class Router implements \Magento\Framework\App\RouterInterface
 	/**
 	 * @var FishPig\WordPress\Model\App
 	 **/
-	protected $_app;
+	protected $app;
 	
 	/**
-	 * @var FishPig\WordPress\Model\App\Url
+	 * @var FishPig\WordPress\Model\Url
 	 **/
-	protected $_wpUrlBuilder;
+	protected $wpUrlBuilder;
 	
 	/**
 	 * @var array
 	 */
-	protected $_callbacks = array();
+	protected $callbacks = array();
 	
 	/**
 	 * @var array
 	 */
-	protected $_routes = array();
+	protected $routes = array();
 	
 	/**
 	 * @var
 	 */
-	protected $_postResourceFactory = null;
+	protected $postResourceFactory = null;
 	
     /**
      * @param ActionFactory $actionFactory
@@ -45,15 +45,15 @@ class Router implements \Magento\Framework\App\RouterInterface
     public function __construct(
     	\Magento\Framework\App\ActionFactory $actionFactory, 	
     	\FishPig\WordPress\Model\App $app,
-    	\FishPig\WordPress\Model\App\Url $urlBuilder,
+    	\FishPig\WordPress\Model\Url $urlBuilder,
     	\FishPig\WordPress\Model\ResourceModel\PostFactory $postResourceFactory,
     	\Magento\Framework\App\Request\Http $request
     )
     {
       $this->actionFactory = $actionFactory;
-      $this->_app = $app;
-      $this->_wpUrlBuilder = $urlBuilder;
-      $this->_postResourceFactory = $postResourceFactory;
+      $this->app = $app;
+      $this->wpUrlBuilder = $urlBuilder;
+      $this->postResourceFactory = $postResourceFactory;
       $this->request = $request;
     }
 
@@ -63,18 +63,18 @@ class Router implements \Magento\Framework\App\RouterInterface
 	public function match(RequestInterface $request)
 	{	
 		try {
-			if (!$this->_app->canRun()) {
+			if (!$this->app->canRun()) {
 				return false;
 			}
 
-			$fullRequestUri = $this->_wpUrlBuilder->getPathInfo($request);
-			$blogRoute = $this->_wpUrlBuilder->getBlogRoute();
+			$fullRequestUri = $this->wpUrlBuilder->getPathInfo($request);
+			$blogRoute = $this->wpUrlBuilder->getBlogRoute();
 
 			if ($blogRoute && ($blogRoute !== $fullRequestUri && strpos($fullRequestUri, $blogRoute . '/') !== 0)) {
 				return false;
 			}
 
-			if (!($requestUri = $this->_wpUrlBuilder->getRouterRequestUri($request))) {
+			if (!($requestUri = $this->wpUrlBuilder->getRouterRequestUri($request))) {
 				$this->addRouteCallback(array($this, '_getHomepageRoutes'));	
 			}
 
@@ -90,7 +90,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 					->setActionName($route['path']['action'])
 					->setAlias(
 						\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS,
-						$this->_wpUrlBuilder->getUrlAlias($request)
+						$this->wpUrlBuilder->getUrlAlias($request)
 					);
 				
 				if (count($route['params']) > 0) {
@@ -119,11 +119,11 @@ class Router implements \Magento\Framework\App\RouterInterface
 	{
 		$encodedUri = strtolower(str_replace('----slash----', '/', urlencode(str_replace('/', '----slash----', $uri))));
 		
-		foreach($this->_callbacks as $callback) {
-			$this->_routes = array();
+		foreach($this->callbacks as $callback) {
+			$this->routes = array();
 
 			if (call_user_func($callback, $uri, $this) !== false) {
-				foreach($this->_routes as $route => $data) {
+				foreach($this->routes as $route => $data) {
 					$match = false;
 
 					if (substr($route, 0, 1) !== '/') {
@@ -188,7 +188,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 			$path['module'] = 'wordpress';
 		}
 
-		$this->_routes[$pattern] = array(
+		$this->routes[$pattern] = array(
 			'path' => $path,
 			'params' => $params,
 			'pattern_keys' => $keys,
@@ -204,7 +204,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 	 */
 	public function addRouteCallback(array $callback)
 	{
-		$this->_callbacks[] = $callback;
+		$this->callbacks[] = $callback;
 		
 		return $this;
 	}
@@ -267,7 +267,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 	 */
 	protected function _getPostRoutes($uri = '')
 	{
-		if (($routes = $this->_postResourceFactory->create()->getPermalinksByUri($uri)) === false) {
+		if (($routes = $this->postResourceFactory->create()->getPermalinksByUri($uri)) === false) {
 			return false;
 		}
 
@@ -287,7 +287,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 	 */
 	protected function _getTaxonomyRoutes($uri = '')
 	{
-		foreach($this->_app->getTaxonomies() as $taxonomy) {
+		foreach($this->app->getTaxonomies() as $taxonomy) {
 			if (($routes = $taxonomy->getUris($uri)) !== false) {
 				foreach($routes as $routeId => $route) {
 					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));

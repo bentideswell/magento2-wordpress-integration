@@ -2,11 +2,11 @@
 /**
   *
  **/
-namespace FishPig\WordPress\Model\Post\Type;
+namespace FishPig\WordPress\Model\PostType;
 
 use FishPig\WordPress\Model\App;
 
-abstract class AbstractType extends \Magento\Framework\DataObject
+abstract class AbstractPostType extends \Magento\Framework\DataObject
 {
 	/*
 	 *

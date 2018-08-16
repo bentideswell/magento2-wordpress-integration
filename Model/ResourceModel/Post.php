@@ -370,11 +370,13 @@ class Post extends AbstractMeta
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
-		return $this->_factory->getFactory('Post\Comment')->create()->getCollection()
-			->addPostIdFilter($post->getId())
-			->addCommentApprovedFilter()
-			->addParentCommentFilter(0)
-			->addOrderByDate();
+		
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')
+			->create()
+				->addPostIdFilter($post->getId())
+				->addCommentApprovedFilter()
+				->addParentCommentFilter(0)
+				->addOrderByDate();
 	}
 	
 	/**
@@ -394,7 +396,7 @@ class Post extends AbstractMeta
 				->limit(1);
 
 			if (($imageId = $this->getConnection()->fetchOne($select)) !== false) {
-				return $this->_factory->getFactory('Image')->create()->load($imageId);
+				return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ImageFactory')->create()->load($imageId);
 			}
 		}
 		
@@ -403,7 +405,7 @@ class Post extends AbstractMeta
 	
 	public function getPostsOnDayByYearMonth($dateStr)
 	{
-		$collection = $this->_factory->getFactory('Post')->create()->getCollection()
+		$collection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')->create()->getCollection()
 			->addPostDateFilter($dateStr)
 			->addIsViewableFilter();
 			

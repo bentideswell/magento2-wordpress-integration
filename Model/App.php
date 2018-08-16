@@ -7,7 +7,7 @@ namespace FishPig\WordPress\Model;
 use \FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
 use \FishPig\WordPress\Model\Config;
 use \FishPig\WordPress\Model\App\ResourceConnection;
-use \FishPig\WordPress\Model\App\Url as WpUrlBuilder;
+use \FishPig\WordPress\Model\Url as WpUrlBuilder;
 use \FishPig\WordPress\Helper\Theme as ThemeHelper;
 
 
@@ -196,6 +196,8 @@ class App
 	 */
 	public function getPostType($key = null)
 	{
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostTypeManager')->getPostType($key);
+
 		$this->_init();
 
 		if (is_null($this->postTypes)) {
@@ -211,30 +213,7 @@ class App
 	
 	public function getAllPostTypes()
 	{
-		$postTypeFactory = \Magento\Framework\App\ObjectManager::getInstance()->create('FishPig\WordPress\Model\Post\TypeFactory');
-		$postTypes = array();
-		
-		$postTypes = array(
-			'post' => $postTypeFactory->create(),
-			'page' => $postTypeFactory->create(),
-		);
-		
-		$postTypes['post']->addData(array(
-			'post_type' => 'post',
-			'rewrite' => array('slug' => $this->getConfig()->getOption('permalink_structure')),
-			'taxonomies' => array('category', 'post_tag'),
-			'_builtin' => true,
-		));
-		
-		$postTypes['page']->addData(array(
-			'post_type' => 'page',
-			'rewrite' => array('slug' => '%postname%/'),
-			'hierarchical' => true,
-			'taxonomies' => array(),
-			'_builtin' => true,
-		));
-		
-		return $postTypes;
+		echo __METHOD__;exit;
 	}
 	
     /*
