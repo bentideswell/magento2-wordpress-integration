@@ -9,48 +9,10 @@
 namespace FishPig\WordPress\Helper;
 
 use \Magento\Framework\App\Helper\Context;
-use \FishPig\WordPress\Model\App;
-use \FishPig\WordPress\Model\Config;
-use \Magento\Cms\Model\Template\FilterProvider;
-use \Magento\Framework\Module\Dir\Reader;
+
 
 class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 {
-	/*
-	 * @var \FishPig\WordPress\Model\App
-	 */
-	protected $app = null;
-	
-	/*
-	 * @var \FishPig\WordPress\Model\Config
-	 */
-	protected $config = null;
-
-  /*
-   * @var \Magento\Cms\Model\Template\FilterProvider
-   */
-  protected $_filterProvider;
-    
-  /*
-	 * @var \Magento\Framework\Module\Dir\Reader
-	 */
-  protected $dirReader;
-	
-	/*
-	 *
-	 *
-	 * @return void
-	 */
-	public function __construct(Context $context, App $app, Config $config, FilterProvider $filterProvider, Reader $dirReader)
-	{
-		parent::__construct($context);
-
-		$this->app = $app->init();
-		$this->config = $config;
-		$this->filterProvider = $filterProvider;
-		$this->dirReader = $dirReader;
-	}
-	
 	/*
 	 * Call autop on the string
 	 * Then go through each shortcode and try to apply
@@ -66,77 +28,6 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 		$string = trim($this->addParagraphTagsToString($string));
 
 		return $this->doShortcode($string, $object);
-	}
-
-	/*
-	 * Go through each shortcode and try to apply
-	 * Finally go through each shortcode again to check if another shortcode
-	 * has handled it and if so add it to the assetInjectionShortcodes array
-	 *
-	 * @param $string
-	 * @param $object = null
-	 * @return string
-	 */
-	public function doShortcode($content, $object = null)
-	{
-		return \Magento\Framework\App\ObjectManager::getInstance()
-			->get('FishPig\WordPress\Model\ShortcodeManager')
-				->renderShortcode($content, ['object' => $object]);
-
-		if ($shortcodes = $this->config->getShortcodes()) {
-			foreach($shortcodes as $alias => $shortcodeInstance) {
-				// Parse $content and try to inject shortcode HTML
-				$newContent = trim((string)$shortcodeInstance->setObject($object)->setValue($content)->process());
-				
-				// Content has changed so check for injection
-				if ($content !== $newContent) {
-
-					// Update $content with the updated content
-					$content = $newContent;
-
-					// Check if shortcode requires JS/CSS injection
-					if ($shortcodeInstance->requiresAssetInjection()) {
-						self::$assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
-					}
-				}
-			}
-
-			// We might not need this
-			// Keep it from running for now
-			if (false) {
-				// Now go through shortcodes and check for required assets against $content
-				foreach($shortcodes as $alias => $shortcodeInstance) {
-					if (!isset(self::$assetInjectionShortcodes[get_class($shortcodeInstance)])) {
-						if ($shortcodeInstance->requiresAssetInjection($content)) {
-							self::$assetInjectionShortcodes[get_class($shortcodeInstance)] = $shortcodeInstance;
-						}
-					}
-				}
-			}
-		}
-		
-		// Filter the content for {{block and {{widget
-		if (strpos($content, '{{') !== false) {
-			if (preg_match_all('/\{\{([^\n]{1,})\}\}/Us', $content, $matches)) {
-				foreach($matches[0] as $key => $value) {
-					$content = str_replace($value, html_entity_decode($value), $content);
-				}
-			}
-
-			$content = $this->filterProvider->getPageFilter()->filter($content);
-		}
-		
-		return $content;
-	}
-	
-	/*
-	 *
-	 *
-	 * @return 
-	 */
-	public function getAssetInjectionShortcodes()
-	{
-		return [];
 	}
 	
 	/*
@@ -176,8 +67,10 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			return true;
 		}
 
+
+
 		// Get file from Magento
-		$targetFile = $this->dirReader->getModuleDir('', 'FishPig_WordPress') . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
+		$targetFile = basename(__DIR__) . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
 		
 		if (!is_file($targetFile)) {
 			return false;

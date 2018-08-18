@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Model;
 
 use \FishPig\WordPress\Model\Config\Reader;
 use \Magento\Framework\App\Config\ScopeConfigInterface;
-use \FishPig\WordPress\Model\App\ResourceConnection;
+use \FishPig\WordPress\Model\ResourceConnection;
 use \Magento\Customer\Model\Session as CustomerSession;
 use \Magento\Store\Model\StoreManagerInterface;
 use \FishPig\WordPress\Model\App\WPConfig;
@@ -73,7 +73,7 @@ class Config
 	 */
 	public function getOption($key)
 	{
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\Option')->getOption($key);
+		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\OptionManager')->getOption($key);
 	}
 
 	/**

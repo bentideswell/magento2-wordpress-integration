@@ -14,7 +14,7 @@ class Post extends \FishPig\WordPress\Block\AbstractBlock implements \Magento\Fr
 	 *
 	 * @return null|\FishPig\WordPress\Model\Post
 	 */
-	public function getPost()
+	public function getPosttt()
 	{
 		return $this->hasPost() ? $this->_getData('post') : $this->_registry->registry('wordpress_post');
 	}

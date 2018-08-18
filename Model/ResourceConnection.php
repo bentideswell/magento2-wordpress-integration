@@ -2,7 +2,7 @@
 /**
  * @var 
 **/
-namespace FishPig\WordPress\Model\App;
+namespace FishPig\WordPress\Model;
 
 use \Magento\Framework\App\ResourceConnection\ConnectionFactory;
 use \FishPig\WordPress\Model\Config;

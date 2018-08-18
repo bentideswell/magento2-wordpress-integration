@@ -1,12 +1,17 @@
 <?php
-	
+/*
+ *
+ */
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\App;
-use \FishPig\WordPress\Model\PostType\AbstractPostType;
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+use FishPig\WordPress\App;
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\Url as WordPressURL;
+use FishPig\WordPress\Helper\Router as RouterHelper;
 
-class PostType extends AbstractPostType implements ViewableInterface
+class PostType extends \Magento\Framework\DataObject/* implements ViewableInterface*/
 {
 	/**
 	 *
@@ -19,7 +24,48 @@ class PostType extends AbstractPostType implements ViewableInterface
 	 * @var array static
 	 */
 	static $_uriCache = array();
-    
+  
+  /*
+	 *
+	 */
+	protected $resourceConnection;
+	
+  /*
+	 * @var PostTypeManager
+	 */
+  protected $postTypeManager;
+  
+  /*
+	 * @var RouterHelper
+	 */
+  protected $routerHelper;
+  
+  /*
+	 *
+	 *
+	 * @param  WordPressURL $url
+	 * @param  array        $data
+	 * @return void
+	 */
+	public function __construct(ResourceConnection $resourceConnection, WordPressURL $url, RouterHelper $routerHelper, array $data = [])
+	{
+		parent::__construct($data);
+
+		$this->resourceConnection = $resourceConnection;
+		$this->url = $url;
+		$this->routerHelper = $routerHelper;
+	}
+   
+  /*
+	 *
+	 * @param  PostTypeManager $postTypeManager
+	 * @return $this
+	 */
+  public function setPostTypeManager(PostTypeManager $postTypeManager)
+  {
+		$this->postTypeManager = $postTypeManager;	  
+  }
+  
 	/**
 	 * Determine whether post type uses GUID links
 	 *
@@ -56,15 +102,16 @@ class PostType extends AbstractPostType implements ViewableInterface
 		if ($this->isHierarchical()) {
 			$structure = str_replace('%postname%', '%postnames%', $structure);
 		}
-		
 
 		if ((int)$this->getData('rewrite/with_front') === 1) {
-			$postPermalink = $this->_app->getPostType('post')->getPermalinkStructure();
-			
-			if (substr($postPermalink, 0, 1) !== '%') {
-				$front = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');
+			if ($this->postTypeManager) {
+				$postPermalink = $this->postTypeManager->getPostType('post')->getPermalinkStructure();
 				
-				$structure = $front . '/' . $structure;
+				if (substr($postPermalink, 0, 1) !== '%') {
+					$front = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');
+					
+					$structure = $front . '/' . $structure;
+				}
 			}
 		}
 
@@ -115,7 +162,7 @@ class PostType extends AbstractPostType implements ViewableInterface
 	 */
 	public function getUrl()
 	{
-		return $this->_app->getWpUrlBuilder()->getUrl($this->getArchiveSlug() . '/');
+		return $this->url->getUrl($this->getArchiveSlug() . '/');
 	}
 	
 	/**
@@ -125,9 +172,11 @@ class PostType extends AbstractPostType implements ViewableInterface
 	 */
 	public function getPostCollection()
 	{
-		return \Magento\Framework\App\ObjectManager::getInstance()
-			->create('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
-				->addPostTypeFilter($this->getPostType());
+		if ($this->postTypeManager) {
+			return $this->postTypeManager->getPostTypeFactory()->getCollection()->addPostTypeFilter($this->getPostType());
+		}
+		
+		return false;
 	}
 
 	/**
@@ -180,9 +229,7 @@ class PostType extends AbstractPostType implements ViewableInterface
 	 */
 	public function getArchiveUrl()
 	{
-		return $this->hasArchive()
-			? $this->_wpUrlBuilder->getUrl($this->getArchiveSlug() . '/')
-			: '';
+		return $this->hasArchive() ? $this->url->getUrl($this->getArchiveSlug() . '/') : '';
 	}
 
 	/**
@@ -284,12 +331,12 @@ class PostType extends AbstractPostType implements ViewableInterface
 			return self::$_uriCache[$this->getPostType()];
 		}
 		
-		if (!($db = $this->_resource->getConnection())) {
+		if (!($db = $this->resourceConnection->getConnection())) {
 			return false;
 		}
 
 		$select = $db->select()
-			->from(array('term' => $this->_resource->getTable('wordpress_post')), array(
+			->from(array('term' => $this->resourceConnection->getTable('wordpress_post')), array(
 				'id' => 'ID',
 				'url_key' =>  'post_name', 
 				'parent' => 'post_parent'
@@ -297,7 +344,7 @@ class PostType extends AbstractPostType implements ViewableInterface
 			->where('post_type=?', $this->getPostType())
 			->where('post_status=?', 'publish');
 				
-		self::$_uriCache[$this->getPostType()] = $this->_generateRoutesFromArray($db->fetchAll($select));
+		self::$_uriCache[$this->getPostType()] = $this->routerHelper->generateRoutesFromArray($db->fetchAll($select));
 		
 		return self::$_uriCache[$this->getPostType()];
 	}
@@ -356,10 +403,12 @@ class PostType extends AbstractPostType implements ViewableInterface
 				}
 			}
 			else if (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
-				$parent = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostFactory')->create()->setPostType('page')->load($token, 'post_name');
-				
-				if ($parent->getId()) {
-		    	$objects['parent_post_' . $parent->getId()] = $parent;
+				if ($this->postTypeManager) {
+					$parent = $this->postTypeManager->getPostTypeFactory()->create()->setPostType('page')->load($token, 'post_name');
+					
+					if ($parent->getId()) {
+			    	$objects['parent_post_' . $parent->getId()] = $parent;
+					}
 				}
 			}
 		}

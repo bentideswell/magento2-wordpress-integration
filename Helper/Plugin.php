@@ -9,7 +9,7 @@ namespace FishPig\WordPress\Helper;
 
 use \Magento\Framework\App\Helper\Context;
 use \FishPig\WordPress\Model\App;
-use \FishPig\WordPress\Model\App\ResourceConnection;
+use \FishPig\WordPress\Model\ResourceConnection;
 use \FishPig\WordPress\Model\Config;
 
 class Plugin extends \Magento\Framework\App\Helper\AbstractHelper

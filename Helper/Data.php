@@ -8,34 +8,19 @@
 
 namespace FishPig\WordPress\Helper;
 
-class View extends \Magento\Framework\App\Helper\AbstractHelper
+use Magento\Framework\App\Helper\Context;
+use FishPig\WordPress\Model\Config;
+use FishPig\WordPress\Helper\Filter as FilterHelper;
+
+class Data extends \Magento\Framework\App\Helper\AbstractHelper
 {
-	protected $_layout = null;
-	protected $_config = null;
-	protected $_request = null;
+	protected $filterHelper;
 	
-	public function __construct(
-		\Magento\Framework\App\Helper\Context $context,
-		\FishPig\WordPress\Model\Config $config,
-		\Magento\Framework\View\Layout $layout,
-    	\Magento\Framework\App\Request\Http $request
-	)
+	public function __construct(Context $context, FilterHelper $filterHelper)
 	{
 		parent::__construct($context);
 		
-		$this->_config = $config;
-		$this->_layout = $layout;
-		$this->_request = $request;
-	}
-	
-	public function getRequest()
-	{
-		return $this->_request;
-	}
-	
-	public function getLayout()
-	{
-		return $this->_layout;
+		$this->filterHelper = $filterHelper;
 	}
 
 	public function applyPageConfigData($pageConfig, $entity)
@@ -44,31 +29,24 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 			return $this;
 		}
 		
-        $pageConfig->getTitle()->set($entity->getPageTitle());
-        $pageConfig->setDescription($entity->getMetaDescription());	
-        $pageConfig->setKeywords($entity->getMetaKeywords());
+    $pageConfig->getTitle()->set($entity->getPageTitle());
+    $pageConfig->setDescription($entity->getMetaDescription());	
+    $pageConfig->setKeywords($entity->getMetaKeywords());
 
 		#TODO: Hook this up so it displays on page
 		$pageConfig->setRobots($entity->getRobots());
-		
-        $pageMainTitle = $this->_layout->getBlock('page.main.title');
-        
-        if ($pageMainTitle) {
-            $pageMainTitle->setPageTitle($entity->getName());
-        }
-        
+	
+      $pageMainTitle = $this->_layout->getBlock('page.main.title');
+      
+      if ($pageMainTitle) {
+          $pageMainTitle->setPageTitle($entity->getName());
+      }
+      
 		if ($entity->getCanonicalUrl()) {
 			$pageConfig->addRemotePageAsset($entity->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
 		}
-		
-		$this->applyExtraConfigData($pageConfig, $entity);
-		
-        return $this;
-	}
 	
-	public function applyExtraConfigData($pageConfig, $entity)
-	{
-		return $this;
+    return $this;
 	}
 
 	public function canDiscourageSearchEngines()
@@ -106,7 +84,6 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 		
 		for( $i = 0; $i < $len; $i++) {	
 			$out .= __(date($format[$i], strtotime($date)));
-#			$out .= __(Mage::getModel('core/date')->date($format[$i], strtotime($date)));
 		}
 		
 		return $out;
@@ -172,5 +149,38 @@ class View extends \Magento\Framework\App\Helper\AbstractHelper
 	public function getSearchTerm()
 	{
 		return $this->_request->getParam('s');
+	}
+	
+	
+	/*
+	 * If a page is set as a custom homepage, get it's ID
+	 *
+	 * @return false|int
+	 */
+	public function getHomepagePageId()
+	{
+		if ($this->getConfig()->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->getConfig()->getOption('page_on_front')) {
+				return $pageId;
+			}
+		}
+		
+		return false;
+	}
+	
+	/*
+	 * If a page is set as a custom homepage, get it's ID
+	 *
+	 * @return false|int
+	 */
+	public function getBlogPageId()
+	{
+		if ($this->config->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->config->getOption('page_for_posts')) {
+				return $pageId;
+			}
+		}
+		
+		return false;
 	}
 }

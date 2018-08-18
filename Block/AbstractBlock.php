@@ -7,41 +7,54 @@
  */
 namespace FishPig\WordPress\Block;
 
-use \Magento\Framework\View\Element\Template\Context as MagentoContext;
-use \FishPig\WordPress\Block\Context as WPContext;
+/* Parent Class */
+use Magento\Framework\View\Element\Template;
+/* Constructor */
+use Magento\Framework\View\Element\Template\Context as Context;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Helper\View as ViewHelper;
 
-abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
+abstract class AbstractBlock extends Template
 {
-  /**
+	/*
+	 * @var FilterHelper
+	 */
+	protected $viewHelper;
+
+	protected $shortcodeManager;
+	
+  /*
    * Constructor
    *
    * @param Context $context
    * @param App
    * @param array $data
    */
-  public function __construct(MagentoContext $context, WPContext $wpContext, array $data = [])
+  public function __construct(Context $context, ShortcodeManager $shortcodeManager, ViewHelper $viewHelper, array $data = [])
   {
-    $this->_app = $wpContext->getApp()->init();
-    $this->_config = $wpContext->getConfig();
-    $this->_registry = $wpContext->getRegistry();
-    $this->_wpUrlBuilder = $wpContext->getUrlBuilder();
-    $this->_viewHelper = $wpContext->getViewHelper();
-    $this->_pluginHelper = $wpContext->getPluginHelper();
-    $this->filterHelper = $wpContext->getFilterHelper();
-    
     parent::__construct($context, $data);
-  }
-  
-  public function getFilter()
-  {
-	  return $this->filterHelper;
-  }
-  
-  public function doShortcode($shortcode, $object = null)
-  {
-	  return $this->filterHelper->doShortcode($shortcode, $object);
+
+		$this->shortcodeManager = $shortcodeManager;
+    $this->viewHelper   = $viewHelper;    
   }
 
+	/*
+	 * Parse and render a shortcode
+	 *
+	 * @param  string $shortcode
+	 * @param  mixed  $object = null
+	 * @return string
+	 */
+  public function doShortcode($shortcode, $object = null)
+  {
+		return $this->shortcodeManager->renderShortcode($content, ['object' => $object]);
+  }
+
+	/*
+	 * Generate the HTML for the block
+	 *
+	 * @return string
+	 */
 	public function toHtml()
 	{
 		try {

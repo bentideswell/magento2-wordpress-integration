@@ -4,9 +4,9 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\App\ResourceConnection;
+use FishPig\WordPress\Model\ResourceConnection;
 
-class Option
+class OptionManager
 {   
 	/*
 	 * @var array

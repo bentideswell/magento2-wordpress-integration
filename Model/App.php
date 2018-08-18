@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Model;
 
 use \FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
 use \FishPig\WordPress\Model\Config;
-use \FishPig\WordPress\Model\App\ResourceConnection;
+use \FishPig\WordPress\Model\ResourceConnection;
 use \FishPig\WordPress\Model\Url as WpUrlBuilder;
 use \FishPig\WordPress\Helper\Theme as ThemeHelper;
 
@@ -410,30 +410,6 @@ class App
 	}
 	
 	/*
-	 * 
-	 *
-	 * @return \FishPig\WordPress\Model\App\ResourceConnection
-	 */
-	public function getResourceConnection()
-	{
-		$this->_init();
-		
-		return $this->resourceConnection;
-	}
-	
-	/*
-	 * 
-	 *
-	 * @return \FishPig\WordPress\Model\App\Url
-	 */
-	public function getWpUrlBuilder()
-	{
-		$this->_init();
-		
-		return $this->wpUrlBuilder;
-	}
-	
-	/*
 	 *
 	 *
 	 * @return false
@@ -450,7 +426,6 @@ class App
 	 */
 	public function isThemeIntegrated()
 	{
-		
 		return $this->getConfig()->getStoreConfigFlag('wordpress/setup/theme_integration');
 	}
 }

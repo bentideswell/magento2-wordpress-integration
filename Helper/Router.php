@@ -1,44 +1,27 @@
 <?php
-/**
-  *
- **/
-namespace FishPig\WordPress\Model\PostType;
+/*
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
 
-use FishPig\WordPress\Model\App;
+namespace FishPig\WordPress\Helper;
 
-abstract class AbstractPostType extends \Magento\Framework\DataObject
+use Magento\Framework\App\Helper\Context;
+use Magento\Framework\App\Helper\AbstractHelper;
+
+class Router extends AbstractHelper
 {
 	/*
 	 *
-	 */
-  protected $_app = null;
-	 
-	/*
 	 *
+	 * @return void
 	 */
-	protected $_resource = null;
-
-	/*
-	 *
-	 */
-	protected $compatibilityHelper;
-	
-	/**
-	  *
-	 **/
-    public function __construct(
-    	\FishPig\WordPress\Model\App $app, 
-    	\FishPig\WordPress\Model\App\ResourceConnection $resourceConnection, 
-    	\FishPig\WordPress\Helper\Compatibility $compatibilityHelper, 
-    	$data = []
-    )
-    {
-	    parent::__construct($data);
-	    
-	    $this->_app = $app;
-    	$this->_resource = $resourceConnection;
-    	$this->compatibilityHelper = $compatibilityHelper;
-    }
+	public function __construct(Context $context)
+	{
+		parent::__construct($context);
+	}
 	
 	/**
 	 * Generate an array of URI's based on $results
@@ -46,7 +29,7 @@ abstract class AbstractPostType extends \Magento\Framework\DataObject
 	 * @param array $results
 	 * @return array
 	 */
-	protected function _generateRoutesFromArray($results, $prefix = '')
+	public function generateRoutesFromArray($results, $prefix = '')
 	{
 		$objects = array();
 		$byParent = array();
@@ -136,61 +119,5 @@ abstract class AbstractPostType extends \Magento\Framework\DataObject
 		}
 		
 		return false;
-	}
-	
-	/**
-	 * @return 
-	**/
-	public function getContent()
-	{
-		return '';
-	}
-
-	/**
-	 * @return 
-	**/	
-	public function getImage()
-	{
-		return false;
-	}
-
-	/**
-	 * @return 
-	**/
-	public function getPageTitle()
-	{
-		return $this->getName();
-	}
-
-	/**
-	 * @return 
-	**/	
-	public function getMetaDescription()
-	{
-		return '';
-	}
-
-	/**
-	 * @return 
-	**/
-	public function getMetaKeywords()
-	{
-		return '';
-	}
-	
-	/**
-	 * @return 
-	**/
-	public function getCanonicalUrl()
-	{
-		return $this->getUrl();
-	}
-	
-	/**
-	 * @return 
-	**/
-	public function getRobots()
-	{
-		return null;
 	}
 }

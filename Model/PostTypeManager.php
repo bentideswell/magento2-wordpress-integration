@@ -6,7 +6,9 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Model\StoreManagerInterface;
+use FishPig\WordPress\Model\PostType;
 use FishPig\WordPress\Model\PostTypeFactory;
+use FishPig\WordPress\Model\OptionManager;
 
 class PostTypeManager
 {
@@ -18,7 +20,12 @@ class PostTypeManager
 	/*
 	 * @var 
 	 */
-	protected $storeManager = false;
+	protected $storeManager;
+	
+	/*
+	 *
+	 */
+	protected $optionManager;
 	
 	/*
 	 * @var array
@@ -30,11 +37,17 @@ class PostTypeManager
 	 * @param  ModuleManaher $moduleManaher
 	 * @return void
 	 */
-	public function __construct(ModuleManager $moduleManager, StoreManagerInterface $storeManager, PostTypeFactory $postTypeFactory)
+	public function __construct(
+		ModuleManager $moduleManager, 
+		StoreManagerInterface $storeManager, 
+		PostTypeFactory $postTypeFactory, 
+		OptionManager $optionManager
+	)
 	{
 		$this->moduleManager   = $moduleManager;
 		$this->storeManager    = $storeManager;
 		$this->postTypeFactory = $postTypeFactory;
+		$this->optionManager   = $optionManager;
 		
 		$this->load();
 	}
@@ -53,27 +66,44 @@ class PostTypeManager
 		}
 		
 		if ($this->isAddonEnabled()) {
+			echo __METHOD__;exit;
 			$this->types[$storeId] = \Magento\Framework\App\ObjectManager::getInstance()
 				->get('FishPig\WordPress_PostTypeTaxonomy\Model\Test')
 					->getPostTypeData();
 		}
 		else {
-			$this->types[$storeId] = [
-				'post' => $this->postTypeFactory->create()->addData([
+			$this->registerPostType(
+				$this->getPostTypeFactory()->create()->addData([
 					'post_type'  => 'post',
-					'rewrite'    => array('slug' => $this->getConfig()->getOption('permalink_structure')),
+					'rewrite'    => ['slug' => $this->optionManager->getOption('permalink_structure')],
 					'taxonomies' => ['category', 'post_tag'],
 					'_builtin'   => true,
-				]),
-				'page' => $this->postTypeFactory->create()->addData([
+				])
+			);
+				
+			$this->registerPostType(
+				$this->getPostTypeFactory()->create()->addData([
 					'post_type'    => 'page',
 					'rewrite'      => ['slug' => '%postname%/'],
 					'hierarchical' => true,
 					'taxonomies'   => [],
 					'_builtin'     => true,
-				]),
-			];
+				])
+			);
 		}
+		
+		return $this;
+	}
+	
+	public function registerPostType(PostType $postType)
+	{
+		$storeId = $this->getStoreId();
+		
+		if (!isset($this->types[$storeId])) {
+			$this->types[$storeId] = [];
+		}
+
+		$this->types[$storeId][$postType->getPostType()] = $postType;
 		
 		return $this;
 	}
@@ -81,21 +111,11 @@ class PostTypeManager
 	/*
 	 *
 	 *
-	 * @return bool
+	 * @return
 	 */
-	protected function isAddonEnabled()
+	public function getPostTypeFactory()
 	{
-		return $this->moduleManager->isOutputEnabled('FishPig_WordPress_PostTypeTaxonomy');
-	}
-
-	/*
-	 *
-	 *
-	 * @return int
-	 */
-	protected function getStoreId()
-	{
-		return (int)$this->storeManager->getStore()->getId();
+		return $this->postTypeFactory;
 	}
 
 	/*
@@ -129,5 +149,26 @@ class PostTypeManager
 		$this->load();
 		
 		return isset($this->types[$storeId]) ? $this->types[$storeId] : false;		
+	}
+	
+	
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
+	protected function isAddonEnabled()
+	{
+		return $this->moduleManager->isOutputEnabled('FishPig_WordPress_PostTypeTaxonomy');
+	}
+
+	/*
+	 *
+	 *
+	 * @return int
+	 */
+	protected function getStoreId()
+	{
+		return (int)$this->storeManager->getStore()->getId();
 	}
 }

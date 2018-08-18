@@ -1,6 +1,6 @@
 <?php
-/**
- * @category		Fishpig
+/*
+ * @category  Fishpig
  * @package		Fishpig_Wordpress
  * @license		http://fishpig.co.uk/license.txt
  * @author		Ben Tideswell <help@fishpig.co.uk>
@@ -11,28 +11,43 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Framework\DataObject\IdentityInterface;
 
+/* Constructor Args */
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Helper\View as ViewHelper;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
+/* End of Constructor Args */
+
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
 	/*
 	 *
 	 */
-	protected $context;
+	protected $url;
 	
+	/*
+	 *
+	 */
+	protected $viewHelper;
+	
+	/*
+	 *
+	 */
 	public function __construct(
-		\Magento\Framework\Model\Context $context,
-		\Magento\Framework\Registry $registry,
-		\FishPig\WordPress\Model\Context $wpContext,
-		\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-		\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-		array $data = []
-	) {
+	         Context $context, 
+	        Registry $registry, 
+	             Url $url, 
+        ViewHelper $viewHelper,
+	AbstractResource $resource = null, 
+	      AbstractDb $resourceCollection = null, 
+	           array $data = []
+  ) {
 		parent::__construct($context, $registry, $resource, $resourceCollection);	
 		
-		$this->_app = $wpContext->getApp();
-		$this->_wpUrlBuilder = $wpContext->getUrlBuilder();
-		$this->_viewHelper = $wpContext->getViewHelper();
-		$this->_filter = $wpContext->getFilterHelper();
-		$this->context = $wpContext;
+		$this->url = $url;
+		$this->viewHelper = $viewHelper;
 	}
 
 	/*
@@ -43,54 +58,41 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     return [self::CACHE_TAG . '_' . $this->getId()];
   }
 	
-	/**
-	 * Get a collection of posts
-	 * Child class should filter posts accordingly
-	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
-	 */
-	public function getPostCollection()
-	{
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
-			->create()
-				->setFlag('source', $this);
-	}
-	
-	/**
+	/*
 	 * Get the page title
 	 *
 	 * @return string
-	**/
+	 */
 	public function getPageTitle()
 	{
-		return sprintf('%s | %s', $this->getName(), $this->_viewHelper->getBlogName());
+		return sprintf('%s | %s', $this->getName(), $this->viewHelper->getBlogName());
 	}
 	
-	/**
+	/*
 	 * Get the image
 	 *
 	 * @return false|string|FishPig\WordPress\Model\Image
-	**/
+	 */
 	public function getImage()
 	{
 		return false;
 	}
 	
-	/**
+	/*
 	 * Get the content
 	 *
 	 * @return string
-	**/
+	 */
 	public function getContent()
 	{
 		return '';
 	}
 	
-	/**
+	/*
 	 * Get the meta description
 	 *
 	 * @return string
-	**/
+	 */
 	public function getMetaDescription()
 	{
 		if (($content = trim(strip_tags($this->getContent()))) !== '') {
@@ -103,43 +105,38 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 			return $content;
 		}
 		
-		return $this->_viewHelper->getBlogDescription();
+		return $this->viewHelper->getBlogDescription();
 	}
 	
-	/**
+	/*
 	 * Get the meta keywords
 	 *
 	 * @return string
-	**/
+	 */
 	public function getMetaKeywords()
 	{
 		return '';
 	}
 	
-	/**
+	/*
 	 * Get the robots meta value
 	 *
 	 * @return string
-	**/
+	 */
 	public function getRobots()
 	{
-		return $this->_viewHelper->canDiscourageSearchEngines()
+		return $this->viewHelper->canDiscourageSearchEngines()
 			? 'noindex,nofollow'
 			: 'index,follow';
 	}
 	
-	/**
+	/*
 	 * Get the canonical URL
 	 *
 	 * @return string
-	**/
+	 */
 	public function getCanonicalUrl()
 	{
 		return $this->getUrl();
-	}
-	
-	public function getFactory($type)
-	{
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('\FishPig\WordPress\Model\\' . $type . 'Factory');
 	}
 }
