@@ -1,30 +1,28 @@
 <?php
-/**
+/*
  * @category Fishpig
  * @package Fishpig_Wordpress
  * @license http://fishpig.co.uk/license.txt
  * @author Ben Tideswell <ben@fishpig.co.uk>
  */
-namespace FishPig\WordPress\Helper;
+namespace FishPig\WordPress\Model;
 
-use \Magento\Framework\App\Helper\Context;
-use \FishPig\WordPress\Model\App;
+/* Constructor Args */
+use \FishPig\WordPress\Model\Network;
 use \FishPig\WordPress\Model\ResourceConnection;
 use \FishPig\WordPress\Model\OptionManager;
 
-class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
+class Plugin
 {
 	/*
 	 *
 	 *
 	 */
-	public function __construct(Context $context, App $app, ResourceConnection $resourceConnection, OptionManager $optionManager)
+	public function __construct(Network $network, ResourceConnection $resourceConnection, OptionManager $optionManager)
 	{
-		$this->app = $app;
+		$this->network = $network;
 		$this->resourceConnection = $resourceConnection;
 		$this->optionManager = $optionManager;
-		
-		parent::__construct($context);
 	}
 	
 	/**
@@ -113,7 +111,7 @@ class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 			$plugins = unserialize($plugins);
 		}
 
-		if ($this->_app->isMultisite()) {
+		if ($this->network->isEnabled()) {
 			if ($networkPlugins = $this->optionManager->getSiteOption('active_sitewide_plugins')) {
 				$plugins += (array)unserialize($networkPlugins);
 			}

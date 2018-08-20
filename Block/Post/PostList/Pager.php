@@ -8,47 +8,25 @@
 
 namespace FishPig\WordPress\Block\Post\PostList;
 
+/* Parent Block */
+use Magento\Theme\Block\Html\Pager;
+/* Constructor Args */
 use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Model\App;
-use FishPig\WordPress\Model\Config;
 
 class Pager extends \Magento\Theme\Block\Html\Pager 
 {
-	/**
-	 * @var \FishPig\WordPress\Model\App
-	**/
-	protected $_app = null;
-
-	/**
-	 * @var \FishPig\WordPress\Model\Config
-	**/	
-	protected $_config = null;
-	
-  /**
+  /*
    * Constructor
    *
    * @param Context $context
    * @param App
    * @param array $data
    */
-  public function __construct(Context $context, App $app, Config $config, array $data = [])
+  public function __construct(Context $context, array $data = [])
   {
-    $this->_app = $app;
-    $this->_config = $config;
-
     parent::__construct($context, $data);
   }
-    
-    /**
-	 * Get the App model
-	 *
-	 * @return \FishPig\WordPress\Model\App
-	**/
-	public function getApp()
-	{
-		return $this->_app;
-	}
-	
+
 	/**
 	 * Construct the pager and set the limits
 	 *

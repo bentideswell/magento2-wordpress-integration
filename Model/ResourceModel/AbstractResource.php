@@ -8,31 +8,33 @@
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use \Magento\Framework\Model\ResourceModel\Db\Context;
-use \FishPig\WordPress\Model\Context as WpContext;
+/* Parent Class */
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
-abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+/* Constructor Args */
+use Magento\Framework\Model\ResourceModel\Db\Context;
+use FishPig\WordPress\Model\ResourceConnection;
+
+abstract class AbstractResource extends AbstractDb
 {
 	/*
 	 *
 	 */
-	protected $_resource = null;
-
-	protected $context;
+	protected $resourceConnection = null;
 	
 	/*
 	 *
 	 *
 	 * @return
 	 */
-	public function __construct(Context $context, WpContext $wpContext, $connectionName = null)
+	public function __construct(
+	             Context $context,
+	  ResourceConnection $resourceConnection, 
+	                     $connectionName = null)
 	{
-		parent::__construct($context, $connectionName);
+		$this->resourceConnection = $resourceConnection;
 
-		$this->_app = $wpContext->getApp();
-		$this->_resource = $wpContext->getResourceConnection();
-		
-		$this->context = $wpContext;
+		parent::__construct($context, $connectionName);
 	}
 
 	/*
@@ -42,7 +44,7 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 */
 	public function getConnection()
 	{
-		return $this->_resource->getConnection();
+		return $this->resourceConnection->getConnection();
 	}
 
 	/*
@@ -52,7 +54,7 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 */
 	public function getTable($tableName)
 	{
-		return $this->_resource->getTable($tableName);;
+		return $this->resourceConnection->getTable($tableName);;
 	}
 
 	/*
@@ -62,6 +64,6 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 */
 	public function getTablePrefix()
 	{
-		return $this->_resource->getTablePrefix();
+		return $this->resourceConnection->getTablePrefix();
 	}
 }

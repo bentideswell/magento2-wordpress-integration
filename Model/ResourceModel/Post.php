@@ -8,12 +8,47 @@
 
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use \FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
+
+/* Constructor Args */
+use Magento\Framework\Model\ResourceModel\Db\Context;
+use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\TaxonomyManager;
 
 class Post extends AbstractMeta
 {
+	/*
+	 * @var
+	 */
+	protected $postTypeManager;
 
-	/**
+	/*
+	 *
+	 */
+	protected $taxonomyManager;
+
+	/*
+	 *
+	 *
+	 * @return
+	 */
+	public function __construct(
+	             Context $context,
+	  ResourceConnection $resourceConnection, 
+	     PostTypeManager $postTypeManager,
+	     TaxonomyManager $taxonomyManager,
+	                     $connectionName = null)
+	{
+		parent::__construct($context, $resourceConnection, $connectionName);
+		
+		$this->postTypeManager = $postTypeManager;
+		$this->taxonomyManager = $taxonomyManager;
+	}
+
+
+	/*
 	 * Set the table and primary key
 	 *
 	 * @return void
@@ -60,7 +95,7 @@ class Post extends AbstractMeta
 			if ($mtoken === '%postnames%') {
 				$slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
 			}
-			else if ($taxonomy = $this->_app->getTaxonomy(trim($mtoken, '%'))) {
+			else if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
 				$termData = $this->getParentTermsByPostId(array($postId), $taxonomy->getTaxonomyType(), false);
 
 				foreach($termData as $key => $term) {
@@ -145,12 +180,9 @@ class Post extends AbstractMeta
 	 */
 	public function getPermalinkSqlColumn()
 	{	
-		if (!($postTypes = $this->_app->getPostTypes())) {
-			return false;
-		}
-
+		$postTypes  = $this->postTypeManager->getPostTypes();
 		$sqlColumns = array();
-		$fields = $this->getPermalinkSqlFields();
+		$fields     = $this->getPermalinkSqlFields();
 
 		foreach($postTypes as $postType) {	
 			$tokens = $postType->getExplodedPermalinkStructure();				
@@ -188,7 +220,7 @@ class Post extends AbstractMeta
 		$originalUri = $uri;
 		$permalinks = array();	
 
-		if ($postTypes = $this->_app->getPostTypes()) {
+		if ($postTypes = $this->postTypeManager->getPostTypes()) {
 			$fields = $this->getPermalinkSqlFields();
 
 			foreach($postTypes as $postType) {
@@ -226,7 +258,7 @@ class Post extends AbstractMeta
 						foreach($tokens as $key => $token) {
 							if (substr($token, 0, 1) === '%') {
 								if (!isset($fields[trim($token, '%')])) {
-									if ($taxonomy = $this->_app->getTaxonomy(trim($token, '%'))) {
+									if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($token, '%'))) {
 										$endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/' 
 											&& isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%' 
 											&& !isset($tokens[$key+3]);

@@ -5,7 +5,6 @@
 namespace FishPig\WordPress\Model;
 
 use \Magento\Framework\App\ResourceConnection\ConnectionFactory;
-use \FishPig\WordPress\Model\Config;
 use \FishPig\WordPress\Model\App\WPConfig;
 
 class ResourceConnection

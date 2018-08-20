@@ -1,20 +1,19 @@
 <?php
-/**
+/*
  * @category Fishpig
  * @package Fishpig_Wordpress
  * @license http://fishpig.co.uk/license.txt
  * @author Ben Tideswell <help@fishpig.co.uk>
  */
+namespace FishPig\WordPress\Model;
 
-namespace FishPig\WordPress\Helper;
-
-use Magento\Framework\App\Helper\Context;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
-use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\State;
 
-class Theme extends \Magento\Framework\App\Helper\AbstractHelper
+class Theme
 {
 	/*
 	 * @const
@@ -36,22 +35,23 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	protected $optionManager;
 	
+	protected $scopeConfig;
+	
 	/*
-	 * @var
+	 * @var StoreManagerInterface
 	 */
-	protected $autoInstall = true;
+	protected $storeManager;
 	
 	/*
 	 *
 	 *
 	 *
 	 */
-  public function __construct(Context $context, OptionManager $optionManager, ModuleDirReader $moduleDirReader, State $state)
+  public function __construct(OptionManager $optionManager, ScopeConfigInterface $scopeConfig, StoreManagerInterface $storeManager, State $state)
   {
-		parent::__construct($context);
-	
     $this->optionManager = $optionManager;
-    $this->moduleDirReader = $moduleDirReader;
+    $this->scopeConfig   = $scopeConfig;
+    $this->storeManager  = $storeManager;
     $this->state = $state;
   }
 
@@ -95,7 +95,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 		}
 
 		$targetDir = $this->getTargetDir();
-		$sourceDir = $this->moduleDirReader->getModuleDir('', 'FishPig_WordPress') . $ds . 'wptheme';
+		$sourceDir = $this->getModuleDir() . $ds . 'wptheme';
 		
 		$sourceCssFile = $sourceDir . $ds . 'style.css';
 		$targetCssFile = $targetDir . $ds . 'style.css';
@@ -162,8 +162,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function isActive()
 	{
-		return $this->optionManager->getOption('template') === self::THEME_NAME
-			&& $this->optionManager->getOption('stylesheet') === self::THEME_NAME;
+		return $this->optionManager->getOption('template') === self::THEME_NAME && $this->optionManager->getOption('stylesheet') === self::THEME_NAME;
 	}
 	
 	/*
@@ -183,7 +182,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getSourceDir()
 	{
-		return $this->moduleDirReader->getModuleDir('', 'FishPig_WordPress') . self::DS . 'wptheme';
+		return $this->getModuleDir() . self::DS . 'wptheme';
 	}
 	
 	/*
@@ -193,6 +192,29 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function canAutoInstallTheme()
 	{
-		return (int)$this->_request->getParam('install-theme') === 1 || $this->autoInstall === true;
+		return (int)$this->_request->getParam('install-theme') === 1;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
+	public function isThemeIntegrated()
+	{
+		return (int)$this->scopeConfig->getValue(
+			'wordpress/setup/theme_integration', 
+			\Magento\Store\Model\ScopeInterface::SCOPE_STORE, 
+			(int)$this->storeManager->getStore()->getId()
+		) === 1;
+	}
+	
+	/*
+	 *
+	 * @return string
+	 */
+	protected function getModuleDir()
+	{
+		return dirname(__DIR__);
 	}
 }

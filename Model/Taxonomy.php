@@ -1,9 +1,46 @@
 <?php
-	
-namespace FishPig\WordPress\Model\Term;
+/*
+ *
+ */	
+namespace FishPig\WordPress\Model;
 
-class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
+/* Interface */
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+
+/* Parent Class */
+use Magento\Framework\DataObject;
+
+/* Constructor Args */
+use FishPig\WordPress\Model\TaxonomyManager;
+use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Helper\Router as RouterHelper;
+use FishPig\WordPress\Model\TermFactory;
+
+class Taxonomy extends DataObject/* implements ViewableInterface*/
 {
+	/*
+	 *
+	 */
+	protected $termFactory;
+
+  /*
+	 *
+	 *
+	 * @param  WordPressURL $url
+	 * @param  array        $data
+	 * @return void
+	 */
+	public function __construct(ResourceConnection $resourceConnection, Url $url, RouterHelper $routerHelper, TermFactory $termFactory, array $data = [])
+	{
+		parent::__construct($data);
+
+		$this->resourceConnection = $resourceConnection;
+		$this->url = $url;
+		$this->routerHelper = $routerHelper;
+		$this->termFactory  = $termFactory;
+	}
+	
 	/**
 	 * Get the URI's that apply to $uri
 	 *
@@ -32,10 +69,10 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 		
 		$this->setAllUris(false);
 
-		$select = $this->_resource->getConnection()->select()
+		$select = $this->resourceConnection->getConnection()->select()
 			->from(
 				array(
-					'term' => $this->_resource->getTable('wordpress_term')), 
+					'term' => $this->resourceConnection->getTable('wordpress_term')), 
 					array(
 						'id' => 'term_id', 
 						'url_key' => 'slug',
@@ -43,12 +80,12 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 					)
 				)
 				->join(
-					array('tax' => $this->_resource->getTable('wordpress_term_taxonomy')),
-					$this->_resource->getConnection()->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
+					array('tax' => $this->resourceConnection->getTable('wordpress_term_taxonomy')),
+					$this->resourceConnection->getConnection()->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
 					'parent'
 				);
 
-		if ($results = $this->_resource->getConnection()->fetchAll($select)) {
+		if ($results = $this->resourceConnection->getConnection()->fetchAll($select)) {
 			$this->setAllUris($this->_generateRoutesFromArray($results, $this->getSlug()));
 		}
 
@@ -123,7 +160,7 @@ class Taxonomy extends \FishPig\WordPress\Model\Post\Type\AbstractType
 	 */
 	public function getPostTermsCollection(\FishPig\WordPress\Model\Post $post)
 	{
-		return $this->_factory->getFactory('Term')->create()->getCollection()
+		return $this->termFactory->create()->getCollection()
 			->addTaxonomyFilter($this->getTaxonomyType())
 			->addPostIdFilter($post->getId());
 	}

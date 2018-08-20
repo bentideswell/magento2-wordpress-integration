@@ -4,7 +4,6 @@
  */
 namespace FishPig\WordPress\Model\App;
 
-use FishPig\WordPress\Model\Config;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Path
@@ -27,6 +26,10 @@ class Path
 		$this->scopeConfig = $scopeConfig;
 	}
 	
+	/*
+	 *
+	 * @return string
+	 */
   public function getPath()
   {
 		if (!is_null($this->path)) {
@@ -53,6 +56,5 @@ class Path
 		}
 
 		return $this->path = $path;
-  }
-	
+  }	
 }

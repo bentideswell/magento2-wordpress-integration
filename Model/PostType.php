@@ -4,7 +4,6 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\App;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\ResourceConnection;

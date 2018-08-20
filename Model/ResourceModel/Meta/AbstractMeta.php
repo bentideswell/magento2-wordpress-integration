@@ -1,15 +1,17 @@
 <?php
-/**
+/*
  * @category		Fishpig
  * @package		Fishpig_Wordpress
  * @license		http://fishpig.co.uk/license.txt
  * @author		Ben Tideswell <help@fishpig.co.uk>
  * @info			http://fishpig.co.uk/wordpress-integration.html
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Meta;
 
-abstract class AbstractMeta extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\AbstractResource;
+
+abstract class AbstractMeta extends AbstractResource
 {
 	/**
 	 * Retrieve a meta value from the database

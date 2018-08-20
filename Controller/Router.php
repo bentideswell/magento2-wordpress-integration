@@ -1,12 +1,22 @@
 <?php
-/**
- * Copyright © 2016 FishPig. All rights reserved.
+/*
+ *
  */
 namespace FishPig\WordPress\Controller;
 
+/* Parent Class */
+use Magento\Framework\App\RouterInterface;
+
+/* Constructor Args */
+use Magento\Framework\App\ActionFactory;
+use FishPig\WordPress\Model\App;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Model\ResourceModel\PostFactory;
+use FishPig\WordPress\Model\TaxonomyManager;
+
 use Magento\Framework\App\RequestInterface;
 
-class Router implements \Magento\Framework\App\RouterInterface
+class Router implements RouterInterface
 {
   /**
    * @var ActionFactory
@@ -38,28 +48,27 @@ class Router implements \Magento\Framework\App\RouterInterface
 	 */
 	protected $postResourceFactory = null;
 	
-    /**
-     * @param ActionFactory $actionFactory
-     * @param NoRouteHandlerList $noRouteHandlerList
-     */
-    public function __construct(
-    	\Magento\Framework\App\ActionFactory $actionFactory, 	
-    	\FishPig\WordPress\Model\App $app,
-    	\FishPig\WordPress\Model\Url $urlBuilder,
-    	\FishPig\WordPress\Model\ResourceModel\PostFactory $postResourceFactory,
-    	\Magento\Framework\App\Request\Http $request
-    )
-    {
-      $this->actionFactory = $actionFactory;
-      $this->app = $app;
-      $this->url = $urlBuilder;
-      $this->postResourceFactory = $postResourceFactory;
-      $this->request = $request;
-    }
+  /*
+	 *
+	 *
+   */
+  public function __construct(
+      ActionFactory $actionFactory, 	
+                App $app,
+                Url $urlBuilder,
+        PostFactory $postResourceFactory,
+    TaxonomyManager $taxonomyManager)
+  {
+    $this->actionFactory = $actionFactory;
+    $this->app = $app;
+    $this->url = $urlBuilder;
+    $this->postResourceFactory = $postResourceFactory;
+    $this->taxonomyManager = $taxonomyManager;
+  }
 
-    /**
-     * @param RequestInterface $request
-     */
+  /*
+   * @param RequestInterface $request
+   */
 	public function match(RequestInterface $request)
 	{	
 		try {
@@ -287,7 +296,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 	 */
 	protected function _getTaxonomyRoutes($uri = '')
 	{
-		foreach($this->app->getTaxonomies() as $taxonomy) {
+		foreach($this->taxonomyManager->getTaxonomies() as $taxonomy) {
 			if (($routes = $taxonomy->getUris($uri)) !== false) {
 				foreach($routes as $routeId => $route) {
 					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
