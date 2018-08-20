@@ -10,15 +10,19 @@ namespace FishPig\WordPress\Helper;
 use \Magento\Framework\App\Helper\Context;
 use \FishPig\WordPress\Model\App;
 use \FishPig\WordPress\Model\ResourceConnection;
-use \FishPig\WordPress\Model\Config;
+use \FishPig\WordPress\Model\OptionManager;
 
 class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 {
-	public function __construct(Context $context, App $app, ResourceConnection $wpResource, Config $config)
+	/*
+	 *
+	 *
+	 */
+	public function __construct(Context $context, App $app, ResourceConnection $resourceConnection, OptionManager $optionManager)
 	{
-		$this->_app = $app;
-		$this->_wpResource = $wpResource;
-		$this->_config = $config;
+		$this->app = $app;
+		$this->resourceConnection = $resourceConnection;
+		$this->optionManager = $optionManager;
 		
 		parent::__construct($context);
 	}
@@ -70,17 +74,17 @@ class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 			return true;
 		}
 		
-		if ($db = $this->_wpResource->getConnection()) {
-			if ($plugins = $this->_config->getOption('active_plugins')) {
+		if ($db = $this->resourceConnection->getConnection()) {
+			if ($plugins = $this->optionManager->getOption('active_plugins')) {
 				$db->update(
-					$this->_wpResource->getTable('wordpress_option'),
+					$this->resourceConnection->getTable('wordpress_option'),
 					array('option_value' => serialize(array_merge(unserialize($plugins), array($plugin)))),
 					$db->quoteInto('option_name=?', 'active_plugins')
 				);
 			}
 			else {
 				$db->insert(
-					$this->_wpResource->getTable('wordpress_option'),
+					$this->resourceConnection->getTable('wordpress_option'),
 					array(
 						'option_name' => 'active_plugins',
 						'option_value' => serialize(array($plugin))
@@ -105,12 +109,12 @@ class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 	{
 		$plugins = array();
 
-		if ($plugins = $this->_config->getOption('active_plugins')) {
+		if ($plugins = $this->optionManager->getOption('active_plugins')) {
 			$plugins = unserialize($plugins);
 		}
 
 		if ($this->_app->isMultisite()) {
-			if ($networkPlugins = $this->_config->getSiteOption('active_sitewide_plugins')) {
+			if ($networkPlugins = $this->optionManager->getSiteOption('active_sitewide_plugins')) {
 				$plugins += (array)unserialize($networkPlugins);
 			}
 		}
@@ -135,7 +139,7 @@ class Plugin extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getOption($plugin, $key = null)
 	{
-		$options = $this->_config->getOption($plugin);
+		$options = $this->optionManager->getOption($plugin);
 		
 		if (($data = @unserialize($options)) !== false) {
 			if (is_null($key)) {

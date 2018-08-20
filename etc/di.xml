@@ -13,13 +13,15 @@
 		</arguments>
 	</type>
 	<!-- Shortcodes -->
+	<!--
 	<type name="FishPig\WordPress\Model\ShortcodeManager">
 		<arguments>
 			<argument name="shortcodes" xsi:type="array">
-				<!--<item name="oembed" xsi:type="object">FishPig\WordPress\Shortcode\oEmbed</item>-->
+				<item name="oembed" xsi:type="object">FishPig\WordPress\Shortcode\oEmbed</item>
 				<item name="gallery" xsi:type="object">FishPig\WordPress\Model\Shortcode\Gallery</item>
-				<!--<item name="caption" xsi:type="object">FishPig\WordPress\Shortcode\Caption</item>-->
+				<item name="caption" xsi:type="object">FishPig\WordPress\Shortcode\Caption</item>
 			</argument>
 		</arguments>
 	</type>
+	-->
 </config>

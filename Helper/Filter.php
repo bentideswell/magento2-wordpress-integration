@@ -67,8 +67,6 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			return true;
 		}
 
-
-
 		// Get file from Magento
 		$targetFile = basename(__DIR__) . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
 		
@@ -77,8 +75,8 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 		}
 
 		$code = preg_replace('/\/\*\*.*\*\//Us', '', file_get_contents($targetFile));
-
 		$depends = array_flip($depends);
+		
 		foreach($depends as $key => $value) {
 			$depends[$key] = '';
 		}

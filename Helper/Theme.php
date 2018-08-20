@@ -9,7 +9,7 @@
 namespace FishPig\WordPress\Helper;
 
 use Magento\Framework\App\Helper\Context;
-use FishPig\WordPress\Model\Config;
+use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
 use Magento\Framework\Module\Dir\Reader as ModuleDirReader;
 use Magento\Framework\App\State;
@@ -29,28 +29,28 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	/*
 	 * @var
 	 */
-	protected $_path = '';
+	protected $path = '';
 	
 	/*
 	 * @var
 	 */
-	protected $config = null;
+	protected $optionManager;
 	
 	/*
 	 * @var
 	 */
-	protected $_autoInstall = true;
+	protected $autoInstall = true;
 	
 	/*
 	 *
 	 *
 	 *
 	 */
-  public function __construct(Context $context, Config $config, ModuleDirReader $moduleDirReader, State $state)
+  public function __construct(Context $context, OptionManager $optionManager, ModuleDirReader $moduleDirReader, State $state)
   {
 		parent::__construct($context);
 	
-    $this->config = $config;
+    $this->optionManager = $optionManager;
     $this->moduleDirReader = $moduleDirReader;
     $this->state = $state;
   }
@@ -62,7 +62,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function setPath($path)
 	{
-		$this->_path = $path;
+		$this->path = $path;
 		
 		return $this;
 	}
@@ -74,7 +74,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getPath()
 	{
-		return $this->_path;
+		return $this->path;
 	}
 
 	/*
@@ -90,7 +90,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 		
 		$ds = DIRECTORY_SEPARATOR;
 		
-		if (!$this->_path || !is_dir($this->_path)) {
+		if (!$this->path || !is_dir($this->path)) {
 			IntegrationException::throwException('Empty or invalid path set.');
 		}
 
@@ -162,8 +162,8 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function isActive()
 	{
-		return $this->config->getOption('template') === self::THEME_NAME
-			&& $this->config->getOption('stylesheet') === self::THEME_NAME;
+		return $this->optionManager->getOption('template') === self::THEME_NAME
+			&& $this->optionManager->getOption('stylesheet') === self::THEME_NAME;
 	}
 	
 	/*
@@ -173,7 +173,7 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function getTargetDir()
 	{
-		return $this->_path . self::DS . 'wp-content' . self::DS . 'themes' . self::DS . self::THEME_NAME;
+		return $this->path . self::DS . 'wp-content' . self::DS . 'themes' . self::DS . self::THEME_NAME;
 	}
 	
 	/*
@@ -193,6 +193,6 @@ class Theme extends \Magento\Framework\App\Helper\AbstractHelper
 	 */
 	public function canAutoInstallTheme()
 	{
-		return (int)$this->_request->getParam('install-theme') === 1 || $this->_autoInstall === true;
+		return (int)$this->_request->getParam('install-theme') === 1 || $this->autoInstall === true;
 	}
 }

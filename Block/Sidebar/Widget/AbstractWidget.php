@@ -1,14 +1,15 @@
 <?php
-/**
+/*
  * @category    Fishpig
  * @package     Fishpig_Wordpress
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
-abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
+use FishPig\WordPress\Block\AbstractBlock;
+
+abstract class AbstractWidget extends AbstractBlock
 {
 	/**
 	 * Retrieve the default title for the block
@@ -46,7 +47,7 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
 	protected function _beforeToHtml()
 	{
 		if ($this->getWidgetType()) {
-			$data = $this->_config->getOption('widget_' . $this->getWidgetType());
+			$data = $this->optionManager->getOption('widget_' . $this->getWidgetType());
 
 			if ($data) {
 				$data = unserialize($data);
@@ -145,62 +146,5 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
 		}
 		
 		return $this->_getData('list_id');
-	}
-	
-	/**
-	 * Save custom data to the cache
-	 *
-	 * @param string $data
-	 * @param string $cacheKey
-	 * @return $this
-	 */
-	protected function _saveCustomDataToCache($data, $cacheKey)
-	{
-		$cacheKey .= $this->getCacheKey();
-
-        Mage::app()->saveCache($data, $cacheKey, $this->getCacheTags(), $this->getCacheLifetime());
-        
-        return $this;
-    }
-    
-    /**
-     * Retrieve the custom data from the cache
-     *
-     * @param string $cacheKey
-     * @return string
-     */
-    protected function _loadCustomDataFromCache($cacheKey)
-    {
-    	$cacheData = Mage::app()->loadCache($cacheKey . $this->getCacheKey());
-    	
-    	if (trim($cacheData) !== '') {
-    		return $cacheData;
-    	}
-    	
-    	return false;
-    }
-	
-	/**
-	 * Convert a SimpleXMLElement object to an array
-	 *
-	 * @param SimpleXMLElement $xml
-	 * @param array $out
-	 * @return array]
-	 */
-	protected function _convertXmlToArray($xml, $out = array())
-	{
-		foreach((array)$xml as $index => $node) {
-			if (is_object($node)) {
-				$out[$index] = $this->_convertXmlToArray($node);
-			}
-			else if (is_array($node)) {
-				$out[$index] = $this->_convertXmlToArray($node);
-			}
-			else {
-				$out[$index] = $node;
-			}
-		}
-		
-		return $out;
 	}
 }

@@ -67,28 +67,6 @@ class Config
 	}
 
 	/**
-	 * Get a WordPress option value
-	 *
-	 * @return mixed
-	 */
-	public function getOption($key)
-	{
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\OptionManager')->getOption($key);
-	}
-
-	/**
-	 * Get a site option.
-	 * This is implemented in Multisite
-	 *
-	 * @param string $key
-	 * @return mixed
-	 **/
-	public function getSiteOption($key)
-	{
-		return false;
-	}
-
-	/**
 	 * Get the network tables
 	 * This is implemented in Multisite
 	 *

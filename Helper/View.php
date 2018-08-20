@@ -1,73 +1,88 @@
 <?php
-/**
+/*
  * @category    Fishpig
  * @package     Fishpig_Wordpress
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Helper;
 
-use Magento\Framework\App\Helper\Context;
-use FishPig\WordPress\Model\Config;
-use FishPig\WordPress\Helper\Filter as FilterHelper;
+/* Parent Class */
+use Magento\Framework\App\Helper\AbstractHelper;
 
-class Data extends \Magento\Framework\App\Helper\AbstractHelper
+/* Constructor Args */
+use Magento\Framework\App\Helper\Context;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Model\OptionManager;
+
+class View extends AbstractHelper
 {
-	protected $filterHelper;
+	/*
+	 * @Var OptionManager
+	 */
+	protected $optionManager;
 	
-	public function __construct(Context $context, FilterHelper $filterHelper)
+	/*
+	 * @var ShortcodeManager
+	 */
+	protected $shortcodeManager;
+
+	/*
+	 *
+	 */
+	public function __construct(Context $context, ShortcodeManager $shortcodeManager, OptionManager $optionManager)
 	{
 		parent::__construct($context);
 		
-		$this->filterHelper = $filterHelper;
+		$this->shortcodeManager = $shortcodeManager;
+		$this->optionManager    = $optionManager;
 	}
 
-	public function applyPageConfigData($pageConfig, $entity)
-	{
-		if (!$pageConfig || !$entity) {
-			return $this;
-		}
-		
-    $pageConfig->getTitle()->set($entity->getPageTitle());
-    $pageConfig->setDescription($entity->getMetaDescription());	
-    $pageConfig->setKeywords($entity->getMetaKeywords());
-
-		#TODO: Hook this up so it displays on page
-		$pageConfig->setRobots($entity->getRobots());
-	
-      $pageMainTitle = $this->_layout->getBlock('page.main.title');
-      
-      if ($pageMainTitle) {
-          $pageMainTitle->setPageTitle($entity->getName());
-      }
-      
-		if ($entity->getCanonicalUrl()) {
-			$pageConfig->addRemotePageAsset($entity->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
-		}
-	
-    return $this;
-	}
-
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function canDiscourageSearchEngines()
 	{
-		return (int)$this->_config->getOption('blog_public') === 0;
+		return (int)$this->optionManager->getOption('blog_public') === 0;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getBlogName()
 	{
-		return $this->_config->getOption('blogname');
+		return $this->optionManager->getOption('blogname');
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getBlogDescription()
 	{
-		return $this->_config->getOption('blogdescription');
+		return $this->optionManager->getOption('blogdescription');
 	}
 	
-	/**
-	  * Formats a Wordpress date string
-	  *
-	  */
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function renderShortcode($shortcode, $object = null)
+	{
+		return $this->shortcodeManager->renderShortcode($content, ['object' => $object]);
+	}
+	
+	/*
+	 * Formats a Wordpress date string
+	 *
+	 * @return
+	 */
 	public function formatDate($date, $format = null, $f = false)
 	{
 		if ($format == null) {
@@ -89,10 +104,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		return $out;
 	}
 	
-	/**
-	  * Formats a Wordpress date string
-	  *
-	  */
+	/*
+	 * Formats a Wordpress date string
+	 *
+	 */
 	public function formatTime($time, $format = null)
 	{
 		if ($format == null) {
@@ -102,7 +117,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		return $this->formatDate($time, $format);
 	}
 	
-	/**
+	/*
 	 * Split a date by spaces and translate
 	 *
 	 * @param string $date
@@ -120,10 +135,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		return implode($splitter, $dates);
 	}
 	
-	/**
-	  * Return the default date formatting
-	  *
-	  */
+	/*
+	 * Return the default date formatting
+	 *
+	 */
 	public function getDefaultDateFormat()
 	{
 		if ($format = $this->_config->getOption('date_format')) {
@@ -133,10 +148,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 		return 'F jS, Y';
 	}
 	
-	/**
-	  * Return the default time formatting
-	  *
-	  */
+	/*
+	 * Return the default time formatting
+	 *
+	 */
 	public function getDefaultTimeFormat()
 	{
 		if ($format = $this->_config->getOption('time_format')) {

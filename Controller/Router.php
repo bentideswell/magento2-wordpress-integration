@@ -21,7 +21,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 	/**
 	 * @var FishPig\WordPress\Model\Url
 	 **/
-	protected $wpUrlBuilder;
+	protected $url;
 	
 	/**
 	 * @var array
@@ -52,7 +52,7 @@ class Router implements \Magento\Framework\App\RouterInterface
     {
       $this->actionFactory = $actionFactory;
       $this->app = $app;
-      $this->wpUrlBuilder = $urlBuilder;
+      $this->url = $urlBuilder;
       $this->postResourceFactory = $postResourceFactory;
       $this->request = $request;
     }
@@ -67,14 +67,14 @@ class Router implements \Magento\Framework\App\RouterInterface
 				return false;
 			}
 
-			$fullRequestUri = $this->wpUrlBuilder->getPathInfo($request);
-			$blogRoute = $this->wpUrlBuilder->getBlogRoute();
+			$fullRequestUri = $this->getPathInfo($request);
+			$blogRoute = $this->url->getBlogRoute();
 
 			if ($blogRoute && ($blogRoute !== $fullRequestUri && strpos($fullRequestUri, $blogRoute . '/') !== 0)) {
 				return false;
 			}
 
-			if (!($requestUri = $this->wpUrlBuilder->getRouterRequestUri($request))) {
+			if (!($requestUri = $this->getRouterRequestUri($request))) {
 				$this->addRouteCallback(array($this, '_getHomepageRoutes'));	
 			}
 
@@ -90,7 +90,7 @@ class Router implements \Magento\Framework\App\RouterInterface
 					->setActionName($route['path']['action'])
 					->setAlias(
 						\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS,
-						$this->wpUrlBuilder->getUrlAlias($request)
+						$this->getUrlAlias($request)
 					);
 				
 				if (count($route['params']) > 0) {
@@ -312,5 +312,110 @@ class Router implements \Magento\Framework\App\RouterInterface
 	public function addExtraRoutesToQueue()
 	{
 		return $this;
+	}
+
+	/*
+	 *
+	 *
+	 * @return string
+	 */
+	public function getPathInfo(RequestInterface $request)
+	{
+		$pathInfo = strtolower(trim($request->getPathInfo(), '/'));
+		
+		if ($magentoUrlPath = parse_url($this->url->getMagentoUrl(), PHP_URL_PATH)) {
+			$magentoUrlPath = ltrim($magentoUrlPath, '/');
+			
+			if (strpos($pathInfo, $magentoUrlPath) === 0) {
+				$pathInfo = ltrim(substr($pathInfo, strlen($magentoUrlPath)), '/');
+			}
+		}
+			
+		return $pathInfo;
+	}
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getUrlAlias(RequestInterface $request)
+	{
+		$pathInfo = $this->getPathInfo($request);
+		$blogRoute = $this->url->getBlogRoute();
+
+		if ($blogRoute && strpos($pathInfo, $blogRoute) !== 0) {
+			return false;
+		}
+
+		if (trim(substr($pathInfo, strlen($blogRoute)), '/') === '') {
+			return $pathInfo;
+		}		
+		
+		$pathInfo = explode('/', $pathInfo);
+		
+		// Clean off pager and feed parts
+		if (($key = array_search('page', $pathInfo)) !== false) {
+			if (isset($pathInfo[($key+1)]) && preg_match("/[0-9]{1,}/", $pathInfo[($key+1)])) {
+				$request->setParam('page', $pathInfo[($key+1)]);
+				unset($pathInfo[($key+1)]);
+				unset($pathInfo[$key]);
+				
+				$pathInfo = array_values($pathInfo);
+			}
+		}
+		
+		/*
+		// Clean off feed and trackback variable
+		if (($key = array_search('feed', $pathInfo)) !== false) {
+			unset($pathInfo[$key]);
+			
+			if (isset($pathInfo[$key+1])) {
+				unset($pathInfo[$key+1]);
+			}
+
+			$request->setParam('feed', 'rss2');
+			$request->setParam('feed_type', 'rss2');
+		}
+		*/
+		
+		// Remove comments pager variable
+		foreach($pathInfo as $i => $part) {
+			$results = array();
+			if (preg_match("/" . sprintf('^comment-page-%s$', '([0-9]{1,})') . "/", $part, $results)) {
+				if (isset($results[1])) {
+					unset($pathInfo[$i]);
+				}
+			}
+		}
+		
+		if (count($pathInfo) == 1 && preg_match("/^[0-9]{1,8}$/", $pathInfo[0])) {
+			$request->setParam('p', $pathInfo[0]);
+			
+			array_shift($pathInfo);
+		}
+
+		$uri = urldecode(implode('/', $pathInfo));
+
+		return $uri;
+	}
+	
+	/*
+	 * Retrieve the blog URI
+	 * This is the whole URI after blog route
+	 *
+	 * @return string
+	 */
+	public function getRouterRequestUri(RequestInterface $request)
+	{
+		if (($alias = $this->getUrlAlias($request)) !== false) {
+			if ($blogRoute = $this->url->getBlogRoute()) {
+				return strpos($alias . '/', $blogRoute .'/') === 0 ? ltrim(substr($alias, strlen($blogRoute)), '/') : false;
+			}
+			
+			return $alias;
+		}
+		
+		return false;
 	}
 }

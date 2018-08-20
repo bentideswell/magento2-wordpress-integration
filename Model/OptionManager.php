@@ -29,6 +29,8 @@ class OptionManager
 	/*
 	 * Get option value
 	 *
+	 * @param  string $key
+	 * @return mixed
 	 */
 	public function getOption($key)
 	{
@@ -44,5 +46,17 @@ class OptionManager
 		}
 
 		return self::$data[$key];	
+	}
+	
+	/*
+	 * Get a site option.
+	 * This is implemented in Multisite
+	 *
+	 * @param  string $key
+	 * @return mixed
+	 */
+	public function getSiteOption($key)
+	{
+		return false;
 	}
 }
