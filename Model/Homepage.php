@@ -52,7 +52,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 			return $blogPage->getUrl();	
 		}
 		
-		return $this->_wpUrlBuilder->getUrl();
+		return $this->url->getUrl();
 	}
 		
 	/**
@@ -79,9 +79,9 @@ class Homepage extends AbstractModel implements ViewableInterface
 		
 		$this->_blogPage = false;
 
-		if ((int)$this->_app->getBlogPageId() > 0) {
+		if ((int)$this->_viewHelper->getBlogPageId() > 0) {
 			$blogPage = $this->_factory->getFactory('Post')->create()->load(
-				$this->_app->getBlogPageId()
+				$this->_viewHelper->getBlogPageId()
 			);
 			
 			if ($blogPage->getId()) {

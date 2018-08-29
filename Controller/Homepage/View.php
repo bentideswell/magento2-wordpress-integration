@@ -30,7 +30,7 @@ class View extends \FishPig\WordPress\Controller\Action
   	if ($entity = $this->_getEntity()) {
 	  	$post = $this->registry->registry(\FishPig\WordPress\Model\Post::ENTITY);
 
-  		if (!$post && ($homepageId = (int)$this->getApp()->getHomepagePageId())) {
+  		if (!$post && ($homepageId = (int)$this->_viewHelper->getHomepagePageId())) {
   			return $this->resultFactory
   				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
   				->setModule('wordpress')
@@ -75,7 +75,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	{
 		$handles = ['wordpress_homepage_view'];
 		
-		if (!$this->getApp()->getBlogPageId()) {
+		if (!$this->_viewHelper->getBlogPageId()) {
 			$handles[] = 'wordpress_front_page';
 		}
 		

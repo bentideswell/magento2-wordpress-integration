@@ -161,6 +161,11 @@ class View extends AbstractHelper
 		return 'g:ia';
 	}
 	
+	/*
+	 * Get the search term
+	 *
+	 * @return string
+	 */
 	public function getSearchTerm()
 	{
 		return $this->_request->getParam('s');
@@ -174,8 +179,8 @@ class View extends AbstractHelper
 	 */
 	public function getHomepagePageId()
 	{
-		if ($this->getConfig()->getOption('show_on_front') === 'page') {
-			if ($pageId = $this->getConfig()->getOption('page_on_front')) {
+		if ($this->optionManager->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->optionManager->getOption('page_on_front')) {
 				return $pageId;
 			}
 		}
@@ -190,8 +195,8 @@ class View extends AbstractHelper
 	 */
 	public function getBlogPageId()
 	{
-		if ($this->config->getOption('show_on_front') === 'page') {
-			if ($pageId = $this->config->getOption('page_for_posts')) {
+		if ($this->optionManager->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->optionManager->getOption('page_for_posts')) {
 				return $pageId;
 			}
 		}
