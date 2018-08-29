@@ -65,7 +65,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 */
 	public function getPageTitle()
 	{
-		return sprintf('%s | %s', $this->getName(), $this->viewHelper->getBlogName());
+		return sprintf('%s | %s', $this->getName(), $this->getBlogName());
 	}
 	
 	/*
@@ -105,7 +105,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 			return $content;
 		}
 		
-		return $this->viewHelper->getBlogDescription();
+		return $this->getBlogDescription();
 	}
 	
 	/*
@@ -125,7 +125,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 */
 	public function getRobots()
 	{
-		return $this->viewHelper->canDiscourageSearchEngines()
+		return (int)$this->optionManager->getOption('blog_public') === 0
 			? 'noindex,nofollow'
 			: 'index,follow';
 	}
@@ -138,5 +138,26 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	public function getCanonicalUrl()
 	{
 		return $this->getUrl();
+	}
+	
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getBlogName()
+	{
+		return $this->optionManager->getOption('blogname');
+	}
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getBlogDescription()
+	{
+		return $this->optionManager->getOption('blogdescription');
 	}
 }

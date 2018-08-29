@@ -1,16 +1,22 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
-class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection
-{
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection;
 
+/* Constructor Args */
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+
+class Collection extends AbstractCollection
+{
 	/**
 	 * Name prefix of events that are dispatched by model
 	 *
@@ -223,7 +229,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addStickyPostsToCollection()
 	{
-		if (($sticky = trim($this->_app->getConfig()->getOption('sticky_posts'))) !== '') {
+		if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {
@@ -254,7 +260,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addIsStickyPostFilter($flag = true)
 	{
-		if (($sticky = trim($this->_app->getConfig()->getOption('sticky_posts'))) !== '') {
+		if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {

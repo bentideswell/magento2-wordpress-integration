@@ -1,28 +1,45 @@
 <?php
-/**
- * @category		Fishpig
- * @package		Fishpig_Wordpress
- * @license		http://fishpig.co.uk/license.txt
- * @author		Ben Tideswell <help@fishpig.co.uk>
- * @info			http://fishpig.co.uk/wordpress-integration.html
+/*
+ *
  */
 namespace FishPig\WordPress\Model\ResourceModel\Collection;
 
 /* Parent Class */
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection; as AbstractDbCollection;
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as AbstractDbCollection;
+
+/* Constructor Args */
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Event\ManagerInterface;
+use FishPig\WordPress\Model\OptionManager;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 abstract class AbstractCollection extends AbstractDbCollection
 {
+	/*
+	 * @var OptionManager
+	 */
+	protected $optionManager;
+	
+	/*
+	 *
+	 *
+	 */
 	public function __construct(
-		\Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-		\Psr\Log\LoggerInterface $logger,
-		\Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-		\Magento\Framework\Event\ManagerInterface $eventManager,
-		\Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-		\Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
+		EntityFactoryInterface $entityFactory,
+		       LoggerInterface $logger,
+    FetchStrategyInterface $fetchStrategy,
+          ManagerInterface $eventManager,
+             OptionManager $optionManager,
+          AdapterInterface $connection  = null,
+                AbstractDb $resource    = null
 	)
 	{
 		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
+		
+		$this->optionManager = $optionManager;
 	}
 
 

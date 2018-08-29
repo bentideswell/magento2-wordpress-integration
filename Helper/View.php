@@ -37,36 +37,6 @@ class View extends AbstractHelper
 		$this->shortcodeManager = $shortcodeManager;
 		$this->optionManager    = $optionManager;
 	}
-
-	/*
-	 *
-	 *
-	 * @return 
-	 */
-	public function canDiscourageSearchEngines()
-	{
-		return (int)$this->optionManager->getOption('blog_public') === 0;
-	}
-
-	/*
-	 *
-	 *
-	 * @return 
-	 */
-	public function getBlogName()
-	{
-		return $this->optionManager->getOption('blogname');
-	}
-
-	/*
-	 *
-	 *
-	 * @return 
-	 */
-	public function getBlogDescription()
-	{
-		return $this->optionManager->getOption('blogdescription');
-	}
 	
 	/*
 	 *

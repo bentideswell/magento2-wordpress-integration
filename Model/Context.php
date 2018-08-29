@@ -22,10 +22,8 @@ class Context extends AbstractContext
 	/*
 	 *
 	 */
-	public function __construct(
-	             Url $url, 
-        ViewHelper $viewHelper
-  ) {
+	public function __construct(Url $url, ViewHelper $viewHelper)
+	{
 	  $this->addObject($url, 'url');
 	  $this->addObject($viewHelper, 'viewHelper');
 	}
