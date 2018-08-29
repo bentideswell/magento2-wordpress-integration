@@ -1,3 +1,6 @@
+29/08/2018 - 1.3.0.30
+- Used Magento Pagination settings for frame length.
+
 13/08/2018 - 1.3.0.29
 - Fixed JS define issue.
 

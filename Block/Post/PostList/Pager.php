@@ -63,12 +63,14 @@ class Pager extends \Magento\Theme\Block\Html\Pager
 
 		$this->setDefaultLimit($baseLimit);
 		$this->setLimit($baseLimit);
-		
-		$this->setAvailableLimit(array(
-			$baseLimit => $baseLimit,
-		));
-		
-		$this->setFrameLength(5);
+		$this->setAvailableLimit([$baseLimit => $baseLimit]);
+
+		$this->setFrameLength(
+			(int)$this->_config->getStoreConfigValue(
+				'design/pagination/pagination_frame',
+				\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+			)
+		);
 	}
 	
 	/**
