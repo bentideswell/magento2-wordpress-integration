@@ -62,7 +62,11 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	**/
 	public function getPageTitle()
 	{
-		return sprintf('%s | %s', $this->getName(), $this->_viewHelper->getBlogName());
+		if ($this->getName() !== $this->_viewHelper->getBlogName()) {
+			return sprintf('%s | %s', $this->getName(), $this->_viewHelper->getBlogName());			
+		}
+		
+		return $this->getName();
 	}
 	
 	/**
