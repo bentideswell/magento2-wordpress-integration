@@ -9,23 +9,29 @@ namespace FishPig\WordPress\Block;
 
 /* Parent Class */
 use Magento\Framework\View\Element\Template;
+
 /* Constructor */
 use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Helper\View as ViewHelper;
+use Magento\Framework\Registry;
 
 abstract class AbstractBlock extends Template
 {
 	/*
-	 * @var FilterHelper
-	 */
-	protected $viewHelper;
-	
-	/*
 	 * @var OptionManager
 	 */
 	protected $optionManager;
+	
+	/*
+	 * @var ShortcodeManager
+	 */
+	protected $shortcodeManager;
+	
+	/*
+	 * @var Registry
+	 */
+	protected $registry;
 	
   /*
    * Constructor
@@ -37,14 +43,16 @@ abstract class AbstractBlock extends Template
   public function __construct(
   	         Context $context,
   	   OptionManager $optionManager,
-  	      ViewHelper $viewHelper, 
+    ShortcodeManager $shortcodeManager,
+            Registry $registry,
   	           array $data = []
   )
   {
-    parent::__construct($context, $data);
+		$this->optionManager    = $optionManager; 
+		$this->shortcodeManager = $shortcodeManager;
+		$this->registry         = $registry;
 
-		$this->optionManager = $optionManager;
-    $this->viewHelper    = $viewHelper;    
+    parent::__construct($context, $data);
   }
 
 	/*
@@ -56,9 +64,12 @@ abstract class AbstractBlock extends Template
 	 */
   public function renderShortcode($shortcode, $object = null)
   {
-		return $this->viewHelper->renderShortcode($content, ['object' => $object]);
+		return $this->shortcodeManager->renderShortcode($content, ['object' => $object]);
   }
 
+	/*
+	 *
+	 */
   public function doShortcode($shortcode, $object = null)
   {
 	  return $this->renderShortcode($shortcode, $object);

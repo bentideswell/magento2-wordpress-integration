@@ -31,7 +31,7 @@ class Collection extends PostCollection
 	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\Menu\Item', 'FishPig\WordPress\Model\ResourceModel\Menu\Item');
+    $this->_init('FishPig\WordPress\Model\Menu\Item', 'FishPig\WordPress\Model\ResourceModel\Menu\Item');
 		
 		$this->addPostTypeFilter('nav_menu_item');
 	}
@@ -41,9 +41,9 @@ class Collection extends PostCollection
 	 * WP stores posts and pages in the same DB table
 	 *
 	 */
-    protected function _initSelect()
-    {
-    	parent::_initSelect();
+  protected function _initSelect()
+  {
+  	parent::_initSelect();
 
 		$this->getSelect()->order('menu_order ASC');
 

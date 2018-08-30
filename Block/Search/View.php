@@ -1,14 +1,13 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
- 
 namespace FishPig\WordPress\Block\Search;
 
-class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
+/* Parent Class */
+use FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
+
+class View extends AbstractWrapper
 {
 	/*
 	 *
@@ -17,7 +16,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	public function getEntity()
 	{
-		return $this->_registry->registry('wordpress_search');
+		return $this->registry->registry('wordpress_search');
 	}
 
 	/**
@@ -33,7 +32,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 		$searchablePostTypes = $this->getRequest()->getParam('post_type');
 		
 		if (!$searchablePostTypes) {
-			$postTypes = $this->_app->getPostTypes();
+			$postTypes = $this->postTypeManager->getPostTypes();
 			$searchablePostTypes = array();
 			
 			foreach($postTypes as $postType) {

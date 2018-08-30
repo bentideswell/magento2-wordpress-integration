@@ -238,13 +238,13 @@ class Collection extends AbstractCollection
 					->from($this->getTable('wordpress_post'), null)
 					->where('main_table.ID IN (?)', $stickyIds)
 					->limit(1);
-				
+
 				$select->columns(
-					array('value' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression("'1'"))
+					array('value' => new \Zend_Db_Expr("'1'"))
 				);
 
 				$this->getSelect()
-					->columns(array('is_sticky' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . $select . ')')))
+					->columns(array('is_sticky' => new \Zend_Db_Expr('(' . $select . ')')))
 					->order('is_sticky DESC');
 			}
 		}
@@ -316,7 +316,7 @@ class Collection extends AbstractCollection
 	{
 		$fields = ['publish', 'protected'];
 
-    if ($this->_app->getConfig()->isLoggedIn()) {
+		if(\Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Customer\Model\Session')->isLoggedIn()) {
       $fields[] = 'private';
     }
 
@@ -416,7 +416,7 @@ class Collection extends AbstractCollection
 				}
 			}
 
-			$expression = $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . implode(' + ', $weightSql) . ')');
+			$expression = new \Zend_Db_Expr('(' . implode(' + ', $weightSql) . ')');
 
 			// Add Weight column to query
 			$this->getSelect()->columns(array('weight' => $expression));			
@@ -538,7 +538,7 @@ class Collection extends AbstractCollection
 			$countSelect->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
 			$countSelect->reset(\Magento\Framework\DB\Select::COLUMNS);
 
-			$countSelect->columns($this->context->getCompatibilityHelper()->createZendDbSqlExpression('main_table.ID'));
+			$countSelect->columns(new \Zend_Db_Expr('main_table.ID'));
 	
 			$this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));  
 		}

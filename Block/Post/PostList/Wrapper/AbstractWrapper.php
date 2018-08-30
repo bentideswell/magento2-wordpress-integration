@@ -1,14 +1,21 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 
-abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
+/* Parent Class */
+use FishPig\WordPress\Block\AbstractBlock;
+
+/* Constructor */
+use Magento\Framework\View\Element\Template\Context as Context;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Model\OptionManager;
+use Magento\Framework\Registry;
+use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\PostFactory;
+
+abstract class AbstractWrapper extends AbstractBlock
 {
 	/*
 	 *
@@ -19,10 +26,30 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 	/*
 	 *
 	 *
+	 */
+  public function __construct(
+  	         Context $context,
+  	   OptionManager $optionManager,
+    ShortcodeManager $shortcodeManager,
+            Registry $registry,
+     PostTypeManager $postTypeManager,
+         PostFactory $postFactory,
+  	           array $data = []
+  )
+  {
+		$this->postTypeManager = $postTypeManager;
+		$this->postFactory     = $postFactory;
+		
+    parent::__construct($context, $optionManager, $shortcodeManager, $registry, $data);
+  }
+  
+	/*
+	 *
+	 *
 	 */	
 	protected function _prepareLayout()
 	{
-		$this->_viewHelper->applyPageConfigData($this->pageConfig, $this->getEntity());
+		$this->applyPageConfigData($this->pageConfig, $this->getEntity());
 
 		return parent::_prepareLayout();
 	}
@@ -74,7 +101,7 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	protected function _getPostCollection()
 	{
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostFactory')->create()->getCollection();
+		return $this->postFactory->create()->getCollection();
 	}
 
 	/**

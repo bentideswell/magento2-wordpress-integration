@@ -203,7 +203,7 @@ class Post extends AbstractMeta
 		}
 
 		return count($sqlColumns) > 0 
-			? $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
+			? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
 			: false;
 	}
 	

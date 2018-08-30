@@ -15,7 +15,7 @@ use Magento\Framework\DataObject\IdentityInterface;
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Helper\View as ViewHelper;
+use FishPig\WordPress\Model\OptionManager;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 /* End of Constructor Args */
@@ -30,7 +30,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	/*
 	 *
 	 */
-	protected $viewHelper;
+	protected $optionManager;
 	
 	/*
 	 *
@@ -39,7 +39,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	         Context $context, 
 	        Registry $registry, 
 	             Url $url, 
-        ViewHelper $viewHelper,
+     OptionManager $optionManager,
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
@@ -47,7 +47,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 		parent::__construct($context, $registry, $resource, $resourceCollection);	
 		
 		$this->url = $url;
-		$this->viewHelper = $viewHelper;
+		$this->optionManager = $optionManager;
 	}
 
 	/*

@@ -1,20 +1,23 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\PostList;
 
 /* Parent Block */
-use Magento\Theme\Block\Html\Pager;
+use Magento\Theme\Block\Html\Pager as MagentoPager;
+
 /* Constructor Args */
 use Magento\Framework\View\Element\Template\Context;
+use FishPig\WordPress\Model\OptionManager;
 
-class Pager extends \Magento\Theme\Block\Html\Pager 
+class Pager extends MagentoPager
 {
+	/*
+	 * @var OptionManager
+	 */
+	protected $optionManager;
+	
   /*
    * Constructor
    *
@@ -22,8 +25,10 @@ class Pager extends \Magento\Theme\Block\Html\Pager
    * @param App
    * @param array $data
    */
-  public function __construct(Context $context, array $data = [])
+  public function __construct(Context $context, OptionManager $optionManager, array $data = [])
   {
+    $this->optionManager = $optionManager;
+    
     parent::__construct($context, $data);
   }
 
@@ -37,7 +42,7 @@ class Pager extends \Magento\Theme\Block\Html\Pager
 
 		$this->setPageVarName('page');
 
-		$baseLimit = $this->_config->getOption('posts_per_page', 10);
+		$baseLimit = $this->optionManager->getOption('posts_per_page', 10);
 
 		$this->setDefaultLimit($baseLimit);
 		$this->setLimit($baseLimit);

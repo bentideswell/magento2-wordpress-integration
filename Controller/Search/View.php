@@ -1,15 +1,54 @@
 <?php
-/**
+/*
  *
-**/
-
+ */
 namespace FishPig\WordPress\Controller\Search;
- 
-class View extends \FishPig\WordPress\Controller\Action
+
+/* Parent Class */
+use FishPig\WordPress\Controller\Action;
+
+/* Constructor Args */
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Model\SearchFactory;
+
+/* Other */
+use FishPig\WordPress\Model\Search;
+
+class View extends Action
 {
+	/*
+	 * @var
+	 */
+	protected $searchFactory;
+	
+  /*
+   * Constructor
+   *
+   * @param Context $context
+   * @param PageFactory $resultPageFactory
+   */
+  public function __construct(
+		       Context $context, 
+     	    Registry $registry,
+		           Url $url,
+     SearchFactory $searchFactory
+  )
+  {
+		$this->searchFactory = $searchFactory;
+        	
+    parent::__construct($context, $registry, $url);
+  }	
+  
+  /*
+	 *
+	 *
+	 * @return Search
+	 */
 	public function _getEntity()
 	{
-		return $this->getFactory('Search')->create();
+		return $this->searchFactory->create();
 	}
 	
   /*

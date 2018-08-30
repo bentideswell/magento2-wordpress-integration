@@ -1,26 +1,28 @@
 <?php
 /*
- * @category    Fishpig
- * @package     FishPig/WordPress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
- 
 namespace FishPig\WordPress\Model;
 
+/* Parent Class */
+use FishPig\WordPress\Model\Meta\AbstractMeta;
+
+/* Interface */
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 /* Constructor Args */
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Helper\View as ViewHelper;
+use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\Homepage;
+use FishPig\WordPress\Helper\Date as DateHelper;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 /* End of Constructor Args */
 
-class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements ViewableInterface
+class Post extends AbstractMeta implements ViewableInterface
 {
 	/*
 	 *
@@ -40,7 +42,15 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	protected $_eventPrefix = 'wordpress_post';
 	protected $_eventObject = 'post';
 	
-	protected $_homepageModel = null;
+	/*
+	 * @var Homepage
+	 */
+	protected $homepage;
+	
+	/*
+	 * @var DateHelper
+	 */
+	protected $dateHelper;
 	
 	/*
 	 *
@@ -49,15 +59,20 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	         Context $context, 
 	        Registry $registry, 
 	             Url $url, 
-        ViewHelper $viewHelper,
+     OptionManager $optionManager,
    PostTypeManager $postTypeManager,
+          Homepage $homepage,
+        DateHelper $dateHelper,
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
-  ) {
-		parent::__construct($context, $registry, $url, $viewHelper, $resource, $resourceCollection, $data);
-		
+  )
+  {
 		$this->postTypeManager = $postTypeManager;
+		$this->homepage        = $homepage;
+		$this->dateHelper      = $dateHelper;
+		
+		parent::__construct($context, $registry, $url, $optionManager, $resource, $resourceCollection, $data);		
 	}
 	
 	/*
@@ -507,7 +522,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->_viewHelper->formatDate($date, $format);
+		return $this->dateHelper->formatDate($date, $format);
 	}
 	
 	/*
@@ -522,7 +537,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->_viewHelper->formatDate($date, $format);
+		return $this->dateHelper->formatDate($date, $format);
 	}
 	
 	/*
@@ -537,7 +552,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->_viewHelper->formatDate($date, $format);
+		return $this->dateHelper->formatDate($date, $format);
 	}
 
 	/*
@@ -737,16 +752,6 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getChildrenPosts();
 	}
 	
-	public function isHomepagePage()
-	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->viewHelper->getHomepagePageId();
-	}
-	
-	public function isBlogListingPage()
-	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->viewHelper->getBlogPageId();
-	}
-	
 	/*
 	 *
 	 *
@@ -773,20 +778,21 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function isHomepage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->viewHelper->getHomepagePageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->homepage->getHomepagePageId();
 	}
-	
+		
+	public function isBlogListingPage()
+	{
+		return $this->isType('page') && (int)$this->getId() === (int)$this->homepage->getBlogPageId();
+	}
+
 	/*
 	 *
 	 * @return \FishPig\WordPress\Model\Homepage
 	 */
 	protected function _getHomepageModel()
 	{
-		if ($this->homepageModel === null) {
-			$this->homepageModel = $this->getFactory('Homepage')->create();
-		}
-		
-		return $this->homepageModel;
+		return $this->homepage;
 	}
 	
 	/*

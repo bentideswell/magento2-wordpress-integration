@@ -1,36 +1,38 @@
 <?php
-/**
- * @ 
-**/
+/*
+ *
+ */
 namespace FishPig\WordPress\Controller;
 
-abstract class Action extends \Magento\Framework\App\Action\Action
+/* Parent Class */
+use Magento\Framework\App\Action\Action as ParentAction;
+
+/* Constructor Args */
+use Magento\Framework\App\Action\Context;
+use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Url as Url;
+
+abstract class Action extends ParentAction
 {
 	/*
 	 * @var 
 	 */
-	protected $app = null;
-	
+	protected $registry;
+
 	/*
 	 * @var 
+	 */	
+	protected $entity;
+
+	/*
+	 * @var 
+	 */	
+	protected $resultPage;
+
+	/*
+	 * @var
 	 */
-	protected $registry = null;
-
-	/*
-	 * @var 
-	 */	
-	protected $_entity = null;
-
-	/*
-	 * @var 
-	 */	
-	protected $resultPage = null;
-	
-
-	/*
-	 * @var 
-	 */	
-	protected $entity = null;
+	protected $url;
 	
 	/*
 	 * @var 
@@ -44,14 +46,13 @@ abstract class Action extends \Magento\Framework\App\Action\Action
    * @param PageFactory $resultPageFactory
    */
   public function __construct(
-    \Magento\Framework\App\Action\Context $context, 
-    \Magento\Framework\Registry $registry, 
-    \FishPig\WordPress\Model\App $app
-   )
+		 Context $context, 
+		Registry $registry,
+		     Url $url
+  )
   {
-	    
 		$this->registry = $registry;
-		$this->app = $app;
+		$this->url      = $url;
         	
     parent::__construct($context);
   }	
@@ -160,13 +161,13 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    'home' => [
 			'label' => __('Home'),
 			'title' => __('Go to Home Page'),
-			'link' => $this->app->getWpUrlBuilder()->getMagentoUrl()
+			'link' => $this->url->getMagentoUrl()
 		]];
 	
 		if (!$this->app->isRoot()) {
 			$crumbs['blog'] = [
-				'label' => $this->app->getConfig()->getBlogBreadcrumbsLabel(),
-				'link' => $this->app->getWpUrlBuilder()->getHomeUrl()
+				'label' => __('Blog'),
+				'link' => $this->url->getHomeUrl()
 			];
 		}
 	
@@ -205,38 +206,6 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     }
 
     return $this->entity = $this->_getEntity();
-  }
-    
-	/*
-	 * @var 
-	 */
-  public function getRegistry()
-  {
-    return $this->registry;
-  }
-    
-	/*
-	 * @var 
-	 */
-  protected function _getRegistry()
-  {
-    return $this->getRegistry();
-  }
-    
-	/*
-	 * @var 
-	 */
-  public function getApp()
-  {
-    return $this->app;
-  }
-    
-	/*
-	 * @var 
-	 */
-  public function getFactory($type)
-  {
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('\FishPig\WordPress\Model\\' . $type . 'Factory');
   }
     
   /*
