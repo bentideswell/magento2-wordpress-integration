@@ -16,8 +16,12 @@ use Magento\Framework\Registry;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Homepage;
 use FishPig\WordPress\Helper\Date as DateHelper;
+use FishPig\WordPress\Model\ImageFactory;
+use FishPig\WordPress\Model\UserFactory;
+use FishPig\WordPress\Model\TermFactory;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 /* End of Constructor Args */
@@ -43,6 +47,16 @@ class Post extends AbstractMeta implements ViewableInterface
 	protected $_eventObject = 'post';
 	
 	/*
+	 * @var PostTypeManager
+	 */
+	protected $postTypeManager;
+	
+	/*
+	 * @var
+	 */
+	protected $taxonomyManager;
+	
+	/*
 	 * @var Homepage
 	 */
 	protected $homepage;
@@ -53,6 +67,11 @@ class Post extends AbstractMeta implements ViewableInterface
 	protected $dateHelper;
 	
 	/*
+	 * @var ImageFactory
+	 */
+	protected $imageFactory;
+
+	/*
 	 *
 	 */
 	public function __construct(
@@ -60,17 +79,28 @@ class Post extends AbstractMeta implements ViewableInterface
 	        Registry $registry, 
 	             Url $url, 
      OptionManager $optionManager,
+     
+     /* Local */
    PostTypeManager $postTypeManager,
+   TaxonomyManager $taxonomyManager,
           Homepage $homepage,
         DateHelper $dateHelper,
+      ImageFactory $imageFactory,
+       UserFactory $userFactory,
+       TermFactory $termFactory,
+       
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
   )
   {
 		$this->postTypeManager = $postTypeManager;
+		$this->taxonomyManager = $taxonomyManager;
 		$this->homepage        = $homepage;
 		$this->dateHelper      = $dateHelper;
+		$this->imageFactory    = $imageFactory;
+		$this->userFactory     = $userFactory;
+		$this->termFactory     = $termFactory;
 		
 		parent::__construct($context, $registry, $url, $optionManager, $resource, $resourceCollection, $data);		
 	}
@@ -289,7 +319,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getTermCollection($taxonomy)
 	{
-		return $this->getFactory('Term')->create()
+		return $this->termFactory->create()
 			->getCollection()
 				->addTaxonomyFilter($taxonomy)
 				->addPostIdFilter($this->getId());
@@ -457,8 +487,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	{
 		if (!$this->hasData('images')) {
 			$this->setImages(
-				$this->getFactory('Image')->create()
-					->getCollection()->setParent($this->getData('ID'))
+				$this->imageFactory->create()->getCollection()->setParent($this->getData('ID'))
 			);
 		}
 		
@@ -498,7 +527,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	{
 		if (!$this->hasUser()) {
 			$this->setUser(
-				$this->getFactory('User')->create()->load($this->getUserId())
+				$this->userFactory->create()->load($this->getUserId())
 			);
 		}
 		
@@ -805,7 +834,7 @@ class Post extends AbstractMeta implements ViewableInterface
 		if (!$this->hasPostFormat()) {
 			$this->setPostFormat('');
 
-			$formats = $this->getFactory('Term')->create()->getCollection()
+			$formats = $this->termFactory->create()->getCollection()
 				->addTaxonomyFilter('post_format')
 				->setPageSize(1)
 				->addObjectIdFilter($this->getId())
