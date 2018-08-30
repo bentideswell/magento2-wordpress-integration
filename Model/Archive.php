@@ -89,7 +89,7 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 	 */
 	public function getUrl()
 	{
-		return rtrim($this->_wpUrlBuilder->getUrl($this->getId()), '/') . '/';
+		return rtrim($this->url->getUrl($this->getId()), '/') . '/';
 	}
 	
 	/**

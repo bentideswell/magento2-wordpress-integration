@@ -1,48 +1,58 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block;
+
+/* Constructor Args*/
+/* Parent */
+use Magento\Framework\View\Element\Template\Context as Context;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\Url;
+use Magento\Framework\Registry;
+/* Local */
+use FishPig\WordPress\Model\WidgetManager;
+use FishPig\WordPress\Model\Plugin;
 
 class Sidebar extends AbstractBlock
 {	
-	/**
-	 * Stores all templates for each widget block
+	/*
 	 *
-	 * @var array
 	 */
-	protected $_widgets = array();
+	protected $widgetManager;
 
-	/**
-	 * Add a widget type
+	/*
 	 *
-	 * @param string $name
-	 * @param string $block
-	 * @return \FishPig\WordPress\Block\Sidebar
 	 */
-	public function addWidgetType($name, $class)
-	{
-		if (!isset($this->_widgets[$name])) {
-			$this->_widgets[$name] = $class;
-		}
+	protected $plugin;
 	
-		return $this;
-	}
-	
-	/**
-	 * Retrieve information about a widget type
-	 *
-	 * @param string $name
-	 * @return false|array
-	 */
-	public function getWidgetType($name)
-	{
-		return isset($this->_widgets[$name]) ? $this->_widgets[$name] : false;
-	}
+  /*
+   * Constructor
+   *
+   * @param Context $context
+   * @param App
+   * @param array $data
+   */
+  public function __construct(
+  	         Context $context,
+  	   OptionManager $optionManager,
+    ShortcodeManager $shortcodeManager,
+            Registry $registry,
+                 Url $url,
+
+       /* Local */
+       WidgetManager $widgetManager,
+              Plugin $plugin,
+              
+  	           array $data = []
+  )
+  {
+		$this->widgetManager = $widgetManager;
+		$this->plugin        = $plugin;
+		
+    parent::__construct($context, $optionManager, $shortcodeManager, $registry, $url, $data);
+  }
 	
 	/**
 	 * Load all enabled widgets
@@ -52,13 +62,12 @@ class Sidebar extends AbstractBlock
 	protected function _beforeToHtml()
 	{
 		if ($widgets = $this->getWidgetsArray()) {
-			$this->_initAvailableWidgets();
 
 			foreach($widgets as $widgetType) {
 				$name = $this->_getWidgetName($widgetType);
 				$widgetIndex = $this->_getWidgetIndex($widgetType);
 
-				if ($class = $this->getWidgetType($name)) {
+				if ($class = $this->widgetManager->getWidgetClassName($name)) {
 					if ($block = $this->getLayout()->createBlock($class)) {
 						$block->setWidgetType($name);
 						$block->setWidgetIndex($widgetIndex);
@@ -138,7 +147,7 @@ class Sidebar extends AbstractBlock
 	public function getWidgetsArray()
 	{
 		if ($this->getWidgetArea()) {
-			$widgets = $this->_config->getOption('sidebars_widgets');
+			$widgets = $this->optionManager->getOption('sidebars_widgets');
 
 			if ($widgets) {
 				$widgets = unserialize($widgets);
@@ -161,11 +170,11 @@ class Sidebar extends AbstractBlock
 	 */
 	public function getRealWidgetArea()
 	{
-		if (!$this->_pluginHelper->isEnabled('custom-sidebars/customsidebars.php')) {
+		if (!$this->plugin->isEnabled('custom-sidebars/customsidebars.php')) {
 			return $this->getWidgetArea();
 		}
 
-		if (!($settings = @unserialize($this->_config->getOption('cs_modifiable')))) {
+		if (!($settings = @unserialize($this->optionManager->getOption('cs_modifiable')))) {
 			return $this->getWidgetArea();
 		}
 
@@ -261,22 +270,6 @@ class Sidebar extends AbstractBlock
 		}
 		
 		return $arr;
-	}
-	
-	/**
-	 * Initialize the widgets from the config.xml
-	 *
-	 * @return $this
-	 */
-	protected function _initAvailableWidgets()
-	{
-		$availableWidgets = $this->_config->getWidgets();
-		
-		foreach($availableWidgets as $name => $class) {
-			$this->addWidgetType($name, $class);
-		}
-		
-		return $this;
 	}
 	
 	/**

@@ -12,6 +12,7 @@ use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\OptionManager;
 use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\PostFactory;
 
@@ -28,19 +29,23 @@ abstract class AbstractWrapper extends AbstractBlock
 	 *
 	 */
   public function __construct(
+	      /* Parent */
   	         Context $context,
   	   OptionManager $optionManager,
     ShortcodeManager $shortcodeManager,
             Registry $registry,
+                 Url $url,
+  	     /* Local */
      PostTypeManager $postTypeManager,
          PostFactory $postFactory,
+			/* Optional */
   	           array $data = []
   )
   {
 		$this->postTypeManager = $postTypeManager;
 		$this->postFactory     = $postFactory;
 		
-    parent::__construct($context, $optionManager, $shortcodeManager, $registry, $data);
+    parent::__construct($context, $optionManager, $shortcodeManager, $registry, $url, $data);
   }
   
 	/*

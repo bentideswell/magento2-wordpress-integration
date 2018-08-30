@@ -51,7 +51,7 @@ class Calendar extends AbstractWidget
 		$itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 
 		foreach($days as $day) {
-			$itemsByDay[ltrim($day, '0')] = sprintf('<a href="%s">%s</a>', $this->_wpUrlBuilder->getUrl($this->getYear() . '/' . $this->getMonth() . '/' . $day), $day);
+			$itemsByDay[ltrim($day, '0')] = sprintf('<a href="%s">%s</a>', $this->url->getUrl($this->getYear() . '/' . $this->getMonth() . '/' . $day), $day);
 		}
 
 		$itemsByDay = array_values($itemsByDay);
@@ -143,7 +143,7 @@ class Calendar extends AbstractWidget
 		if (count($posts)) {
 			$previous = $posts->getFirstItem();
 
-			$this->setPreviousUrl($this->_wpUrlBuilder->getUrl($previous->getPostDate('Y') . '/' . $previous->getPostDate('m') . '/'));
+			$this->setPreviousUrl($this->url->getUrl($previous->getPostDate('Y') . '/' . $previous->getPostDate('m') . '/'));
 			$this->setPreviousText($previous->getPostDate('M'));
 		}
 
@@ -160,7 +160,7 @@ class Calendar extends AbstractWidget
 		if (count($posts)) {
 			$next = $posts->getFirstItem();
 
-			$this->setNextUrl($this->_wpUrlBuilder->getUrl($next->getPostDate('Y') . '/' . $next->getPostDate('m') . '/'));
+			$this->setNextUrl($this->url->getUrl($next->getPostDate('Y') . '/' . $next->getPostDate('m') . '/'));
 			$this->setNextText($next->getPostDate('M'));
 		}
 		

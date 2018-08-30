@@ -1,16 +1,27 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
- 
 namespace FishPig\WordPress\Model;
 
+/* Parent Class */
+use FishPig\WordPress\Model\AbstractModel;
+
+/* Interface */
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
+/* Constructor Args */
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\PostFactory;
+use FishPig\WordPRess\Model\TaxonomyManager;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
+/* End of Constructor Args */
+
+class Term extends AbstractModel implements ViewableInterface
 {
 	/*
 	 *
@@ -22,13 +33,35 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 	 */
 	const CACHE_TAG = 'wordpress_term';
 
-	/**
+	/*
 	 * Event data
 	 *
 	 * @var string
 	 */
 	protected $_eventPrefix = 'wordpress_term';
 	protected $_eventObject = 'term';
+
+	/*
+	 *
+	 */
+	public function __construct(
+	         Context $context, 
+	        Registry $registry, 
+	             Url $url, 
+     OptionManager $optionManager,
+       PostFactory $postFactory,
+     /* Local */
+   TaxonomyManager $taxonomyManager,
+
+	AbstractResource $resource = null, 
+	      AbstractDb $resourceCollection = null, 
+	           array $data = []
+  )
+  {
+		$this->taxonomyManager = $taxonomyManager;
+
+		parent::__construct($context, $registry, $url, $optionManager, $postFactory, $resource, $resourceCollection, $data);		
+	}
 	
 	/*
 	 *
@@ -60,17 +93,17 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->_getData('description');
 	}
 	
-	/**
+	/*
 	 * Get the taxonomy object for this term
 	 *
 	 * @return \FishPig\WordPress\Model\Term\Taxonomy
 	 */
 	public function getTaxonomyInstance()
 	{
-		return $this->_app->getTaxonomy($this->getTaxonomy());
+		return $this->taxonomyManager->getTaxonomy($this->getTaxonomy());
 	}
 
-	/**
+	/*
 	 * Retrieve the taxonomy label
 	 *
 	 * @return string
@@ -84,7 +117,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return false;
 	}
 	
-	/**
+	/*
 	 * Retrieve the parent term
 	 *
 	 * @reurn false|\FishPig\WordPress\Model\Term
@@ -95,7 +128,9 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 			$this->setParentTerm(false);
 			
 			if ($this->getParentId()) {
-				$parentTerm = $this->_app->getFactory()->getFactory('Term')->create()->load($this->getParentId());
+				$parentTerm = clone $term;
+				
+				$parentTerm->clearInstance()->load($this->getParentId());
 				
 				if ($parentTerm->getId()) {
 					$this->setParentTerm($parentTerm);
@@ -106,7 +141,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->_getData('parent_term');
 	}
 	
-	/**
+	/*
 	 * Retrieve a collection of children terms
 	 *
 	 * @return \FishPig\WordPress\Model\ResourceModel\Term\Collection
@@ -116,19 +151,19 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->getCollection()->addParentFilter($this);
 	}
 	
-	/**
+	/*
 	 * Loads the posts belonging to this category
 	 *
 	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */    
-    public function getPostCollection()
-    {
+  public function getPostCollection()
+  {
 		return parent::getPostCollection()
 			->addIsViewableFilter()
 			->addTermIdFilter($this->getChildIds(), $this->getTaxonomy());
-    }
+  }
       
-	/**
+	/*
 	 * Retrieve the numbers of items that belong to this term
 	 *
 	 * @return int
@@ -138,7 +173,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->getCount();
 	}
 	
-	/**
+	/*
 	 * Retrieve the parent ID
 	 *
 	 * @return int|false
@@ -148,7 +183,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->_getData('parent') ? $this->_getData('parent') : false;
 	}
 	
-	/**
+	/*
 	 * Retrieve the taxonomy type for this term
 	 *
 	 * @return string
@@ -158,17 +193,17 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->getTaxonomy();
 	}
 	
-	/**
+	/*
 	 * Retrieve the URL for this term
 	 *
 	 * @return string
 	 */
 	public function getUrl()
 	{
-		return $this->_wpUrlBuilder->getUrl($this->getUri() . '/');
+		return $this->url->getUrl($this->getUri() . '/');
 	}
 	
-	/**
+	/*
 	 * Retrieve the URL for this term
 	 *
 	 * @return string
@@ -184,7 +219,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->_getData('uri');
 	}
 	
-	/**
+	/*
 	 * Get the number of posts belonging to the term
 	 *
 	 * @return int
@@ -194,7 +229,7 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return (int)$this->getCount();
 	}
 	
-	/**
+	/*
 	 * Get an array of all child ID's
 	 * This includes the ID's of children's children
 	 *
@@ -211,12 +246,12 @@ class Term extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
 		return $this->_getData('child_ids');
 	}
 	
-	/**
+	/*
 	 * Get the meta value using ACF if it's installed
 	 *
 	 * @param string $key
 	 * @return mixed
-	 **/
+	 */
 	public function getMetaValue($key)
 	{
 		return null;

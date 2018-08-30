@@ -12,6 +12,7 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\PostFactory;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
@@ -47,12 +48,13 @@ class Search extends AbstractModel implements ViewableInterface
 	        Registry $registry, 
 	             Url $url, 
      OptionManager $optionManager,
+       PostFactory $postFactory,
   RequestInterface $requestInterface,
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
   ) {
-		parent::__construct($context, $registry, $url, $optionManager, $resource, $resourceCollection);	
+		parent::__construct($context, $registry, $url, $optionManager, $postFactory, $resource, $resourceCollection);	
 
 		$this->request = $requestInterface;
 	}

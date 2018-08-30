@@ -48,7 +48,8 @@ class TaxonomyManager
 		StoreManagerInterface $storeManager, 
 		      TaxonomyFactory $taxonomyFactory, 
 		        OptionManager $optionManager,
-		              Network $network)
+		              Network $network
+  )
 	{
 		$this->moduleManager   = $moduleManager;
 		$this->storeManager    = $storeManager;
@@ -129,7 +130,7 @@ class TaxonomyManager
 				])
 			);
 		}
-		
+
 		return $this;
 	}
 	

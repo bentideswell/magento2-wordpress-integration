@@ -20,7 +20,7 @@ class Pages extends AbstractWidget
 		if (!$this->hasPost()) {
 			$this->setPost(false);
 			
-			if ($post = $this->_registry->registry('wordpress_post')) {
+			if ($post = $this->registry->registry('wordpress_post')) {
 				if ($post->getPostType() === 'page') {
 					$this->setPost($post);
 				}

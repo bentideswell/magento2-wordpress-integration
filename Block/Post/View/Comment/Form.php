@@ -45,7 +45,7 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	public function getCommentFormAction()
 	{
-		return $this->_wpUrlBuilder->getSiteUrl('wp-comments-post.php');
+		return $this->url->getSiteUrl('wp-comments-post.php');
 	}
 
 	/**

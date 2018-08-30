@@ -16,6 +16,7 @@ use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\PostFactory;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 /* End of Constructor Args */
@@ -33,6 +34,11 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	protected $optionManager;
 	
 	/*
+	 * @var PostFactory
+	 */
+	protected $postFactory;
+
+	/*
 	 *
 	 */
 	public function __construct(
@@ -40,14 +46,16 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	        Registry $registry, 
 	             Url $url, 
      OptionManager $optionManager,
+       PostFactory $postFactory,
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
   ) {
 		parent::__construct($context, $registry, $resource, $resourceCollection);	
 		
-		$this->url = $url;
+		$this->url           = $url;
 		$this->optionManager = $optionManager;
+		$this->postFactory   = $postFactory;
 	}
 
 	/*
@@ -159,5 +167,14 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	public function getBlogDescription()
 	{
 		return $this->optionManager->getOption('blogdescription');
+	}
+	
+	/*
+	 *
+	 *
+	 */
+	public function getPostCollection()
+	{
+		return $this->postFactory->create()->getCollection();
 	}
 }

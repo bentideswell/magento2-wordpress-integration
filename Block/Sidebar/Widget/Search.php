@@ -17,7 +17,7 @@ class Search extends AbstractWidget
 	 */
 	public function getFormActionUrl()
 	{
-		return $this->_wpUrlBuilder->getUrl('search') . '/';
+		return $this->url->getUrl('search') . '/';
 	}
 	
 	/**

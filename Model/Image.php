@@ -144,7 +144,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 	 */
 	public function getFileUploadUrl()
 	{
-		return $this->_wpUrlBuilder->getFileUploadUrl();
+		return $this->url->getFileUploadUrl();
 	}
 	
 	/**

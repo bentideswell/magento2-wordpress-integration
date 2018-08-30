@@ -24,6 +24,8 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 		$this->setComments(array());
 			
 		if ($this->getCommentCount() > 0 && ($post = $this->getPost()) !== false) {
+			
+			echo __LINE__;exit;
 			$this->setComments($post->getResource()->getPostComments($post));
 
 			if (($pager = $this->getChildBlock('pager')) !== false) {

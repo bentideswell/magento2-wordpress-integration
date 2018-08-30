@@ -402,10 +402,10 @@ class Post extends AbstractMeta
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
-		
+		echo __LINE__;exit;
 		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')
 			->create()
-				->addPostIdFilter($post->getId())
+				->setPost($post)
 				->addCommentApprovedFilter()
 				->addParentCommentFilter(0)
 				->addOrderByDate();

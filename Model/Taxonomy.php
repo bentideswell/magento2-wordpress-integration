@@ -31,14 +31,20 @@ class Taxonomy extends DataObject/* implements ViewableInterface*/
 	 * @param  array        $data
 	 * @return void
 	 */
-	public function __construct(ResourceConnection $resourceConnection, Url $url, RouterHelper $routerHelper, TermFactory $termFactory, array $data = [])
+	public function __construct(
+	  ResourceConnection $resourceConnection, 
+	                 Url $url, 
+	        RouterHelper $routerHelper, 
+	         TermFactory $termFactory, 
+	              array $data = []
+  )
 	{
-		parent::__construct($data);
-
 		$this->resourceConnection = $resourceConnection;
 		$this->url = $url;
 		$this->routerHelper = $routerHelper;
 		$this->termFactory  = $termFactory;
+		
+		parent::__construct($data);
 	}
 	
 	/**
@@ -76,7 +82,7 @@ class Taxonomy extends DataObject/* implements ViewableInterface*/
 					array(
 						'id' => 'term_id', 
 						'url_key' => 'slug',
-						$this->compatibilityHelper->createZendDbSqlExpression("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
+						new \Zend_Db_Expr("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
 					)
 				)
 				->join(
@@ -86,7 +92,7 @@ class Taxonomy extends DataObject/* implements ViewableInterface*/
 				);
 
 		if ($results = $this->resourceConnection->getConnection()->fetchAll($select)) {
-			$this->setAllUris($this->_generateRoutesFromArray($results, $this->getSlug()));
+			$this->setAllUris($this->routerHelper->generateRoutesFromArray($results, $this->getSlug()));
 		}
 
 		return $this->_getData('all_uris');
@@ -168,5 +174,10 @@ class Taxonomy extends DataObject/* implements ViewableInterface*/
 	public function getTaxonomyType()
 	{
 		return $this->getData('taxonomy_type') ? $this->getData('taxonomy_type') : $this->getData('name');
+	}
+	
+	public function getTaxonomy()
+	{
+		return $this->getTaxonomyType();
 	}
 }

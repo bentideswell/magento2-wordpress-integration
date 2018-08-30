@@ -1,17 +1,16 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
-
 namespace FishPig\WordPress\Helper;
 
-use \Magento\Framework\App\Helper\Context;
+/* Parent Class */
+use Magento\Framework\App\Helper\AbstractHelper;
 
+/* Constructor Args */
+use Magento\Framework\App\Helper\Context;
 
-class Filter extends \Magento\Framework\App\Helper\AbstractHelper
+class Autop extends AbstractHelper
 {
 	/*
 	 * Call autop on the string
@@ -20,14 +19,11 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 	 * has handled it and if so add it to the assetInjectionShortcodes array
 	 *
 	 * @param $string
-	 * @param $object = null
 	 * @return string
 	 */
-	public function process($string, $object = null)
+	public function autop($string)
 	{
-		$string = trim($this->addParagraphTagsToString($string));
-
-		return $this->doShortcode($string, $object);
+		return $this->addParagraphTagsToString($string);
 	}
 	
 	/*
@@ -51,7 +47,7 @@ class Filter extends \Magento\Framework\App\Helper\AbstractHelper
 			$string = preg_replace('/\]<\/p>/', ']', $string);
 		}
 
-		return $string;
+		return trim($string);
 	}
 	
 	/*

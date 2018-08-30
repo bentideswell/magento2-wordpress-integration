@@ -1,56 +1,76 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
- 
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+/* Parent Class */
+use FishPig\WordPress\Model\Meta\AbstractMeta;
 
-class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements ViewableInterface
+/* Interface */
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+
+class User extends AbstractMeta implements ViewableInterface
 {
-	/**
+	/*
 	 *
-	**/
+	 */
 	const ENTITY = 'wordpress_user';
 
-	/**
+	/*
 	 * @const string
-	*/
+	 */
 	const CACHE_TAG = 'wordpress_user';
 
-	/**
+	/*
 	 * Event information
 	 *
 	 * @var string
-	*/
+	 */
 	protected $_eventPrefix = 'wordpress_user';
 	protected $_eventObject = 'user';
-	
+
+	/*
+	 *
+	 *
+	 * @return void
+	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\ResourceModel\User');
+    $this->_init('FishPig\WordPress\Model\ResourceModel\User');
 	}
 	
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->_getData('display_name');
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getContent()
 	{
 		return $this->getMetaValue('description');
 	}
 
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getImage()
 	{
 		return $this->getGravatarUrl();
 	}
 	
-	/**
+	/*
 	 * Load a user by an email address
 	 *
 	 * @param string $email
@@ -61,7 +81,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->load($email, 'user_email');
 	}
 	
-	/**
+	/*
 	 * Get the URL for this user
 	 *
 	 * @return string
@@ -69,13 +89,13 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getUrl()
 	{
 		if (!$this->hasUrl()) {
-			$this->setUrl($this->_wpUrlBuilder->getUrl('author/' . urlencode($this->getUserNicename())) . '/');
+			$this->setUrl($this->url->getUrl('author/' . urlencode($this->getUserNicename())) . '/');
 		}
 		
 		return $this->_getData('url');
 	}
 
-	/**
+	/*
 	 * Load the WordPress user model associated with the current logged in customer
 	 *
 	 * @return \FishPig\WordPress\Model\User
@@ -85,7 +105,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getResource()->loadCurrentLoggedInUser($this);
 	}
 	
-	/**
+	/*
 	 * Retrieve the table prefix
 	 * This is also used to prefix some fields (roles)
 	 *
@@ -96,7 +116,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_app->getResourceConnection()->getTablePrefix();
 	}
 	
-	/**
+	/*
 	 * Retrieve the user's role
 	 *
 	 * @return false|string
@@ -112,7 +132,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return false;
 	}
 	
-	/**
+	/*
 	 * Set the user's role
 	 *
 	 * @param string $role
@@ -125,7 +145,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this;
 	}
 	
-	/**
+	/*
 	 * Retrieve the user level
 	 *
 	 * @return int
@@ -135,7 +155,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getMetaValue($this->getTablePrefix() . 'user_level');
 	}
 	
-	/**
+	/*
 	 * Retrieve the users first name
 	 *
 	 * @return string
@@ -145,7 +165,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getMetaValue('first_name');
 	}
 	
-	/**
+	/*
 	 * Retrieve the users last name
 	 *
 	 * @return string
@@ -155,7 +175,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getMetaValue('last_name');
 	}
 	
-	/**
+	/*
 	 * Retrieve the user's nickname
 	 *
 	 * @return string
@@ -165,7 +185,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getMetaValue('nickname');
 	}
 
-	/**
+	/*
 	 * Retrieve the URL for Gravatar
 	 *
 	 * @return string
@@ -175,7 +195,7 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getUserEmail()))) . "?d=" . urlencode( $this->_getDefaultGravatarImage() ) . "&s=" . $size;
 	}
 	
-	/**
+	/*
 	 * Retrieve the URL to the default gravatar image
 	 *
 	 * @return string
@@ -184,17 +204,32 @@ class User extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		return '';
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
 	public function doesMetaTableHavePrefix()
 	{
 		return true;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getMetaTableObjectField()
 	{
 		return 'user_id';
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return string
+	 */
 	public function getMetaTableAlias()
 	{
 		return 'wordpress_user_meta';

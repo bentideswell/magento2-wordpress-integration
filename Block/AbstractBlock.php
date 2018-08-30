@@ -1,9 +1,6 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
 namespace FishPig\WordPress\Block;
 
@@ -14,6 +11,7 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\Url;
 use Magento\Framework\Registry;
 
 abstract class AbstractBlock extends Template
@@ -33,6 +31,11 @@ abstract class AbstractBlock extends Template
 	 */
 	protected $registry;
 	
+	/*
+	 * @var Url
+	 */
+	protected $url;
+
   /*
    * Constructor
    *
@@ -41,16 +44,21 @@ abstract class AbstractBlock extends Template
    * @param array $data
    */
   public function __construct(
+	      /* Parent */
   	         Context $context,
+  	     /* Local */
   	   OptionManager $optionManager,
     ShortcodeManager $shortcodeManager,
             Registry $registry,
+                 Url $url,
+			/* Optional */
   	           array $data = []
   )
   {
 		$this->optionManager    = $optionManager; 
 		$this->shortcodeManager = $shortcodeManager;
 		$this->registry         = $registry;
+		$this->url              = $url;
 
     parent::__construct($context, $data);
   }
@@ -100,23 +108,5 @@ abstract class AbstractBlock extends Template
 		}
 	
     return $this;
-	}
-	
-	/*
-	 * Generate the HTML for the block
-	 *
-	 * @return string
-	 */
-	public function toHtml()
-	{
-		try {
-			return parent::toHtml();
-		}
-		catch (\Exception $e) {
-			echo sprintf('<h1>%s</h1><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
-			exit;
-			
-			throw $e;
-		}
 	}
 }

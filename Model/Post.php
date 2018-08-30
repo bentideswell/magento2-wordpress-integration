@@ -17,11 +17,13 @@ use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager;
+use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\Homepage;
 use FishPig\WordPress\Helper\Date as DateHelper;
 use FishPig\WordPress\Model\ImageFactory;
 use FishPig\WordPress\Model\UserFactory;
 use FishPig\WordPress\Model\TermFactory;
+use FishPig\WordPress\Helper\Autop;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 /* End of Constructor Args */
@@ -70,7 +72,17 @@ class Post extends AbstractMeta implements ViewableInterface
 	 * @var ImageFactory
 	 */
 	protected $imageFactory;
+	
+	/*
+	 * @var ShortcodeManager
+	 */
+	protected $shortcodeManager;
 
+	/*
+	 * @var Autop
+	 */
+	protected $autop;
+	
 	/*
 	 *
 	 */
@@ -79,16 +91,17 @@ class Post extends AbstractMeta implements ViewableInterface
 	        Registry $registry, 
 	             Url $url, 
      OptionManager $optionManager,
-     
+       PostFactory $postFactory,
      /* Local */
    PostTypeManager $postTypeManager,
    TaxonomyManager $taxonomyManager,
+  ShortcodeManager $shortcodeManager,
           Homepage $homepage,
         DateHelper $dateHelper,
       ImageFactory $imageFactory,
        UserFactory $userFactory,
        TermFactory $termFactory,
-       
+             Autop $autop,
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
@@ -96,13 +109,17 @@ class Post extends AbstractMeta implements ViewableInterface
   {
 		$this->postTypeManager = $postTypeManager;
 		$this->taxonomyManager = $taxonomyManager;
+		$this->shortcodeManager= $shortcodeManager;
 		$this->homepage        = $homepage;
 		$this->dateHelper      = $dateHelper;
 		$this->imageFactory    = $imageFactory;
 		$this->userFactory     = $userFactory;
 		$this->termFactory     = $termFactory;
+		$this->autop           = $autop;
+		$this->url = $url;
+		$this->optionManager = $optionManager;
 		
-		parent::__construct($context, $registry, $url, $optionManager, $resource, $resourceCollection, $data);		
+		parent::__construct($context, $registry, $url, $optionManager, $postFactory, $resource, $resourceCollection, $data);		
 	}
 	
 	/*
@@ -131,6 +148,48 @@ class Post extends AbstractMeta implements ViewableInterface
 		return $this->getExcerpt(20);
 	}
 
+	/*
+	 * Get the page title
+	 *
+	 * @return string
+	 */
+	public function getPageTitle()
+	{
+		return sprintf('%s | %s', $this->getName(), $this->getBlogName());
+	}
+
+	/*
+	 * Get the meta keywords
+	 *
+	 * @return string
+	 */
+	public function getMetaKeywords()
+	{
+		return '';
+	}
+	
+	/*
+	 * Get the robots meta value
+	 *
+	 * @return string
+	 */
+	public function getRobots()
+	{
+		return (int)$this->optionManager->getOption('blog_public') === 0
+			? 'noindex,nofollow'
+			: 'index,follow';
+	}
+
+	/*
+	 * Get the canonical URL
+	 *
+	 * @return string
+	 */
+	public function getCanonicalUrl()
+	{
+		return $this->getUrl();
+	}
+	
 	/*
 	 *
 	 */
@@ -445,16 +504,19 @@ class Post extends AbstractMeta implements ViewableInterface
 		if (!$this->hasData($key)) {
 			$transport = new \Magento\Framework\DataObject();
 
-			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_get_post_content', array('transport' => $transport, 'post' => $this));
+			$this->_eventManager->dispatch('wordpress_get_post_content', array('transport' => $transport, 'post' => $this));
 			
 			if ($transport->getPostContent()) {
 				$this->setData($key, $transport->getPostContent());
 			}
 			else {
-				$this->setData(
-					$key,
-					$this->_filter->process($this->_getData('post_content'), $this)
-				);
+				/* Render shortcodes */
+				$postContent = $this->shortcodeManager->renderShortcode($this->_getData('post_content'), $this);
+				
+				/* Add <p> tags to the post content */
+				$postContent = $this->autop->addParagraphTagsToString($postContent);
+				
+				$this->setData($key, $postContent);
 			}
 		}
 		
@@ -890,7 +952,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	public function setAsGlobal()
 	{
 		if (!$this->getWpPostObject()) {
-			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_post_setasglobal_before', array('post' => $this));
+			$this->_eventManager->dispatch('wordpress_post_setasglobal_before', array('post' => $this));
 		}
 
 		if ($this->getWpPostObject()) {
