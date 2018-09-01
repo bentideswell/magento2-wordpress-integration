@@ -10,17 +10,6 @@ use FishPig\WordPress\Model\AbstractModel;
 /* Interface */
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-/* Constructor Args */
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\PostFactory;
-use FishPig\WordPRess\Model\TaxonomyManager;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Data\Collection\AbstractDb;
-/* End of Constructor Args */
-
 class Term extends AbstractModel implements ViewableInterface
 {
 	/*
@@ -40,28 +29,6 @@ class Term extends AbstractModel implements ViewableInterface
 	 */
 	protected $_eventPrefix = 'wordpress_term';
 	protected $_eventObject = 'term';
-
-	/*
-	 *
-	 */
-	public function __construct(
-	         Context $context, 
-	        Registry $registry, 
-	             Url $url, 
-     OptionManager $optionManager,
-       PostFactory $postFactory,
-     /* Local */
-   TaxonomyManager $taxonomyManager,
-
-	AbstractResource $resource = null, 
-	      AbstractDb $resourceCollection = null, 
-	           array $data = []
-  )
-  {
-		$this->taxonomyManager = $taxonomyManager;
-
-		parent::__construct($context, $registry, $url, $optionManager, $postFactory, $resource, $resourceCollection, $data);		
-	}
 	
 	/*
 	 *

@@ -4,18 +4,15 @@
  */
 namespace FishPig\WordPress\Block;
 
-/* Constructor Args*/
 /* Parent */
+use Magento\Framework\View\Element\Template;
+
+/* Constructor Args*/
 use Magento\Framework\View\Element\Template\Context as Context;
-use FishPig\WordPress\Model\ShortcodeManager;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\Url;
-use Magento\Framework\Registry;
-/* Local */
 use FishPig\WordPress\Model\WidgetManager;
 use FishPig\WordPress\Model\Plugin;
 
-class Sidebar extends AbstractBlock
+class Sidebar extends Template
 {	
 	/*
 	 *
@@ -36,22 +33,15 @@ class Sidebar extends AbstractBlock
    */
   public function __construct(
   	         Context $context,
-  	   OptionManager $optionManager,
-    ShortcodeManager $shortcodeManager,
-            Registry $registry,
-                 Url $url,
-
-       /* Local */
        WidgetManager $widgetManager,
               Plugin $plugin,
-              
   	           array $data = []
   )
   {
 		$this->widgetManager = $widgetManager;
 		$this->plugin        = $plugin;
 		
-    parent::__construct($context, $optionManager, $shortcodeManager, $registry, $url, $data);
+    parent::__construct($context, $data);
   }
 	
 	/**

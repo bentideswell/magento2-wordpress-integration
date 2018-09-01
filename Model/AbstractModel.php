@@ -14,9 +14,7 @@ use Magento\Framework\DataObject\IdentityInterface;
 /* Constructor Args */
 use Magento\Framework\Model\Context;
 use Magento\Framework\Registry;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\PostFactory;
+use FishPig\WordPress\Model\Context as WPContext;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
 /* End of Constructor Args */
@@ -36,7 +34,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	/*
 	 * @var PostFactory
 	 */
-	protected $postFactory;
+	protected $factory;
 
 	/*
 	 *
@@ -44,18 +42,21 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	public function __construct(
 	         Context $context, 
 	        Registry $registry, 
-	             Url $url, 
-     OptionManager $optionManager,
-       PostFactory $postFactory,
+         WPContext $wpContext,
 	AbstractResource $resource = null, 
 	      AbstractDb $resourceCollection = null, 
 	           array $data = []
-  ) {
-		parent::__construct($context, $registry, $resource, $resourceCollection);	
-		
-		$this->url           = $url;
-		$this->optionManager = $optionManager;
-		$this->postFactory   = $postFactory;
+  )
+  {
+		$this->url              = $wpContext->getUrl();
+		$this->optionManager    = $wpContext->getOptionManager();
+		$this->factory          = $wpContext->getFactory();
+		$this->shortcodeManager = $wpContext->getShortcodeManager();
+		$this->dateHelper       = $wpContext->getDateHelper();
+		$this->postTypeManager  = $wpContext->getPostTypeManager();
+		$this->taxonomyManager  = $wpContext->getTaxonomyManager();
+
+		parent::__construct($context, $registry, $resource, $resourceCollection);			
 	}
 
 	/*
@@ -133,9 +134,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 */
 	public function getRobots()
 	{
-		return (int)$this->optionManager->getOption('blog_public') === 0
-			? 'noindex,nofollow'
-			: 'index,follow';
+		return (int)$this->optionManager->getOption('blog_public') === 0 ? 'noindex,nofollow' : 'index,follow';
 	}
 	
 	/*
@@ -147,7 +146,6 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	{
 		return $this->getUrl();
 	}
-	
 
 	/*
 	 *
@@ -175,6 +173,6 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 */
 	public function getPostCollection()
 	{
-		return $this->postFactory->create()->getCollection();
+		return $this->factory->create('Post')->getCollection();
 	}
 }

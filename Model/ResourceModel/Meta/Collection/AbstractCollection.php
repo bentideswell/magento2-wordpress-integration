@@ -9,7 +9,7 @@
 
 namespace FishPig\WordPress\Model\ResourceModel\Meta\Collection;
 
-abstract class AbstractCollection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
+abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection /*\FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection*/
 {
 	/**
 	 * An array of all of the meta fields that have been joined to this collection

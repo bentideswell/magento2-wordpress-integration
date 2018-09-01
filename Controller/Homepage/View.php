@@ -11,6 +11,9 @@ class View extends \FishPig\WordPress\Controller\Action
    */
 	protected function _getEntity()
 	{
+		return \Magento\Framework\App\ObjectManager::getInstance()
+			->create('FishPig\WordPress\Model\Homepage');
+			
 		return $this->getFactory('Homepage')->create();
 	}
 

@@ -1,20 +1,15 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Term;
 
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
-
-	/**
-	 * Name prefix of events that are dispatched by model
-	 *
-	 * @var string
+ /*
+	* Name prefix of events that are dispatched by model
+	*
+	* @var string
 	*/
 	protected $_eventPrefix = 'wordpress_term_collection';
 	
@@ -27,7 +22,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\Term', 'FishPig\WordPress\Model\ResourceModel\Term');
+    $this->_init('FishPig\WordPress\Model\Term', 'FishPig\WordPress\Model\ResourceModel\Term');
 	}
 
 	/**

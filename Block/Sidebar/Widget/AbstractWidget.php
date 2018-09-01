@@ -1,31 +1,22 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
+/* Parent */
 use FishPig\WordPress\Block\AbstractBlock;
 
 abstract class AbstractWidget extends AbstractBlock
 {
-	/**
-	 * Retrieve the default title for the block
-	 *
-	 * @return string
-	 */
-	abstract public function getDefaultTitle();
-	
-	/**
+	/*
 	 * Flag used to determine whether to fix option keys
 	 *
 	 * @var bool
 	 */
 	protected $_fixOptionKeys = false;
     
-	/**
+	/*
 	 * Retrieve the default title
 	 *
 	 * @return string
@@ -38,8 +29,16 @@ abstract class AbstractWidget extends AbstractBlock
 		
 		return false;
 	}
+
 	
-	/**
+	/*
+	 *
+	 */
+	public function getDefaultTitle()
+	{
+		return '';
+	}
+	/*
 	 * Attempt to load the widget information from the WordPress options table
 	 *
 	 * @return Fishpig_Wordpress_Block_Sidebar_Widget_Abstract
@@ -69,7 +68,7 @@ abstract class AbstractWidget extends AbstractBlock
 		return parent::_beforeToHtml();
 	}
 	
-	/**
+	/*
 	 * Set some default values
 	 *
 	 * @param array $defaults
@@ -86,7 +85,7 @@ abstract class AbstractWidget extends AbstractBlock
 		return $this;
 	}
 	
-	/**
+	/*
 	 * Convert data values to something else
 	 *
 	 * @param array $values
@@ -106,7 +105,7 @@ abstract class AbstractWidget extends AbstractBlock
 		return $this;
 	}	
 	
-	/**
+	/*
 	 * Retrieve the current page title
 	 *
 	 * @return string
@@ -120,7 +119,7 @@ abstract class AbstractWidget extends AbstractBlock
 		return $this->_getWpOption('name');
 	}
 
-	/**	
+	/*	
 	 * Retrieve the meta description for the page
 	 *
 	 * @return string
@@ -132,7 +131,7 @@ abstract class AbstractWidget extends AbstractBlock
 		}
 	}
 	
-	/**
+	/*
 	 * Retrieve an ID to be used for the list
 	 *
 	 * @return string

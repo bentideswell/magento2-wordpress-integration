@@ -4,14 +4,15 @@
  */
 namespace FishPig\WordPress\Model\Meta;
 
-abstract class AbstractMeta extends \Magento\Framework\Model\AbstractModel/*\FishPig\WordPress\Model\AbstractModel*/
+/* Parent Class */
+use FishPig\WordPress\Model\AbstractModel;
+
+abstract class AbstractMeta extends AbstractModel
 {
 	/*
-	 * Array of entity's meta values
-	 *
 	 * @var array
 	 */
-	protected $meta = array();
+	protected $meta = [];
 	
 	/*
 	 *
@@ -23,7 +24,7 @@ abstract class AbstractMeta extends \Magento\Framework\Model\AbstractModel/*\Fis
 	 * Determine whether a prefix is required
 	 *
 	 * @return bool
-	**/
+	 */
 	public function doesMetaTableHavePrefix()
 	{
 		return false;

@@ -4,20 +4,29 @@
  */
 namespace FishPig\WordPress\Model;
 
+use FishPig\WordPress\Helper\Autop;
+
 class ShortcodeManager
 {
 	/*
 	 * @var array
 	 */
 	protected $shortcodes = [];
+	
+	/*
+	 * @var Autop
+	 */
+	protected $autop;
 
 	/*
 	 *
 	 *
 	 *
 	 */
-	public function __construct(array $shortcodes = [])	
+	public function __construct(Autop $autop, array $shortcodes = [])	
 	{
+		$this->autop = $autop;
+		
 		foreach($shortcodes as $alias => $shortcode) {
 			if (!method_exists($shortcode, 'isEnabled') || $shortcode->isEnabled()) {
 				$this->shortcodes[$alias] = $shortcode;
@@ -67,5 +76,16 @@ class ShortcodeManager
 		}
 		
 		return $buffer;
+	}
+	
+	/*
+	 *
+	 *
+	 * @param  string $string
+	 * @return string
+	 */
+	public function addParagraphTagsToString($string)
+	{
+		return $this->autop->addParagraphTagsToString($string);
 	}
 }

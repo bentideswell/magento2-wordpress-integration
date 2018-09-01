@@ -37,9 +37,9 @@ abstract class AbstractCollection extends AbstractDbCollection
                 AbstractDb $resource    = null
 	)
 	{
-		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-		
 		$this->optionManager = $optionManager;
+		
+		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
 	}
 
 
@@ -59,22 +59,5 @@ abstract class AbstractCollection extends AbstractDbCollection
 		$this->_orders = array();
 		
 		return $this;
-	}
-
-	/**
-	 * After loading a collection, dispatch the pre-set event
-	 *
-	 * @return $this
-	 */
-	protected function _afterLoad()
-	{
-		if ($this->getFlag('after_load_event_name')) {
-			$this->_eventManager->dispatch($this->getFlag('after_load_event_name'), [
-				'collection' => $this,
-				'wrapper_block' => $this->getFlag('after_load_event_block')
-			]);
-		}
-
-		return parent::_afterLoad();
 	}
 }

@@ -66,36 +66,6 @@ class Config
 		) === 1;
 	}
 
-	/**
-	 * Get the network tables
-	 * This is implemented in Multisite
-	 *
-	 * @return array|false
-	 **/
-	public function getNetworkTables()
-	{
-		return false;
-	}
-
-	/**
-	 * Get the configured widgets
-	 *
-	 * @return array|false
-	 **/
-	public function getWidgets()
-	{
-		if ($config = $this->reader->getValue('sidebar/widgets')) {
-			$widgets = array();
-
-			foreach($config['widget'] as $widget) {
-				$widgets[$widget['@attributes']['id']] = $widget['@attributes']['class'];
-			}
-
-			return $widgets;
-		}
-
-		return false;
-	}
 
 	/**
 	 * Get the blog ID

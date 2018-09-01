@@ -5,77 +5,101 @@
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
 /* Parent Class */
-use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection;
+use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection as AbstractMetaCollection;
 
 /* Constructor Args */
 use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Event\ManagerInterface;
+use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\PostTypeManager;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
-class Collection extends AbstractCollection
+class Collection extends AbstractMetaCollection
 {
-	/**
-	 * Name prefix of events that are dispatched by model
-	 *
+	/*
 	 * @var string
-	*/
+	 */
 	protected $_eventPrefix = 'wordpress_post_collection';
 	
-	/**
-	 * Name of event parameter
-	 *
+	/*
 	 * @var string
-	*/
+	 */
 	protected $_eventObject = 'posts';
 
-	/**
-	 * True if term tables have been joined
-	 * This stops the term tables being joined repeatedly
-	 *
+	/*
 	 * @var array()
 	 */
-	protected $_termTablesJoined = array();
+	protected $_termTablesJoined = [];
 
-	/**
-	 * Store post types to be allowed in collection
-	 *
+	/*
 	 * @var array
 	 */
-	protected $_postTypes = array();
-		
-	/**
+	protected $postTypes = [];
+
+	/*
+	 * @var OptionManager
+	 */
+	protected $optionManager;
+	
+	/*
+	 * @var PostTypeManager
+	 */
+	protected $postTypeManager;
+
+	/*
+	 *
+	 *
+	 */
+	public function __construct(
+		EntityFactoryInterface $entityFactory,
+		       LoggerInterface $logger,
+    FetchStrategyInterface $fetchStrategy,
+          ManagerInterface $eventManager,
+             OptionManager $optionManager,
+           PostTypeManager $postTypeManager,
+          AdapterInterface $connection  = null,
+                AbstractDb $resource    = null
+	)
+	{
+		$this->optionManager   = $optionManager;
+		$this->postTypeManager = $postTypeManager;
+
+		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
+	}
+	
+	/*
 	 * Set the resource
 	 *
 	 * @return void
 	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
+    $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
 		
-		$this->_map['fields']['ID']   = 'main_table.ID';		
+		$this->_map['fields']['ID'] = 'main_table.ID';		
 		$this->_map['fields']['post_type'] = 'main_table.post_type';
 		$this->_map['fields']['post_status'] = 'main_table.post_status';
 		
 		return parent::_construct();
 	}
 	
-    /**
-     * Init collection select
-     *
-     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
-     */
-    protected function _initSelect()
-    {
-	    parent::_initSelect();
+  /**
+   * Init collection select
+   *
+   * @return Mage_Core_Model_Resource_Db_Collection_Abstract
+   */
+  protected function _initSelect()
+  {
+	  parent::_initSelect();
 		
 		$this->setOrder('main_table.menu_order', 'ASC');
 		$this->setOrder('main_table.post_date', 'DESC');
 		
 		return $this;
-    }
+  }
     	
 	/**
 	 * Add the permalink data before loading the collection
@@ -94,7 +118,7 @@ class Collection extends AbstractCollection
 
 		if (!$this->hasPostTypeFilter()) {
 			if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
-				if ($postTypes = $this->_app->getPostTypes()) {
+				if ($postTypes = $this->postTypeManager->getPostTypes()) {
 					$supportedTypes = array();
 	
 					foreach($postTypes as $postType) {
@@ -108,17 +132,17 @@ class Collection extends AbstractCollection
 			}
 		}
 
-		if (count($this->_postTypes) === 1) {
-			if ($this->_postTypes[0] === '*') {
-				$this->_postTypes = array();
+		if (count($this->postTypes) === 1) {
+			if ($this->postTypes[0] === '*') {
+				$this->postTypes = array();
 			}
 		}
 
-		if (count($this->_postTypes) === 0) {
-			$this->addFieldToFilter('post_type', array('in' => array_keys($this->_app->getPostTypes())));
+		if (count($this->postTypes) === 0) {
+			$this->addFieldToFilter('post_type', array('in' => array_keys($this->postTypeManager->getPostTypes())));
 		}
 		else {
-			$this->addFieldToFilter('post_type', array('in' => $this->_postTypes));
+			$this->addFieldToFilter('post_type', array('in' => $this->postTypes));
 		}
 
 		return $this;		
@@ -283,7 +307,7 @@ class Collection extends AbstractCollection
 			$postTypes = explode(',', $postTypes);
 		}
 
-		$this->_postTypes = array_values(array_merge($this->_postTypes, (array)$postTypes));
+		$this->postTypes = array_values(array_merge($this->postTypes, (array)$postTypes));
 		
 		return $this;
 	}
@@ -295,7 +319,7 @@ class Collection extends AbstractCollection
 	 */
 	public function hasPostTypeFilter()
 	{
-		return count($this->_postTypes) > 0;
+		return count($this->postTypes) > 0;
 	}
 
 	/**

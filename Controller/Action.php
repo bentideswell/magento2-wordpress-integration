@@ -57,7 +57,7 @@ abstract class Action extends ParentAction
     parent::__construct($context);
   }	
 
-  /**
+  /*
    * Load the page defined in view/frontend/layout/samplenewpage_index_index.xml
    *
    * @return \Magento\Framework\View\Result\Page
@@ -88,9 +88,9 @@ abstract class Action extends ParentAction
   	}
   }
 
-	/**
+	/*
 	 *
-	**/
+	 */
 	protected function _getForward()
 	{
 		return false;
@@ -216,14 +216,14 @@ abstract class Action extends ParentAction
     return false;
   }
     
-	/**
+	/*
 	 *
-	**/
-    protected function _getForwardForPreview()
-    {
-	    if (!$this->_canPreview()) {
-		    return false;
-	    }
+	 */
+  protected function _getForwardForPreview()
+  {
+    if (!$this->_canPreview()) {
+	    return false;
+    }
 
 		if ($this->getRequest()->getParam('preview') !== 'true') {
 			return false;
@@ -245,17 +245,17 @@ abstract class Action extends ParentAction
 		}
 
 		return false;
-    }
+  }
     
-    /**
-	  *
-	  * @return bool
-	  *
-	 **/
-    public function checkForAmp()
-    {
-	    return false;
-    }
+  /*
+	 *
+	 * @return bool
+	 *
+	 */
+  public function checkForAmp()
+  {
+	  return false;
+  }
   
   /*
    *

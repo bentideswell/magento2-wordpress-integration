@@ -95,6 +95,16 @@ class User extends AbstractMeta implements ViewableInterface
 		return $this->_getData('url');
 	}
 
+	public function getCanonicalUrl()
+	{
+		return $this->getUrl();
+	}
+
+	public function getPageTitle()
+	{
+		return $this->getName();
+	}
+
 	/*
 	 * Load the WordPress user model associated with the current logged in customer
 	 *
@@ -113,7 +123,8 @@ class User extends AbstractMeta implements ViewableInterface
 	 */
 	public function getTablePrefix()
 	{
-		return $this->_app->getResourceConnection()->getTablePrefix();
+		return $this->getResource()->getTablePrefix();
+		return $this->getResourceConnection()->getTablePrefix();
 	}
 	
 	/*

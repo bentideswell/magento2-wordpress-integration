@@ -9,10 +9,7 @@ use Magento\Framework\View\Element\Template;
 
 /* Constructor */
 use Magento\Framework\View\Element\Template\Context as Context;
-use FishPig\WordPress\Model\ShortcodeManager;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\Url;
-use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Context as WPContext;
 
 abstract class AbstractBlock extends Template
 {
@@ -43,22 +40,12 @@ abstract class AbstractBlock extends Template
    * @param App
    * @param array $data
    */
-  public function __construct(
-	      /* Parent */
-  	         Context $context,
-  	     /* Local */
-  	   OptionManager $optionManager,
-    ShortcodeManager $shortcodeManager,
-            Registry $registry,
-                 Url $url,
-			/* Optional */
-  	           array $data = []
-  )
+  public function __construct(Context $context, WPContext $wpContext, array $data = [])
   {
-		$this->optionManager    = $optionManager; 
-		$this->shortcodeManager = $shortcodeManager;
-		$this->registry         = $registry;
-		$this->url              = $url;
+		$this->optionManager    = $wpContext->getOptionManager(); 
+		$this->shortcodeManager = $wpContext->getShortcodeManager();
+		$this->registry         = $wpContext->getRegistry();
+		$this->url              = $wpContext->getUrl();
 
     parent::__construct($context, $data);
   }
