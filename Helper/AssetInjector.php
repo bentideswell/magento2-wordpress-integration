@@ -223,7 +223,7 @@ class AssetInjector
 
 	
 			// Remove final template variable placeholder
-			$requireJsTemplate = str_replace(self::TMPL_TAG, 'jQuery(document).trigger(\'fishpig_ready\');', $requireJsTemplate);
+			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
 
 			// Start of paths template
 			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
@@ -240,7 +240,7 @@ class AssetInjector
 			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
 			
 			// Final JS including wrapping script tag
-			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
+			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
 			
 			// Add the final requireJS code to the $content array
 			$content .= $requireJsFinal;
@@ -250,6 +250,11 @@ class AssetInjector
 		$bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
 		
 		return $bodyHtml;
+	}
+	
+	protected function getFPJS()
+	{
+		return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i]();}this.fs=[];}})();';
 	}
 	
 	/**
@@ -266,8 +271,8 @@ class AssetInjector
 		}
 
 		$requireJsAlias = str_replace('.', '_', basename(basename($alias, '.js'), '.min'));
-		
-		if ($requireJsAlias) {
+
+		if ($requireJsAlias && strlen($requireJsAlias) > 5) {
 			return $requireJsAlias;
 		}					
 
@@ -331,8 +336,8 @@ class AssetInjector
 	 */
 	protected function _fixDomReady($scriptContent)
 	{	
-		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);			
-		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'jQuery(document).on(\'fishpig_ready\', {}, function(', $scriptContent);
+		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'FPJS.on(\'fishpig_ready\', ', $scriptContent);			
+		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
 
 		return $scriptContent;
 	}
