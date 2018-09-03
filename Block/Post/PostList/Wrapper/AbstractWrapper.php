@@ -5,19 +5,10 @@
 namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 
 /* Parent Class */
-#use FishPig\WordPress\Block\AbstractBlock;
-use Magento\Framework\View\Element\Template;
+use FishPig\WordPress\Block\AbstractBlock;
+#use Magento\Framework\View\Element\Template;
 
-/* Constructor */
-use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Model\ShortcodeManager;
-use FishPig\WordPress\Model\OptionManager;
-use Magento\Framework\Registry;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\PostTypeManager;
-use FishPig\WordPress\Model\PostFactory;
-
-abstract class AbstractWrapper extends Template
+abstract class AbstractWrapper extends AbstractBlock
 {
 	/*
 	 *
@@ -83,7 +74,7 @@ abstract class AbstractWrapper extends Template
 	 */
 	protected function _getPostCollection()
 	{
-		return $this->postFactory->create()->getCollection();
+		return $this->factory->create('Model\ResourceModel\Post\Collection');
 	}
 
 	/**

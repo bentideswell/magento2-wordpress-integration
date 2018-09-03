@@ -1,20 +1,27 @@
 <?php
-/**
- * @
-**/
+/*
+ *
+ */
 namespace FishPig\WordPress\Controller\Post;
 
-class View extends \FishPig\WordPress\Controller\Action
+/* Parent Class */
+use FishPig\WordPress\Controller\Action;
+
+/* Misc */
+use Magento\Framework\Controller\ResultFactory;
+
+class View extends Action
 {
-	/**
+	/*
 	 * Load and return a Post model
 	 *
 	 * @return \FishPig\WordPress\Model\Post|false 
-	**/
+	 */
   protected function _getEntity()
   {
-    $post = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\PostFactory')->create()
-    	->load((int)$this->getRequest()->getParam('id'));
+    $post = $this->factory->create('Post')->load(
+    	(int)$this->getRequest()->getParam('id')
+    );
 
     if (!$post->getId()) {
       return false;
@@ -37,16 +44,16 @@ class View extends \FishPig\WordPress\Controller\Action
 	protected function _getForward()
 	{
   	if ($entity = $this->_getEntity()) {
-  		if ((int)$entity->getId() === (int)$this->getApp()->getBlogPageId()) {
+  		if ($entity->isBlogListingPage()) {
   			return $this->resultFactory
-  				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+  				->create(ResultFactory::TYPE_FORWARD)
   				->setModule('wordpress')
   				->setController('homepage')
   				->setParams(array('no_forward' => 1))
   				->forward('view');
   		}
   		
-  		if ($entity->getPostStatus() === 'private' && !$this->app->getConfig()->isLoggedIn()) {
+  		if ($entity->getPostStatus() === 'private' && !$this->wpContext->getCustomerSession()->isLoggedIn()) {
     		return $this->_getNoRouteForward();
   		}
 		}
@@ -82,7 +89,7 @@ class View extends \FishPig\WordPress\Controller\Action
    */
   protected function _getBreadcrumbs()
   {
- 		if ((int)$this->_getEntity()->getId() === (int)$this->getApp()->getHomepagePageId()) {
+ 		if ($this->_getEntity()->isHomepage()) {
 	 		return [];
 	 	}
 	 	
@@ -127,7 +134,7 @@ class View extends \FishPig\WordPress\Controller\Action
     
     $layoutHandles = ['wordpress_post_view_default'];
     
-		if ((int)$post->getId() === (int)$this->getApp()->getHomepagePageId()) {
+		if ($post->isHomepage()) {
 			$layoutHandles[] = 'wordpress_front_page';
 		}
 		

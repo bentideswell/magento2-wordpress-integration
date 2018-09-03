@@ -1,16 +1,15 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\View\Comment;
 
-class Wrapper extends \FishPig\WordPress\Block\Post\View\Comment\AbstractComment
+/* Parent Class */
+use FishPig\WordPress\Block\Post\View\Comment\AbstractComment;
+
+class Wrapper extends AbstractComment
 {
-	/**
+	/*
 	 * Setup the pager and comments form blocks
 	 *
 	 * @return $this
@@ -36,7 +35,7 @@ class Wrapper extends \FishPig\WordPress\Block\Post\View\Comment\AbstractComment
 		parent::_beforeToHtml();
 	}
 	
-	/**
+	/*
 	 * Get the comments HTML
 	 *
 	 * @return string

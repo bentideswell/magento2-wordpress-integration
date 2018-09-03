@@ -28,7 +28,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	public function getArchive()
 	{
 		if (!$this->hasArchive()) {
-			$this->setArchive($this->_registry->registry('wordpress_archive'));
+			$this->setArchive($this->registry->registry('wordpress_archive'));
 		}
 		
 		return $this->_getData('archive');
@@ -69,6 +69,6 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	public function translateDate($date, $splitter = ' ')
 	{
-		return $this->_viewHelper->translateDate($date, $splitter);
+		return $this->wpContext->getDateHelper()->translateDate($date, $splitter);
 	}
 }

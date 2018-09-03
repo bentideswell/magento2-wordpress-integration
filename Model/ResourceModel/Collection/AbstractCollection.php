@@ -12,17 +12,27 @@ use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Event\ManagerInterface;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\Context as WPContext;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 abstract class AbstractCollection extends AbstractDbCollection
 {
 	/*
+	 * @var WPContext
+	 */
+	protected $wpContext;
+
+	/*
 	 * @var OptionManager
 	 */
 	protected $optionManager;
 	
+	/*
+	 * @vr
+	 */
+	protected $postTypeManager;
+
 	/*
 	 *
 	 *
@@ -32,12 +42,14 @@ abstract class AbstractCollection extends AbstractDbCollection
 		       LoggerInterface $logger,
     FetchStrategyInterface $fetchStrategy,
           ManagerInterface $eventManager,
-             OptionManager $optionManager,
+						     WPContext $wpContext,
           AdapterInterface $connection  = null,
                 AbstractDb $resource    = null
 	)
 	{
-		$this->optionManager = $optionManager;
+		$this->wpContext       = $wpContext;
+		$this->optionManager   = $wpContext->getOptionManager();
+		$this->postTypeManager = $wpContext->getPostTypeManager();
 		
 		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
 	}

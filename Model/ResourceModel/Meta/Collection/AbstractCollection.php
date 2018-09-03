@@ -1,22 +1,20 @@
 <?php
-/**
- * @category		Fishpig
- * @package		Fishpig_Wordpress
- * @license		http://fishpig.co.uk/license.txt
- * @author		Ben Tideswell <help@fishpig.co.uk>
- * @info			http://fishpig.co.uk/wordpress-integration.html
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Meta\Collection;
 
-abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection /*\FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection*/
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection as ParentClass;
+
+abstract class AbstractCollection extends ParentClass
 {
 	/**
 	 * An array of all of the meta fields that have been joined to this collection
 	 *
 	 * @var array
 	 */
-	protected $_metaFieldsJoined = array();
+	protected $metaFieldsJoined = [];
 	
 	/**
 	 * Add a meta field to the select statement columns section
@@ -74,7 +72,7 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 	{
 		$model = $this->getNewEmptyItem();
 
-		if (!isset($this->_metaFieldsJoined[$field])) {
+		if (!isset($this->metaFieldsJoined[$field])) {
 			$alias = $this->_getMetaFieldAlias($field);
 
 			$meta = new \Magento\Framework\DataObject(array(
@@ -85,7 +83,7 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 			$this->_eventManager->dispatch($model->getEventPrefix() . '_join_meta_field', ['collection' => $this, 'meta' => $meta]);
 			
 			if ($meta->getCanSkipJoin()) {
-				$this->_metaFieldsJoined[$field] = $meta->getAlias();
+				$this->metaFieldsJoined[$field] = $meta->getAlias();
 			}
 			else {
 				$condition = "`{$alias}`.`{$model->getMetaTableObjectField()}`=`main_table`.`{$model->getResource()->getIdFieldName()}` AND "
@@ -93,11 +91,11 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 					
 				$this->getSelect()->joinLeft(array($alias => $model->getMetaTable()), $condition, '');
 
-				$this->_metaFieldsJoined[$field] = $alias . '.meta_value';;
+				$this->metaFieldsJoined[$field] = $alias . '.meta_value';;
 			}
 		}
 		
-		return $this->_metaFieldsJoined[$field];
+		return $this->metaFieldsJoined[$field];
 	}
 	
 	/**

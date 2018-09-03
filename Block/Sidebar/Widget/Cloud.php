@@ -23,7 +23,7 @@ class Cloud extends AbstractWidget
 		
 		$this->setTags(false);
 		
-		$tags = $this->_factory->getFactory('Term')->create()->getCollection()
+		$tags = $this->factory->create('Model\ResourceModel\Term\Collection')
 			->addCloudFilter($this->getTaxonomy())
 			->setOrderByName()
 			->load();

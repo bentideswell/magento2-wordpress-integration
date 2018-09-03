@@ -24,6 +24,11 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	/*
 	 *
 	 */
+	protected $wpContext;
+
+	/*
+	 *
+	 */
 	protected $url;
 	
 	/*
@@ -35,6 +40,26 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 * @var PostFactory
 	 */
 	protected $factory;
+	
+	/*
+	 * @var ShortcodeManager
+	 */
+	protected $shortcodeManager;
+	
+	/*
+	 * @var DateHelper
+	 */
+	protected $dateHelper;
+	
+	/*
+	 * @var PostTypeManager	 
+	 */
+	protected $postTypeManager;
+	
+	/*
+	 * @var TaxonomyManager
+	 */
+	protected $taxonomyManager;
 
 	/*
 	 *
@@ -48,11 +73,11 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	           array $data = []
   )
   {
+	  $this->wpContext        = $wpContext;
 		$this->url              = $wpContext->getUrl();
 		$this->optionManager    = $wpContext->getOptionManager();
 		$this->factory          = $wpContext->getFactory();
 		$this->shortcodeManager = $wpContext->getShortcodeManager();
-		$this->dateHelper       = $wpContext->getDateHelper();
 		$this->postTypeManager  = $wpContext->getPostTypeManager();
 		$this->taxonomyManager  = $wpContext->getTaxonomyManager();
 

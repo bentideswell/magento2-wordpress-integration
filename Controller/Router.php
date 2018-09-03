@@ -57,7 +57,8 @@ class Router implements RouterInterface
                 App $app,
                 Url $urlBuilder,
         PostFactory $postResourceFactory,
-    TaxonomyManager $taxonomyManager)
+    TaxonomyManager $taxonomyManager
+  )
   {
     $this->actionFactory = $actionFactory;
     $this->app = $app;
@@ -71,51 +72,46 @@ class Router implements RouterInterface
    */
 	public function match(RequestInterface $request)
 	{	
-		try {
-			if (!$this->app->canRun()) {
-				return false;
-			}
-
-			$fullRequestUri = $this->getPathInfo($request);
-			$blogRoute = $this->url->getBlogRoute();
-
-			if ($blogRoute && ($blogRoute !== $fullRequestUri && strpos($fullRequestUri, $blogRoute . '/') !== 0)) {
-				return false;
-			}
-
-			if (!($requestUri = $this->getRouterRequestUri($request))) {
-				$this->addRouteCallback(array($this, '_getHomepageRoutes'));	
-			}
-
-			$this->addRouteCallback(array($this, '_getSimpleRoutes'));
-			$this->addRouteCallback(array($this, '_getPostRoutes'));
-			$this->addRouteCallback(array($this, '_getTaxonomyRoutes'));
-			
-			$this->addExtraRoutesToQueue();
-			
-			if (($route = $this->_matchRoute($requestUri)) !== false) {
-				$request->setModuleName($route['path']['module'])
-					->setControllerName($route['path']['controller'])
-					->setActionName($route['path']['action'])
-					->setAlias(
-						\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS,
-						$this->getUrlAlias($request)
-					);
-				
-				if (count($route['params']) > 0) {
-					foreach($route['params'] as $key => $value) {
-						$request->setParam($key, $value);
-					}
-				}
-
-				return $this->actionFactory->create('Magento\Framework\App\Action\Forward');
-			}
+		if (!$this->app->canRun()) {
+			return false;
 		}
-		catch (\Exception $e) {
-			throw $e;
+
+		$fullRequestUri = $this->getPathInfo($request);
+		$blogRoute      = $this->url->getBlogRoute();
+
+		if ($blogRoute && ($blogRoute !== $fullRequestUri && strpos($fullRequestUri, $blogRoute . '/') !== 0)) {
+			return false;
 		}
+
+		if (!($requestUri = $this->getRouterRequestUri($request))) {
+			$this->addRouteCallback(array($this, '_getHomepageRoutes'));	
+		}
+
+		$this->addRouteCallback(array($this, '_getSimpleRoutes'));
+		$this->addRouteCallback(array($this, '_getPostRoutes'));
+		$this->addRouteCallback(array($this, '_getTaxonomyRoutes'));
 		
-		return false;
+		$this->addExtraRoutesToQueue();
+		
+		if (($route = $this->_matchRoute($requestUri)) === false) {
+			return false;
+		}
+
+		$request->setModuleName($route['path']['module'])
+			->setControllerName($route['path']['controller'])
+			->setActionName($route['path']['action'])
+			->setAlias(
+				\Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS,
+				$this->getUrlAlias($request)
+			);
+		
+		if (count($route['params']) > 0) {
+			foreach($route['params'] as $key => $value) {
+				$request->setParam($key, $value);
+			}
+		}
+
+		return $this->actionFactory->create('Magento\Framework\App\Action\Forward');
 	}
 	
 	/**

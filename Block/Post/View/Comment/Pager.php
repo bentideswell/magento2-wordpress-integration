@@ -1,14 +1,13 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\View\Comment;
 
-class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager 
+/* Parent Class */
+use FishPig\WordPress\Block\Post\PostList\Pager as ParentClass;
+
+class Pager extends ParentClass
 {
 	/**
 	 * Gets the comments per page limit
@@ -17,7 +16,7 @@ class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager
 	 */
 	public function getLimit()
 	{
-		$this->_limit = $this->getRequest()->getParam('limit', $this->getApp()->getConfig()->getOption('comments_per_page', 50));
+		$this->_limit = $this->getRequest()->getParam('limit', $this->optionManager->getOption('comments_per_page', 50));
 
 		return $this->_limit;
 	}

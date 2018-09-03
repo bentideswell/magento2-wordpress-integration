@@ -5,20 +5,10 @@
 namespace FishPig\WordPress\Model;
 
 /* Parent Class */
-use FishPig\WordPress\Model\Meta\AbstractModel;
+use FishPig\WordPress\Model\Meta\AbstractMeta;
 
 /* Interface */
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-/* Constructor Args */
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Helper\Date as DateHelper;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Data\Collection\AbstractDb;
-/* End of Constructor Args */
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Archive extends AbstractModel implements ViewableInterface
 {
@@ -29,28 +19,8 @@ class Archive extends AbstractModel implements ViewableInterface
 
 	/*
 	 * @const string
-	*/
-	const CACHE_TAG = 'wordpress_archive';
-
-	/*
-	 *
 	 */
-	public function __construct(
-	         Context $context, 
-	        Registry $registry, 
-	             Url $url, 
-     OptionManager $optionManager,
-       PostFactory $postFactory,
-        DateHelper $dateHelper, 
-	AbstractResource $resource = null, 
-	      AbstractDb $resourceCollection = null, 
-	           array $data = []
-  )
-  {
-		$this->dateHelper = $dateHelper;
-	
-		parent::__construct($context, $registry, $url, $optionManager, $postFactory, $resource, $resourceCollection);	
-	}
+	const CACHE_TAG = 'wordpress_archive';
 
 	/*
 	 *
@@ -65,7 +35,7 @@ class Archive extends AbstractModel implements ViewableInterface
 	 */	
 	public function getName()
 	{
-		return $this->dateHelper->translateDate($this->_getData('name'));
+		return $this->wpContext->getDateHelper()->translateDate($this->_getData('name'));
 	}
 	
 	/*

@@ -11,7 +11,7 @@ class Archives extends AbstractWidget
 	 *
 	 * @var null|Varien_Data_Collection
 	 */
-	protected $_archiveCollection = null;
+	protected $archiveCollection;
 
 	/*
 	 * Returns a collection of valid archive dates
@@ -20,18 +20,18 @@ class Archives extends AbstractWidget
 	 */
 	public function getArchives()
 	{
-		if (is_null($this->_archiveCollection)) {
-			$dates = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Archive')->getDatesForWidget();
+		if (is_null($this->archiveCollection)) {
+			$dates = $this->factory->create('Model\ResourceModel\Archive')->getDatesForWidget();
 			$archiveCollection = array();
 			
 			foreach($dates as $date) {
-				$archiveCollection[] = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ArchiveFactory')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
+				$archiveCollection[] = $this->factory->create('Model\ArchiveFactory')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
 			}
 
-			$this->_archiveCollection = $archiveCollection;
+			$this->archiveCollection = $archiveCollection;
 		}
 		
-		return $this->_archiveCollection;
+		return $this->archiveCollection;
 	}
 	
 	/*

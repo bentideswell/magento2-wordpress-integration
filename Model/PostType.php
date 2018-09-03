@@ -46,13 +46,20 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 	 * @param  array        $data
 	 * @return void
 	 */
-	public function __construct(ResourceConnection $resourceConnection, WordPressURL $url, RouterHelper $routerHelper, array $data = [])
+	public function __construct(
+		ResourceConnection $resourceConnection, 
+		      WordPressURL $url, 
+		      RouterHelper $routerHelper, 
+		   TaxonomyManager $taxonomyManager,
+		             array $data = []
+	)
 	{
 		parent::__construct($data);
 
 		$this->resourceConnection = $resourceConnection;
-		$this->url = $url;
-		$this->routerHelper = $routerHelper;
+		$this->url                = $url;
+		$this->routerHelper       = $routerHelper;
+		$this->taxonomyManager    = $taxonomyManager;
 	}
    
   /*
@@ -257,12 +264,12 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 		
 		foreach($prioritise as $type) {
 			if ($this->isTaxonomySupported($type)) {
-				return $this->_app->getTaxonomy($type);
+				return $this->taxonomyManager->getTaxonomy($type);
 			}
 		}
 		
 		if ($taxonomies = $this->getTaxonomies()) {
-			return $this->_app->getTaxonomy(array_shift($taxonomies));
+			return $this->taxonomyManager->getTaxonomy(array_shift($taxonomies));
 		}
 		
 		return false;
@@ -395,7 +402,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 				}
 			}
 			else if (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
-				if ($taxonomy = $this->_app->getTaxonomy(substr($token, 1, -1))) {
+				if ($taxonomy = $this->taxonomyManager->getTaxonomy(substr($token, 1, -1))) {
 					if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
 						$objects[$taxonomy->getTaxonomyType()] = $term;
 					}

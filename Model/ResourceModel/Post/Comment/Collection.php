@@ -52,7 +52,7 @@ class Collection extends AbstractCollection
 	public function addOrderByDate($dir = null)
 	{
 		if (is_null($dir)) {
-			$dir = $this->_app->getConfig()->getOption('comment_order');
+			$dir = $this->optionManager->getOption('comment_order');
 			$dir = in_array($dir, array('asc', 'desc')) ? $dir : 'asc';
 		}
 		
@@ -79,9 +79,7 @@ class Collection extends AbstractCollection
 	{
 		$this->post = $post;
 		$this->addPostIdFilter($this->post->getId());
-		
-		echo __LINE__;exit;
-		
+
 		return $this;
 	}
 	
@@ -136,8 +134,6 @@ class Collection extends AbstractCollection
 	protected function _afterLoad()
 	{
 		if ($this->post) {
-			echo __METHOD__ . '<br/><br/>';
-			echo count($this->getItems());exit;
 			foreach($this->getItems() as $comment) {
 				$comment->setPost($this->post);
 			}

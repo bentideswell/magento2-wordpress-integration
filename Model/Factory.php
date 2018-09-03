@@ -19,36 +19,54 @@ class Factory
 	 */
 	public function create($type, array $args = [])
 	{
-		if ($className = $this->getClassnameFromType($type)) {
-			return $this->getObjectManager()->create($type, $args);
+		if ($className = $this->getClassNameFromType($type)) {
+			return $this->getObjectManager()->create($className, $args);
 		}
 		
 		return false;
 	}
 	
+	/*
+	 *
+	 *
+	 * @param  string $type
+	 * @return object|false
+	 */
 	public function get($type)
 	{
-		if ($className = $this->getClassnameFromType($type)) {
-			return $this->getObjectManager()->get($type);
+		if ($className = $this->getClassNameFromType($type)) {
+			return $this->getObjectManager()->get($className);
 		}
 		
 		return false;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @param  string $type
+	 * @return object|false
+	 */
 	protected function getObjectManager()
 	{
 		return \Magento\Framework\App\ObjectManager::getInstance();
 	}
-	
-	protected function getClassnameFromType($type)
+
+	/*
+	 *
+	 *
+	 * @param  string $type
+	 * @return string
+	 */
+	protected function getClassNameFromType($type)
 	{
-		$type = trim($type, '\\');
+		$type   = trim($type, '\\');
 		$prefix = __NAMESPACE__ . '\\';
 		
 		if (strpos($type, '\\') > 0) {
 			$prefix = 'FishPig\WordPress\\';
 		}
-		
+
 		return $prefix . $type;
 	}
 }

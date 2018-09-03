@@ -1,13 +1,13 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
-
 namespace FishPig\WordPress\Model;
 
+/* Parent Class */
+use FishPig\WordPress\Model\AbstractModel;
+
+/* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Homepage extends AbstractModel implements ViewableInterface
@@ -25,7 +25,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	/*
 	 * @var
 	 */    
-  protected $_blogPage = null;
+  protected $blogPage = null;
     
 	/*
 	 *
@@ -37,8 +37,8 @@ class Homepage extends AbstractModel implements ViewableInterface
 		if ($blogPage = $this->getBlogPage()) {
 			return $blogPage->getName();
 		}
-		
-		return $this->_viewHelper->getBlogName();
+
+		return $this->getBlogName();
 	}
 
 	/*
@@ -62,7 +62,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getContent()
 	{
-		return $this->_viewHelper->getBlogDescription();
+		return $this->getBlogDescription();
 	}
 	
 	/*
@@ -72,24 +72,24 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getBlogPage()
 	{
-		if ($this->_blogPage !== null) {
-			return $this->_blogPage;
+		if ($this->blogPage !== null) {
+			return $this->blogPage;
 			
 		}
 		
-		$this->_blogPage = false;
+		$this->blogPage = false;
 
-		if ((int)$this->_viewHelper->getBlogPageId() > 0) {
+		if ((int)$this->getBlogPageId() > 0) {
 			$blogPage = $this->_factory->getFactory('Post')->create()->load(
-				$this->_viewHelper->getBlogPageId()
+				$this->getBlogPageId()
 			);
 			
 			if ($blogPage->getId()) {
-				$this->_blogPage = $blogPage;
+				$this->blogPage = $blogPage;
 			}
 		}
 		
-		return $this->_blogPage;
+		return $this->blogPage;
 	}
 	
 	/*

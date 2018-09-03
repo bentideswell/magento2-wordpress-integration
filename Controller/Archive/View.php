@@ -1,10 +1,13 @@
 <?php
-/**
+/*
  *
-**/
+ */
 namespace FishPig\WordPress\Controller\Archive;
 
-class View extends \FishPig\WordPress\Controller\Action
+/* Parent Class */
+use FishPig\WordPress\Controller\Action;
+
+class View extends Action
 {    
 	/*
 	 * Load the Archive model
@@ -13,7 +16,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	 */
 	protected function _getEntity()
 	{
-		return $this->getFactory('Archive')->create()->load(
+		return $this->factory->create('Archive')->load(
 			trim($this->_request->getParam('year') . '/' . $this->_request->getParam('month') . '/' . $this->_request->getParam('day'), '/')
 		);
 	}

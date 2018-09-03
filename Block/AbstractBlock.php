@@ -14,6 +14,11 @@ use FishPig\WordPress\Model\Context as WPContext;
 abstract class AbstractBlock extends Template
 {
 	/*
+	 *
+	 */
+	protected $wpContext;
+
+	/*
 	 * @var OptionManager
 	 */
 	protected $optionManager;
@@ -33,6 +38,11 @@ abstract class AbstractBlock extends Template
 	 */
 	protected $url;
 
+	/*
+	 * @var Factory
+	 */
+	protected $factory;
+	
   /*
    * Constructor
    *
@@ -42,10 +52,12 @@ abstract class AbstractBlock extends Template
    */
   public function __construct(Context $context, WPContext $wpContext, array $data = [])
   {
+	  $this->wpContext        = $wpContext;
 		$this->optionManager    = $wpContext->getOptionManager(); 
 		$this->shortcodeManager = $wpContext->getShortcodeManager();
 		$this->registry         = $wpContext->getRegistry();
 		$this->url              = $wpContext->getUrl();
+		$this->factory          = $wpContext->getFactory();
 
     parent::__construct($context, $data);
   }

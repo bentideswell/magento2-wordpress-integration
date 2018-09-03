@@ -521,7 +521,7 @@ class Post extends AbstractMeta implements ViewableInterface
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->dateHelper->formatDate($date, $format);
+		return $this->wpContext->getDateHelper()->formatDate($date, $format);
 	}
 	
 	/*
@@ -536,7 +536,7 @@ class Post extends AbstractMeta implements ViewableInterface
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->dateHelper->formatDate($date, $format);
+		return $this->wpContext->getDateHelper()->formatDate($date, $format);
 	}
 	
 	/*
@@ -551,7 +551,7 @@ class Post extends AbstractMeta implements ViewableInterface
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->dateHelper->formatDate($date, $format);
+		return $this->wpContext->getDateHelper()->formatDate($date, $format);
 	}
 
 	/*

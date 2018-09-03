@@ -6,6 +6,7 @@ namespace FishPig\WordPress\Model;
 
 /* Constructor Args */
 use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\Network;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Url
@@ -16,6 +17,11 @@ class Url
 	protected $optionManger;
 	
 	/*
+	 * @var Network
+	 */
+	protected $network;
+
+	/*
 	 * @var 
 	 */
 	protected $storeManager = null;
@@ -23,10 +29,11 @@ class Url
 	/*
 	 * Constructor
 	 */
-	public function __construct(OptionManager $optionManager, StoreManagerInterface $storeManager)
+	public function __construct(OptionManager $optionManager, Network $network, StoreManagerInterface $storeManager)
 	{
 		$this->optionManager = $optionManager;
-		$this->storeManager = $storeManager;
+		$this->network       = $network;
+		$this->storeManager  = $storeManager;
 	}
 
 	/*
@@ -118,8 +125,8 @@ class Url
 			
 
 			if (!$url) {
-				if ($this->_config->getBlogId() !== 1) {
-					$url = $this->getBaseFileUploadUrl() . 'sites/' . $this->_config->getBlogId() . '/';
+				if ($this->network->getBlogId() !== 1) {
+					$url = $this->getBaseFileUploadUrl() . 'sites/' . $this->network->getBlogId() . '/';
 				}
 				else {
 					$url = $this->getBaseFileUploadUrl();
@@ -138,5 +145,14 @@ class Url
 	public function getBaseFileUploadUrl()
 	{
 		return $this->getSiteUrl() . '/wp-content/uploads/';
+	}
+	
+	/*
+	 *
+	 * @return bool
+	 */
+	public function isRoot()
+	{
+		return false;
 	}
 }

@@ -80,7 +80,7 @@ class Date extends AbstractHelper
 		$dates = explode($splitter, $date);
 		
 		foreach($dates as $it => $part) {
-			$dates[$it] = $this->__($part);
+			$dates[$it] = __($part);
 		}
 		
 		return implode($splitter, $dates);

@@ -1,0 +1,3 @@
+Author page no meta (http://m2.fishpig.co.uk/blog/author/fishpig/)
+Check autop
+grep for object manager

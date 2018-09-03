@@ -13,7 +13,7 @@ use FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
 
 /* Constructor Args */
 use Magento\Framework\Model\ResourceModel\Db\Context;
-use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\Context as WPContext;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager;
 
@@ -25,7 +25,7 @@ class Post extends AbstractMeta
 	protected $postTypeManager;
 
 	/*
-	 *
+	 * @var 
 	 */
 	protected $taxonomyManager;
 
@@ -35,16 +35,15 @@ class Post extends AbstractMeta
 	 * @return
 	 */
 	public function __construct(
-	             Context $context,
-	  ResourceConnection $resourceConnection, 
-	     PostTypeManager $postTypeManager,
-	     TaxonomyManager $taxonomyManager,
-	                     $connectionName = null)
+       Context $context,
+     WPContext $wpContext,
+               $connectionName = null
+  )
 	{
-		parent::__construct($context, $resourceConnection, $connectionName);
-		
-		$this->postTypeManager = $postTypeManager;
-		$this->taxonomyManager = $taxonomyManager;
+		$this->postTypeManager = $wpContext->getPostTypeManager();
+		$this->taxonomyManager = $wpContext->getTaxonomyManager();
+
+		parent::__construct($context, $wpContext, $connectionName);		
 	}
 
 
@@ -402,7 +401,6 @@ class Post extends AbstractMeta
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
-		echo __LINE__;exit;
 		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')
 			->create()
 				->setPost($post)

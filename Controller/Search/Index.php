@@ -4,11 +4,17 @@
  */
 namespace FishPig\WordPress\Controller\Search;
 
-use \Magento\Framework\App\Action\Context;
-use \Magento\Framework\Controller\ResultFactory;
-use \FishPig\WordPress\Model\SearchFactory;
+/* Parent Class */
+use Magento\Framework\App\Action\Action;
 
-class Index extends \Magento\Framework\App\Action\Action
+/* Constructor Args */
+use Magento\Framework\App\Action\Context;
+use FishPig\WordPress\Model\SearchFactory;
+
+/* Misc */
+use Magento\Framework\Controller\ResultFactory;
+
+class Index extends Action
 {
 	/**
 	 * @var

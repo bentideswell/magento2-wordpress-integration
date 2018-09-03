@@ -38,37 +38,6 @@ class Collection extends AbstractMetaCollection
 	 * @var array
 	 */
 	protected $postTypes = [];
-
-	/*
-	 * @var OptionManager
-	 */
-	protected $optionManager;
-	
-	/*
-	 * @var PostTypeManager
-	 */
-	protected $postTypeManager;
-
-	/*
-	 *
-	 *
-	 */
-	public function __construct(
-		EntityFactoryInterface $entityFactory,
-		       LoggerInterface $logger,
-    FetchStrategyInterface $fetchStrategy,
-          ManagerInterface $eventManager,
-             OptionManager $optionManager,
-           PostTypeManager $postTypeManager,
-          AdapterInterface $connection  = null,
-                AbstractDb $resource    = null
-	)
-	{
-		$this->optionManager   = $optionManager;
-		$this->postTypeManager = $postTypeManager;
-
-		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-	}
 	
 	/*
 	 * Set the resource
@@ -340,7 +309,7 @@ class Collection extends AbstractMetaCollection
 	{
 		$fields = ['publish', 'protected'];
 
-		if(\Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Customer\Model\Session')->isLoggedIn()) {
+		if ($this->wpContext->getCustomerSession()->isLoggedIn()) {
       $fields[] = 'private';
     }
 

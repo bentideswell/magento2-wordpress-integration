@@ -13,10 +13,15 @@ use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
 /* Constructor Args */
 use Magento\Framework\Model\ResourceModel\Db\Context;
-use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\Context as WPContext;
 
 abstract class AbstractResource extends AbstractDb
 {
+	/*
+	 *
+	 */
+	protected $wpContext;
+
 	/*
 	 *
 	 */
@@ -29,10 +34,12 @@ abstract class AbstractResource extends AbstractDb
 	 */
 	public function __construct(
 	             Context $context,
-	  ResourceConnection $resourceConnection, 
-	                     $connectionName = null)
+						 WPContext $wpContext,
+	                     $connectionName = null
+  )
 	{
-		$this->resourceConnection = $resourceConnection;
+		$this->wpContext          = $wpContext;
+		$this->resourceConnection = $wpContext->getResourceConnection();
 
 		parent::__construct($context, $connectionName);
 	}

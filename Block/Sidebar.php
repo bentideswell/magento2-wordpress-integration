@@ -10,6 +10,7 @@ use Magento\Framework\View\Element\Template;
 /* Constructor Args*/
 use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\WidgetManager;
+use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Plugin;
 
 class Sidebar extends Template
@@ -18,6 +19,11 @@ class Sidebar extends Template
 	 *
 	 */
 	protected $widgetManager;
+	
+	/*
+	 *
+	 */
+	protected $optionManager;
 
 	/*
 	 *
@@ -34,11 +40,13 @@ class Sidebar extends Template
   public function __construct(
   	         Context $context,
        WidgetManager $widgetManager,
+       OptionManager $optionManager,
               Plugin $plugin,
   	           array $data = []
   )
   {
 		$this->widgetManager = $widgetManager;
+		$this->optionManager = $optionManager;
 		$this->plugin        = $plugin;
 		
     parent::__construct($context, $data);

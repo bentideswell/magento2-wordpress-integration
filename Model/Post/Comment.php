@@ -58,7 +58,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */
 	public function getCommentDate($format = null)
 	{
-		return $this->_viewHelper->formatDate($this->getData('comment_date'), $format);
+		return $this->wpContext->getDateHelper()->formatDate($this->getData('comment_date'), $format);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */
 	public function getCommentTime($format = null)
 	{
-		return $this->_viewHelper->formatTime($this->getData('comment_date'), $format);
+		return $this->wpContext->getDateHelper()->formatTime($this->getData('comment_date'), $format);
 	}
 	
 	/**

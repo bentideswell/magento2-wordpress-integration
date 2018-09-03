@@ -9,11 +9,15 @@ use Magento\Framework\App\Action\Action as ParentAction;
 
 /* Constructor Args */
 use Magento\Framework\App\Action\Context;
-use Magento\Framework\Registry;
-use FishPig\WordPress\Model\Url as Url;
+use FishPig\WordPress\Model\Context as WPContext;
 
 abstract class Action extends ParentAction
 {
+	/*
+	 * @var 
+	 */
+	protected $wpContext;
+	
 	/*
 	 * @var 
 	 */
@@ -35,24 +39,29 @@ abstract class Action extends ParentAction
 	protected $url;
 	
 	/*
+	 * @var Factory
+	 */
+	protected $factory;
+
+	/*
 	 * @var 
 	 */
 	abstract protected function _getEntity();
 
   /*
-   * Constructor
    *
-   * @param Context $context
-   * @param PageFactory $resultPageFactory
+   * @param Context   $context
+   * @param WPContext $wpContext
    */
   public function __construct(
-		 Context $context, 
-		Registry $registry,
-		     Url $url
+		  Context $context,
+	  WPContext $wpContext
   )
   {
-		$this->registry = $registry;
-		$this->url      = $url;
+	  $this->wpContenxt = $wpContext;
+		$this->registry   = $wpContext->getRegistry();
+		$this->url        = $wpContext->getUrl();
+		$this->factory    = $wpContext->getFactory();
         	
     parent::__construct($context);
   }	
@@ -64,28 +73,23 @@ abstract class Action extends ParentAction
    */
   public function execute()
   {
-    try {
-      $this->_beforeExecute();
-  		
-  		if ($forward = $this->_getForwardForPreview()) {
-  			return $forward;
-  		}
-  		
-  		if ($forward = $this->_getForward()) {
-  			return $forward;
-  		}
-  
-  		$this->checkForAmp();
+    $this->_beforeExecute();
 		
-	    $this->_initLayout();
+		if ($forward = $this->_getForwardForPreview()) {
+			return $forward;
+		}
+		
+		if ($forward = $this->_getForward()) {
+			return $forward;
+		}
 
-	    $this->_afterExecute();
+		$this->checkForAmp();
+	
+    $this->_initLayout();
 
-	    return $this->getPage();
-  	}
-  	catch (\Exception $e) {
-  		return $this->_getNoRouteForward();
-  	}
+    $this->_afterExecute();
+
+    return $this->getPage();
   }
 
 	/*
@@ -164,7 +168,7 @@ abstract class Action extends ParentAction
 			'link' => $this->url->getMagentoUrl()
 		]];
 	
-		if (!$this->app->isRoot()) {
+		if (!$this->url->isRoot()) {
 			$crumbs['blog'] = [
 				'label' => __('Blog'),
 				'link' => $this->url->getHomeUrl()

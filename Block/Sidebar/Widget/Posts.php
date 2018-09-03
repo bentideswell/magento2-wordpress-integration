@@ -15,7 +15,7 @@ class Posts extends AbstractWidget
 	 *
 	 * @var Fishpig_Wordpress_Model_Resource_Post_Collection
 	 */
-	protected $_collection = null;
+	protected $collection = null;
     
 	/**
 	 * Set the posts collection
@@ -63,9 +63,8 @@ class Posts extends AbstractWidget
 	 */
 	protected function _getPostCollection()
 	{
-		if (is_null($this->_collection)) {
-			$collection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory')
-				->create()
+		if (is_null($this->collection)) {
+			$collection = $this->factory->create('Model\ResourceModel\Post\Collection')
 					->setOrderByPostDate()
 					->addIsViewableFilter()
 					->setPageSize($this->getNumber())
@@ -94,10 +93,10 @@ class Posts extends AbstractWidget
 				$collection->addPostTypeFilter('post');
 			}
 
-			$this->_collection = $collection;
+			$this->collection = $collection;
 		}
 		
-		return $this->_collection;
+		return $this->collection;
 	}
 	
 	/**

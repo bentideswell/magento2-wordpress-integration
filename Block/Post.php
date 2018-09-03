@@ -1,22 +1,25 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
 namespace FishPig\WordPress\Block;
 
-class Post extends \FishPig\WordPress\Block\AbstractBlock implements \Magento\Framework\DataObject\IdentityInterface
+/* Parent Class */
+use FishPig\WordPress\Block\AbstractBlock;
+
+/* Interface */
+use Magento\Framework\DataObject\IdentityInterface;
+
+class Post extends AbstractBlock implements IdentityInterface
 {
 	/**
 	 * Retrieve the current post object
 	 *
 	 * @return null|\FishPig\WordPress\Model\Post
 	 */
-	public function getPosttt()
+	public function getPost()
 	{
-		return $this->hasPost() ? $this->_getData('post') : $this->_registry->registry('wordpress_post');
+		return $this->_getData('post') ? $this->_getData('post') : $this->registry->registry('wordpress_post');
 	}
 	
 	/**

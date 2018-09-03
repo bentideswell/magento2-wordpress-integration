@@ -1,11 +1,7 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Calendar extends AbstractWidget
@@ -43,10 +39,7 @@ class Calendar extends AbstractWidget
 	 */
 	protected function _getPostDateDataAsArray()
 	{
-		$days = $this->_factory->getFactory('Post')->create()
-			->getResource()
-				->getPostsOnDayByYearMonth($this->getYear() . '-' . $this->getMonth() . '-%');		
-
+		$days = $this->factory->create('Model\ResourceModel\Post')->getPostsOnDayByYearMonth($this->getYear() . '-' . $this->getMonth() . '-%');		
 
 		$itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 
@@ -120,7 +113,7 @@ class Calendar extends AbstractWidget
 		$this->setMonth(date('m'));
 		$this->setDaysInMonth(date('t'));
 
-		$this->setDefaultTitle($this->_viewHelper->formatDate(date('Y-m-d 00:00:00', time()), 'F Y'));
+		$this->setDefaultTitle($this->dateHelper->formatDate(date('Y-m-d 00:00:00', time()), 'F Y'));
 		
 		return $this;
 	}
@@ -132,7 +125,7 @@ class Calendar extends AbstractWidget
 	 */
 	protected function _initPreviousNextLinks()
 	{
-		$posts = $this->_factory->getFactory('Post')->create()->getCollection()
+		$posts = $this->factory->create('Model\ResourceModel\Post\Collection')
 			->addIsViewableFilter()
 			->setOrderByPostDate('desc')
 			->addFieldToFilter('post_date', array('lteq' => $this->getYear() . '-' . $this->getMonth() . '-01 00:00:00'))

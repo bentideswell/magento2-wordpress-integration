@@ -5,6 +5,7 @@
 namespace FishPig\WordPress\Model;
 
 /* Constructor Args */
+use FishPig\WordPress\Model\ResourceConnection;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\PostTypeManager;
@@ -13,9 +14,17 @@ use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Helper\Date as DateHelper;
 use Magento\Framework\Registry;
+use Magento\Customer\Model\Session as CustomerSession;
 
 class Context
 {
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $resourceManager;
+	
 	/*
 	 *
 	 * @var 
@@ -74,10 +83,18 @@ class Context
 	
 	/*
 	 *
+	 * @var 
+	 *
+	 */
+	protected $customerSession;
+
+	/*
+	 *
 	 *
 	 *
 	 */
 	public function __construct(
+	ResourceConnection $resourceConnection,
   	   OptionManager $optionManager,
     ShortcodeManager $shortcodeManager,
      PostTypeManager $postTypeManager,
@@ -85,19 +102,32 @@ class Context
                  Url $url,
              Factory $factory,
           DateHelper $dateHelper,
-            Registry $registry
+            Registry $registry,
+     CustomerSession $customerSession
 	)
 	{
-		$this->optionManager    = $optionManager;
-		$this->shortcodeManager = $shortcodeManager;
-		$this->postTypeManager  = $postTypeManager;
-		$this->taxonomyManager  = $taxonomyManager;
-		$this->url              = $url;
-		$this->factory          = $factory;
-		$this->dateHelper       = $dateHelper;
-		$this->registry         = $registry;
+		$this->resourceConnection = $resourceConnection;
+		$this->optionManager      = $optionManager;
+		$this->shortcodeManager   = $shortcodeManager;
+		$this->postTypeManager    = $postTypeManager;
+		$this->taxonomyManager    = $taxonomyManager;
+		$this->url                = $url;
+		$this->factory            = $factory;
+		$this->dateHelper         = $dateHelper;
+		$this->registry           = $registry;
+		$this->customerSession    = $customerSession;
 	}
 
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getResourceConnection()
+	{
+		return $this->resourceConnection;
+	}
+	
 	/*
 	 *
 	 *
@@ -176,5 +206,15 @@ class Context
 	public function getRegistry()
 	{
 		return $this->registry;
+	}
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getCustomerSession()
+	{
+		return $this->customerSession;
 	}
 }
