@@ -80,7 +80,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 		$this->blogPage = false;
 
 		if ((int)$this->getBlogPageId() > 0) {
-			$blogPage = $this->_factory->getFactory('Post')->create()->load(
+			$blogPage = $this->factory->create('Post')->load(
 				$this->getBlogPageId()
 			);
 			

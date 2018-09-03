@@ -115,6 +115,7 @@ class App
 				exit;
 			}
 
+			echo $e->getMessage() . '<br/><pre>' . $e->getTraceAsString() . '</pre>';exit;
 			$this->exception = $e;
 			$this->state = false;
 		}
@@ -141,7 +142,7 @@ class App
 			);
 		}
 
-		if ($this->isRoot()) {
+		if ($this->url->isRoot()) {
 			if ($this->url->getHomeUrl() !== $magentoUrl) {
 				IntegrationException::throwException(
 					sprintf('Your home URL is incorrect and should match your Magento URL. Change to. %s', $magentoUrl)
@@ -183,16 +184,6 @@ class App
 	public function getException()
 	{
 		return $this->exception;
-	}
-
-	/*
-	 *
-	 *
-	 * @return bool
-	 */
-	public function isRoot()
-	{
-		return false;
 	}
 
 	/*

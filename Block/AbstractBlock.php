@@ -8,7 +8,7 @@ namespace FishPig\WordPress\Block;
 use Magento\Framework\View\Element\Template;
 
 /* Constructor */
-use Magento\Framework\View\Element\Template\Context as Context;
+use Magento\Framework\View\Element\Template\Context;
 use FishPig\WordPress\Model\Context as WPContext;
 
 abstract class AbstractBlock extends Template
