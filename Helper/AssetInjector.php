@@ -227,7 +227,7 @@ class AssetInjector
 
 	
 			// Remove final template variable placeholder
-			$requireJsTemplate = str_replace(self::TMPL_TAG, 'jQuery(document).trigger(\'fishpig_ready\');', $requireJsTemplate);
+			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
 
 			// Start of paths template
 			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
@@ -244,8 +244,7 @@ class AssetInjector
 			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
 			
 			// Final JS including wrapping script tag
-			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
-			
+			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
 			// Add the final requireJS code to the $content array
 			$content .= $requireJsFinal;
 		}
@@ -256,11 +255,21 @@ class AssetInjector
 		return $bodyHtml;
 	}
 	
-	/**
+	/*
+	 * Get the FPJS object code
+	 *
+	 * @return string
+	 */
+	protected function getFPJS()
+	{
+		return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i]();}this.fs=[];}})();';
+	}
+	
+	/*
 	 *
 	 * @param string $url
 	 * @return string
-	**/
+	 */
 	protected function _getRequireJsAlias($url)
 	{
 		$alias = basename($url);
@@ -271,19 +280,19 @@ class AssetInjector
 
 		$requireJsAlias = str_replace('.', '_', basename(basename($alias, '.js'), '.min'));
 		
-		if ($requireJsAlias) {
+		if ($requireJsAlias && strlen($requireJsAlias) > 5) {
 			return $requireJsAlias;
 		}					
 
 		return $this->_hashString($url);
 	}
 	
-	/**
+	/*
 	 * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
 	 *
 	 * @param string $externalScriptUrlFull
 	 * @return string
-	**/
+	 */
 	protected function _migrateJsAndReturnUrl($externalScriptUrlFull)
 	{
 		// Check that the script is a local file
@@ -307,7 +316,7 @@ class AssetInjector
 
 		// Check whether the script supports AMD
 		if (strpos($scriptContent, 'define.amd') !== false) {
-			$scriptContent = "__d=define;define=undefined;try{" . $scriptContent . "}catch(e){console.error&&console.error(e.message);}define=__d;__d=undefined;";
+			$scriptContent = "__d=define;define=undefined;" . $scriptContent . "define=__d;__d=undefined;";
 		}
 
 		if (self::DEBUG) {
@@ -334,19 +343,19 @@ class AssetInjector
 	 * @return string
 	 */
 	protected function _fixDomReady($scriptContent)
-	{	
-		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'jQuery(document).on(\'fishpig_ready\', {}, ', $scriptContent);			
-		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'jQuery(document).on(\'fishpig_ready\', {}, function(', $scriptContent);
+	{			
+		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'FPJS.on(\'fishpig_ready\', ', $scriptContent);			
+		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
 
 		return $scriptContent;
 	}
 	
-	/**
+	/*
 	 * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
 	 *
 	 * @param string $externalScriptUrlFull
 	 * @return string
-	**/
+	 */
 	protected function _getMergedJsUrl(array $externalScriptUrlFulls)
 	{
 		$DS = DIRECTORY_SEPARATOR;
@@ -439,11 +448,11 @@ class AssetInjector
 		return strpos($url, '?') === false ? $url : substr($url, 0, strpos($url, '?'));
 	}
 
-	/**
+	/*
 	 *
 	 * @param string $s
 	 * @return string
-	**/
+	 */
 	protected function _stripScriptTags($s)
 	{
 		return preg_replace(
