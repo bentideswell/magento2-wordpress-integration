@@ -4,6 +4,12 @@
  */	
 namespace FishPig\WordPress\Model;
 
+/* Constructor Args */
+use Magento\Framework\View\Layout;
+
+/* Misc */
+use FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget;
+
 class WidgetManager
 {	
 	/*
@@ -12,22 +18,44 @@ class WidgetManager
 	protected $widgets = [];
 
 	/*
+	 * @var Layout
+	 */
+	protected $layout;
+	
+	/*
 	 *
 	 * @param  ModuleManaher $moduleManaher
 	 * @return void
 	 */
-	public function __construct(array $widgets)
+	public function __construct(array $widgets, Layout $layout)
 	{
 		$this->widgets = $widgets;
+		$this->layout  = $layout;
 	}
 	
-	public function getWidgetClassName($widgetName)
+	/*
+	 *
+	 * @param  string @widgetName
+	 * @return string|false
+	 */
+	public function getWidget($widgetName)
 	{
-		if (isset($this->widgets[$widgetName])) {
-			return $this->widgets[$widgetName];
+		$widgetIndex = preg_match("/([0-9]{1,})$/", $widgetName, $widgetIndexMatch) ? (int)$widgetIndexMatch[1] : 0;
+		$widgetName  = rtrim(preg_replace("/[^a-z_-]/i", '', $widgetName), '-');
+		
+		if (!isset($this->widgets[$widgetName])) {
+			return false;
 		}
 
-		echo 'Can not found widget \'' . $widgetName . '\' in widget array.';
-		exit;
+		$widgetBlock = $this->layout->createBlock($this->widgets[$widgetName])		
+			->setWidgetType($widgetName)
+			->setWidgetName($widgetName)
+			->setWidgetIndex($widgetIndex);
+		
+		if ($widgetBlock instanceof AbstractWidget) {
+			return $widgetBlock;
+		}
+
+		return false;
 	}
 }

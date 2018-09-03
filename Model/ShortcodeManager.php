@@ -40,7 +40,11 @@ class ShortcodeManager
 	 *
 	 */
 	public function renderShortcode($input, $args = [])
-	{	
+	{
+		if ($args && is_object($args)) {
+			$args = ['object' => $args];
+		}
+
 		if ($shortcodes = $this->getShortcodes()) {
 			foreach($shortcodes as $shortcode) {
 				$input = $shortcode->renderShortcode($input, $args);

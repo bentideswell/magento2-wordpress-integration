@@ -60,18 +60,9 @@ class Sidebar extends Template
 	protected function _beforeToHtml()
 	{
 		if ($widgets = $this->getWidgetsArray()) {
-
 			foreach($widgets as $widgetType) {
-				$name = $this->_getWidgetName($widgetType);
-				$widgetIndex = $this->_getWidgetIndex($widgetType);
-
-				if ($class = $this->widgetManager->getWidgetClassName($name)) {
-					if ($block = $this->getLayout()->createBlock($class)) {
-						$block->setWidgetType($name);
-						$block->setWidgetIndex($widgetIndex);
-						
-						$this->setChild('wordpress_widget_' . $widgetType, $block);
-					}
+				if ($block = $this->widgetManager->getWidget($widgetType)) {
+					$this->setChild('wordpress_widget_' . $widgetType, $block);
 				}
 			}
 		}
@@ -82,35 +73,7 @@ class Sidebar extends Template
 
 		return parent::_beforeToHtml();
 	}
-	
-	/**
-	 * Retrieve the widget name
-	 * Strip the trailing number and hyphen
-	 *
-	 * @param string $widget
-	 * @return string
-	 */
-	protected function _getWidgetName($widget)
-	{
-		return rtrim(preg_replace("/[^a-z_-]/i", '', $widget), '-');
-	}
-	
-	/**
-	 * Retrieve the widget name
-	 * Strip the trailing number and hyphen
-	 *
-	 * @param string $widget
-	 * @return string
-	 */
-	protected function _getWidgetIndex($widget)
-	{
-		if (preg_match("/([0-9]{1,})/",$widget, $results)) {
-			return $results[1];
-		}
-		
-		return false;
-	}
-	
+
 	/*
 	 * Get the widget area
 	 * Set a custom widget area by calling $this->setWidgetArea('your-custom-area')

@@ -11,15 +11,7 @@ namespace FishPig\WordPress\Helper;
 use Magento\Framework\DataObject;
 
 class Shortcode
-{
-	/*
-	 * Regular expression patterns for identifying shortcodes and parameters
-	 *
-	 * @const string
-	 */
-	const EXPR_SHOTRCODE_OPEN_TAG = '(\[{{shortcode}}[^\]]{0,}\])';
-	const EXPR_SHOTRCODE_CLOSE_TAG = '(\[\/{{shortcode}}[^\]]{0,}\])';
-	
+{	
   /*
 	 * Find the shortcodes for $tag
 	 *
@@ -31,10 +23,10 @@ class Shortcode
 		
 		if (strpos($content, '[' . $tag) !== false) {
 			$hasCloser = strpos($content, '[/' . $tag . ']') !== false;
-			$open = str_replace('{{shortcode}}', $tag, self::EXPR_SHOTRCODE_OPEN_TAG);
+			$open = str_replace('{{shortcode}}', $tag, '(\[{{shortcode}}[^\]]{0,}\])');
 
 			if ($hasCloser) {
-				$close = str_replace('{{shortcode}}', $tag, self::EXPR_SHOTRCODE_CLOSE_TAG);
+				$close = str_replace('{{shortcode}}', $tag, '(\[\/{{shortcode}}[^\]]{0,}\])');
 
 				if (preg_match_all('/' . $open . '(.*)' . $close . '/iUs', $content, $matches)) {
 					foreach($matches[0] as $matchId => $match) {
@@ -70,44 +62,19 @@ class Shortcode
 	 */
 	protected function parseShortcodeParameters($openingTag, $tag)
 	{
-		$parameters = array();
-
-		if (($regex = trim($this->getParameterRegex())) !== '') {
-			$openingTag = trim(substr(trim($openingTag), strlen($tag)+1), '[] ');
-			
-			if (preg_match_all($regex, $openingTag, $matches)) {
-				foreach($matches[2] as $key => $value) {
-					$parameters[trim($matches[1][$key])] = trim($value, '"\' ');
-					$openingTag = str_replace($matches[0][$key], '', $openingTag);
-				}
-			}
+		$parameters = [];
+		$openingTag = trim(substr(trim($openingTag), strlen($tag)+1), '[] ');
 		
-			/*
-			if ($this->getShortcodeIdKey() !== '') {
-				foreach(explode(' ', trim($openingTag, ' ')) as $value) {
-					if (($value = trim($value)) !== '') {
-						$parameters = array_merge(array($this->getShortcodeIdKey() => $value), $parameters);
-						break;
-					}
-				}
+		if (preg_match_all('/([a-z]{1,})=([^\s ]{1,})/i', $openingTag, $matches)) {
+			foreach($matches[2] as $key => $value) {
+				$parameters[trim($matches[1][$key])] = trim($value, '"\' ');
+				$openingTag = str_replace($matches[0][$key], '', $openingTag);
 			}
-			*/
 		}
 
 		return new DataObject($parameters);
 	}
 
-	/*
-	 * Retrieve the parameter regex
-	 *
-	 * @return string
-	 */
-	protected function getParameterRegex()
-	{
-		return '/([a-z]{1,})=([^\s ]{1,})/i';
-	}
-	
-	
 	/*
 	 * Extract any inline JS in $content
 	 * and remove it from $content
