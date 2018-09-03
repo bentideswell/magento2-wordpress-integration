@@ -1,3 +1,4 @@
 Author page no meta (http://m2.fishpig.co.uk/blog/author/fishpig/)
 Check autop
 grep for object manager
+Ensure integration checks work. This includes Multisite (Check in Plugin.php) and addons (COre helper write perms) etc

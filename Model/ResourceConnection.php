@@ -1,11 +1,13 @@
 <?php
-/**
- * @var 
-**/
+/*
+ *
+ */
 namespace FishPig\WordPress\Model;
 
-use \Magento\Framework\App\ResourceConnection\ConnectionFactory;
-use \FishPig\WordPress\Model\App\WPConfig;
+/* Constructor Args */
+use Magento\Framework\App\ResourceConnection\ConnectionFactory;
+use FishPig\WordPress\Model\App\WPConfig;
+use FishPig\WordPress\Model\Network;
 
 class ResourceConnection
 {
@@ -19,6 +21,11 @@ class ResourceConnection
 	**/
 	protected $connection;
 	
+	/*
+	 * @var Network
+	 */
+	protected $network;
+	
 	/**
 	 * @var 
 	**/
@@ -27,8 +34,11 @@ class ResourceConnection
 	/**
 	 * @var 
 	**/
-	public function __construct(ConnectionFactory $connectionFactory, WPConfig $wpConfig)
+	public function __construct(ConnectionFactory $connectionFactory, WPConfig $wpConfig, Network $network)
 	{
+		$this->network  = $network;
+		$this->wpConfig = $wpConfig;
+		
 		try {
 			if ($this->connection === null) {
 
@@ -59,14 +69,13 @@ class ResourceConnection
 			
 				$this->connection->query('SET NAMES UTF8');
 				
-				$this->applyMapping([										
-					'wordpress_blogs' => 'blogs',
-					'wordpress_blogs_versions' => 'blogs_versions',
-					'wordpress_site' => 'site',
-				]);
+				if ($networkTables = $this->network->getNetworkTables()) {
+					$this->applyMapping($networkTables);
+				}
 			}
 		}
 		catch (\Exception $e) {
+			exit($e);exit;
 			\FishPig\WordPress\Model\App\Integration\Exception::throwException(
 				'Error connecting to the WordPress database. Check the WordPress database details in wp-config.php.',
 				$e->getMessage()

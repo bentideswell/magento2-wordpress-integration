@@ -48,4 +48,26 @@ class Network
 	{
 		return false;
 	}
+	
+	/*
+	 *
+	 *
+	 *
+	 * @return false
+	 */	
+	public function getBlogTableValue($key)
+	{		
+		return false;
+	}
+	
+	/*
+	 *
+	 *
+	 *
+	 * @return false
+	 */
+	public function getNetworkTables()
+	{
+		return false;
+	}
 }
