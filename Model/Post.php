@@ -395,9 +395,9 @@ class Post extends AbstractMeta implements ViewableInterface
 	 *
 	 * @return string
 	 */
-	public function getPostContent($context = 'default')
+	public function getPostContent()
 	{
-		return $this->getContent($context);
+		return $this->getContent();
 	}
 	
 	/*
@@ -405,30 +405,18 @@ class Post extends AbstractMeta implements ViewableInterface
 	 *
 	 * @return string
 	 */
-	public function getContent($context = 'default')
+	public function getContent()
 	{
-		$key = 'processed_post_content_' . $context;
+		$key = '__processed_post_content';
 		
 		if (!$this->hasData($key)) {
-			$transport = new \Magento\Framework\DataObject();
+			$postContent = $this->shortcodeManager->renderShortcode($this->_getData('post_content'), $this);
+			$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
 
-			$this->_eventManager->dispatch('wordpress_get_post_content', array('transport' => $transport, 'post' => $this));
-			
-			if ($transport->getPostContent()) {
-				$this->setData($key, $transport->getPostContent());
-			}
-			else {
-				/* Render shortcodes */
-				$postContent = $this->shortcodeManager->renderShortcode($this->_getData('post_content'), $this);
-				
-				/* Add <p> tags to the post content */
-				$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
-				
-				$this->setData($key, $postContent);
-			}
+			$this->setData($key, $postContent);
 		}
 		
-		return $this->_getData($key);
+		return $this->getData($key);
 	}
 
 	/*

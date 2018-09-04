@@ -13,7 +13,7 @@ class View extends \FishPig\WordPress\Block\Post
 	 */
 	protected function _prepareLayout()
 	{
-		$this->applyPageConfigData($this->pageConfig, $this->getPost());
+		$this->getPost()->applyPageConfigData($this->pageConfig);
         
 		return parent::_prepareLayout();
 	}

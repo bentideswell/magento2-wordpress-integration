@@ -7,7 +7,7 @@ namespace FishPig\WordPress\Model;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Model\StoreManagerInterface;
 use FishPig\WordPress\Model\PostType;
-use FishPig\WordPress\Model\PostTypeFactory;
+use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Model\OptionManager;
 
 class PostTypeManager
@@ -34,19 +34,19 @@ class PostTypeManager
 
 	/*
 	 *
-	 * @param  ModuleManaher $moduleManaher
-	 * @return void
+	 *
+	 *
 	 */
 	public function __construct(
-		ModuleManager $moduleManager, 
+		        ModuleManager $moduleManager, 
 		StoreManagerInterface $storeManager, 
-		PostTypeFactory $postTypeFactory, 
-		OptionManager $optionManager
+        		      Factory $factory, 
+		        OptionManager $optionManager
 	)
 	{
 		$this->moduleManager   = $moduleManager;
 		$this->storeManager    = $storeManager;
-		$this->postTypeFactory = $postTypeFactory;
+		$this->factory         = $factory;
 		$this->optionManager   = $optionManager;
 		
 		$this->load();
@@ -65,15 +65,16 @@ class PostTypeManager
 			return $this;
 		}
 		
-		if ($this->isAddonEnabled()) {
-			echo __METHOD__;exit;
-			$this->types[$storeId] = \Magento\Framework\App\ObjectManager::getInstance()
-				->get('FishPig\WordPress_PostTypeTaxonomy\Model\Test')
-					->getPostTypeData();
+		if ($postTypeData = $this->getPostTypeDataFromAddon()) {
+			foreach($postTypeData as $postType) {
+				$this->registerPostType(
+					$this->factory->create('PostType')->addData($postType)
+				);
+			}
 		}
 		else {
 			$this->registerPostType(
-				$this->getPostTypeFactory()->create()->addData([
+				$this->factory->create('PostType')->addData([
 					'post_type'  => 'post',
 					'rewrite'    => ['slug' => $this->optionManager->getOption('permalink_structure')],
 					'taxonomies' => ['category', 'post_tag'],
@@ -82,7 +83,7 @@ class PostTypeManager
 			);
 				
 			$this->registerPostType(
-				$this->getPostTypeFactory()->create()->addData([
+				$this->factory->create('PostType')->addData([
 					'post_type'    => 'page',
 					'rewrite'      => ['slug' => '%postname%/'],
 					'hierarchical' => true,
@@ -115,7 +116,7 @@ class PostTypeManager
 	 */
 	public function getPostTypeFactory()
 	{
-		return $this->postTypeFactory;
+		return $this->factory->create('PostTypeFactory');
 	}
 
 	/*
@@ -151,7 +152,6 @@ class PostTypeManager
 		return isset($this->types[$storeId]) ? $this->types[$storeId] : false;		
 	}
 	
-	
 	/*
 	 *
 	 *
@@ -170,5 +170,15 @@ class PostTypeManager
 	protected function getStoreId()
 	{
 		return (int)$this->storeManager->getStore()->getId();
+	}
+
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
+	public function getPostTypeDataFromAddon()
+	{
+		return false;
 	}
 }

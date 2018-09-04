@@ -4,13 +4,21 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-use FishPig\WordPress\Model\PostTypeManager;
-use FishPig\WordPress\Model\ResourceConnection;
-use FishPig\WordPress\Model\Url as WordPressURL;
-use FishPig\WordPress\Helper\Router as RouterHelper;
+/* Parent Class */
+#use Magento\Framework\DataObject;
+use FishPig\WordPress\Model\AbstractModel;
 
-class PostType extends \Magento\Framework\DataObject/* implements ViewableInterface*/
+/* Interface */
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+
+/* Constructor Args */
+use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Helper\Router as RouterHelper;
+use FishPig\WordPress\Model\TaxonomyManager;
+use FishPig\WordPress\Model\Factory;
+
+class PostType extends AbstractModel implements ViewableInterface
 {
 	/**
 	 *
@@ -23,54 +31,6 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 	 * @var array static
 	 */
 	static $_uriCache = array();
-  
-  /*
-	 *
-	 */
-	protected $resourceConnection;
-	
-  /*
-	 * @var PostTypeManager
-	 */
-  protected $postTypeManager;
-  
-  /*
-	 * @var RouterHelper
-	 */
-  protected $routerHelper;
-  
-  /*
-	 *
-	 *
-	 * @param  WordPressURL $url
-	 * @param  array        $data
-	 * @return void
-	 */
-	public function __construct(
-		ResourceConnection $resourceConnection, 
-		      WordPressURL $url, 
-		      RouterHelper $routerHelper, 
-		   TaxonomyManager $taxonomyManager,
-		             array $data = []
-	)
-	{
-		parent::__construct($data);
-
-		$this->resourceConnection = $resourceConnection;
-		$this->url                = $url;
-		$this->routerHelper       = $routerHelper;
-		$this->taxonomyManager    = $taxonomyManager;
-	}
-   
-  /*
-	 *
-	 * @param  PostTypeManager $postTypeManager
-	 * @return $this
-	 */
-  public function setPostTypeManager(PostTypeManager $postTypeManager)
-  {
-		$this->postTypeManager = $postTypeManager;	  
-  }
   
 	/**
 	 * Determine whether post type uses GUID links
@@ -109,19 +69,43 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 			$structure = str_replace('%postname%', '%postnames%', $structure);
 		}
 
-		if ((int)$this->getData('rewrite/with_front') === 1) {
-			if ($this->postTypeManager) {
-				$postPermalink = $this->postTypeManager->getPostType('post')->getPermalinkStructure();
-				
-				if (substr($postPermalink, 0, 1) !== '%') {
-					$front = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');
-					
-					$structure = $front . '/' . $structure;
-				}
-			}
+		if ($this->withFront()) {
+			$structure = $this->getFront() . '/' . $structure;
 		}
 
 		return $structure;
+	}
+	
+	/*
+	 * Does the URL include the front
+	 *
+	 * @return bool
+	 */
+	public function withFront()
+	{
+		return (int)$this->getData('rewrite/with_front') === 1;
+	}
+	
+	/*
+	 * Get the front value
+	 *
+	 * @return string
+	 */
+	public function getFront()
+	{
+		if (!$this->withFront()) {
+			return false;
+		}
+		
+		if (!$this->hasFront()) {
+			$postPermalink = $this->factory->create('Post')->setPostType('post')->getTypeInstance()->getPermalinkStructure();
+			
+			if (substr($postPermalink, 0, 1) !== '%') {
+				$this->setFront(trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/'));
+			}
+		}
+		
+		return $this->getData('front');
 	}
 	
 	/**
@@ -178,11 +162,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 	 */
 	public function getPostCollection()
 	{
-		if ($this->postTypeManager) {
-			return $this->postTypeManager->getPostTypeFactory()->getCollection()->addPostTypeFilter($this->getPostType());
-		}
-		
-		return false;
+		return $this->factory->create('Model\ResourceModel\Post\Collection')->addPostTypeFilter($this->getPostType());
 	}
 
 	/**
@@ -192,7 +172,13 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 	 */	
 	public function getSlug()
 	{
-		return $this->getData('rewrite/slug');
+		$slug = $this->getData('rewrite/slug');
+		
+		if ($this->withFront()) {
+			$slug = $this->getFront() . '/' . $slug;
+		}
+
+		return $slug;
 	}
 	
 	/**
@@ -211,21 +197,22 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 			return false;
 		}
 		
+		$slug = false;
+
 		if (((string)$slug = $this->getHasArchive()) !== '1') {
-			return $slug;
+			// Do nothing yet
 		}
-		
-		if ($slug = $this->getSlug()) {
+		else if ($slug = $this->getSlug()) {
 			if (strpos($slug, '%') !== false) {
 				$slug = trim(substr($slug, 0, strpos($slug, '%')), '%/');
 			}
-			
-			if ($slug) {
-				return $slug;
-			}
 		}
 		
-		return $this->getPostType();
+		if (!$slug) {
+			$slug = $this->getPostType();
+		}
+		
+		return $slug;
 	}
 	
 	/**
@@ -246,9 +233,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 	 */
 	public function isTaxonomySupported($taxonomy)
 	{
-		return $this->getTaxonomies()
-			? in_array($taxonomy, $this->getTaxonomies())
-			: false;
+		return $this->getTaxonomies() ? in_array($taxonomy, $this->getTaxonomies()) : false;
 	}
 	
 	/**
@@ -337,20 +322,22 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 			return self::$_uriCache[$this->getPostType()];
 		}
 		
-		if (!($db = $this->resourceConnection->getConnection())) {
+		$resource = $this->wpContext->getResourceConnection();
+		
+		if (!($db = $resource->getConnection())) {
 			return false;
 		}
 
 		$select = $db->select()
-			->from(array('term' => $this->resourceConnection->getTable('wordpress_post')), array(
-				'id' => 'ID',
+			->from(['term' => $resource->getTable('wordpress_post')], [
+				'id'      => 'ID',
 				'url_key' =>  'post_name', 
-				'parent' => 'post_parent'
-			))
+				'parent'  => 'post_parent'
+			])
 			->where('post_type=?', $this->getPostType())
 			->where('post_status=?', 'publish');
 				
-		self::$_uriCache[$this->getPostType()] = $this->routerHelper->generateRoutesFromArray($db->fetchAll($select));
+		self::$_uriCache[$this->getPostType()] = $this->wpContext->getRouterHelper()->generateRoutesFromArray($db->fetchAll($select));
 		
 		return self::$_uriCache[$this->getPostType()];
 	}
@@ -388,7 +375,12 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 	{
 		return (int)$this->getData('exclude_from_search') === 0;
 	}
-	
+
+	/*
+	 *
+	 *
+	 * @return array
+	 */
 	public function getBreadcrumbStructure($post)
 	{
 		$tokens = explode('/', trim($this->getSlug(), '/'));
@@ -409,12 +401,10 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 				}
 			}
 			else if (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
-				if ($this->postTypeManager) {
-					$parent = $this->postTypeManager->getPostTypeFactory()->create()->setPostType('page')->load($token, 'post_name');
-					
-					if ($parent->getId()) {
-			    	$objects['parent_post_' . $parent->getId()] = $parent;
-					}
+				$parent = $this->factory->create('Post')->setPostType('page')->load($token, 'post_name');
+				
+				if ($parent->getId()) {
+		    	$objects['parent_post_' . $parent->getId()] = $parent;
 				}
 			}
 		}
@@ -428,5 +418,26 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 		}
 
 		return $objects ? $objects : false;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return array
+	 */
+	public function getArchiveBreadcrumbStructure()
+	{
+		$crumbs = [];
+		
+		if ($this->withFront()) {
+			$crumbs['front'] = [
+				'label' => ucwords($this->getFront()),
+				'link'  => $this->url->geturl($this->getFront()),
+			];
+		}
+		
+		$crumbs['post_type'] = $this;
+		
+		return $crumbs;
 	}
 }

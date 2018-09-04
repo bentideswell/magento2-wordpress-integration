@@ -123,7 +123,7 @@ class Router implements RouterInterface
 	protected function _matchRoute($uri = '')
 	{
 		$encodedUri = strtolower(str_replace('----slash----', '/', urlencode(str_replace('/', '----slash----', $uri))));
-		
+
 		foreach($this->callbacks as $callback) {
 			$this->routes = array();
 

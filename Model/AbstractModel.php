@@ -200,4 +200,31 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	{
 		return $this->factory->create('Post')->getCollection();
 	}
+	
+	/*
+	 *
+	 */
+	public function applyPageConfigData($pageConfig)
+	{
+		if (!$pageConfig) {
+			return $this;
+		}
+		
+    $pageConfig->getTitle()->set($this->getPageTitle());
+    $pageConfig->setDescription($this->getMetaDescription());	
+    $pageConfig->setKeywords($this->getMetaKeywords());
+
+		#TODO: Hook this up so it displays on page
+		$pageConfig->setRobots($this->getRobots());
+
+    if ($pageMainTitle = $this->wpContext->getLayout()->getBlock('page.main.title')) {
+      $pageMainTitle->setPageTitle($this->getName());
+    }
+      
+		if ($this->getCanonicalUrl()) {
+			$pageConfig->addRemotePageAsset($this->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
+		}
+	
+    return $this;
+	}
 }

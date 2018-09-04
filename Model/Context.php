@@ -8,12 +8,14 @@ namespace FishPig\WordPress\Model;
 use FishPig\WordPress\Model\ResourceConnection;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\ShortcodeManager;
-use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\PostTypeManager\Proxy as PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Helper\Date as DateHelper;
+use FishPig\WordPress\Helper\Router as RouterHelper;
 use Magento\Framework\Registry;
+use Magento\Framework\View\Layout;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Request\Http as Request;
 
@@ -77,6 +79,13 @@ class Context
 	
 	/*
 	 *
+	 * @var
+	 *
+	 */
+	protected $routerHelper;
+	
+	/*
+	 *
 	 * @var 
 	 *
 	 */
@@ -110,7 +119,9 @@ class Context
                  Url $url,
              Factory $factory,
           DateHelper $dateHelper,
+        RouterHelper $routerHelper,
             Registry $registry,
+              Layout $layout,
      CustomerSession $customerSession,
              Request $request
 	)
@@ -123,7 +134,9 @@ class Context
 		$this->url                = $url;
 		$this->factory            = $factory;
 		$this->dateHelper         = $dateHelper;
+		$this->routerHelper       = $routerHelper;
 		$this->registry           = $registry;
+		$this->layout             = $layout;
 		$this->customerSession    = $customerSession;
 		$this->request            = $request;
 	}
@@ -213,9 +226,29 @@ class Context
 	 *
 	 * @return 
 	 */
+	public function getRouterHelper()
+	{
+		return $this->routerHelper;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
 	public function getRegistry()
 	{
 		return $this->registry;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getLayout()
+	{
+		return $this->layout;
 	}
 
 	/*

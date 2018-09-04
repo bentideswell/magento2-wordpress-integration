@@ -2,3 +2,7 @@ Author page no meta (http://m2.fishpig.co.uk/blog/author/fishpig/)
 Check autop
 grep for object manager
 Ensure integration checks work. This includes Multisite (Check in Plugin.php) and addons (COre helper write perms) etc
+Improve Router so that route lists are injected in via di.xml
+Improve CoreHelper inject global plugin. Maybe even remove plugin and have code in free module to find core helper.
+Add trailing slash support like in the M1 module
+post_content observer in PSW needs rewriting as a plugin as the event has been removed. Do the same for setAsGlobal().

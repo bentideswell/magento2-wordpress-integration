@@ -47,7 +47,10 @@ class ShortcodeManager
 
 		if ($shortcodes = $this->getShortcodes()) {
 			foreach($shortcodes as $shortcode) {
-				$input = $shortcode->renderShortcode($input, $args);
+				// Legacy support. Old shortcodes returned false when not required
+				if (($returnValue = $shortcode->renderShortcode($input, $args)) !== false) {
+					$input = $returnValue;
+				}
 			}
 		}
 
@@ -78,7 +81,7 @@ class ShortcodeManager
 				$buffer[$alias] = $shortcode;
 			}
 		}
-		
+
 		return $buffer;
 	}
 	

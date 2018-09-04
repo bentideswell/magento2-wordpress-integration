@@ -64,13 +64,13 @@ class Autop extends AbstractHelper
 		}
 
 		// Get file from Magento
-		$targetFile = basename(__DIR__) . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
+		$targetFile = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . $file;
 		
 		if (!is_file($targetFile)) {
 			return false;
 		}
 
-		$code = preg_replace('/\/\*\*.*\*\//Us', '', file_get_contents($targetFile));
+		$code    = preg_replace('/\/\*\*.*\*\//Us', '', file_get_contents($targetFile));
 		$depends = array_flip($depends);
 		
 		foreach($depends as $key => $value) {
@@ -85,7 +85,7 @@ class Autop extends AbstractHelper
 				return false;
 			}
 		}
-		
+
 		$code = preg_replace('/(' . implode('|', array_keys($depends)) . ')/', 'fp_$1', implode("\n\n", $depends));
 		
 		@eval($code);

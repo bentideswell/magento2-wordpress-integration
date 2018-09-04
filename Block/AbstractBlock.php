@@ -81,31 +81,4 @@ abstract class AbstractBlock extends Template
   {
 	  return $this->renderShortcode($shortcode, $object);
   }
-  
-	/*
-	 *
-	 */
-	protected function applyPageConfigData($pageConfig, $entity)
-	{
-		if (!$pageConfig || !$entity) {
-			return $this;
-		}
-		
-    $pageConfig->getTitle()->set($entity->getPageTitle());
-    $pageConfig->setDescription($entity->getMetaDescription());	
-    $pageConfig->setKeywords($entity->getMetaKeywords());
-
-		#TODO: Hook this up so it displays on page
-		$pageConfig->setRobots($entity->getRobots());
-
-    if ($pageMainTitle = $this->_layout->getBlock('page.main.title')) {
-      $pageMainTitle->setPageTitle($entity->getName());
-    }
-      
-		if ($entity->getCanonicalUrl()) {
-			$pageConfig->addRemotePageAsset($entity->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
-		}
-	
-    return $this;
-	}
 }

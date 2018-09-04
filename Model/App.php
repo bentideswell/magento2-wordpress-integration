@@ -195,14 +195,4 @@ class App
 	{
 		return true;
 	}
-	
-	/*
-	 *
-	 *
-	 * @return false
-	 */
-	public function getCoreHelper()
-	{
-		return false;
-	}
 }

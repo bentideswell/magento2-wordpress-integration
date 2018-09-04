@@ -73,16 +73,17 @@ class TaxonomyManager
 			return $this;
 		}
 		
-		if ($this->isAddonEnabled()) {
-			echo __METHOD__;exit;
-			$this->taxonomies[$storeId] = \Magento\Framework\App\ObjectManager::getInstance()
-				->get('FishPig\WordPress_PostTypeTaxonomy\Model\Test')
-					->getPostTypeData();
+		if ($taxonomyData = $this->getTaxonomyDataFromAddon()) {
+			foreach($taxonomyData as $taxonomy) {
+				$this->registerTaxonomy(
+					$this->getTaxonomyFactory()->create()->addData($taxonomy)
+				);
+			}
 		}
 		else {
 			$bases = array(
 				'category' => $this->optionManager->getOption('category_base') ? $this->optionManager->getOption('category_base') : 'category',
-				'post_tag' => $this->optionManager->getOption('tag_base') ? $this->optionManager->getOption('tag_base') : 'tag',
+				'post_tag' => $this->optionManager->getOption('tag_base')      ? $this->optionManager->getOption('tag_base')      : 'tag',
 			);
 	
 			$blogPrefix = $this->network->getBlogId() === 1;
@@ -134,6 +135,12 @@ class TaxonomyManager
 		return $this;
 	}
 	
+	/*
+	 * Register a taxonomy
+	 *
+	 * @param  Taxonomy $taxonomy
+	 * @return $this
+	 */
 	public function registerTaxonomy(Taxonomy $taxonomy)
 	{
 		$storeId = $this->getStoreId();
@@ -209,5 +216,16 @@ class TaxonomyManager
 	protected function getStoreId()
 	{
 		return (int)$this->storeManager->getStore()->getId();
+	}
+	
+	/*
+	 *
+	 *
+	 *
+	 * @return false
+	 */
+	public function getTaxonomyDataFromAddon()
+	{
+		return false;
 	}
 }
