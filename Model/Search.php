@@ -7,17 +7,6 @@ namespace FishPig\WordPress\Model;
 /* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-/* Constructor Args */
-use Magento\Framework\Model\Context;
-use Magento\Framework\Registry;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\PostFactory;
-use Magento\Framework\App\RequestInterface;
-use Magento\Framework\Model\ResourceModel\AbstractResource;
-use Magento\Framework\Data\Collection\AbstractDb;
-/* End of Constructor Args */
-
 class Search extends AbstractModel implements ViewableInterface
 {
 	/*
@@ -36,37 +25,13 @@ class Search extends AbstractModel implements ViewableInterface
 	const VAR_NAME_POST_TYPE = 'post_type';
 	
 	/*
-	 * @var RequestInterface
-	 */
-	protected $request;
-	
-	/*
-	 *
-	 */
-	public function __construct(
-	         Context $context, 
-	        Registry $registry, 
-	             Url $url, 
-     OptionManager $optionManager,
-       PostFactory $postFactory,
-  RequestInterface $requestInterface,
-	AbstractResource $resource = null, 
-	      AbstractDb $resourceCollection = null, 
-	           array $data = []
-  ) {
-		parent::__construct($context, $registry, $url, $optionManager, $postFactory, $resource, $resourceCollection);	
-
-		$this->request = $requestInterface;
-	}
-	
-	/*
 	 * Get the search term
 	 *
 	 * @return  string
 	 */
   public function getSearchTerm()
   {
-		return $this->request->getParam(self::VAR_NAME);
+		return $this->wpContext->getRequest()->getParam(self::VAR_NAME);
   }
 
 	/*
@@ -86,7 +51,7 @@ class Search extends AbstractModel implements ViewableInterface
 	 */
 	public function getPostTypes()
 	{
-		return $this->request->getParam(self::VAR_NAME_POST_TYPE);	
+		return $this->wpContext->getRequest()->getParam(self::VAR_NAME_POST_TYPE);	
 	}
 	
 	/*

@@ -19,7 +19,7 @@ class View extends AbstractWrapper
 		return $this->registry->registry('wordpress_search');
 	}
 
-	/**
+	/*
 	 * Generates and returns the collection of posts
 	 *
 	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
@@ -32,7 +32,7 @@ class View extends AbstractWrapper
 		$searchablePostTypes = $this->getRequest()->getParam('post_type');
 		
 		if (!$searchablePostTypes) {
-			$postTypes = $this->postTypeManager->getPostTypes();
+			$postTypes = $this->wpContext->getPostTypeManager()->getPostTypes();
 			$searchablePostTypes = array();
 			
 			foreach($postTypes as $postType) {
@@ -49,7 +49,7 @@ class View extends AbstractWrapper
 		return $collection->addPostTypeFilter($searchablePostTypes);
 	}
 	
-	/**
+	/*
 	 * Retrieve a parsed version of the search string
 	 * If search by single word, string will be split on each space
 	 *
@@ -72,7 +72,7 @@ class View extends AbstractWrapper
 		return $words;
 	}
 	
-	/**
+	/*
 	 * Retrieve the current search term
 	 *
 	 * @param bool $escape = false
@@ -83,7 +83,7 @@ class View extends AbstractWrapper
 		return $this->getEntity()->getSearchTerm($escape);
 	}
 	
-	/**
+	/*
 	 * Retrieve the search variable
 	 *
 	 * @return string

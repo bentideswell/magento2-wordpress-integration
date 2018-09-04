@@ -15,6 +15,7 @@ use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Helper\Date as DateHelper;
 use Magento\Framework\Registry;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Request\Http as Request;
 
 class Context
 {
@@ -87,6 +88,13 @@ class Context
 	 *
 	 */
 	protected $customerSession;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $request;
 
 	/*
 	 *
@@ -103,7 +111,8 @@ class Context
              Factory $factory,
           DateHelper $dateHelper,
             Registry $registry,
-     CustomerSession $customerSession
+     CustomerSession $customerSession,
+             Request $request
 	)
 	{
 		$this->resourceConnection = $resourceConnection;
@@ -116,6 +125,7 @@ class Context
 		$this->dateHelper         = $dateHelper;
 		$this->registry           = $registry;
 		$this->customerSession    = $customerSession;
+		$this->request            = $request;
 	}
 
 	/*
@@ -216,5 +226,15 @@ class Context
 	public function getCustomerSession()
 	{
 		return $this->customerSession;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getRequest()
+	{
+		return $this->request;
 	}
 }
