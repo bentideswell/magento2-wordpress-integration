@@ -1,5 +1,5 @@
 <?php
-/**
+/*
  * @category    Fishpig
  * @package     Fishpig_Wordpress
  * @license     http://fishpig.co.uk/license.txt
@@ -12,17 +12,17 @@ use \FishPig\WordPress\Model\Term;
 
 class Menu extends Term
 {
-	/**
+	/*
 	 *
-	**/
+	 */
 	const ENTITY = 'wordpress_menu';
 
-	/**
+	/*
 	 * @const string
-	*/
+	 */
 	const CACHE_TAG = 'wordpress_menu';
 	
-	/**
+	/*
 	 * Event data
 	 *
 	 * @var string
@@ -30,16 +30,16 @@ class Menu extends Term
 	protected $_eventPrefix      = 'wordpress_menu';
 	protected $_eventObject      = 'menu';
 	
-	/**
+	/*
 	 * Cache to stop menu being generated multiple times
 	 *
 	 * @var array
-	**/
+	 */
 	protected $_menuCache	 = null;
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function _construct()
 	{
         $this->_init('FishPig\WordPress\Model\ResourceModel\Menu');
@@ -47,12 +47,12 @@ class Menu extends Term
 		return parent::_construct();
 	}
 	
-	/**
+	/*
 	 * Gets a simple array of the menu
 	 * For the actual menu item objects, use getMenuTreeObjects
 	 *
 	 * @return array|false
-	**/
+	 */
 	public function getMenuTreeArray()
 	{
 		if ($tree = $this->getMenuTreeObjects()) {
@@ -68,9 +68,9 @@ class Menu extends Term
 		return false;
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	protected function _getMenuTreeArray($node)
 	{
 		$data = array(
@@ -96,9 +96,9 @@ class Menu extends Term
 		return $data;
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function getMenuTreeObjects()
 	{
 		if (null !== $this->_menuCache) {
@@ -118,9 +118,9 @@ class Menu extends Term
 		return $this->_menuCache;
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	protected function _getMenuTreeObjects($item)
 	{
 		$children = $item->getChildrenItems();
@@ -134,7 +134,7 @@ class Menu extends Term
 		return $item;
 	}
 
-	/**
+	/*
 	 * Retrieve the root menu items
 	 *
 	 * @return Fishpig_Wordpress_Model_Resource_Menu_Item_Collection
@@ -146,7 +146,7 @@ class Menu extends Term
 			->addTermIdFilter($this->getId(), $this->getTaxonomy());
 	}
 
-	/**
+	/*
 	 * Retrieve the taxonomy type
 	 *
 	 * @return string
@@ -156,16 +156,13 @@ class Menu extends Term
 		return 'nav_menu';
 	}
 
-	/**
+	/*
 	 * Retrieve the object resource model
 	 *
 	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
 	 */    
-    protected function _getObjectResourceModel()
-    {
-	    return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\Menu\ItemFactory')
-	    	->create()
-	    	->getCollection()
-	    	->addParentItemIdFilter(0);
-    }
+  protected function _getObjectResourceModel()
+  {
+    return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection')->addParentItemIdFilter(0);
+  }
 }

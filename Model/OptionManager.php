@@ -5,25 +5,43 @@
 namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Model\ResourceConnection;
+use Magento\Store\Model\StoreManagerInterface;
 
 class OptionManager
 {   
 	/*
+	 *
 	 * @var array
+	 *
 	 */
-	static protected $data = [];
+	protected $data = [];
 	
 	/*
+	 *
+	 * @var StoreManagerInterface
+	 *
+	 */
+	protected $storeManager;
+	
+	/*
+	 *
 	 * @var ResourceConnection
+	 *
 	 */
 	protected $resourceConnection;
 
 	/*
 	 *
+	 *
+	 *
 	 */
-	public function __construct(ResourceConnection $resourceConnection)
+	public function __construct(
+		   ResourceConnection $resourceConnection, 
+		StoreManagerInterface $storeManager
+	)
 	{
 		$this->resourceConnection = $resourceConnection;
+		$this->storeManager       = $storeManager;
 	}
 	
 	/*
@@ -34,18 +52,24 @@ class OptionManager
 	 */
 	public function getOption($key)
 	{
-		if (!isset(self::$data[$key])) {
+		$storeId = $this->getStoreId();
+
+		if (!isset($this->data[$storeId])) {
+			$this->data[$storeId] = [];
+		}
+		
+		if (!isset($this->data[$storeId][$key])) {
 			$resource   = $this->resourceConnection;
 			$connection = $resource->getConnection();
-			
+
 			$select = $connection->select()
 				->from($resource->getTable('wordpress_option'), 'option_value')
 				->where('option_name = ?', $key);
 
-			self::$data[$key] = $connection->fetchOne($select);
+			$this->data[$storeId][$key] = $connection->fetchOne($select);
 		}
 
-		return self::$data[$key];	
+		return $this->data[$storeId][$key];	
 	}
 	
 	/*
@@ -58,5 +82,15 @@ class OptionManager
 	public function getSiteOption($key)
 	{
 		return false;
+	}
+	
+	/*
+	 * Get the store ID
+	 *
+	 * @return int
+	 */
+	protected function getStoreId()
+	{
+		return (int)$this->storeManager->getStore()->getId();
 	}
 }

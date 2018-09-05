@@ -9,72 +9,83 @@ use Magento\Framework\App\RouterInterface;
 
 /* Constructor Args */
 use Magento\Framework\App\ActionFactory;
-use FishPig\WordPress\Model\App;
+use FishPig\WordPress\Model\IntegrationManager;
 use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\ResourceModel\PostFactory;
+use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Model\TaxonomyManager;
 
+/* Misc */
 use Magento\Framework\App\RequestInterface;
 
 class Router implements RouterInterface
 {
-  /**
+  /*
+	 *
    * @var ActionFactory
+   *
    */
   protected $actionFactory;
 
-	/**
-	 * @var FishPig\WordPress\Model\App
-	 **/
-	protected $app;
+	/*
+	 *
+	 * @var IntegrationManager
+	 *
+	 */
+	protected $integrationManager;
 	
-	/**
-	 * @var FishPig\WordPress\Model\Url
-	 **/
+	/*
+	 *
+	 * @var Url
+	 *
+	 */
 	protected $url;
 	
-	/**
-	 * @var array
-	 */
-	protected $callbacks = array();
-	
-	/**
-	 * @var array
-	 */
-	protected $routes = array();
-	
-	/**
+	/*
+	 *
 	 * @var
+	 *
 	 */
-	protected $postResourceFactory = null;
+	protected $callbacks = [];
+	
+	/*
+	 *
+	 * @var
+	 *
+	 */
+	protected $routes = [];
+	
+	/*
+	 *
+	 * @var
+	 *
+	 */
+	protected $postResourceFactory;
 	
   /*
 	 *
 	 *
    */
   public function __construct(
-      ActionFactory $actionFactory, 	
-                App $app,
-                Url $urlBuilder,
-        PostFactory $postResourceFactory,
-    TaxonomyManager $taxonomyManager
+         ActionFactory $actionFactory, 	
+    IntegrationManager $integrationManager,
+                   Url $url,
+               Factory $factory,
+       TaxonomyManager $taxonomyManager
   )
   {
-    $this->actionFactory = $actionFactory;
-    $this->app = $app;
-    $this->url = $urlBuilder;
-    $this->postResourceFactory = $postResourceFactory;
-    $this->taxonomyManager = $taxonomyManager;
+    $this->actionFactory      = $actionFactory;
+    $this->integrationManager = $integrationManager;
+    $this->url                = $url;
+    $this->factory            = $factory;
+    $this->taxonomyManager    = $taxonomyManager;
   }
 
   /*
    * @param RequestInterface $request
    */
 	public function match(RequestInterface $request)
-	{	
-		if (!$this->app->canRun()) {
-			return false;
-		}
+	{
+    $this->integrationManager->runTests();
 
 		$fullRequestUri = $this->getPathInfo($request);
 		$blogRoute      = $this->url->getBlogRoute();
@@ -84,7 +95,7 @@ class Router implements RouterInterface
 		}
 
 		if (!($requestUri = $this->getRouterRequestUri($request))) {
-			$this->addRouteCallback(array($this, '_getHomepageRoutes'));	
+			$this->addRouteCallback(array($this, '_getHomepageRoutes'));
 		}
 
 		$this->addRouteCallback(array($this, '_getSimpleRoutes'));
@@ -92,7 +103,7 @@ class Router implements RouterInterface
 		$this->addRouteCallback(array($this, '_getTaxonomyRoutes'));
 		
 		$this->addExtraRoutesToQueue();
-		
+
 		if (($route = $this->_matchRoute($requestUri)) === false) {
 			return false;
 		}
@@ -125,7 +136,7 @@ class Router implements RouterInterface
 		$encodedUri = strtolower(str_replace('----slash----', '/', urlencode(str_replace('/', '----slash----', $uri))));
 
 		foreach($this->callbacks as $callback) {
-			$this->routes = array();
+			$this->routes = [];
 
 			if (call_user_func($callback, $uri, $this) !== false) {
 				foreach($this->routes as $route => $data) {
@@ -134,23 +145,21 @@ class Router implements RouterInterface
 					if (substr($route, 0, 1) !== '/') {
 						$match = $route === $encodedUri || $route === $uri;
 					}
-					else {
-						if (preg_match($route, $uri, $matches)) {
-							$match = true;
+					else if (preg_match($route, $uri, $matches)) {
+						$match = true;
+						
+						if (isset($data['pattern_keys']) && is_array($data['pattern_keys'])) {
+							array_shift($matches);
 							
-							if (isset($data['pattern_keys']) && is_array($data['pattern_keys'])) {
-								array_shift($matches);
-								
-								if (!isset($data['params'])) {
-									$data['params'] = array();
-								}
-
-								foreach($matches as $match) {
-									if (($pkey = array_shift($data['pattern_keys'])) !== null) {
-										$data['params'][$pkey] = $match;
-									}
-								}	
+							if (!isset($data['params'])) {
+								$data['params'] = [];
 							}
+
+							foreach($matches as $match) {
+								if (($pkey = array_shift($data['pattern_keys'])) !== null) {
+									$data['params'][$pkey] = $match;
+								}
+							}	
 						}
 					}
 					
@@ -184,7 +193,7 @@ class Router implements RouterInterface
 			$pattern = key($pattern);
 		}
 		else {
-			$keys = array();
+			$keys = [];
 		}
 
 		$path = array_combine(array('module', 'controller', 'action'), explode('/', $path));
@@ -222,16 +231,15 @@ class Router implements RouterInterface
 	 */
 	protected function _getHomepageRoutes($uri = '')
 	{
-#		if ($postId = $this->getRequest()->getParam('p')) {
-#			return $this->addRoute('', '*/post/view', array('p' => $postId, 'id' => $postId));
-#		}
-
-#		if (($pageId = $this->_getHomepagePageId()) !== false) {
-#			return $this->addRoute('', '*/post/view', array('id' => $pageId, 'post_type' => 'page', 'home' => 1));
-#		}
-
-		$this->addRoute('', '*/homepage/view');
+		$homepage = $this->factory->get('Homepage');
 		
+		if ($frontPageId = $homepage->getFrontPageId()) {
+			$this->addRoute('', '*/post/view', ['id' => $frontPageId, 'is_front' => 1]);
+		}
+		else {
+			$this->addRoute('', '*/homepage/view');
+		}
+
 		return $this;
 	}
 	
@@ -258,6 +266,7 @@ class Router implements RouterInterface
 #		$this->addRoute('robots.txt', '*/index/robots');
 		$this->addRoute('comments', '*/index/commentsFeed');
 		$this->addRoute(array('/^newbloguser\/(.*)$/' => array('code')), '*/index/forwardNewBlogUser');
+		$this->addRoute(array('/^wp-json$/' => []), '*/json/view');
 		$this->addRoute(array('/^wp-json\/(.*)$/' => array('json_route_data')), '*/json/view');
 		
 		
@@ -272,12 +281,19 @@ class Router implements RouterInterface
 	 */
 	protected function _getPostRoutes($uri = '')
 	{
-		if (($routes = $this->postResourceFactory->create()->getPermalinksByUri($uri)) === false) {
+		if (($routes = $this->factory->get('Model\ResourceModel\Post')->getPermalinksByUri($uri)) === false) {
 			return false;
 		}
 
+		$pageForPostsId = (int)$this->factory->get('Homepage')->getPageForPostsId();
+
 		foreach($routes as $routeId => $route) {
-			$this->addRoute(rtrim($route, '/'), '*/post/view', array('id' => $routeId));
+			if ($pageForPostsId && $pageForPostsId === (int)$routeId) {
+				$this->addRoute(rtrim($route, '/'), '*/homepage/view', array('id' => $routeId));
+			}
+			else {
+				$this->addRoute(rtrim($route, '/'), '*/post/view', array('id' => $routeId));
+			}
 		}
 
 		return $this;

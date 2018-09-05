@@ -6,8 +6,7 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Model\StoreManagerInterface;
-use FishPig\WordPress\Model\Taxonomy;
-use FishPig\WordPress\Model\TaxonomyFactory;
+use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Network;
 
@@ -46,14 +45,14 @@ class TaxonomyManager
 	public function __construct(
 		        ModuleManager $moduleManager, 
 		StoreManagerInterface $storeManager, 
-		      TaxonomyFactory $taxonomyFactory, 
+		              Factory $factory, 
 		        OptionManager $optionManager,
 		              Network $network
   )
 	{
 		$this->moduleManager   = $moduleManager;
 		$this->storeManager    = $storeManager;
-		$this->taxonomyFactory = $taxonomyFactory;
+		$this->factory         = $factory;
 		$this->optionManager   = $optionManager;
 		$this->network         = $network;
 
@@ -141,7 +140,7 @@ class TaxonomyManager
 	 * @param  Taxonomy $taxonomy
 	 * @return $this
 	 */
-	public function registerTaxonomy(Taxonomy $taxonomy)
+	public function registerTaxonomy(\FishPig\WordPress\Model\Taxonomy $taxonomy)
 	{
 		$storeId = $this->getStoreId();
 		
@@ -161,7 +160,7 @@ class TaxonomyManager
 	 */
 	public function getTaxonomyFactory()
 	{
-		return $this->taxonomyFactory;
+		return $this->factory->get('TaxonomyFactory');
 	}
 
 	/*

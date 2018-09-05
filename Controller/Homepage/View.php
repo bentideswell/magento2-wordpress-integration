@@ -29,28 +29,6 @@ class View extends Action
 	{
 		return true;
 	}
-
-	/*
-	 * @return
-	 */
-	protected function _getForward()
-	{
-		
-  	if ($entity = $this->_getEntity()) {
-	  	$post = $this->registry->registry(Post::ENTITY);
-
-  		if (!$post && ($homepageId = (int)$entity->getHomepagePageId())) {
-  			return $this->resultFactory
-  				->create(ResultFactory::TYPE_FORWARD)
-  				->setModule('wordpress')
-  				->setController('post')
-  				->setParams(array('no_forward' => 1, 'id' => $homepageId))
-  				->forward('view');
-  		}
-		}
-		
-		return parent::_getForward();
-	}
 	
 	/*
 	 * Get the blog breadcrumbs
@@ -84,7 +62,7 @@ class View extends Action
 	{
 		$handles = ['wordpress_homepage_view'];
 		
-		if (!$this->_getEntity()->getBlogPageId()) {
+		if (!$this->_getEntity()->getStaticFrontPageId()) {
 			$handles[] = 'wordpress_front_page';
 		}
 		

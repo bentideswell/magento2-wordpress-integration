@@ -60,6 +60,10 @@ class Factory
 	 */
 	protected function getClassNameFromType($type)
 	{
+		if (strpos($type, 'FishPig') === 0) {
+			return $type;
+		}
+
 		$type   = trim($type, '\\');
 		$prefix = __NAMESPACE__ . '\\';
 		

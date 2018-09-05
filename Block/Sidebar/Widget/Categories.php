@@ -17,8 +17,7 @@ class Categories extends AbstractWidget
 	 */
 	public function getCategories()
 	{
-		$collection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory')
-			->create()
+		$collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
 				->addTaxonomyFilter($this->getTaxonomy())
 				->addParentIdFilter($this->getParentId())
 				->addHasObjectsFilter();

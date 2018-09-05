@@ -2,7 +2,7 @@
 /*
  *
  */
-namespace FishPig\WordPress\Model\App;
+namespace FishPig\WordPress\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
@@ -57,4 +57,14 @@ class Path
 
 		return $this->path = $path;
   }	
+  
+  /*
+	 * Determine whether the path is valid
+	 *
+	 * @return bool
+	 */
+  public function isValid()
+  {
+	  return $this->getPath() !== false;
+  }
 }

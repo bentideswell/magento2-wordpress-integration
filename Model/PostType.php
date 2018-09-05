@@ -5,7 +5,6 @@
 namespace FishPig\WordPress\Model;
 
 /* Parent Class */
-#use Magento\Framework\DataObject;
 use FishPig\WordPress\Model\AbstractModel;
 
 /* Interface */
@@ -14,7 +13,6 @@ use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 /* Constructor Args */
 use FishPig\WordPress\Model\ResourceConnection;
 use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Helper\Router as RouterHelper;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Factory;
 
@@ -337,7 +335,7 @@ class PostType extends AbstractModel implements ViewableInterface
 			->where('post_type=?', $this->getPostType())
 			->where('post_status=?', 'publish');
 				
-		self::$_uriCache[$this->getPostType()] = $this->wpContext->getRouterHelper()->generateRoutesFromArray($db->fetchAll($select));
+		self::$_uriCache[$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
 		
 		return self::$_uriCache[$this->getPostType()];
 	}
@@ -439,5 +437,74 @@ class PostType extends AbstractModel implements ViewableInterface
 		$crumbs['post_type'] = $this;
 		
 		return $crumbs;
+	}
+	
+	/**
+	 * Generate an array of URI's based on $results
+	 *
+	 * @param array $results
+	 * @return array
+	 */
+	public static function generateRoutesFromArray($results, $prefix = '')
+	{
+		$objects = array();
+		$byParent = array();
+
+		foreach($results as $key => $result) {
+			if (!$result['parent']) {
+				$objects[$result['id']] = $result;
+			}
+			else {
+				if (!isset($byParent[$result['parent']])) {
+					$byParent[$result['parent']] = array();
+				}
+
+				$byParent[$result['parent']][$result['id']] = $result;
+			}
+		}
+		
+		if (count($objects) === 0) {
+			return false;
+		}
+
+		$routes = array();
+		
+		foreach($objects as $objectId => $object) {
+			if (($children = self::createLookupTable($objectId, $byParent)) !== false) {
+				$objects[$objectId]['children'] = $children;
+			}
+
+			$routes += self::createLookupTable($objects[$objectId], $prefix);
+		}
+		
+		return $routes;
+	}
+	
+	/**
+	 * Create a lookup table from an array tree
+	 *
+	 * @param array $node
+	 * @param string $idField
+	 * @param string $field
+	 * @param string $prefix = ''
+	 * @return array
+	 */
+	protected static function createLookupTable(&$node, $prefix = '')
+	{
+		if (!isset($node['id'])) {
+			return array();
+		}
+
+		$urls = array(
+			$node['id'] => ltrim($prefix . '/' . urldecode($node['url_key']), '/')
+		);
+
+		if (isset($node['children'])) {
+			foreach($node['children'] as $childId => $child) {
+				$urls += self::createLookupTable($child, $urls[$node['id']]);
+			}
+		}
+
+		return $urls;
 	}
 }

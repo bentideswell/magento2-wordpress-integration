@@ -23,7 +23,7 @@ abstract class AbstractComment extends Post
 			return $this->_getData('comments');
 		}
 
-		$this->setComments(array());
+		$this->setComments([]);
 			
 		if ($this->getCommentCount() > 0 && ($post = $this->getPost()) !== false) {
 			$this->setComments($post->getResource()->getPostComments($post));
@@ -67,9 +67,7 @@ abstract class AbstractComment extends Post
 	{
 		$content = strip_tags(trim($comment->getCommentContent()), $this->getAllowedHtmlTags());
 		
-		return $this->canConvertNewLines()
-			? nl2br($content)
-			: $content;
+		return $this->canConvertNewLines() ? nl2br($content) : $content;
 	}
 	
 	

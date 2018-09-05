@@ -217,7 +217,7 @@ class Post extends AbstractMeta
 	public function getPermalinksByUri($uri = '')
 	{
 		$originalUri = $uri;
-		$permalinks = array();	
+		$permalinks  = [];
 
 		if ($postTypes = $this->postTypeManager->getPostTypes()) {
 			$fields = $this->getPermalinkSqlFields();
@@ -339,7 +339,7 @@ class Post extends AbstractMeta
 
 		foreach($filters as $field => $value) {
 			if (isset($fields[$field])) {
-				$select->where($fields[$field] . '=?', urlencode($value));
+				$select->where($fields[$field] . ' = ?', urlencode($value));
 			}
 		}
 
@@ -401,12 +401,11 @@ class Post extends AbstractMeta
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
-		return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')
-			->create()
-				->setPost($post)
-				->addCommentApprovedFilter()
-				->addParentCommentFilter(0)
-				->addOrderByDate();
+		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
+			->setPost($post)
+			->addCommentApprovedFilter()
+			->addParentCommentFilter(0)
+			->addOrderByDate();
 	}
 	
 	/**
@@ -426,7 +425,7 @@ class Post extends AbstractMeta
 				->limit(1);
 
 			if (($imageId = $this->getConnection()->fetchOne($select)) !== false) {
-				return \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ImageFactory')->create()->load($imageId);
+				return $this->factory->create('Image')->load($imageId);
 			}
 		}
 		
@@ -435,7 +434,7 @@ class Post extends AbstractMeta
 	
 	public function getPostsOnDayByYearMonth($dateStr)
 	{
-		$collection = \Magento\Framework\App\ObjectManager::getInstance()->get('FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory')->create()->getCollection()
+		$collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
 			->addPostDateFilter($dateStr)
 			->addIsViewableFilter();
 			

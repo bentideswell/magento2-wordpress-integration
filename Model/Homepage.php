@@ -25,7 +25,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	/*
 	 * @var
 	 */    
-  protected $blogPage = null;
+  protected $staticPage;
     
 	/*
 	 *
@@ -34,8 +34,8 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getName()
 	{
-		if ($blogPage = $this->getBlogPage()) {
-			return $blogPage->getName();
+		if ($staticPage = $this->getStaticFrontPage()) {
+			return $staticPage->getName();
 		}
 
 		return $this->getBlogName();
@@ -48,8 +48,8 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getUrl()
 	{
-		if ($blogPage = $this->getBlogPage()) {
-			return $blogPage->getUrl();	
+		if ($staticPage = $this->getStaticFrontPage()) {
+			return $staticPage->getUrl();	
 		}
 		
 		return $this->url->getUrl();
@@ -70,26 +70,25 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 *
 	 * @return 
 	 */
-	public function getBlogPage()
+	public function getFrontStaticPage()
 	{
-		if ($this->blogPage !== null) {
-			return $this->blogPage;
-			
+		if ($this->staticPage !== null) {
+			return $this->staticPage;
 		}
 		
-		$this->blogPage = false;
+		$this->staticPage = false;
 
-		if ((int)$this->getBlogPageId() > 0) {
-			$blogPage = $this->factory->create('Post')->load(
-				$this->getBlogPageId()
+		if ((int)$this->getFrontStaticPageId() > 0) {
+			$staticPage = $this->factory->create('Post')->load(
+				$this->getStaticPageId()
 			);
 			
-			if ($blogPage->getId()) {
-				$this->blogPage = $blogPage;
+			if ($staticPage->getId()) {
+				$this->staticPage = $staticPage;
 			}
 		}
 		
-		return $this->blogPage;
+		return $this->staticPage;
 	}
 	
 	/*
@@ -97,7 +96,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 *
 	 * @return false|int
 	 */
-	public function getHomepagePageId()
+	public function getFrontPageId()
 	{
 		if ($this->optionManager->getOption('show_on_front') === 'page') {
 			if ($pageId = $this->optionManager->getOption('page_on_front')) {
@@ -113,7 +112,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 *
 	 * @return false|int
 	 */
-	public function getBlogPageId()
+	public function getPageForPostsId()
 	{
 		if ($this->optionManager->getOption('show_on_front') === 'page') {
 			if ($pageId = $this->optionManager->getOption('page_for_posts')) {

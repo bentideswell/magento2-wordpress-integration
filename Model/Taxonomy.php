@@ -4,49 +4,17 @@
  */	
 namespace FishPig\WordPress\Model;
 
+/* Parent Class */
+use FishPig\WordPress\Model\AbstractModel;
+
 /* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-/* Parent Class */
-use Magento\Framework\DataObject;
+/* Misc */
+use FishPig\WordPress\Model\PostTypeManager;
 
-/* Constructor Args */
-use FishPig\WordPress\Model\TaxonomyManager;
-use FishPig\WordPress\Model\ResourceConnection;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Helper\Router as RouterHelper;
-use FishPig\WordPress\Model\TermFactory;
-
-class Taxonomy extends DataObject/* implements ViewableInterface*/
-{
-	/*
-	 *
-	 */
-	protected $termFactory;
-
-  /*
-	 *
-	 *
-	 * @param  WordPressURL $url
-	 * @param  array        $data
-	 * @return void
-	 */
-	public function __construct(
-	  ResourceConnection $resourceConnection, 
-	                 Url $url, 
-	        RouterHelper $routerHelper, 
-	         TermFactory $termFactory, 
-	              array $data = []
-  )
-	{
-		$this->resourceConnection = $resourceConnection;
-		$this->url = $url;
-		$this->routerHelper = $routerHelper;
-		$this->termFactory  = $termFactory;
-		
-		parent::__construct($data);
-	}
-	
+class Taxonomy extends AbstractModel/* implements ViewableInterface*/
+{	
 	/**
 	 * Get the URI's that apply to $uri
 	 *
@@ -75,10 +43,13 @@ class Taxonomy extends DataObject/* implements ViewableInterface*/
 		
 		$this->setAllUris(false);
 
-		$select = $this->resourceConnection->getConnection()->select()
+		$resource   = $this->wpContext->resourceConnection;
+		$connection = $resource->getConnection();
+		
+		$select = $connection->select()
 			->from(
 				array(
-					'term' => $this->resourceConnection->getTable('wordpress_term')), 
+					'term' => $resource->getTable('wordpress_term')), 
 					array(
 						'id' => 'term_id', 
 						'url_key' => 'slug',
@@ -86,13 +57,13 @@ class Taxonomy extends DataObject/* implements ViewableInterface*/
 					)
 				)
 				->join(
-					array('tax' => $this->resourceConnection->getTable('wordpress_term_taxonomy')),
-					$this->resourceConnection->getConnection()->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
+					array('tax' => $resource->getTable('wordpress_term_taxonomy')),
+					$connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
 					'parent'
 				);
 
-		if ($results = $this->resourceConnection->getConnection()->fetchAll($select)) {
-			$this->setAllUris($this->routerHelper->generateRoutesFromArray($results, $this->getSlug()));
+		if ($results = $connection->fetchAll($select)) {
+			$this->setAllUris(PostType::generateRoutesFromArray($results, $this->getSlug()));
 		}
 
 		return $this->_getData('all_uris');

@@ -103,16 +103,14 @@ class Item extends Post
 		if (!$this->isCustomLink()) {
 			if ($this->getObjectType()) {
 				if ($menuObjectId = $this->getMetaValue('_menu_item_object_id')) {
-					$om = \Magento\Framework\App\ObjectManager::getInstance();
-
 					if ($this->isPostTypeLink())  {
-						$object = $om->get('FishPig\WordPress\Model\PostFactory')->create()->setPostType($this->getObjectType());
+						$object = $this->factory->create('Post')->setPostType($this->getObjectType());
 					}
 					else if ($this->isTaxonomyLink()) {
-						$object = $om->get('FishPig\WordPress\Model\TermFactory')->create()->setTaxonomy($this->getObjectType());
+						$object = $this->factory->create('Term')->setTaxonomy($this->getObjectType());
 					}
 					else {
-						$object = $om->get('FishPig\WordPress\Model\\' . ucwords($this->getObjectType()) . 'Factory')->create();
+						$object = $this->factory->create('FishPig\WordPress\Model\\' . ucwords($this->getObjectType()));
 					}
 				
 					if ($object && $object->setSkipObjectCache(true)->load($menuObjectId)->getId()) {

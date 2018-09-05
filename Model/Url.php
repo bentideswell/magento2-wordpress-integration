@@ -71,7 +71,28 @@ class Url
 	  */
 	public function getUrl($uri = '')
 	{
-		return $this->getHomeUrl()	. '/' . $uri;
+		
+		$url = $this->getHomeUrl()	. '/' . $uri;
+		
+		if (!$this->hasTrailingSlash()) {
+			$url = rtrim($url, '/');
+		}
+		
+		return $url;
+	}
+	
+	/*
+	 * Determine whether to use a trailing slash on URLs
+	 *
+	 * @return bool
+	 */
+	public function hasTrailingSlash()
+	{
+		if ($permalinkStructure = $this->optionManager->getOption('permalink_structure')) {
+			return substr($permalinkStructure, -1) === '/';
+		}
+		
+		return false;
 	}
 	
 	/*

@@ -12,18 +12,17 @@
 			</argument>
 		</arguments>
 	</type>
-	<!-- Shortcodes -->
-	<!--
-	<type name="FishPig\WordPress\Model\ShortcodeManager">
+	<!-- Integration Manager -->
+	<type name="FishPig\WordPress\Model\IntegrationManager">
 		<arguments>
-			<argument name="shortcodes" xsi:type="array">
-				<item name="oembed" xsi:type="object">FishPig\WordPress\Shortcode\oEmbed</item>
-				<item name="gallery" xsi:type="object">FishPig\WordPress\Model\Shortcode\Gallery</item>
-				<item name="caption" xsi:type="object">FishPig\WordPress\Shortcode\Caption</item>
+			<argument name="integrationTests" xsi:type="array">
+				<item name="path" xsi:type="object">FishPig\WordPress\Model\Integration\PathTest</item>
+				<item name="url" xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
+				<item name="theme" xsi:type="object">FishPig\WordPress\Model\Integration\ThemeTest</item>
+				<item name="core" xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
 			</argument>
 		</arguments>
 	</type>
-	-->
 	<!-- Widgets -->
 	<type name="FishPig\WordPress\Model\WidgetManager">
 		<arguments>
@@ -37,7 +36,6 @@
 				<item name="tag_cloud" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Cloud</item>
 				<item name="text" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Text</item>
 				<item name="meta" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Meta</item>
-				<!--<item name="rss" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Rss</item>-->
 				<item name="nav_menu" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\NavMenu</item>
 				<item name="calendar" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Calendar</item>
 			</argument>

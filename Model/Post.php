@@ -286,10 +286,9 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getTermCollection($taxonomy)
 	{
-		return $this->factory->create('Term')
-			->getCollection()
-				->addTaxonomyFilter($taxonomy)
-				->addPostIdFilter($this->getId());
+		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
+			->addTaxonomyFilter($taxonomy)
+			->addPostIdFilter($this->getId());
 	}
 	
 	/*
@@ -619,7 +618,7 @@ class Post extends AbstractMeta implements ViewableInterface
 		if (!$this->hasUrl()) {
 			$this->setUrl($this->getGuid());
 			
-			if ($this->isHomepage()) {
+			if ($this->isFrontPage()) {
 				$this->setUrl($this->url->getUrl());
 			}
 			else if ($this->hasPermalink()) {
@@ -763,14 +762,18 @@ class Post extends AbstractMeta implements ViewableInterface
 	 *
 	 * @return bool
 	 */
-	public function isHomepage()
+	public function isFrontPage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getHomepagePageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getFrontPageId();
 	}
-		
-	public function isBlogListingPage()
+
+	/*
+	 *
+	 * @return bool
+	 */
+	public function isPageForPosts()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getBlogPageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getPageForPostsId();
 	}
 
 	/*
@@ -847,16 +850,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function setAsGlobal()
 	{
-		if (!$this->getWpPostObject()) {
-			$this->_eventManager->dispatch('wordpress_post_setasglobal_before', array('post' => $this));
-		}
-
-		if ($this->getWpPostObject()) {
-			$GLOBALS['post'] = $this->getWpPostObject();			
-		}
-		else {
-			$GLOBALS['post'] = json_decode(json_encode(array('ID' => $this->getId())));
-		}
+		$GLOBALS['post'] = json_decode(json_encode(array('ID' => $this->getId())));
 		
 		return $this;
 	}

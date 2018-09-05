@@ -1,18 +1,17 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
+ *
+ *
  */
-
 namespace FishPig\WordPress\Helper;
 
-use \FishPig\WordPress\Model\App;
-use \Magento\Store\Model\StoreManagerInterface;
-use \Magento\Framework\App\Filesystem\DirectoryList;
-use \Magento\Framework\Module\ModuleListInterface;
-use \FishPig\WordPress\Model\App\Path as WordPressPath;
+/* Constructor Args */
+use FishPig\WordPress\Model\IntegrationManager;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Module\ModuleListInterface;
+use FishPig\WordPress\Model\Path as WordPressPath;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\Url as WordPressURL;
 
@@ -46,22 +45,22 @@ class AssetInjector
 	 * @return
 	 */
 	public function __construct(
-		App $app, 
+		   IntegrationManager $integrationManager, 
 		StoreManagerInterface $storeManager, 
-		DirectoryList $directoryList, 
-		ModuleListInterface $moduleList,
-		WordPressPath $wpPath,
-		ShortcodeManager $shortcode,
-		WordPressURL $wpUrl
+		        DirectoryList $directoryList, 
+		  ModuleListInterface $moduleList,
+		        WordPressPath $wpPath,
+		     ShortcodeManager $shortcode,
+		         WordPressURL $wpUrl
 	)
 	{
-		$this->app = $app->init();
-		$this->storeManager = $storeManager;
-		$this->directoryList = $directoryList;
-		$this->moduleVersion = $moduleList->getOne('FishPig_WordPress')['setup_version'];
-		$this->wpPath = $wpPath;
-		$this->shortcodeManager = $shortcode;
-		$this->wpUrl = $wpUrl;
+		$this->integrationManager = $integrationManager;
+		$this->storeManager       = $storeManager;
+		$this->directoryList      = $directoryList;
+		$this->moduleVersion      = $moduleList->getOne('FishPig_WordPress')['setup_version'];
+		$this->wpPath             = $wpPath;
+		$this->shortcodeManager   = $shortcode;
+		$this->wpUrl              = $wpUrl;
 	}
 	
 	/*
@@ -73,7 +72,9 @@ class AssetInjector
 			return false;
 		}
 		
-		if (!$this->app->canRun() || $this->isApiRequest() || $this->isAjaxRequest()) {
+		$this->integrationManager->runTests();
+
+		if ($this->isApiRequest() || $this->isAjaxRequest()) {
 			return false;
 		}
 
@@ -161,7 +162,7 @@ class AssetInjector
 					
 					// This is needed to fix ../ in URLs
 					$realPathUrl = $originalScriptUrl;
-					
+
 					if (strpos($originalScriptUrl, '../') !== false) {
 						$urlParts = explode('/', $originalScriptUrl);
 						
@@ -300,8 +301,8 @@ class AssetInjector
 			return $externalScriptUrlFull;
 		}
 
-		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
-		$localScriptFile 	 = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
+		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);		
+		$localScriptFile 	 = $this->wpPath->getPath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
 		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 

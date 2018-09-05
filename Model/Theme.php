@@ -1,81 +1,76 @@
 <?php
 /*
- * @category Fishpig
- * @package Fishpig_Wordpress
- * @license http://fishpig.co.uk/license.txt
- * @author Ben Tideswell <help@fishpig.co.uk>
+ *
+ *
  */
 namespace FishPig\WordPress\Model;
 
+/* Constructor Args */
 use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\App\Integration\Exception as IntegrationException;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\State;
+use FishPig\WordPress\Model\Path;
+
+/* Misc */
+use FishPig\WordPress\Model\Integration\IntegrationException;
 
 class Theme
 {
 	/*
-	 * @const
+	 *
+	 * @var
+	 *
 	 */
 	const THEME_NAME = 'fishpig';
 	
 	/*
-	 * @const
-	 */
-	const DS = DIRECTORY_SEPARATOR;
-	
-	/*
+	 *
 	 * @var
-	 */
-	protected $path = '';
-	
-	/*
-	 * @var
+	 *
 	 */
 	protected $optionManager;
-	
+
+	/*
+	 *
+	 * @var
+	 *
+	 */
 	protected $scopeConfig;
 	
 	/*
-	 * @var StoreManagerInterface
+	 *
+	 * @var
+	 *
 	 */
 	protected $storeManager;
 	
 	/*
 	 *
-	 *
-	 *
-	 */
-  public function __construct(OptionManager $optionManager, ScopeConfigInterface $scopeConfig, StoreManagerInterface $storeManager, State $state)
-  {
-    $this->optionManager = $optionManager;
-    $this->scopeConfig   = $scopeConfig;
-    $this->storeManager  = $storeManager;
-    $this->state = $state;
-  }
-
-	/*
-	 *
-	 *
+	 * @var
 	 *
 	 */
-	public function setPath($path)
-	{
-		$this->path = $path;
-		
-		return $this;
-	}
+	protected $path;
 	
 	/*
 	 *
 	 *
 	 *
 	 */
-	public function getPath()
-	{
-		return $this->path;
-	}
+  public function __construct(
+	          OptionManager $optionManager,
+		 ScopeConfigInterface $scopeConfig,
+		StoreManagerInterface $storeManager,
+		                State $state,
+		                 Path $path
+  )
+  {
+    $this->optionManager = $optionManager;
+    $this->scopeConfig   = $scopeConfig;
+    $this->storeManager  = $storeManager;
+    $this->state         = $state;
+    $this->path          = $path;
+  }
 
 	/*
 	 *
@@ -87,18 +82,16 @@ class Theme
 		if ($this->state->getAreaCode() !== 'adminhtml') {
 			return $this;
 		}
-		
-		$ds = DIRECTORY_SEPARATOR;
-		
-		if (!$this->path || !is_dir($this->path)) {
+
+		if (!$this->path->isValid()) {
 			IntegrationException::throwException('Empty or invalid path set.');
 		}
 
 		$targetDir = $this->getTargetDir();
-		$sourceDir = $this->getModuleDir() . $ds . 'wptheme';
+		$sourceDir = $this->getModuleDir() . '/wptheme';
 		
-		$sourceCssFile = $sourceDir . $ds . 'style.css';
-		$targetCssFile = $targetDir . $ds . 'style.css';
+		$sourceCssFile = $sourceDir . '/style.css';
+		$targetCssFile = $targetDir . '/style.css';
 
 		if (!is_dir($targetDir) || !is_file($targetCssFile) || md5_file($sourceCssFile) !== md5_file($targetCssFile)) {
 			// Either theme not installed or version changes
@@ -120,8 +113,8 @@ class Theme
 					continue;
 				}
 				
-				$targetFile = $targetDir . self::DS . $sourceFile;
-				$sourceFile = $sourceDir . self::DS . $sourceFile;
+				$targetFile = $targetDir . '/' . $sourceFile;
+				$sourceFile = $sourceDir . '/' . $sourceFile;
 				
 				if (!$this->isFileWriteable($targetFile)) {
 					IntegrationException::throwException('Unable to install a WordPress theme file due to permissions. File is ' . $targetFile);
@@ -172,7 +165,7 @@ class Theme
 	 */
 	public function getTargetDir()
 	{
-		return $this->path . self::DS . 'wp-content' . self::DS . 'themes' . self::DS . self::THEME_NAME;
+		return $this->path->getPath() . '/wp-content/themes/' . self::THEME_NAME;
 	}
 	
 	/*
@@ -182,7 +175,7 @@ class Theme
 	 */
 	public function getSourceDir()
 	{
-		return $this->getModuleDir() . self::DS . 'wptheme';
+		return $this->getModuleDir() . '/wptheme';
 	}
 	
 	/*

@@ -31,6 +31,8 @@ class View extends Action
   }
 
   /*
+	 *
+	 *
 	 * @return bool
 	 */
   protected function _canPreview()
@@ -39,18 +41,17 @@ class View extends Action
   }
 
 	/*
+	 *
+	 *
 	 * @return
 	 */
 	protected function _getForward()
 	{
   	if ($entity = $this->_getEntity()) {
-  		if ($entity->isBlogListingPage()) {
-  			return $this->resultFactory
-  				->create(ResultFactory::TYPE_FORWARD)
-  				->setModule('wordpress')
-  				->setController('homepage')
-  				->setParams(array('no_forward' => 1))
-  				->forward('view');
+  		if ($entity->isFrontPage()) {
+				if ((int)$this->getRequest()->getParam('is_front') === 0) {
+					return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($this->url->getHomeUrl());
+				}
   		}
   		
   		if ($entity->getPostStatus() === 'private' && !$this->wpContext->getCustomerSession()->isLoggedIn()) {
@@ -89,7 +90,7 @@ class View extends Action
    */
   protected function _getBreadcrumbs()
   {
- 		if ($this->_getEntity()->isHomepage()) {
+ 		if ($this->_getEntity()->isFrontPage()) {
 	 		return [];
 	 	}
 	 	
@@ -134,7 +135,7 @@ class View extends Action
     
     $layoutHandles = ['wordpress_post_view_default'];
     
-		if ($post->isHomepage()) {
+		if ($post->isFrontPage()) {
 			$layoutHandles[] = 'wordpress_front_page';
 		}
 		

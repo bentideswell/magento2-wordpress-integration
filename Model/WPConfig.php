@@ -2,16 +2,32 @@
 /*
  *
  */
-namespace FishPig\WordPress\Model\App;
+namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\App\Path as WordPressPath;
+/* Constructor Args */
+use FishPig\WordPress\Model\Path;
 
 class WPConfig
 {   
+	/*
+	 *
+	 * @var Path
+	 *
+	 */
 	protected $path;
+	
+	/*
+	 *
+	 * @var array
+	 *
+	 */
 	protected $data;
 	
-	public function __construct(WordPressPath $wpPath)
+	/*
+	 *
+	 *
+	 */
+	public function __construct(Path $wpPath)
 	{
 		$this->path = $wpPath->getPath();
 		
