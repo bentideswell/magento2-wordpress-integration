@@ -5,6 +5,7 @@
 		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\Magento\Framework\App\Router\ActionListPlugin" sortOrder="10" disabled="false"/>
 	</type>
 	<!-- Add blog links to XML sitemap -->
+	<!--
 	<type name="Magento\Sitemap\Model\ItemProvider\Composite">
 		<arguments>
 			<argument name="itemProviders" xsi:type="array">
@@ -12,6 +13,7 @@
 			</argument>
 		</arguments>
 	</type>
+	-->
 	<!-- Integration Manager -->
 	<type name="FishPig\WordPress\Model\IntegrationManager">
 		<arguments>

@@ -36,14 +36,14 @@ class Integrate extends Template
 
 	/*
 	 *
-	 * @var \FishPig\WordPress\Model\App
+	 * @var \FishPig\WordPress\Model\IntegrationManager
 	 *
 	 */
 	protected $integrationManager;
 	
 	/*
 	 *
-	 * @var \FishPig\WordPress\Model\App\Url
+	 * @var \FishPig\WordPress\Model\Url
 	 *
 	 */
 	protected $url;

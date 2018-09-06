@@ -7,6 +7,9 @@ namespace FishPig\WordPress\Model;
 /* Constructor Args */
 use FishPig\WordPress\Model\Path;
 
+/* Misc */
+use FishPig\WordPress\Model\Integration\IntegrationException;
+
 class WPConfig
 {   
 	/*
@@ -36,6 +39,10 @@ class WPConfig
 		}
 	}
 
+	/*
+	 *
+	 *
+	 */
 	protected function initialise()
 	{
 		if (is_null($this->data)) {
@@ -50,7 +57,7 @@ class WPConfig
 			$wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
 
 			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
-				\FishPig\WordPress\Model\App\Integration\Exception::throwException('Unable to extract values from wp-config.php');
+				IntegrationException::throwException('Unable to extract values from wp-config.php');
 			}
 
 			$this->data = array_combine($matches[1], $matches[3]);
