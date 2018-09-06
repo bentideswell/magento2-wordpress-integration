@@ -1,74 +1,114 @@
 <?php
-/**
- * @category    Fishpig
- * @package     FishPig/WordPress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
- 
 namespace FishPig\WordPress\Model;
 
+/* Parent Class */
+use FishPig\WordPress\Model\Meta\AbstractMeta;
+
+/* Interface */
 use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements ViewableInterface
+class Post extends AbstractMeta implements ViewableInterface
 {
-	/**
+	/*
 	 *
-	**/
+	 */
 	const ENTITY = 'wordpress_post';
 
-	/**
+	/*
 	 * @const string
-	*/
+   */
 	const CACHE_TAG = 'wordpress_post';
 	
-	/**
+	/*
 	 * Event data
 	 *
 	 * @var string
-	*/
+   */
 	protected $_eventPrefix = 'wordpress_post';
 	protected $_eventObject = 'post';
-	
-	protected $_homepageModel = null;
-	
-	/**
+		
+	/*
 	 *
-	**/
+	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Post');
-        
-        return parent::_construct();
+		$this->_init('FishPig\WordPress\Model\ResourceModel\Post');
+		
+		return parent::_construct();
 	}
 
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function getName()
 	{
 		return $this->_getData('post_title');
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function getMetaDescription()
 	{
 		return $this->getExcerpt(20);
 	}
 
-	/**
+	/*
+	 * Get the page title
 	 *
-	**/
+	 * @return string
+	 */
+	public function getPageTitle()
+	{
+		return sprintf('%s | %s', $this->getName(), $this->getBlogName());
+	}
+
+	/*
+	 * Get the meta keywords
+	 *
+	 * @return string
+	 */
+	public function getMetaKeywords()
+	{
+		return '';
+	}
+	
+	/*
+	 * Get the robots meta value
+	 *
+	 * @return string
+	 */
+	public function getRobots()
+	{
+		return (int)$this->optionManager->getOption('blog_public') === 0
+			? 'noindex,nofollow'
+			: 'index,follow';
+	}
+
+	/*
+	 * Get the canonical URL
+	 *
+	 * @return string
+	 */
+	public function getCanonicalUrl()
+	{
+		return $this->getUrl();
+	}
+	
+	/*
+	 *
+	 */
 	public function isType($type)
 	{
 		return $this->getPostType() === $type;
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function getTypeInstance()
 	{
 		if (!$this->hasTypeInstance() && $this->getPostType()) {
@@ -79,18 +119,18 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 					);
 				}
 			}
-			else if ($typeInstance = $this->_app->getPostType($this->getPostType())) {
+			else if ($typeInstance = $this->postTypeManager->getPostType($this->getPostType())) {
 				$this->setTypeInstance($typeInstance);
 			}
 			else {
-				$this->setTypeInstance($this->_app->getPostType('post'));
+				$this->setTypeInstance($this->postTypeManager->getPostType('post'));
 			}
 		}
 		
 		return $this->_getData('type_instance');
 	}
 
-	/**
+	/*
 	 * Set the categories after loading
 	 *
 	 * @return $this
@@ -104,7 +144,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this;
 	}
 
-	/**
+	/*
 	 * Retrieve the post GUID
 	 *
 	 * @return string
@@ -112,16 +152,16 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getGuid()
 	{
 		if ($this->getPostType() === 'page') {
-			return $this->_wpUrlBuilder->getUrl() . '?page_id=' . $this->getId();
+			return $this->url->getUrl() . '?page_id=' . $this->getId();
 		}
 		else if ($this->getPostType() === 'post') {
-			return $this->_wpUrlBuilder->getUrl() . '?p=' . $this->getId();
+			return $this->url->getUrl() . '?p=' . $this->getId();
 		}
 		
-		return $this->_wpUrlBuilder->getUrl() . '?p=' . $this->getId() . '&post_type=' . $this->getPostType();
+		return $this->url->getUrl() . '?p=' . $this->getId() . '&post_type=' . $this->getPostType();
 	}
 
-	/**
+	/*
 	 * Retrieve the post excerpt
 	 * If no excerpt, try to shorten the post_content field
 	 *
@@ -158,7 +198,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getContent('excerpt');
 	}
 	
-	/**
+	/*
 	 * Determine twhether the post has a more tag in it's content field
 	 *
 	 * @return bool
@@ -168,7 +208,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return strpos($this->getData('post_content'), '<!--more') !== false;
 	}
 	
-	/**
+	/*
 	 * Retrieve the post teaser
 	 * This is the data from the post_content field upto to the MORE_TAG
 	 *
@@ -201,7 +241,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	}
 
 
-	/**
+	/*
 	 * Retrieve the read more anchor text
 	 *
 	 * @return string|false
@@ -212,14 +252,14 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return stripslashes(__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
 	}
 	
-	/**
+	/*
 	 * Get the parent term
 	 * This is the term with the taxonomy as $taxonomy with the lowest term_id
 	 * If Yoast SEO is installed, the primary category will be used (if $taxonomy === category)
 	 *
 	 * @param string $taxonomy
 	 * @return \FishPig\WordPress\Model\Term
-	 **/
+	  */
 	public function getParentTerm($taxonomy)
 	{
 		/*
@@ -228,7 +268,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 				return $category;
 			}
 		}
-		*/
+	   */
 		
 		$terms = $this->getTermCollection($taxonomy)
 			->setPageSize(1)
@@ -238,7 +278,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return count($terms) > 0 ? $terms->getFirstItem() : false;
 	}
 	
-	/**
+	/*
 	 * Get a collection of terms by the taxonomy
 	 *
 	 * @param string $taxonomy
@@ -246,15 +286,14 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function getTermCollection($taxonomy)
 	{
-		return $this->_factory->getFactory('Term')->create()
-			->getCollection()
-				->addTaxonomyFilter($taxonomy)
-				->addPostIdFilter($this->getId());
+		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
+			->addTaxonomyFilter($taxonomy)
+			->addPostIdFilter($this->getId());
 	}
 	
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function getTermCollectionAsString($taxonomy)
 	{
 		$key = 'term_collection_as_string_' . $taxonomy;
@@ -286,7 +325,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData($key);
 	}
 	
-	/**
+	/*
 	 * Retrieve the previous post
 	 *
 	 * @return false|\FishPig\WordPress\Model\Post
@@ -313,7 +352,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData('previous_post');
 	}
 	
-	/**
+	/*
 	 * Retrieve the next post
 	 *
 	 * @return false|\FishPig\WordPress\Model\Post
@@ -340,7 +379,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData('next_post');
 	}
 	
-	/**
+	/*
 	 * Retrieve the URL for the comments feed
 	 *
 	 * @return string
@@ -355,40 +394,31 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 *
 	 * @return string
 	 */
-	public function getPostContent($context = 'default')
+	public function getPostContent()
 	{
-		return $this->getContent($context);
+		return $this->getContent();
 	}
 	
-	/**
+	/*
 	 * Gets the post content
 	 *
 	 * @return string
 	 */
-	public function getContent($context = 'default')
+	public function getContent()
 	{
-		$key = 'processed_post_content_' . $context;
+		$key = '__processed_post_content';
 		
 		if (!$this->hasData($key)) {
-			$transport = new \Magento\Framework\DataObject();
+			$postContent = $this->shortcodeManager->renderShortcode($this->_getData('post_content'), $this);
+			$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
 
-			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_get_post_content', array('transport' => $transport, 'post' => $this));
-			
-			if ($transport->getPostContent()) {
-				$this->setData($key, $transport->getPostContent());
-			}
-			else {
-				$this->setData(
-					$key,
-					$this->_filter->process($this->_getData('post_content'))
-				);
-			}
+			$this->setData($key, $postContent);
 		}
 		
-		return $this->_getData($key);
+		return $this->getData($key);
 	}
 
-	/**
+	/*
 	 * Returns a collection of comments for this post
 	 *
 	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection
@@ -402,7 +432,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getData('comments');
 	}
 
-	/**
+	/*
 	 * Returns a collection of images for this post
 	 * 
 	 * @return \FishPig\WordPress\Model\ResourceModel\Image\Collection
@@ -414,15 +444,14 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		if (!$this->hasData('images')) {
 			$this->setImages(
-				$this->_factory->getFactory('Image')->create()
-					->getCollection()->setParent($this->getData('ID'))
+				$this->factory->create('Image')->getCollection()->setParent($this->getData('ID'))
 			);
 		}
 		
 		return $this->getData('images');
 	}
 
-	/**
+	/*
 	 * Returns the featured image for the post
 	 *
 	 * This image must be uploaded and assigned in the WP Admin
@@ -446,7 +475,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getImage();
 	}
 	
-	/**
+	/*
 	 * Get the model for the author of this post
 	 *
 	 * @return \FishPig\WordPress\Model\User
@@ -455,7 +484,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	{
 		if (!$this->hasUser()) {
 			$this->setUser(
-				$this->_factory->getFactory('User')->create()->load($this->getUserId())
+				$this->factory->create('User')->load($this->getUserId())
 			);
 		}
 		
@@ -467,7 +496,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return (int)$this->getPostAuthor();
 	}
 	
-	/**
+	/*
 	 * Returns the post date formatted
 	 * If not format is supplied, the format specified in your Magento config will be used
 	 *
@@ -479,10 +508,10 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->_viewHelper->formatDate($date, $format);
+		return $this->wpContext->getDateHelper()->formatDate($date, $format);
 	}
 	
-	/**
+	/*
 	 * Returns the post date formatted
 	 * If not format is supplied, the format specified in your Magento config will be used
 	 *
@@ -494,10 +523,10 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->_viewHelper->formatDate($date, $format);
+		return $this->wpContext->getDateHelper()->formatDate($date, $format);
 	}
 	
-	/**
+	/*
 	 * Returns the post time formatted
 	 * If not format is supplied, the format specified in your Magento config will be used
 	 *
@@ -509,10 +538,10 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$date = date('Y-m-d H:i:s');
 		}
 		
-		return $this->_viewHelper->formatDate($date, $format);
+		return $this->wpContext->getDateHelper()->formatDate($date, $format);
 	}
 
-	/**
+	/*
 	 * Determine whether the post has been published
 	 *
 	 * @return bool
@@ -522,7 +551,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getPostStatus() == 'publish';
 	}
 
-	/**
+	/*
 	 * Determine whether the post has been published
 	 *
 	 * @return bool
@@ -532,7 +561,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getPostStatus() == 'pending';
 	}
 
-	/**
+	/*
 	 * Retrieve the preview URL
 	 *
 	 * @return string
@@ -540,13 +569,13 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	public function getPreviewUrl()
 	{
 		if ($this->isPending()) {
-			return $this->_app->getUrl('?p=' . $this->getId() . '&preview=1');
+			return $this->url->getUrl('?p=' . $this->getId() . '&preview=1');
 		}
 		
 		return '';
 	}
 	
-	/**
+	/*
 	 * Determine whether the current user can view the post/page
 	 * If visibility is protected and user has supplied wrong password, return false
 	 *
@@ -557,7 +586,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return true;
 	}
 	
-	/**
+	/*
 	 * Determine whether the post is a sticky post
 	 * This only works if the post collection has been loaded with addStickyPostsToCollection
 	 *
@@ -568,7 +597,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData('is_sticky');
 	}
 	
-	/**
+	/*
 	 * Determine whether a post object can be viewed
 	 *
 	 * @return string
@@ -579,7 +608,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			|| ($this->getPostStatus() === 'private' && $this->_app->getConfig()->isLoggedIn());
 	}
 	
-	/**
+	/*
 	 * Wrapper for self::getPermalink()
 	 *
 	 * @return string
@@ -589,18 +618,18 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		if (!$this->hasUrl()) {
 			$this->setUrl($this->getGuid());
 			
-			if ($this->isHomepage()) {
-				$this->setUrl($this->_wpUrlBuilder->getUrl());
+			if ($this->isFrontPage()) {
+				$this->setUrl($this->url->getUrl());
 			}
 			else if ($this->hasPermalink()) {
-				$this->setUrl($this->_wpUrlBuilder->getUrl(
+				$this->setUrl($this->url->getUrl(
 					$this->_urlEncode($this->_getData('permalink'))
 				));
 			}
 			else if ($this->getTypeInstance()->isHierarchical()) {
 				if ($uris = $this->getTypeInstance()->getAllRoutes()) {
 					if (isset($uris[$this->getId()])) {
-						$this->setUrl($this->_wpUrlBuilder->getUrl($uris[$this->getId()] . '/'));
+						$this->setUrl($this->url->getUrl($uris[$this->getId()] . '/'));
 					}
 				}
 			}
@@ -609,7 +638,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData('url');
 	}
 
-	/**
+	/*
 	 * Encode the URL, ignoring '/' character
 	 *
 	 * @param string $url
@@ -630,7 +659,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return urlencode($url);
 	}
 	
-	/**
+	/*
 	 * Get the parent ID of the post
 	 *
 	 * @return int
@@ -640,7 +669,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return (int)$this->_getData('post_parent');
 	}
 		
-	/**
+	/*
 	 * Retrieve the parent page
 	 *
 	 * @return false|\FishPig\WordPress\Model\Post
@@ -651,7 +680,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 			$this->setParentPost(false);
 
 			if ($this->getParentId()) {
-				$parent = $this->_factory->getFactory('Post')->create()
+				$parent = $this->factory->create('Post')
 					->setPostType($this->getPostType() === 'revision' ? '*' : $this->getPostType())
 					->load($this->getParentId());
 				
@@ -664,7 +693,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData('parent_post');
 	}
 	
-	/**
+	/*
 	 * Retrieve the page's children pages
 	 *
 	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
@@ -674,7 +703,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getCollection()->addPostParentIdFilter($this->getId());
 	}
 	
-	/**
+	/*
 	  * Determine whether children exist
 	  *
 	  * @return bool
@@ -684,7 +713,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getResource()->hasChildrenPosts($this);
 	}
 		
-	/**
+	/*
 	 * The methods here are legacy methods that have been ported over from the old Page class
 	 * These are deprecated and will be removed shortly.
 	 */
@@ -709,69 +738,64 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->getChildrenPosts();
 	}
 	
-	public function isHomepagePage()
-	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->_app->getHomepagePageId();
-	}
-	
-	public function isBlogListingPage()
-	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->_app->getBlogPageId();
-	}
-	
-	/**
+	/*
 	 *
 	 *
 	 * @return  string
-	**/
+	 */
 	public function getMetaTableAlias()
 	{
 		return 'wordpress_post_meta';
 	}
 	
-	/**
+	/*
 	 *
 	 *
 	 * @return  string
-	**/
+	 */
 	public function getMetaTableObjectField()
 	{
 		return 'post_id';
 	}
 	
-	/**
+	/*
 	 *
 	 * @return bool
-	**/
-	public function isHomepage()
+	 */
+	public function isFrontPage()
 	{
-		return $this->isType('page') && (int)$this->getId() === (int)$this->_app->getHomepagePageId();
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getFrontPageId();
 	}
-	
-	/**
+
+	/*
+	 *
+	 * @return bool
+	 */
+	public function isPageForPosts()
+	{
+		return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getPageForPostsId();
+	}
+
+	/*
 	 *
 	 * @return \FishPig\WordPress\Model\Homepage
-	**/
+	 */
 	protected function _getHomepageModel()
 	{
-		if ($this->homepageModel === null) {
-			$this->homepageModel = $this->_factory->getFactory('Homepage')->create();
-		}
-		
-		return $this->homepageModel;
+		return $this->factory->get('Homepage');
 	}
 	
-	/**
+	/*
 	 * Get the post format string (eg. video or aside)
 	 *
 	 * @return string
-	**/
+	 */
 	public function getPostFormat()
 	{
 		if (!$this->hasPostFormat()) {
 			$this->setPostFormat('');
 
-			$formats = $this->_factory->getFactory('Term')->create()->getCollection()
+			$formats = $this->factory->create('Term')->getCollection()
 				->addTaxonomyFilter('post_format')
 				->setPageSize(1)
 				->addObjectIdFilter($this->getId())
@@ -787,11 +811,11 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 		return $this->_getData('post_format');
 	}
 	
-	/**
+	/*
 	  * Get the latest revision of the post
 	  *
 	  * @return FishPig\WordPress\Model\Post
-	 **/
+	  */
 	 public function getLatestRevision()
 	 {
 	 	if (!$this->hasLatestRevision()) {
@@ -808,7 +832,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 	return $this->_getData('latest_revision');
 	 }
 
-	/**
+	/*
 	 * Return cache identities
 	 *
 	 * @return string[]
@@ -826,16 +850,7 @@ class Post extends \FishPig\WordPress\Model\Meta\AbstractMeta implements Viewabl
 	 */
 	public function setAsGlobal()
 	{
-		if (!$this->getWpPostObject()) {
-			\Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Framework\Event\Manager')->dispatch('wordpress_post_setasglobal_before', array('post' => $this));
-		}
-
-		if ($this->getWpPostObject()) {
-			$GLOBALS['post'] = $this->getWpPostObject();			
-		}
-		else {
-			$GLOBALS['post'] = json_decode(json_encode(array('ID' => $this->getId())));
-		}
+		$GLOBALS['post'] = json_decode(json_encode(array('ID' => $this->getId())));
 		
 		return $this;
 	}

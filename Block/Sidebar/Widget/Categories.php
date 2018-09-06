@@ -17,10 +17,10 @@ class Categories extends AbstractWidget
 	 */
 	public function getCategories()
 	{
-		$collection = $this->_factory->getFactory('Term')->create()->getCollection()
-			->addTaxonomyFilter($this->getTaxonomy())
-			->addParentIdFilter($this->getParentId())
-			->addHasObjectsFilter();
+		$collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
+				->addTaxonomyFilter($this->getTaxonomy())
+				->addParentIdFilter($this->getParentId())
+				->addHasObjectsFilter();
 
 		$collection->getSelect()
 			->reset('order')
@@ -68,7 +68,7 @@ class Categories extends AbstractWidget
 	public function getCurrentCategory()
 	{
 		if (!$this->hasCurrentCategory()) {
-			$this->setCurrentCategory($this->_registry->registry('wordpress_term'));
+			$this->setCurrentCategory($this->registry->registry('wordpress_term'));
 		}
 		
 		return $this->getData('current_category');

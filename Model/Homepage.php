@@ -1,94 +1,125 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model;
 
+/* Parent Class */
+use FishPig\WordPress\Model\AbstractModel;
+
+/* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Homepage extends AbstractModel implements ViewableInterface
 {
-	/**
+	/*
 	 * @var string
-	**/
+	 */
 	const ENTITY = 'wordpress_homepage';
 
-	/**
+	/*
 	 * @const string
-	*/
+	 */
 	const CACHE_TAG = 'wordpress_homepage';
 	
-	/**
+	/*
 	 * @var
-	**/    
-    protected $_blogPage = null;
+	 */    
+  protected $staticPage;
     
-	/**
+	/*
 	 *
 	 *
 	 * @return  string
-	**/
+	 */
 	public function getName()
 	{
-		if ($blogPage = $this->getBlogPage()) {
-			return $blogPage->getName();
+		if ($staticPage = $this->getStaticFrontPage()) {
+			return $staticPage->getName();
 		}
-		
-		return $this->_viewHelper->getBlogName();
+
+		return $this->getBlogName();
 	}
 
-	/**
+	/*
 	 *
 	 *
 	 * @return  string
-	**/
+	 */
 	public function getUrl()
 	{
-		if ($blogPage = $this->getBlogPage()) {
-			return $blogPage->getUrl();	
+		if ($staticPage = $this->getStaticFrontPage()) {
+			return $staticPage->getUrl();	
 		}
 		
-		return $this->_wpUrlBuilder->getUrl();
+		return $this->url->getUrl();
 	}
 		
-	/**
+	/*
 	 *
 	 *
 	 * @return  string
-	**/
+	 */
 	public function getContent()
 	{
-		return $this->_viewHelper->getBlogDescription();
+		return $this->getBlogDescription();
 	}
 	
-	/**
+	/*
 	 *
 	 *
 	 * @return 
-	**/
-	public function getBlogPage()
+	 */
+	public function getFrontStaticPage()
 	{
-		if ($this->_blogPage !== null) {
-			return $this->_blogPage;
-			
+		if ($this->staticPage !== null) {
+			return $this->staticPage;
 		}
 		
-		$this->_blogPage = false;
+		$this->staticPage = false;
 
-		if ((int)$this->_app->getBlogPageId() > 0) {
-			$blogPage = $this->_factory->getFactory('Post')->create()->load(
-				$this->_app->getBlogPageId()
+		if ((int)$this->getFrontStaticPageId() > 0) {
+			$staticPage = $this->factory->create('Post')->load(
+				$this->getStaticPageId()
 			);
 			
-			if ($blogPage->getId()) {
-				$this->_blogPage = $blogPage;
+			if ($staticPage->getId()) {
+				$this->staticPage = $staticPage;
 			}
 		}
 		
-		return $this->_blogPage;
+		return $this->staticPage;
+	}
+	
+	/*
+	 * If a page is set as a custom homepage, get it's ID
+	 *
+	 * @return false|int
+	 */
+	public function getFrontPageId()
+	{
+		if ($this->optionManager->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->optionManager->getOption('page_on_front')) {
+				return $pageId;
+			}
+		}
+		
+		return false;
+	}
+	
+	/*
+	 * If a page is set as a custom homepage, get it's ID
+	 *
+	 * @return false|int
+	 */
+	public function getPageForPostsId()
+	{
+		if ($this->optionManager->getOption('show_on_front') === 'page') {
+			if ($pageId = $this->optionManager->getOption('page_for_posts')) {
+				return $pageId;
+			}
+		}
+		
+		return false;
 	}
 }

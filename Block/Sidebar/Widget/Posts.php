@@ -15,7 +15,7 @@ class Posts extends AbstractWidget
 	 *
 	 * @var Fishpig_Wordpress_Model_Resource_Post_Collection
 	 */
-	protected $_collection = null;
+	protected $collection = null;
     
 	/**
 	 * Set the posts collection
@@ -63,12 +63,12 @@ class Posts extends AbstractWidget
 	 */
 	protected function _getPostCollection()
 	{
-		if (is_null($this->_collection)) {
-			$collection = $this->_factory->getFactory('Post')->create()->getCollection()
-				->setOrderByPostDate()
-				->addIsViewableFilter()
-				->setPageSize($this->getNumber())
-				->setCurPage(1);
+		if (is_null($this->collection)) {
+			$collection = $this->factory->create('Model\ResourceModel\Post\Collection')
+					->setOrderByPostDate()
+					->addIsViewableFilter()
+					->setPageSize($this->getNumber())
+					->setCurPage(1);
 	
 			if ($categoryId = $this->getCategoryId()) {
 				if (strpos($categoryId, ',') !== false) {
@@ -93,10 +93,10 @@ class Posts extends AbstractWidget
 				$collection->addPostTypeFilter('post');
 			}
 
-			$this->_collection = $collection;
+			$this->collection = $collection;
 		}
 		
-		return $this->_collection;
+		return $this->collection;
 	}
 	
 	/**

@@ -1,15 +1,25 @@
 <?php
-/**
+/*
  *
-**/
-
+ */
 namespace FishPig\WordPress\Controller\Search;
- 
-class View extends \FishPig\WordPress\Controller\Action
-{
+
+/* Parent Class */
+use FishPig\WordPress\Controller\Action;
+
+/* Other */
+use FishPig\WordPress\Model\Search;
+
+class View extends Action
+{  
+  /*
+	 *
+	 *
+	 * @return Search
+	 */
 	public function _getEntity()
 	{
-		return $this->getFactory('Search')->create();
+		return $this->factory->create('Search');
 	}
 	
   /*

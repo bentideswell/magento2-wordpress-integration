@@ -1,21 +1,24 @@
 <?php
-/**
- * Copyright © 2015 Magento. All rights reserved.
- * See COPYING.txt for license details.
+/*
+ *
+ *
  */
-
 namespace FishPig\WordPress\Block\System\Config;
 
-use \Magento\Backend\Block\Template\Context;
-use \FishPig\WordPress\Model\AppFactory;
-use \FishPig\WordPress\Model\App\Url as WpUrlBuilder;
-use \Magento\Store\Model\StoreManager;
-use \Magento\Store\Model\App\Emulation;
-use \Magento\Framework\Module\Manager as ModuleManager;
-use \FishPig\WordPress\Helper\Plugin as PluginHelper;
-use \Magento\Framework\Module\ResourceInterface;
+/* Parent Class */
+use Magento\Backend\Block\Template;
 
-class Integrate extends \Magento\Backend\Block\Template
+/* Constructor Args */
+use Magento\Backend\Block\Template\Context;
+use FishPig\WordPress\Model\IntegrationManager;
+use FishPig\WordPress\Model\Url;
+use Magento\Store\Model\StoreManager;
+use Magento\Store\Model\App\Emulation;
+use Magento\Framework\Module\Manager as ModuleManager;
+use FishPig\WordPress\Model\Plugin;
+use Magento\Framework\Module\ResourceInterface;
+
+class Integrate extends Template
 {
 	/*
 	 *
@@ -36,35 +39,35 @@ class Integrate extends \Magento\Backend\Block\Template
 	 * @var \FishPig\WordPress\Model\App
 	 *
 	 */
-	protected $app = null;
+	protected $integrationManager;
 	
 	/*
 	 *
 	 * @var \FishPig\WordPress\Model\App\Url
 	 *
 	 */
-	protected $wpUrlBuilder = null;
+	protected $url;
 	
 	/*
 	 *
 	 * @var \Magento\Store\Model\StoreManager
 	 *
 	 */
-	protected $storeManager = null;
+	protected $storeManager;
 	
 	/*
 	 *
 	 * @var \Magento\Store\Model\App\Emulation
 	 *
 	 */
-	protected $emulator = null;
+	protected $emulator;
 
 	/*
 	 *
 	 * @var \FishPig\WordPress\Helper\Plugin
 	 *
 	 */
-	protected $pluginHelper = null;
+	protected $plugin;
 
 	/*
 	 *
@@ -82,55 +85,73 @@ class Integrate extends \Magento\Backend\Block\Template
 
 	/*
 	 *
+	 *
+	 */
+	protected $exception;
+	
+	/*
+	 *
 	 * 
 	 *
 	 */
   public function __construct(
-  	Context $context,
-  	AppFactory $appFactory,
-  	WpUrlBuilder $urlBuilder,
-  	StoreManager $storeManager,
-  	Emulation $emulator,
-  	ModuleManager $moduleManager,
-  	PluginHelper $pluginHelper,
-  	ResourceInterface $resourceInterface,
-  	array $data = []
+  	           Context $context,
+  	IntegrationManager $integrationManager,
+  	               Url $url,
+        	StoreManager $storeManager,
+  	         Emulation $emulator,
+  	     ModuleManager $moduleManager,
+  	            Plugin $plugin,
+  	 ResourceInterface $resourceInterface,
+  	             array $data = []
   )
   {
+		$this->integrationManager = $integrationManager;
+		$this->url                = $url;
+		$this->storeManager       = $storeManager; 
+		$this->emulator           = $emulator;
+		$this->moduleManager      = $moduleManager;
+		$this->plugin             = $plugin;
+		$this->resourceInterface  = $resourceInterface;
+		
 		parent::__construct($context, $data);
 
-		$this->wpUrlBuilder = $urlBuilder;	   
-		$this->storeManager = $storeManager; 
-		$this->emulator = $emulator;
-		$this->moduleManager = $moduleManager;
-		$this->pluginHelper = $pluginHelper;
-		$this->resourceInterface = $resourceInterface;
+		if ($this->_request->getParam('section') !== 'wordpress') {
+			return;
+		}
 		
-		if ($this->_request->getParam('section') === 'wordpress') {
-			try {
-				$storeId = 0;
+		$this->success = false;
+		
+		try {
+			$storeId = 0;
 
-				if (($websiteId = (int)$this->_request->getParam('website')) !== 0) {
-					$storeId = (int)$this->storeManager->getWebsite($websiteId)->getDefaultStore()->getId();
-				}
-
-				if ($storeId === 0) {
-					$storeId = (int)$this->_request->getParam('store');
-				}
-
-				if ($storeId === 0) {
-					$storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
-				}
-
-				$this->emulator->startEnvironmentEmulation($storeId);
-
-				$this->app = $appFactory->create()->init();
-
-				$this->emulator->stopEnvironmentEmulation();
-			} 
-			catch (\Exception $e) {
-				$this->emulator->stopEnvironmentEmulation();
+			if (($websiteId = (int)$this->_request->getParam('website')) !== 0) {
+				$storeId = (int)$this->storeManager->getWebsite($websiteId)->getDefaultStore()->getId();
 			}
+
+			if ($storeId === 0) {
+				$storeId = (int)$this->_request->getParam('store');
+			}
+
+			if ($storeId === 0) {
+				$storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
+			}
+
+			$this->emulator->startEnvironmentEmulation($storeId);
+
+			$this->integrationManager->runTests();
+			
+			$this->success = sprintf(
+				'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.', 
+				$this->url->getHomeUrl(), 
+				$this->url->getHomeUrl()
+			);
+			
+			$this->emulator->stopEnvironmentEmulation();
+		} 
+		catch (\Exception $e) {
+			$this->emulator->stopEnvironmentEmulation();
+			$this->exception = $e;
 		}
 	}
 
@@ -141,27 +162,13 @@ class Integrate extends \Magento\Backend\Block\Template
 	 */
 	protected function _toHtml()
 	{
-		if (!$this->app) {
-			return '';
-		}
-
 		$messages = [];
 
-		if ($exception = $this->app->getException()) {
-			if ($exception instanceof \FishPig\WordPress\Model\App\Integration\Exception) {
-				$msg = $exception->getFullMessage();
-			}
-			else {
-				$msg = 'Unknown Error: ' . $exception->getMessage();
-			}
-
-			$messages[] = $this->_getMessage($msg, 'error');
+		if ($exception = $this->exception) {
+			$messages[] = $this->_getMessage($exception->getMessage(), 'error');
 		}
 		else {
-			$url = $this->wpUrlBuilder->getUrl();
-			$msg = sprintf('WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.', $url, $url);
-
-			$messages[] = $this->_getMessage($msg);
+			$messages[] = $this->_getMessage($this->success);
 			
 			if ($msg = $this->_getYoastSeoMessage()) {
 				$messages[] = $msg;
@@ -198,7 +205,7 @@ class Integrate extends \Magento\Backend\Block\Template
 	 */
 	protected function _getYoastSeoMessage()
 	{
-		$yoastPluginEnabled = $this->pluginHelper->isEnabled('wordpress-seo/wp-seo.php');
+		$yoastPluginEnabled = $this->plugin->isEnabled('wordpress-seo/wp-seo.php');
 		$yoastModuleEnabled = $this->moduleManager->isEnabled('FishPig_WordPress_Yoast');
 
 		if (!$yoastPluginEnabled && !$yoastModuleEnabled) {

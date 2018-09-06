@@ -1,6 +1,6 @@
 <?php
-/**
- * @category		Fishpig
+/*
+ * @category  Fishpig
  * @package		Fishpig_Wordpress
  * @license		http://fishpig.co.uk/license.txt
  * @author		Ben Tideswell <help@fishpig.co.uk>
@@ -11,29 +11,77 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Framework\DataObject\IdentityInterface;
 
+/* Constructor Args */
+use Magento\Framework\Model\Context;
+use Magento\Framework\Registry;
+use FishPig\WordPress\Model\Context as WPContext;
+use Magento\Framework\Model\ResourceModel\AbstractResource;
+use Magento\Framework\Data\Collection\AbstractDb;
+/* End of Constructor Args */
+
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
 	/*
 	 *
 	 */
-	protected $context;
+	protected $wpContext;
+
+	/*
+	 *
+	 */
+	protected $url;
 	
+	/*
+	 *
+	 */
+	protected $optionManager;
+	
+	/*
+	 * @var PostFactory
+	 */
+	protected $factory;
+	
+	/*
+	 * @var ShortcodeManager
+	 */
+	protected $shortcodeManager;
+	
+	/*
+	 * @var DateHelper
+	 */
+	protected $dateHelper;
+	
+	/*
+	 * @var PostTypeManager	 
+	 */
+	protected $postTypeManager;
+	
+	/*
+	 * @var TaxonomyManager
+	 */
+	protected $taxonomyManager;
+
+	/*
+	 *
+	 */
 	public function __construct(
-		\Magento\Framework\Model\Context $context,
-		\Magento\Framework\Registry $registry,
-		\FishPig\WordPress\Model\Context $wpContext,
-		\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-		\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-		array $data = []
-	) {
-		parent::__construct($context, $registry, $resource, $resourceCollection);	
-		
-		$this->_app = $wpContext->getApp();
-		$this->_wpUrlBuilder = $wpContext->getUrlBuilder();
-		$this->_factory = $wpContext->getFactory();
-		$this->_viewHelper = $wpContext->getViewHelper();
-		$this->_filter = $wpContext->getFilterHelper();
-		$this->context = $wpContext;
+	         Context $context, 
+	        Registry $registry, 
+         WPContext $wpContext,
+	AbstractResource $resource = null, 
+	      AbstractDb $resourceCollection = null, 
+	           array $data = []
+  )
+  {
+	  $this->wpContext        = $wpContext;
+		$this->url              = $wpContext->getUrl();
+		$this->optionManager    = $wpContext->getOptionManager();
+		$this->factory          = $wpContext->getFactory();
+		$this->shortcodeManager = $wpContext->getShortcodeManager();
+		$this->postTypeManager  = $wpContext->getPostTypeManager();
+		$this->taxonomyManager  = $wpContext->getTaxonomyManager();
+
+		parent::__construct($context, $registry, $resource, $resourceCollection);			
 	}
 
 	/*
@@ -44,56 +92,41 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     return [self::CACHE_TAG . '_' . $this->getId()];
   }
 	
-	/**
-	 * Get a collection of posts
-	 * Child class should filter posts accordingly
-	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
-	 */
-	public function getPostCollection()
-	{
-		return $this->_factory->getFactory('Post')->create()->getCollection()->setFlag('source', $this);
-	}
-	
-	/**
+	/*
 	 * Get the page title
 	 *
 	 * @return string
-	**/
+	 */
 	public function getPageTitle()
 	{
-		if ($this->getName() !== $this->_viewHelper->getBlogName()) {
-			return sprintf('%s | %s', $this->getName(), $this->_viewHelper->getBlogName());			
-		}
-		
-		return $this->getName();
+		return sprintf('%s | %s', $this->getName(), $this->getBlogName());
 	}
 	
-	/**
+	/*
 	 * Get the image
 	 *
 	 * @return false|string|FishPig\WordPress\Model\Image
-	**/
+	 */
 	public function getImage()
 	{
 		return false;
 	}
 	
-	/**
+	/*
 	 * Get the content
 	 *
 	 * @return string
-	**/
+	 */
 	public function getContent()
 	{
 		return '';
 	}
 	
-	/**
+	/*
 	 * Get the meta description
 	 *
 	 * @return string
-	**/
+	 */
 	public function getMetaDescription()
 	{
 		if (($content = trim(strip_tags($this->getContent()))) !== '') {
@@ -106,38 +139,92 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 			return $content;
 		}
 		
-		return $this->_viewHelper->getBlogDescription();
+		return $this->getBlogDescription();
 	}
 	
-	/**
+	/*
 	 * Get the meta keywords
 	 *
 	 * @return string
-	**/
+	 */
 	public function getMetaKeywords()
 	{
 		return '';
 	}
 	
-	/**
+	/*
 	 * Get the robots meta value
 	 *
 	 * @return string
-	**/
+	 */
 	public function getRobots()
 	{
-		return $this->_viewHelper->canDiscourageSearchEngines()
-			? 'noindex,nofollow'
-			: 'index,follow';
+		return (int)$this->optionManager->getOption('blog_public') === 0 ? 'noindex,nofollow' : 'index,follow';
 	}
 	
-	/**
+	/*
 	 * Get the canonical URL
 	 *
 	 * @return string
-	**/
+	 */
 	public function getCanonicalUrl()
 	{
 		return $this->getUrl();
+	}
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getBlogName()
+	{
+		return $this->optionManager->getOption('blogname');
+	}
+
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getBlogDescription()
+	{
+		return $this->optionManager->getOption('blogdescription');
+	}
+	
+	/*
+	 *
+	 *
+	 */
+	public function getPostCollection()
+	{
+		return $this->factory->create('Post')->getCollection();
+	}
+	
+	/*
+	 *
+	 */
+	public function applyPageConfigData($pageConfig)
+	{
+		if (!$pageConfig) {
+			return $this;
+		}
+		
+    $pageConfig->getTitle()->set($this->getPageTitle());
+    $pageConfig->setDescription($this->getMetaDescription());	
+    $pageConfig->setKeywords($this->getMetaKeywords());
+
+		#TODO: Hook this up so it displays on page
+		$pageConfig->setRobots($this->getRobots());
+
+    if ($pageMainTitle = $this->wpContext->getLayout()->getBlock('page.main.title')) {
+      $pageMainTitle->setPageTitle($this->getName());
+    }
+      
+		if ($this->getCanonicalUrl()) {
+			$pageConfig->addRemotePageAsset($this->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
+		}
+	
+    return $this;
 	}
 }

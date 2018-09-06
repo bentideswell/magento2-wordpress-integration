@@ -4,25 +4,31 @@
 **/
 namespace FishPig\WordPress\Controller\Json;
 
-use \Magento\Framework\App\Action\Context;
-use \FishPig\WordPress\Model\App;
+/* Parent Class */
+use Magento\Framework\App\Action\Action;
 
-class View extends \Magento\Framework\App\Action\Action
+/* Constructor Args */
+use Magento\Framework\App\Action\Context;
+use FishPig\WordPress\Helper\Core as CoreHelper;
+
+class View extends Action
 {
 	/*
-	 * @var \FishPig\WordPress\Model\App
+	 *
+	 * @var CoreHelper
+	 *
 	 */
-	protected $app;
+	protected $coreHelper;
 
 	/*
 	 *
-	 * @param  Context $content
-	 * @param  App $app
-	 * @return void
+	 *
+	 *
+	 *
 	 */
-  public function __construct(Context $context, App $app)
+  public function __construct(Context $context, CoreHelper $coreHelper)
   {
-	  $this->app = $app;
+	  $this->coreHelper = $coreHelper;
 	  
 	  parent::__construct($context);
   }
@@ -35,7 +41,7 @@ class View extends \Magento\Framework\App\Action\Action
   public function execute()
   {
 	  try {
-		  if (!($coreHelper = $this->app->getCoreHelper())) {
+		  if (!($coreHelper = $this->coreHelper->getHelper())) {
 			  throw new \Exception("No core helpers defined.");
 		  }
 

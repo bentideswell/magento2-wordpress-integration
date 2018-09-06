@@ -3,10 +3,14 @@
 	"description": "Magento 2 WordPress Integration",
 	"type": "magento2-module",
 	"require": {
-		"magento\/product-community-edition": "^2.0.0"
+		"magento/product-community-edition": "^2.0.0"
 	},
 	"autoload": {
-		"files": ["registration.php"],
-		"psr-4": {"FishPig\\WordPress\\": ""}
+		"files": [
+			"registration.php"
+		],
+		"psr-4": {
+			"FishPig\\WordPress\\": ""
+		}
 	}
 }

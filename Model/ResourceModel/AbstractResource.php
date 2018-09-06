@@ -1,44 +1,45 @@
 <?php
 /*
- * @category		Fishpig
- * @package		Fishpig_Wordpress
- * @license		http://fishpig.co.uk/license.txt
- * @author		Ben Tideswell <help@fishpig.co.uk>
- * @info			http://fishpig.co.uk/wordpress-integration.html
+ *
+ *
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use \Magento\Framework\Model\ResourceModel\Db\Context;
-use \FishPig\WordPress\Model\Context as WpContext;
+/* Parent Class */
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 
-abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+/* Constructor Args */
+use Magento\Framework\Model\ResourceModel\Db\Context;
+use FishPig\WordPress\Model\Context as WPContext;
+
+abstract class AbstractResource extends AbstractDb
 {
 	/*
 	 *
 	 */
-	protected $_resource = null;
-	
+	protected $wpContext;
+
 	/*
 	 *
 	 */
-	protected $_factory = null;
-
-	protected $context;
+	protected $resourceConnection = null;
 	
 	/*
 	 *
 	 *
 	 * @return
 	 */
-	public function __construct(Context $context, WpContext $wpContext, $connectionName = null)
+	public function __construct(
+      Context $context,
+		WPContext $wpContext,
+              $connectionName = null
+  )
 	{
-		parent::__construct($context, $connectionName);
+		$this->wpContext          = $wpContext;
+		$this->factory            = $wpContext->getFactory();
+		$this->resourceConnection = $wpContext->getResourceConnection();
 
-		$this->_app = $wpContext->getApp();
-		$this->_resource = $wpContext->getResourceConnection();
-		$this->_factory = $wpContext->getFactory();
-		
-		$this->context = $wpContext;
+		parent::__construct($context, $connectionName);
 	}
 
 	/*
@@ -48,7 +49,7 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 */
 	public function getConnection()
 	{
-		return $this->_resource->getConnection();
+		return $this->resourceConnection->getConnection();
 	}
 
 	/*
@@ -58,7 +59,7 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 */
 	public function getTable($tableName)
 	{
-		return $this->_resource->getTable($tableName);;
+		return $this->resourceConnection->getTable($tableName);;
 	}
 
 	/*
@@ -68,16 +69,6 @@ abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\D
 	 */
 	public function getTablePrefix()
 	{
-		return $this->_resource->getTablePrefix();
-	}
-
-	/*
-	 *
-	 *
-	 * @return
-	 */
-	public function getFactory()
-	{
-		return $this->_factory;
+		return $this->resourceConnection->getTablePrefix();
 	}
 }

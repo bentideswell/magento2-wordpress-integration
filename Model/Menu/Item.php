@@ -104,13 +104,13 @@ class Item extends Post
 			if ($this->getObjectType()) {
 				if ($menuObjectId = $this->getMetaValue('_menu_item_object_id')) {
 					if ($this->isPostTypeLink())  {
-						$object = $this->_app->getFactory()->getFactory('Post')->create()->setPostType($this->getObjectType());
+						$object = $this->factory->create('Post')->setPostType($this->getObjectType());
 					}
 					else if ($this->isTaxonomyLink()) {
-						$object = $this->_app->getFactory()->getFactory('Term')->create()->setTaxonomy($this->getObjectType());
+						$object = $this->factory->create('Term')->setTaxonomy($this->getObjectType());
 					}
 					else {
-						$object = $this->_app->getFactory()->getFactory(ucwords($this->getObjectType()))->create();
+						$object = $this->factory->create('FishPig\WordPress\Model\\' . ucwords($this->getObjectType()));
 					}
 				
 					if ($object && $object->setSkipObjectCache(true)->load($menuObjectId)->getId()) {

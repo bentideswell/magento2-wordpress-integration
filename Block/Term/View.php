@@ -26,7 +26,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	public function getTerm()
 	{
 		if (!$this->hasTerm()) {
-			$this->setTerm($this->_registry->registry(Term::ENTITY));
+			$this->setTerm($this->registry->registry(Term::ENTITY));
 		}
 		
 		return $this->_getData('term');

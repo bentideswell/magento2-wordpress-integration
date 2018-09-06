@@ -1,99 +1,114 @@
 <?php
-/**
- * @
-**/
+/*
+ *
+ *
+ *
+ */
 namespace FishPig\WordPress\Controller\Post;
 
-class Invalidate extends \Magento\Framework\App\Action\Action
-{
-	/**
-	 * @var \FishPig\WordPress\Model\App
-	 */
-	protected $app;
+/* Parent Class */
+use Magento\Framework\App\Action\Action;
 
-	/**
-	 * @var \FishPig\WordPress\Model\App\Factory
+/* Constructor Args */
+use Magento\Framework\App\Action\Context;
+use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Model\OptionManager;
+use Magento\Framework\App\CacheInterface;
+
+class Invalidate extends Action
+{
+	/*
+	 *
+	 * @var Factory
+	 *
 	 */
 	protected $factory;
+	
+	/*
+	 *
+	 * @var OptionManager
+	 *
+	 */
+	protected $optionManager;
 
-	/**
-	  * @var \Magento\Framework\App\CacheInterface
-	  */
+	/*
+	 *
+	 * @var CacheInterface
+	 *
+	 */
 	protected $cacheManager;
 
-	/**
-	 * @var \Magento\Framework\Event\ManagerInterface
+	/*
+	 *
+	 * @var ManagerInterface
+	 *
 	 */
 	protected $eventManager;
 
-	/**
-	 * Constructor
+	/*
 	 *
-	 * @param \Magento\Framework\App\Action\Context $context
-	 * @param \FishPig\WordPress\Model\App $app
-	 * @param \FishPig\WordPress\Model\App\Factory $factory
-	 * @param \Magento\Framework\App\CacheInterface $cacheManager
-	 * @param \Magento\Framework\Event\ManagerInterface $eventManager
+	 *
+	 *
 	 */
-	public function __construct(
-		\Magento\Framework\App\Action\Context $context,
-		\FishPig\WordPress\Model\App $app,
-		\FishPig\WordPress\Model\App\Factory $factory,
-		\Magento\Framework\App\CacheInterface $cacheManager
-		)
+	public function __construct(Context $context,OptionManager $optionManager, Factory $factory, CacheInterface $cacheManager)
 	{
-		$this->app = $app;
-		$this->factory = $factory;
-		$this->cacheManager = $cacheManager;
-		$this->eventManager = $context->getEventManager();
+		$this->optionManager = $optionManager;
+		$this->factory       = $factory;
+		$this->cacheManager  = $cacheManager;
+		$this->eventManager  = $context->getEventManager();
 
 		parent::__construct($context);
 	}
 
-	/**
+	/*
+	 *
+	 *
 	 * @return void
 	 */
 	public function execute()
 	{
-		if ($this->invalidateCache()) {
-			$result = array('result' => 'success');
-		} else {
-			$result = array('result' => 'failure');
-		}
-
-		$this->getResponse()->appendBody(json_encode($result));
+		$this->getResponse()->appendBody(
+			json_encode([
+				'result' => $this->invalidateCache() ? 'success' : 'failure'
+			])
+		);
 	}
 
-	/**
+	/*
+	 *
 	 * Attempt to invalidate cache entry
+	 *
 	 */
 	protected function invalidateCache()
 	{
-		$postId = $this->getRequest()->getParam('id');
-
-		$nonce = $this->getRequest()->getParam('nonce');
+		$postId = (int)$this->getRequest()->getParam('id');
+		$nonce  = $this->getRequest()->getParam('nonce');
+		
 		if (!$this->verifyNonce($nonce, 'invalidate_' . $postId)) {
 			return false;
 		}
 
-		$post = $this->factory->getFactory('Post')->create()->load($postId);
-		if (!$post) {
+		$post = $this->factory->create('Post')->load($postId);
+		
+		if ($post->getId()) {
 			return false;
 		}
 
 		// Clean cache related objects and then allow FPC plugins to do the same
 		$post->cleanModelCache();
 		$this->eventManager->dispatch('clean_cache_by_tags', ['object' => $post]);
+
 		return true;
 	}
 
-	/**
+	/*
+	 *
 	 * Validate given nonce
+	 *
 	 */
 	protected function verifyNonce($nonce, $action)
 	{
-		$salt = $this->app->getConfig()->getOption('fishpig_salt');
-		if (!$salt) {
+		if (!($salt = $this->optionManager->getOption('fishpig_salt'))) {
 			return false;
 		}
 

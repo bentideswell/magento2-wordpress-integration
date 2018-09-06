@@ -1,5 +1,7 @@
 <?php
-
+/*
+ *
+ */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Text extends AbstractWidget
@@ -21,19 +23,5 @@ class Text extends AbstractWidget
 		}
 		
 		return parent::_beforeToHtml();
-	}
-
-	/**
-	 * Convert {{block tags to HTML
-	 *
-	 * @return string
-	 */
-	protected function _toHtmlIgnore()
-	{
-		if ($html = parent::_toHtml()) {
-			return Mage::helper('cms')->getBlockTemplateProcessor()->filter($html);
-		}
-		
-		return '';
 	}
 }

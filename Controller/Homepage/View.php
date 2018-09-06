@@ -4,14 +4,22 @@
  */
 namespace FishPig\WordPress\Controller\Homepage;
 
-class View extends \FishPig\WordPress\Controller\Action
+/* Parent Class */
+use FishPig\WordPress\Controller\Action;
+
+/* Misc */
+use FishPig\WordPress\Model\Homepage;
+use FishPig\WordPress\Model\Post;
+use Magento\Framework\Controller\ResultFactory;
+
+class View extends Action
 {    
 	/*
-   * @return
+   * @return Homepage
    */
 	protected function _getEntity()
 	{
-		return $this->getFactory('Homepage')->create();
+		return $this->factory->get('Homepage');
 	}
 
 	/*
@@ -20,27 +28,6 @@ class View extends \FishPig\WordPress\Controller\Action
 	protected function _canPreview()
 	{
 		return true;
-	}
-
-	/*
-	 * @return
-	 */
-	protected function _getForward()
-	{
-  	if ($entity = $this->_getEntity()) {
-	  	$post = $this->registry->registry(\FishPig\WordPress\Model\Post::ENTITY);
-
-  		if (!$post && ($homepageId = (int)$this->getApp()->getHomepagePageId())) {
-  			return $this->resultFactory
-  				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-  				->setModule('wordpress')
-  				->setController('post')
-  				->setParams(array('no_forward' => 1, 'id' => $homepageId))
-  				->forward('view');
-  		}
-		}
-		
-		return parent::_getForward();
 	}
 	
 	/*
@@ -52,7 +39,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	{
 		$crumbs = parent::_getBreadcrumbs();
 		
-		if ($this->app->isRoot()) {
+		if ($this->url->isRoot()) {
 			$crumbs['blog'] = [
 				'label' => __($this->_getEntity()->getName()),
 				'title' => __($this->_getEntity()->getName())
@@ -75,7 +62,7 @@ class View extends \FishPig\WordPress\Controller\Action
 	{
 		$handles = ['wordpress_homepage_view'];
 		
-		if (!$this->getApp()->getBlogPageId()) {
+		if (!$this->_getEntity()->getStaticFrontPageId()) {
 			$handles[] = 'wordpress_front_page';
 		}
 		

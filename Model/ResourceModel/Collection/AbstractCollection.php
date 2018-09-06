@@ -1,34 +1,57 @@
 <?php
-/**
- * @category		Fishpig
- * @package		Fishpig_Wordpress
- * @license		http://fishpig.co.uk/license.txt
- * @author		Ben Tideswell <help@fishpig.co.uk>
- * @info			http://fishpig.co.uk/wordpress-integration.html
+/*
+ *
  */
 namespace FishPig\WordPress\Model\ResourceModel\Collection;
 
-abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
+/* Parent Class */
+use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as AbstractDbCollection;
+
+/* Constructor Args */
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Event\ManagerInterface;
+use FishPig\WordPress\Model\Context as WPContext;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+
+abstract class AbstractCollection extends AbstractDbCollection
 {
 	/*
+	 * @var WPContext
+	 */
+	protected $wpContext;
+
+	/*
+	 * @var OptionManager
+	 */
+	protected $optionManager;
+	
+	/*
+	 * @vr
+	 */
+	protected $postTypeManager;
+
+	/*
+	 *
 	 *
 	 */
-	protected $context;
-	
 	public function __construct(
-		\Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
-		\Psr\Log\LoggerInterface $logger,
-		\Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
-		\Magento\Framework\Event\ManagerInterface $eventManager,
-		\FishPig\WordPress\Model\Context $wpContext,
-		\Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-		\Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null
+		EntityFactoryInterface $entityFactory,
+		       LoggerInterface $logger,
+    FetchStrategyInterface $fetchStrategy,
+          ManagerInterface $eventManager,
+						     WPContext $wpContext,
+          AdapterInterface $connection  = null,
+                AbstractDb $resource    = null
 	)
 	{
+		$this->wpContext       = $wpContext;
+		$this->optionManager   = $wpContext->getOptionManager();
+		$this->postTypeManager = $wpContext->getPostTypeManager();
+		
 		parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
-	
-		$this->_app = $wpContext->getApp();
-		$this->context = $wpContext;
 	}
 
 
@@ -48,22 +71,5 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 		$this->_orders = array();
 		
 		return $this;
-	}
-
-	/**
-	 * After loading a collection, dispatch the pre-set event
-	 *
-	 * @return $this
-	 */
-	protected function _afterLoad()
-	{
-		if ($this->getFlag('after_load_event_name')) {
-			$this->_eventManager->dispatch($this->getFlag('after_load_event_name'), [
-				'collection' => $this,
-				'wrapper_block' => $this->getFlag('after_load_event_block')
-			]);
-		}
-
-		return parent::_afterLoad();
 	}
 }

@@ -1,102 +1,100 @@
 <?php
-/**
- * @ 
-**/
+/*
+ *
+ */
 namespace FishPig\WordPress\Controller;
 
-abstract class Action extends \Magento\Framework\App\Action\Action
+/* Parent Class */
+use Magento\Framework\App\Action\Action as ParentAction;
+
+/* Constructor Args */
+use Magento\Framework\App\Action\Context;
+use FishPig\WordPress\Model\Context as WPContext;
+
+abstract class Action extends ParentAction
 {
 	/*
 	 * @var 
 	 */
-	protected $app = null;
+	protected $wpContext;
 	
 	/*
 	 * @var 
 	 */
-	protected $registry = null;
+	protected $registry;
 
 	/*
 	 * @var 
 	 */	
-	protected $_entity = null;
-	
-	/*
-	 * @var 
-	 */	
-	protected $factory = null;
+	protected $entity;
 
 	/*
 	 * @var 
 	 */	
-	protected $resultPage = null;
-	
+	protected $resultPage;
 
 	/*
-	 * @var 
-	 */	
-	protected $entity = null;
+	 * @var
+	 */
+	protected $url;
 	
+	/*
+	 * @var Factory
+	 */
+	protected $factory;
+
 	/*
 	 * @var 
 	 */
 	abstract protected function _getEntity();
 
   /*
-   * Constructor
    *
-   * @param Context $context
-   * @param PageFactory $resultPageFactory
+   * @param Context   $context
+   * @param WPContext $wpContext
    */
   public function __construct(
-    \Magento\Framework\App\Action\Context $context, 
-    \Magento\Framework\Registry $registry, 
-    \FishPig\WordPress\Model\App $app,
-    \FishPig\WordPress\Model\App\Factory $factory
-   )
+		  Context $context,
+	  WPContext $wpContext
+  )
   {
-	    
-		$this->registry = $registry;
-		$this->app = $app;
-		$this->factory = $factory;
+	  $this->wpContenxt = $wpContext;
+		$this->registry   = $wpContext->getRegistry();
+		$this->url        = $wpContext->getUrl();
+		$this->factory    = $wpContext->getFactory();
         	
     parent::__construct($context);
   }	
 
-  /**
+  /*
    * Load the page defined in view/frontend/layout/samplenewpage_index_index.xml
    *
    * @return \Magento\Framework\View\Result\Page
    */
   public function execute()
   {
-    try {
-      $this->_beforeExecute();
-  		
-  		if ($forward = $this->_getForwardForPreview()) {
-  			return $forward;
-  		}
-  		
-  		if ($forward = $this->_getForward()) {
-  			return $forward;
-  		}
-  
-  		$this->checkForAmp();
+    $this->_beforeExecute();
 		
-	    $this->_initLayout();
+		if ($forward = $this->_getForwardForPreview()) {
+			return $forward;
+		}
+		
+		if ($forward = $this->_getForward()) {
+			return $forward;
+		}
 
-	    $this->_afterExecute();
+		$this->checkForAmp();
+	
+    $this->_initLayout();
 
-	    return $this->getPage();
-  	}
-  	catch (\Exception $e) {
-  		return $this->_getNoRouteForward();
-  	}
+    $this->_afterExecute();
+
+    return $this->getPage();
   }
 
-	/**
+	/*
 	 *
-	**/
+	 */
 	protected function _getForward()
 	{
 		return false;
@@ -167,13 +165,13 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 	    'home' => [
 			'label' => __('Home'),
 			'title' => __('Go to Home Page'),
-			'link' => $this->app->getWpUrlBuilder()->getMagentoUrl()
+			'link' => $this->url->getMagentoUrl()
 		]];
 	
-		if (!$this->app->isRoot()) {
+		if (!$this->url->isRoot()) {
 			$crumbs['blog'] = [
-				'label' => $this->app->getConfig()->getBlogBreadcrumbsLabel(),
-				'link' => $this->app->getWpUrlBuilder()->getHomeUrl()
+				'label' => __('Blog'),
+				'link' => $this->url->getHomeUrl()
 			];
 		}
 	
@@ -214,38 +212,6 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     return $this->entity = $this->_getEntity();
   }
     
-	/*
-	 * @var 
-	 */
-  public function getRegistry()
-  {
-    return $this->registry;
-  }
-    
-	/*
-	 * @var 
-	 */
-  protected function _getRegistry()
-  {
-    return $this->getRegistry();
-  }
-    
-	/*
-	 * @var 
-	 */
-  public function getApp()
-  {
-    return $this->app;
-  }
-    
-	/*
-	 * @var 
-	 */
-  public function getFactory($type)
-  {
-    return $this->factory->getFactory($type);
-  }
-    
   /*
 	 * @return bool
 	 */
@@ -254,14 +220,14 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     return false;
   }
     
-	/**
+	/*
 	 *
-	**/
-    protected function _getForwardForPreview()
-    {
-	    if (!$this->_canPreview()) {
-		    return false;
-	    }
+	 */
+  protected function _getForwardForPreview()
+  {
+    if (!$this->_canPreview()) {
+	    return false;
+    }
 
 		if ($this->getRequest()->getParam('preview') !== 'true') {
 			return false;
@@ -283,17 +249,17 @@ abstract class Action extends \Magento\Framework\App\Action\Action
 		}
 
 		return false;
-    }
+  }
     
-    /**
-	  *
-	  * @return bool
-	  *
-	 **/
-    public function checkForAmp()
-    {
-	    return false;
-    }
+  /*
+	 *
+	 * @return bool
+	 *
+	 */
+  public function checkForAmp()
+  {
+	  return false;
+  }
   
   /*
    *

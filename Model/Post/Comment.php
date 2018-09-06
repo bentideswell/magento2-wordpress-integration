@@ -21,9 +21,9 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Post\Comment');
+		$this->_init('FishPig\WordPress\Model\ResourceModel\Post\Comment');
         
-        return parent::_construct();
+		return parent::_construct();
 	}
 
 	/**
@@ -58,7 +58,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */
 	public function getCommentDate($format = null)
 	{
-		return $this->_viewHelper->formatDate($this->getData('comment_date'), $format);
+		return $this->wpContext->getDateHelper()->formatDate($this->getData('comment_date'), $format);
 	}
 	
 	/**
@@ -69,7 +69,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */
 	public function getCommentTime($format = null)
 	{
-		return $this->_viewHelper->formatTime($this->getData('comment_date'), $format);
+		return $this->wpContext->getDateHelper()->formatTime($this->getData('comment_date'), $format);
 	}
 	
 	/**
@@ -97,7 +97,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */	
 	public function getGuid()
 	{
-		return $this->_wpUrlBuilder->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId());
+		return $this->url->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId());
 	}
 	
 	/**
@@ -111,7 +111,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 			if ($post = $this->getPost()) {
 				$pageId = '';
 				
-				if ($this->_app->getConfig()->getOption('page_comments')) {
+				if ($this->optionManager->getOption('page_comments')) {
 					$pageId = '/comment-page-' . $this->getCommentPageId();
 				}
 				
@@ -139,7 +139,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 			$this->setCommentPageId(1);
 			if ($post = $this->getPost()) {
 				$totalComments = count($post->getComments());
-				$commentsPerPage = $this->_app->getConfig()->getOption('comments_per_page', 50);
+				$commentsPerPage = $this->optionManager->getOption('comments_per_page', 50);
 
 				if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
 					$it = 0;
@@ -183,7 +183,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	public function getAvatarUrl($size = 50)
 	{
 		if (!$this->hasGravatarUrl()) {
-			$config = $this->_app->getConfig();
+			$config = $this->optionManager;
 			
 			if ($config->getOption('show_avatars')) {
 				if ($this->getCommentAuthorEmail()) {
@@ -258,5 +258,4 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	{
 		return 'comment_id';
 	}
-
 }

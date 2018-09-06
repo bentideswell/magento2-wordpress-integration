@@ -1,58 +1,84 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
 namespace FishPig\WordPress\Block;
 
-use \Magento\Framework\View\Element\Template\Context as MagentoContext;
-use \FishPig\WordPress\Block\Context as WPContext;
+/* Parent Class */
+use Magento\Framework\View\Element\Template;
 
-abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
+/* Constructor */
+use Magento\Framework\View\Element\Template\Context;
+use FishPig\WordPress\Model\Context as WPContext;
+
+abstract class AbstractBlock extends Template
 {
-  /**
+	/*
+	 *
+	 */
+	protected $wpContext;
+
+	/*
+	 * @var OptionManager
+	 */
+	protected $optionManager;
+	
+	/*
+	 * @var ShortcodeManager
+	 */
+	protected $shortcodeManager;
+	
+	/*
+	 * @var Registry
+	 */
+	protected $registry;
+	
+	/*
+	 * @var Url
+	 */
+	protected $url;
+
+	/*
+	 * @var Factory
+	 */
+	protected $factory;
+	
+  /*
    * Constructor
    *
    * @param Context $context
    * @param App
    * @param array $data
    */
-  public function __construct(MagentoContext $context, WPContext $wpContext, array $data = [])
+  public function __construct(Context $context, WPContext $wpContext, array $data = [])
   {
-    $this->_app = $wpContext->getApp()->init();
-    $this->_config = $wpContext->getConfig();
-    $this->_registry = $wpContext->getRegistry();
-    $this->_wpUrlBuilder = $wpContext->getUrlBuilder();
-    $this->_factory = $wpContext->getFactory();
-    $this->_viewHelper = $wpContext->getViewHelper();
-    $this->_pluginHelper = $wpContext->getPluginHelper();
-    $this->filterHelper = $wpContext->getFilterHelper();
-    
+	  $this->wpContext        = $wpContext;
+		$this->optionManager    = $wpContext->getOptionManager(); 
+		$this->shortcodeManager = $wpContext->getShortcodeManager();
+		$this->registry         = $wpContext->getRegistry();
+		$this->url              = $wpContext->getUrl();
+		$this->factory          = $wpContext->getFactory();
+
     parent::__construct($context, $data);
   }
-  
-  public function getFilter()
+
+	/*
+	 * Parse and render a shortcode
+	 *
+	 * @param  string $shortcode
+	 * @param  mixed  $object = null
+	 * @return string
+	 */
+  public function renderShortcode($shortcode, $object = null)
   {
-	  return $this->filterHelper;
-  }
-  
-  public function doShortcode($shortcode, $object = null)
-  {
-	  return $this->filterHelper->doShortcode($shortcode, $object);
+		return $this->shortcodeManager->renderShortcode($content, ['object' => $object]);
   }
 
-	public function toHtml()
-	{
-		try {
-			return parent::toHtml();
-		}
-		catch (\Exception $e) {
-			echo sprintf('<h1>%s</h1><pre>%s</pre>', $e->getMessage(), $e->getTraceAsString());
-			exit;
-			
-			throw $e;
-		}
-	}
+	/*
+	 *
+	 */
+  public function doShortcode($shortcode, $object = null)
+  {
+	  return $this->renderShortcode($shortcode, $object);
+  }
 }

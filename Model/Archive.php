@@ -1,45 +1,44 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+/* Parent Class */
+use FishPig\WordPress\Model\Meta\AbstractMeta;
 
-class Archive extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
+/* Interface */
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+
+class Archive extends AbstractModel implements ViewableInterface
 {
-	/**
+	/*
 	 *
-	**/
+	 */
 	const ENTITY = 'wordpress_archive';
 
-	/**
+	/*
 	 * @const string
-	*/
+	 */
 	const CACHE_TAG = 'wordpress_archive';
 
-	/**
+	/*
 	 *
-	**/
+	 */
 	public function _construct()
 	{
 		$this->_init('\FishPig\WordPress\Model\ResourceModel\Archive');
 	}
 
-	/**
+	/*
 	 *
-	**/	
+	 */	
 	public function getName()
 	{
-		return 'Archives: ' . $this->_getData('name');
-		return $this->_app->translateDate($this->_getData('name'));
+		return $this->wpContext->getDateHelper()->translateDate($this->_getData('name'));
 	}
 	
-	/**
+	/*
 	 * Load an archive model by it's YYYY/MM
 	 * EG: 2010/06
 	 *
@@ -71,7 +70,7 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 		return $this;
 	}
 
-	/**
+	/*
 	 * Get a date formatted string
 	 *
 	 * @param string $format
@@ -82,17 +81,17 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 		return date($format, $this->getDateString());
 	}
 
-	/**
+	/*
 	 * Get the archive page URL
 	 *
 	 * @return string
 	 */
 	public function getUrl()
 	{
-		return rtrim($this->_wpUrlBuilder->getUrl($this->getId()), '/') . '/';
+		return $this->url->getUrl($this->getId() . '/');
 	}
 	
-	/**
+	/*
 	 * Determine whether posts exist for this archive
 	 *
 	 * @return bool
@@ -106,7 +105,7 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 		return $this->getPostCollection()->count() > 0;
 	}
 	
-	/**
+	/*
 	 * Retrieve a collection of blog posts
 	 *
 	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
@@ -125,11 +124,11 @@ class Archive extends \FishPig\WordPress\Model\AbstractModel implements Viewable
 		return $this->getData('post_collection');
 	}
 	
-	/**
+	/*
 	 *
 	 *
 	 * @return  string
-	**/
+	 */
 	public function getContent()
 	{
 		return '';

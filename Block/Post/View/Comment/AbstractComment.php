@@ -1,16 +1,18 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\View\Comment;
 
-abstract class AbstractComment extends \FishPig\WordPress\Block\Post
+/* Parent Class */
+use FishPig\WordPress\Block\Post;
+
+/* Misc */
+use FishPig\WordPress\Model\Post\Comment;
+
+abstract class AbstractComment extends Post
 {
-	/**
+	/*
 	 * Returns a collection of comments for the current post
 	 *
 	 * @return Fishpig_Wordpress_Model_Resource_Post_Comments_Collection
@@ -21,7 +23,7 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 			return $this->_getData('comments');
 		}
 
-		$this->setComments(array());
+		$this->setComments([]);
 			
 		if ($this->getCommentCount() > 0 && ($post = $this->getPost()) !== false) {
 			$this->setComments($post->getResource()->getPostComments($post));
@@ -61,13 +63,11 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 	 * @param \FishPig\WordPress\Model\Post\Comment $comment
 	 * @return string
 	 */
-	public function getCommentContent(\FishPig\WordPress\Model\Post\Comment $comment)
+	public function getCommentContent(Comment $comment)
 	{
 		$content = strip_tags(trim($comment->getCommentContent()), $this->getAllowedHtmlTags());
 		
-		return $this->canConvertNewLines()
-			? nl2br($content)
-			: $content;
+		return $this->canConvertNewLines() ? nl2br($content) : $content;
 	}
 	
 	
@@ -97,7 +97,7 @@ abstract class AbstractComment extends \FishPig\WordPress\Block\Post
 	 */
 	public function getPagerHtml()
 	{
-		if ($this->_config->getOption('page_comments', false)) {
+		if ($this->optionManager->getOption('page_comments', false)) {
 			return $this->getChildHtml('pager');
 		}
 	}

@@ -1,75 +1,74 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
-class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection
-{
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection as AbstractMetaCollection;
 
-	/**
-	 * Name prefix of events that are dispatched by model
-	 *
+/* Constructor Args */
+use Magento\Framework\Data\Collection\EntityFactoryInterface;
+use Psr\Log\LoggerInterface;
+use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
+use Magento\Framework\Event\ManagerInterface;
+use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\PostTypeManager;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+
+class Collection extends AbstractMetaCollection
+{
+	/*
 	 * @var string
-	*/
+	 */
 	protected $_eventPrefix = 'wordpress_post_collection';
 	
-	/**
-	 * Name of event parameter
-	 *
+	/*
 	 * @var string
-	*/
+	 */
 	protected $_eventObject = 'posts';
 
-	/**
-	 * True if term tables have been joined
-	 * This stops the term tables being joined repeatedly
-	 *
+	/*
 	 * @var array()
 	 */
-	protected $_termTablesJoined = array();
+	protected $_termTablesJoined = [];
 
-	/**
-	 * Store post types to be allowed in collection
-	 *
+	/*
 	 * @var array
 	 */
-	protected $_postTypes = array();
-		
-	/**
+	protected $postTypes = [];
+	
+	/*
 	 * Set the resource
 	 *
 	 * @return void
 	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
+    $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
 		
-		$this->_map['fields']['ID']   = 'main_table.ID';		
+		$this->_map['fields']['ID'] = 'main_table.ID';		
 		$this->_map['fields']['post_type'] = 'main_table.post_type';
 		$this->_map['fields']['post_status'] = 'main_table.post_status';
 		
 		return parent::_construct();
 	}
 	
-    /**
-     * Init collection select
-     *
-     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
-     */
-    protected function _initSelect()
-    {
-	    parent::_initSelect();
+  /**
+   * Init collection select
+   *
+   * @return Mage_Core_Model_Resource_Db_Collection_Abstract
+   */
+  protected function _initSelect()
+  {
+	  parent::_initSelect();
 		
 		$this->setOrder('main_table.menu_order', 'ASC');
 		$this->setOrder('main_table.post_date', 'DESC');
 		
 		return $this;
-    }
+  }
     	
 	/**
 	 * Add the permalink data before loading the collection
@@ -88,7 +87,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 
 		if (!$this->hasPostTypeFilter()) {
 			if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
-				if ($postTypes = $this->_app->getPostTypes()) {
+				if ($postTypes = $this->postTypeManager->getPostTypes()) {
 					$supportedTypes = array();
 	
 					foreach($postTypes as $postType) {
@@ -102,17 +101,17 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			}
 		}
 
-		if (count($this->_postTypes) === 1) {
-			if ($this->_postTypes[0] === '*') {
-				$this->_postTypes = array();
+		if (count($this->postTypes) === 1) {
+			if ($this->postTypes[0] === '*') {
+				$this->postTypes = array();
 			}
 		}
 
-		if (count($this->_postTypes) === 0) {
-			$this->addFieldToFilter('post_type', array('in' => array_keys($this->_app->getPostTypes())));
+		if (count($this->postTypes) === 0) {
+			$this->addFieldToFilter('post_type', array('in' => array_keys($this->postTypeManager->getPostTypes())));
 		}
 		else {
-			$this->addFieldToFilter('post_type', array('in' => $this->_postTypes));
+			$this->addFieldToFilter('post_type', array('in' => $this->postTypes));
 		}
 
 		return $this;		
@@ -223,7 +222,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addStickyPostsToCollection()
 	{
-		if (($sticky = trim($this->_app->getConfig()->getOption('sticky_posts'))) !== '') {
+		if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {
@@ -232,13 +231,13 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 					->from($this->getTable('wordpress_post'), null)
 					->where('main_table.ID IN (?)', $stickyIds)
 					->limit(1);
-				
+
 				$select->columns(
-					array('value' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression("'1'"))
+					array('value' => new \Zend_Db_Expr("'1'"))
 				);
 
 				$this->getSelect()
-					->columns(array('is_sticky' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . $select . ')')))
+					->columns(array('is_sticky' => new \Zend_Db_Expr('(' . $select . ')')))
 					->order('is_sticky DESC');
 			}
 		}
@@ -254,7 +253,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function addIsStickyPostFilter($flag = true)
 	{
-		if (($sticky = trim($this->_app->getConfig()->getOption('sticky_posts'))) !== '') {
+		if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {
@@ -277,7 +276,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			$postTypes = explode(',', $postTypes);
 		}
 
-		$this->_postTypes = array_values(array_merge($this->_postTypes, (array)$postTypes));
+		$this->postTypes = array_values(array_merge($this->postTypes, (array)$postTypes));
 		
 		return $this;
 	}
@@ -289,7 +288,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	 */
 	public function hasPostTypeFilter()
 	{
-		return count($this->_postTypes) > 0;
+		return count($this->postTypes) > 0;
 	}
 
 	/**
@@ -310,7 +309,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 	{
 		$fields = ['publish', 'protected'];
 
-    if ($this->_app->getConfig()->isLoggedIn()) {
+		if ($this->wpContext->getCustomerSession()->isLoggedIn()) {
       $fields[] = 'private';
     }
 
@@ -410,7 +409,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 				}
 			}
 
-			$expression = $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . implode(' + ', $weightSql) . ')');
+			$expression = new \Zend_Db_Expr('(' . implode(' + ', $weightSql) . ')');
 
 			// Add Weight column to query
 			$this->getSelect()->columns(array('weight' => $expression));			
@@ -532,7 +531,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 			$countSelect->reset(\Magento\Framework\DB\Select::LIMIT_OFFSET);
 			$countSelect->reset(\Magento\Framework\DB\Select::COLUMNS);
 
-			$countSelect->columns($this->context->getCompatibilityHelper()->createZendDbSqlExpression('main_table.ID'));
+			$countSelect->columns(new \Zend_Db_Expr('main_table.ID'));
 	
 			$this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));  
 		}

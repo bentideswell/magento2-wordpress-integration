@@ -1,54 +1,45 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\PostList;
 
+/* Parent Block */
+use Magento\Theme\Block\Html\Pager as MagentoPager;
+
+/* Constructor Args */
 use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Model\App;
-use FishPig\WordPress\Model\Config;
-
-class Pager extends \Magento\Theme\Block\Html\Pager 
+use FishPig\WordPress\Model\OptionManager;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+class Pager extends MagentoPager
 {
-	/**
-	 * @var \FishPig\WordPress\Model\App
-	**/
-	protected $_app = null;
-
-	/**
-	 * @var \FishPig\WordPress\Model\Config
-	**/	
-	protected $_config = null;
+	/*
+	 * @var OptionManager
+	 */
+	protected $optionManager;
 	
-  /**
+	/*
+	 *
+	 * @ScopeConfigInterface
+	 *
+	 */
+	protected $scopeConfig;
+	
+  /*
    * Constructor
    *
    * @param Context $context
    * @param App
    * @param array $data
    */
-  public function __construct(Context $context, App $app, Config $config, array $data = [])
+  public function __construct(Context $context, OptionManager $optionManager, ScopeConfigInterface $scopeConfig, array $data = [])
   {
-    $this->_app = $app;
-    $this->_config = $config;
-
+    $this->optionManager = $optionManager;
+    $this->scopeConfig   = $scopeConfig;
+    
     parent::__construct($context, $data);
   }
-    
-    /**
-	 * Get the App model
-	 *
-	 * @return \FishPig\WordPress\Model\App
-	**/
-	public function getApp()
-	{
-		return $this->_app;
-	}
-	
+
 	/**
 	 * Construct the pager and set the limits
 	 *
@@ -59,14 +50,14 @@ class Pager extends \Magento\Theme\Block\Html\Pager
 
 		$this->setPageVarName('page');
 
-		$baseLimit = $this->_config->getOption('posts_per_page', 10);
+		$baseLimit = $this->optionManager->getOption('posts_per_page', 10);
 
 		$this->setDefaultLimit($baseLimit);
 		$this->setLimit($baseLimit);
 		$this->setAvailableLimit([$baseLimit => $baseLimit]);
 
 		$this->setFrameLength(
-			(int)$this->_config->getStoreConfigValue(
+			(int)$this->scopeConfig->getValue(
 				'design/pagination/pagination_frame',
 				\Magento\Store\Model\ScopeInterface::SCOPE_STORE
 			)

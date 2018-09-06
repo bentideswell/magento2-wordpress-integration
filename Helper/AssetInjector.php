@@ -1,20 +1,19 @@
 <?php
 /*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
+ *
+ *
  */
-
 namespace FishPig\WordPress\Helper;
 
-use \FishPig\WordPress\Model\App;
-use \Magento\Framework\Registry;
-use \Magento\Framework\Event\ObserverInterface;
-use \Magento\Store\Model\StoreManagerInterface;
-use \Magento\Framework\App\Filesystem\DirectoryList;
-use \Magento\Framework\Module\ModuleListInterface;
-use \FishPig\WordPress\Helper\Filter;
+/* Constructor Args */
+use FishPig\WordPress\Model\IntegrationManager;
+use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Module\ModuleListInterface;
+use FishPig\WordPress\Model\Path as WordPressPath;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Model\Url as WordPressURL;
 
 class AssetInjector
 {
@@ -46,18 +45,22 @@ class AssetInjector
 	 * @return
 	 */
 	public function __construct(
-		App $app, 
+		   IntegrationManager $integrationManager, 
 		StoreManagerInterface $storeManager, 
-		DirectoryList $directoryList, 
-		Filter $filter, 
-		ModuleListInterface $moduleList
+		        DirectoryList $directoryList, 
+		  ModuleListInterface $moduleList,
+		        WordPressPath $wpPath,
+		     ShortcodeManager $shortcode,
+		         WordPressURL $wpUrl
 	)
 	{
-		$this->app = $app->init();
-		$this->storeManager = $storeManager;
-		$this->directoryList = $directoryList;
-		$this->filter = $filter;
-		$this->moduleVersion = $moduleList->getOne('FishPig_WordPress')['setup_version'];
+		$this->integrationManager = $integrationManager;
+		$this->storeManager       = $storeManager;
+		$this->directoryList      = $directoryList;
+		$this->moduleVersion      = $moduleList->getOne('FishPig_WordPress')['setup_version'];
+		$this->wpPath             = $wpPath;
+		$this->shortcodeManager   = $shortcode;
+		$this->wpUrl              = $wpUrl;
 	}
 	
 	/*
@@ -69,11 +72,13 @@ class AssetInjector
 			return false;
 		}
 		
-		if (!$this->app->canRun() || $this->isApiRequest() || $this->isAjaxRequest()) {
+		$this->integrationManager->runTests();
+
+		if ($this->isApiRequest() || $this->isAjaxRequest()) {
 			return false;
 		}
-		
-		if (!($shortcodes = $this->filter->getAssetInjectionShortcodes())) {
+
+		if (!($shortcodes = $this->shortcodeManager->getShortcodesThatRequireAssets())) {
 			return false;
 		}
 
@@ -84,14 +89,14 @@ class AssetInjector
 		
 		// Get assets from plugins
 		foreach($shortcodes as $class => $shortcodeInstance) {
-			if ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml)) {
+			if (method_exists($shortcodeInstance, 'getRequiredAssets') && ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml))) {
 				$assets = array_merge($assets, $buffer);
 			}
 		}
 
 		// Get inline JS/CSS
 		foreach($shortcodes as $class => $shortcodeInstance) {
-			if ($buffer = $shortcodeInstance->getInlineJs()) {
+			if (method_exists($shortcodeInstance, 'getInlineJs') && ($buffer = $shortcodeInstance->getInlineJs())) {
 				$inline = array_merge($inline, $buffer);
 			}
 		}
@@ -119,7 +124,7 @@ class AssetInjector
 		}
 
 		// Now let's build the requireJS from $assets
-		$baseUrl = $this->app->getWpUrlBuilder()->getSiteurl();
+		$baseUrl = $this->wpUrl->getSiteurl();
 		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 		$scripts = array();
 		$scriptRegex = '<script.*<\/script>';
@@ -157,7 +162,7 @@ class AssetInjector
 					
 					// This is needed to fix ../ in URLs
 					$realPathUrl = $originalScriptUrl;
-					
+
 					if (strpos($originalScriptUrl, '../') !== false) {
 						$urlParts = explode('/', $originalScriptUrl);
 						
@@ -186,7 +191,7 @@ class AssetInjector
 
 			// Used to set paths for each JS file in requireJs
 			$requireJsPaths = array(
-				'jquery-migrate' => $this->app->getWpUrlBuilder()->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
+				'jquery-migrate' => $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
 			);
 			
 			// JS Template for requireJs. This changes through foreach below
@@ -241,7 +246,7 @@ class AssetInjector
 			
 			// Final JS including wrapping script tag
 			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
-			
+
 			// Add the final requireJS code to the $content array
 			$content .= $requireJsFinal;
 		}
@@ -251,17 +256,22 @@ class AssetInjector
 		
 		return $bodyHtml;
 	}
-	
+
+	/*
+	 * Get the FPJS object code
+	 *
+	 * @return string
+	 */
 	protected function getFPJS()
 	{
 		return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i]();}this.fs=[];}})();';
 	}
 	
-	/**
+	/*
 	 *
 	 * @param string $url
 	 * @return string
-	**/
+	 */
 	protected function _getRequireJsAlias($url)
 	{
 		$alias = basename($url);
@@ -279,12 +289,12 @@ class AssetInjector
 		return $this->_hashString($url);
 	}
 	
-	/**
+	/*
 	 * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
 	 *
 	 * @param string $externalScriptUrlFull
 	 * @return string
-	**/
+	 */
 	protected function _migrateJsAndReturnUrl($externalScriptUrlFull)
 	{
 		// Check that the script is a local file
@@ -292,8 +302,8 @@ class AssetInjector
 			return $externalScriptUrlFull;
 		}
 
-		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
-		$localScriptFile 	 = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
+		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);		
+		$localScriptFile 	 = $this->wpPath->getPath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
 		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 
@@ -308,11 +318,11 @@ class AssetInjector
 
 		// Check whether the script supports AMD
 		if (strpos($scriptContent, 'define.amd') !== false) {
-			$scriptContent = "__d=define;define=undefined;try{" . $scriptContent . "}catch(e){console.error&&console.error(e.message);}define=__d;__d=undefined;";
+			$scriptContent = "__d=define;define=undefined;" . $scriptContent . "define=__d;__d=undefined;";
 		}
 
 		if (self::DEBUG) {
-			$debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->app->getPath()), '', $localScriptFile)), '-') . '.js';
+			$debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->wpPath->getPath()), '', $localScriptFile)), '-') . '.js';
 			$debugFilename = preg_replace('/[_-]{1,}/', '-', $debugFilename);
 			$newScriptFile = dirname($newScriptFile) . DIRECTORY_SEPARATOR . $debugFilename;
 			$newScriptUrl = dirname($newScriptUrl) . '/' . $debugFilename;
@@ -335,19 +345,19 @@ class AssetInjector
 	 * @return string
 	 */
 	protected function _fixDomReady($scriptContent)
-	{	
+	{
 		$scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'FPJS.on(\'fishpig_ready\', ', $scriptContent);			
 		$scriptContent = preg_replace('/jQuery\([\s]{0,}function\(/i', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
 
 		return $scriptContent;
 	}
 	
-	/**
+	/*
 	 * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
 	 *
 	 * @param string $externalScriptUrlFull
 	 * @return string
-	**/
+	 */
 	protected function _getMergedJsUrl(array $externalScriptUrlFulls)
 	{
 		$DS = DIRECTORY_SEPARATOR;
@@ -361,7 +371,7 @@ class AssetInjector
 				$localScriptFile = $baseMergedPath . basename($externalScriptUrl);
 			}
 			else {
-				$localScriptFile = $this->app->getPath() . '/' . substr($externalScriptUrl, strlen($this->app->getWpUrlBuilder()->getSiteUrl()));
+				$localScriptFile = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
 			}
 			
 			$scriptContents[] = file_get_contents($localScriptFile);
@@ -415,7 +425,7 @@ class AssetInjector
 	 */
 	protected function _isWordPressUrl($url)
 	{
-		return strpos($this->_cleanQueryString($url), $this->app->getWpUrlBuilder()->getSiteUrl()) === 0;
+		return strpos($this->_cleanQueryString($url), $this->wpUrl->getSiteUrl()) === 0;
 	}
 
 	/*
@@ -440,11 +450,11 @@ class AssetInjector
 		return strpos($url, '?') === false ? $url : substr($url, 0, strpos($url, '?'));
 	}
 
-	/**
+	/*
 	 *
 	 * @param string $s
 	 * @return string
-	**/
+	 */
 	protected function _stripScriptTags($s)
 	{
 		return preg_replace(

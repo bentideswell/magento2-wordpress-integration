@@ -8,12 +8,46 @@
 
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use \FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
+
+/* Constructor Args */
+use Magento\Framework\Model\ResourceModel\Db\Context;
+use FishPig\WordPress\Model\Context as WPContext;
+use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\TaxonomyManager;
 
 class Post extends AbstractMeta
 {
+	/*
+	 * @var
+	 */
+	protected $postTypeManager;
 
-	/**
+	/*
+	 * @var 
+	 */
+	protected $taxonomyManager;
+
+	/*
+	 *
+	 *
+	 * @return
+	 */
+	public function __construct(
+       Context $context,
+     WPContext $wpContext,
+               $connectionName = null
+  )
+	{
+		$this->postTypeManager = $wpContext->getPostTypeManager();
+		$this->taxonomyManager = $wpContext->getTaxonomyManager();
+
+		parent::__construct($context, $wpContext, $connectionName);		
+	}
+
+
+	/*
 	 * Set the table and primary key
 	 *
 	 * @return void
@@ -60,7 +94,7 @@ class Post extends AbstractMeta
 			if ($mtoken === '%postnames%') {
 				$slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
 			}
-			else if ($taxonomy = $this->_app->getTaxonomy(trim($mtoken, '%'))) {
+			else if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
 				$termData = $this->getParentTermsByPostId(array($postId), $taxonomy->getTaxonomyType(), false);
 
 				foreach($termData as $key => $term) {
@@ -145,12 +179,9 @@ class Post extends AbstractMeta
 	 */
 	public function getPermalinkSqlColumn()
 	{	
-		if (!($postTypes = $this->_app->getPostTypes())) {
-			return false;
-		}
-
+		$postTypes  = $this->postTypeManager->getPostTypes();
 		$sqlColumns = array();
-		$fields = $this->getPermalinkSqlFields();
+		$fields     = $this->getPermalinkSqlFields();
 
 		foreach($postTypes as $postType) {	
 			$tokens = $postType->getExplodedPermalinkStructure();				
@@ -171,7 +202,7 @@ class Post extends AbstractMeta
 		}
 
 		return count($sqlColumns) > 0 
-			? $this->context->getCompatibilityHelper()->createZendDbSqlExpression('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
+			? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
 			: false;
 	}
 	
@@ -186,9 +217,9 @@ class Post extends AbstractMeta
 	public function getPermalinksByUri($uri = '')
 	{
 		$originalUri = $uri;
-		$permalinks = array();	
+		$permalinks  = [];
 
-		if ($postTypes = $this->_app->getPostTypes()) {
+		if ($postTypes = $this->postTypeManager->getPostTypes()) {
 			$fields = $this->getPermalinkSqlFields();
 
 			foreach($postTypes as $postType) {
@@ -226,7 +257,7 @@ class Post extends AbstractMeta
 						foreach($tokens as $key => $token) {
 							if (substr($token, 0, 1) === '%') {
 								if (!isset($fields[trim($token, '%')])) {
-									if ($taxonomy = $this->_app->getTaxonomy(trim($token, '%'))) {
+									if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($token, '%'))) {
 										$endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/' 
 											&& isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%' 
 											&& !isset($tokens[$key+3]);
@@ -308,7 +339,7 @@ class Post extends AbstractMeta
 
 		foreach($filters as $field => $value) {
 			if (isset($fields[$field])) {
-				$select->where($fields[$field] . '=?', urlencode($value));
+				$select->where($fields[$field] . ' = ?', urlencode($value));
 			}
 		}
 
@@ -370,8 +401,8 @@ class Post extends AbstractMeta
 	 */
 	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
 	{
-		return $this->_factory->getFactory('Post\Comment')->create()->getCollection()
-			->addPostIdFilter($post->getId())
+		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
+			->setPost($post)
 			->addCommentApprovedFilter()
 			->addParentCommentFilter(0)
 			->addOrderByDate();
@@ -394,7 +425,7 @@ class Post extends AbstractMeta
 				->limit(1);
 
 			if (($imageId = $this->getConnection()->fetchOne($select)) !== false) {
-				return $this->_factory->getFactory('Image')->create()->load($imageId);
+				return $this->factory->create('Image')->load($imageId);
 			}
 		}
 		
@@ -403,7 +434,7 @@ class Post extends AbstractMeta
 	
 	public function getPostsOnDayByYearMonth($dateStr)
 	{
-		$collection = $this->_factory->getFactory('Post')->create()->getCollection()
+		$collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
 			->addPostDateFilter($dateStr)
 			->addIsViewableFilter();
 			

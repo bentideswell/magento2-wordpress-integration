@@ -1,44 +1,40 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Archives extends AbstractWidget
 {
-	/**
+	/*
 	 * Cache for archive collection
 	 *
 	 * @var null|Varien_Data_Collection
 	 */
-	protected $_archiveCollection = null;
+	protected $archiveCollection;
 
-	/**
+	/*
 	 * Returns a collection of valid archive dates
 	 *
 	 * @return Varien_Data_Collection
 	 */
 	public function getArchives()
 	{
-		if (is_null($this->_archiveCollection)) {
-			$dates = $this->_factory->getFactory('Archive')->create()->getResource()->getDatesForWidget();
+		if (is_null($this->archiveCollection)) {
+			$dates = $this->factory->create('Model\ResourceModel\Archive')->getDatesForWidget();
 			$archiveCollection = array();
 			
 			foreach($dates as $date) {
-				$archiveCollection[] = $this->_factory->getFactory('Archive')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
+				$archiveCollection[] = $this->factory->create('Model\ArchiveFactory')->create()->load($date['archive_date'])->setPostCount($date['post_count']);
 			}
 
-			$this->_archiveCollection = $archiveCollection;
+			$this->archiveCollection = $archiveCollection;
 		}
 		
-		return $this->_archiveCollection;
+		return $this->archiveCollection;
 	}
 	
-	/**
+	/*
 	 * Split a date by spaces and translate
 	 *
 	 * @param string $date
@@ -56,7 +52,7 @@ class Archives extends AbstractWidget
 		return implode($splitter, $dates);
 	}
 	
-	/**
+	/*
 	 * Determine whether the archive is the current archive
 	 *
 	 * @param Fishpig_Wordpress_Model_Archive $archive
@@ -72,17 +68,17 @@ class Archives extends AbstractWidget
 		return false;
 	}
 	
-	/**
+	/*
 	 * Retrieve the current archive
 	 *
 	 * @return Fishpig_Wordpress_Model_Archive
 	 */
 	public function getCurrentArchive()
 	{
-		return $this->_registry->registry('wordpress_archive');
+		return $this->registry->registry('wordpress_archive');
 	}
 	
-	/**
+	/*
 	 * Retrieve the default title
 	 *
 	 * @return string
@@ -92,6 +88,10 @@ class Archives extends AbstractWidget
 		return __('Archives');
 	}
 	
+	/*
+	 *
+	 *
+	 */
 	protected function _beforeToHtml()
 	{
 		if (!$this->getTemplate()) {
@@ -100,5 +100,4 @@ class Archives extends AbstractWidget
 		
 		return parent::_beforeToHtml();
 	}
-
 }

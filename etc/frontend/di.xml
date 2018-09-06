@@ -13,7 +13,7 @@
 	</type>
 	<!-- Inject any required assets -->
 	<type name="Magento\Framework\Controller\ResultInterface">
-		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Model\Controller\Result\RequiredAssetsPlugin"  sortOrder="0" disabled="false"/>
+		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="0" disabled="false"/>
 		<!-- Required for some installations -->
     <plugin name="result-builtin-cache" sortOrder="1"/>
     <plugin name="result-varnish-cache" sortOrder="2"/>

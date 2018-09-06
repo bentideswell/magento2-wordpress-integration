@@ -10,30 +10,30 @@ class View extends \FishPig\WordPress\Controller\Action
 	/**
 	 * @var 
 	**/
-    protected function _getEntity()
-    {
-	    $object = $this->getFactory('User')->create()->load(
-	    	$this->getRequest()->getParam('author'),
-	    	'user_nicename'
-	    );
+  protected function _getEntity()
+  {
+    $object = $this->factory->create('User')->load(
+    	$this->getRequest()->getParam('author'),
+    	'user_nicename'
+    );
 
-		return $object->getId() ? $object : false;
-    }
+	  return $object->getId() ? $object : false;
+  }
     
-    /**
-	  * Get the blog breadcrumbs
-	  *
-	  * @return array
-	 **/
-    protected function _getBreadcrumbs()
-    {
-	    return array_merge(	
-		    parent::_getBreadcrumbs(), [
-				'archives' => [
-				'label' => __($this->_getEntity()->getName()),
-				'title' => __($this->_getEntity()->getName())
-			]]);
-    }
+  /*
+	 * Get the blog breadcrumbs
+	 *
+	 * @return array
+	 */
+  protected function _getBreadcrumbs()
+  {
+    return array_merge(	
+	    parent::_getBreadcrumbs(), [
+			'archives' => [
+			'label' => __($this->_getEntity()->getName()),
+			'title' => __($this->_getEntity()->getName())
+		]]);
+  }
     
   /*
 	 *
@@ -46,5 +46,4 @@ class View extends \FishPig\WordPress\Controller\Action
 	    ['wordpress_user_view']
     );
   }
-
 }

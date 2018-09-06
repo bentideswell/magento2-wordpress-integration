@@ -1,14 +1,13 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\View\Comment;
 
-class Form extends \FishPig\WordPress\Block\AbstractBlock
+/* Parent Class */
+use FishPig\WordPress\Block\AbstractBlock;
+
+class Form extends AbstractBlock
 {
 	/**
 	 * Inject the comments js
@@ -45,7 +44,7 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	public function getCommentFormAction()
 	{
-		return $this->_wpUrlBuilder->getSiteUrl('wp-comments-post.php');
+		return $this->url->getSiteUrl('wp-comments-post.php');
 	}
 
 	/**
@@ -55,8 +54,8 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	public function customerMustLogin()
 	{
-		if ($this->_config->getOption('comment_registration')) {
-			return !$this->_config->isLoggedIn();
+		if ($this->optionManager->getOption('comment_registration')) {
+			return !$this->wpContext->getCustomerSession()->isLoggedIn();
 		}
 		
 		return false;
@@ -82,7 +81,7 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	public function isCustomerLoggedIn()
 	{
-		return $this->_config->isLoggedIn();
+		return $this->wpContext->getCustomerSession()->isLoggedIn();
 	}
 	
 	/**
@@ -92,7 +91,7 @@ class Form extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	public function getPost()
 	{
-		return $this->hasPost() ? $this->_getData('post') : $this->_registry->registry('wordpress_post');
+		return $this->hasPost() ? $this->_getData('post') : $this->registry->registry('wordpress_post');
 	}
 	
 	/**

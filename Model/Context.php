@@ -1,45 +1,134 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Model\Config;
-use \FishPig\WordPress\Helper\View as ViewHelper;
-use \FishPig\WordPress\Helper\Filter as FilterHelper;
-use \FishPig\WordPress\Helper\Compatibility as CompatibilityHelper;
+/* Constructor Args */
+use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\ShortcodeManager;
+use FishPig\WordPress\Model\PostTypeManager\Proxy as PostTypeManager;
+use FishPig\WordPress\Model\TaxonomyManager\Proxy as TaxonomyManager;
+use FishPig\WordPress\Model\Url;
+use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Helper\Date as DateHelper;
+use Magento\Framework\Registry;
+use Magento\Framework\View\Layout;
+use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Request\Http as Request;
 
-class Context implements \Magento\Framework\ObjectManager\ContextInterface
+class Context
 {
 	/*
 	 *
+	 * @var 
 	 *
-	 * @return 
 	 */
-	public function __construct(App $app, App\ResourceConnection $resourceConnection, App\Url $urlBuilder, App\Factory $factory, Config $config, ViewHelper $viewHelper, FilterHelper $filterHelper, CompatibilityHelper $compatibilityHelper)
-	{
-		$this->app = $app->init();
-		$this->resourceConnection = $resourceConnection;
-		$this->config = $config;
-		$this->urlBuilder = $urlBuilder;
-		$this->factory = $factory;
-		$this->viewHelper = $viewHelper;
-		$this->filterHelper = $filterHelper;
-		$this->compatibilityHelper = $compatibilityHelper;
-	}	
+	protected $resourceManager;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $optionManager;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $shortcodeManager;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $postTypeManager;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $taxonomyManager;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $url;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $factory;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $dateHelper;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $registry;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $customerSession;
+	
+	/*
+	 *
+	 * @var 
+	 *
+	 */
+	protected $request;
 
 	/*
 	 *
 	 *
-	 * @return 
+	 *
 	 */
-	public function getApp()
+	public function __construct(
+	ResourceConnection $resourceConnection,
+  	   OptionManager $optionManager,
+    ShortcodeManager $shortcodeManager,
+     PostTypeManager $postTypeManager,
+     TaxonomyManager $taxonomyManager,
+                 Url $url,
+             Factory $factory,
+          DateHelper $dateHelper,
+            Registry $registry,
+              Layout $layout,
+     CustomerSession $customerSession,
+             Request $request
+	)
 	{
-		return $this->app;
+		$this->resourceConnection = $resourceConnection;
+		$this->optionManager      = $optionManager;
+		$this->shortcodeManager   = $shortcodeManager;
+		$this->postTypeManager    = $postTypeManager;
+		$this->taxonomyManager    = $taxonomyManager;
+		$this->url                = $url;
+		$this->factory            = $factory;
+		$this->dateHelper         = $dateHelper;
+		$this->registry           = $registry;
+		$this->layout             = $layout;
+		$this->customerSession    = $customerSession;
+		$this->request            = $request;
 	}
 
 	/*
@@ -51,15 +140,15 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	{
 		return $this->resourceConnection;
 	}
-
+	
 	/*
 	 *
 	 *
 	 * @return 
 	 */
-	public function getConfig()
+	public function getOptionManager()
 	{
-		return $this->config;
+		return $this->optionManager;
 	}
 
 	/*
@@ -67,11 +156,41 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	 *
 	 * @return 
 	 */
-	public function getUrlBuilder()
+	public function getShortcodeManager()
 	{
-		return $this->urlBuilder;
+		return $this->shortcodeManager;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getTaxonomyManager()
+	{
+		return $this->taxonomyManager;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getPostTypeManager()
+	{
+		return $this->postTypeManager;
 	}
 
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getUrl()
+	{
+		return $this->url;
+	}
+	
 	/*
 	 *
 	 *
@@ -81,15 +200,45 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	{
 		return $this->factory;
 	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getDateHelper()
+	{
+		return $this->dateHelper;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getRegistry()
+	{
+		return $this->registry;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getLayout()
+	{
+		return $this->layout;
+	}
 
 	/*
 	 *
 	 *
 	 * @return 
 	 */
-	public function getViewHelper()
+	public function getCustomerSession()
 	{
-		return $this->viewHelper;
+		return $this->customerSession;
 	}
 	
 	/*
@@ -97,18 +246,8 @@ class Context implements \Magento\Framework\ObjectManager\ContextInterface
 	 *
 	 * @return 
 	 */
-	public function getFilterHelper()
+	public function getRequest()
 	{
-		return $this->filterHelper;
-	}
-	
-	/*
-	 *
-	 *
-	 * @return 
-	 */
-	public function getCompatibilityHelper()
-	{
-		return $this->compatibilityHelper;
+		return $this->request;
 	}
 }

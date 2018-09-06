@@ -1,28 +1,28 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 
-abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
+/* Parent Class */
+use FishPig\WordPress\Block\AbstractBlock;
+#use Magento\Framework\View\Element\Template;
+
+abstract class AbstractWrapper extends AbstractBlock
 {
 	/*
 	 *
 	 *
 	 */
 	abstract public function getEntity();
-
+  
 	/*
 	 *
 	 *
 	 */	
 	protected function _prepareLayout()
 	{
-		$this->_viewHelper->applyPageConfigData($this->pageConfig, $this->getEntity());
+		$this->getEntity()->applyPageConfigData($this->pageConfig);
 
 		return parent::_prepareLayout();
 	}
@@ -74,7 +74,7 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 	 */
 	protected function _getPostCollection()
 	{
-		return $this->_factory->getFactory('Post')->create()->getCollection();
+		return $this->factory->create('Model\ResourceModel\Post\Collection');
 	}
 
 	/**

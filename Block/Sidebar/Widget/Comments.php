@@ -5,12 +5,11 @@
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Comments extends AbstractWidget
 {
-	/**
+	/*
 	 * Retrieve the recent comments collection
 	 *
 	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Comment_Collection
@@ -18,9 +17,10 @@ class Comments extends AbstractWidget
 	public function getComments()
 	{
 		if (!$this->hasComments()) {
-			$comments = $this->_factory->getFactory('Post\Comment')->create()->getCollection()
-				->addCommentApprovedFilter()
-				->addOrderByDate('desc');
+			$comments = $this->factory->create('Model\ResourceModel\Post\Comment\CollectionFactory')
+				->create()
+					->addCommentApprovedFilter()
+					->addOrderByDate('desc');
 			
 			$comments->getSelect()->limit($this->getNumber() ? $this->getNumber() : 5 );
 			

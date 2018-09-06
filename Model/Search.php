@@ -1,13 +1,10 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Model;
 
+/* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Search extends AbstractModel implements ViewableInterface
@@ -34,7 +31,7 @@ class Search extends AbstractModel implements ViewableInterface
 	 */
   public function getSearchTerm()
   {
-		return $this->_viewHelper->getRequest()->getParam(self::VAR_NAME);
+		return $this->wpContext->getRequest()->getParam(self::VAR_NAME);
   }
 
 	/*
@@ -54,7 +51,7 @@ class Search extends AbstractModel implements ViewableInterface
 	 */
 	public function getPostTypes()
 	{
-		return $this->_viewHelper->getRequest()->getParam(self::VAR_NAME_POST_TYPE);	
+		return $this->wpContext->getRequest()->getParam(self::VAR_NAME_POST_TYPE);	
 	}
 	
 	/*
@@ -74,6 +71,6 @@ class Search extends AbstractModel implements ViewableInterface
 			$extra = '?' . rtrim($extra, '&');
 		}
 		
-		return $this->_wpUrlBuilder->getUrl() . 'search/' . urlencode($this->getSearchTerm()) . '/' . $extra;
+		return $this->url->getUrl('search/' . urlencode($this->getSearchTerm()) . '/' . $extra);
 	}
 }

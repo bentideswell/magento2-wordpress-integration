@@ -1,18 +1,20 @@
 <?php
-/**
+/*
  *
-**/
-
+ */
 namespace FishPig\WordPress\Controller\Term;
  
-class View extends \FishPig\WordPress\Controller\Action
+/* Parent Class */
+use FishPig\WordPress\Controller\Action;
+
+class View extends Action
 {   
 	/*
 	 *
 	 */
   protected function _getEntity()
   {
-    $object = $this->getFactory('Term')->create()->load($this->getRequest()->getParam('id'));
+    $object = $this->factory->create('Term')->load((int)$this->getRequest()->getParam('id'));
 
 		return $object->getId() ? $object : false;
   }

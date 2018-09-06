@@ -20,7 +20,7 @@ class Pages extends AbstractWidget
 		if (!$this->hasPost()) {
 			$this->setPost(false);
 			
-			if ($post = $this->_registry->registry('wordpress_post')) {
+			if ($post = $this->registry->registry('wordpress_post')) {
 				if ($post->getPostType() === 'page') {
 					$this->setPost($post);
 				}
@@ -42,8 +42,7 @@ class Pages extends AbstractWidget
 	
 	public function getPosts()
 	{
-		$posts = $this->_factory->getFactory('Post')->create()->getCollection()
-			->addPostTypeFilter('page');
+		$posts = $this->factory->create('Model\ResourceModel\Post\Collection')->addPostTypeFilter('page');
 
 		if ($this->hasParentId()) {
 			$posts->addPostParentIdFilter($this->getParentId());

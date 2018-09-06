@@ -1,14 +1,16 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
  */
-
 namespace FishPig\WordPress\Block\User;
 
-class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
+/* Parent Class */
+use FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
+
+/* Misc */
+use FishPig\WordPress\Model\User;
+
+class View extends AbstractWrapper
 {
 	/**
 	 * Caches and returns the current category
@@ -17,7 +19,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	public function getEntity()
 	{
-		return $this->_registry->registry(\FishPig\WordPress\Model\User::ENTITY);
+		return $this->registry->registry(User::ENTITY);
 	}
 	
 	/**
