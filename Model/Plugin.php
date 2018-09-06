@@ -1,16 +1,14 @@
 <?php
 /*
- * @category Fishpig
- * @package Fishpig_Wordpress
- * @license http://fishpig.co.uk/license.txt
- * @author Ben Tideswell <ben@fishpig.co.uk>
+ *
+ *
  */
 namespace FishPig\WordPress\Model;
 
 /* Constructor Args */
-use \FishPig\WordPress\Model\Network;
-use \FishPig\WordPress\Model\ResourceConnection;
-use \FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\Network;
+use FishPig\WordPress\Model\ResourceConnection;
+use FishPig\WordPress\Model\OptionManager;
 
 class Plugin
 {
@@ -20,12 +18,12 @@ class Plugin
 	 */
 	public function __construct(Network $network, ResourceConnection $resourceConnection, OptionManager $optionManager)
 	{
-		$this->network = $network;
 		$this->resourceConnection = $resourceConnection;
-		$this->optionManager = $optionManager;
+		$this->optionManager      = $optionManager;
+		$this->network            = $network;
 	}
 	
-	/**
+	/*
 	 * Install a plugin
 	 * 
 	 * @param string $target
@@ -60,7 +58,7 @@ class Plugin
 		return false;
 	}
 	
-	/**
+	/*
 	 * Enable a plugin
 	 *
 	 * @param string $plugin
@@ -96,7 +94,7 @@ class Plugin
 		return false;
 	}
 	
-	/**
+	/*
 	 * Determine whether a WordPress plugin is enabled in the WP admin
 	 *
 	 * @param string $name
@@ -128,7 +126,7 @@ class Plugin
 		return false;
 	}
 	
-	/**
+	/*
 	 * Retrieve a plugin option
 	 *
 	 * @param string $plugin

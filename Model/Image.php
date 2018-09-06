@@ -1,15 +1,20 @@
 <?php
-/**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
- * @author      Ben Tideswell <help@fishpig.co.uk>
+/*
+ *
+ *
+ *
  */
-
 namespace FishPig\WordPress\Model;
 
-class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
+/* Parent Class */
+use FishPig\WordPress\Model\Post\Attachment\AbstractModel;
+
+class Image extends AbstractModel
 {
+	/*
+	 *
+	 *
+	 */
 	public function _construct()
 	{
 		parent::_construct();
@@ -17,7 +22,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		$this->_init('FishPig\WordPress\Model\ResourceModel\Image');
 	}
 	
-	/**
+	/*
 	 * Retrieve the thumbnail image URL
 	 *
 	 * @return string
@@ -27,7 +32,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath('thumbnail');
 	}
 
-	/**
+	/*
 	 * Retrieve the medium image URL
 	 *
 	 * @return string
@@ -37,7 +42,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath('medium');
 	}
 
-	/**
+	/*
 	 * Retrieve the large image URL
 	 *
 	 * @return string
@@ -47,7 +52,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath('large');
 	}
 	
-	/**
+	/*
 	 * Retrieve the fullsize image URL
 	 *
 	 * @return string
@@ -57,7 +62,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath();
 	}
 
-	/**
+	/*
 	 * Retrieve the post thumbnail image URL
 	 *
 	 * @return string
@@ -67,7 +72,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath('post-thumbnail');
 	}
 
-	/**
+	/*
 	 * Retrieve any available image URL
 	 *
 	 * @return string
@@ -83,7 +88,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath();
 	}
 	
-	/**
+	/*
 	 * Retrieve the an image URL by type
 	 *
 	 * @param string $type = 'thumbnail'
@@ -94,7 +99,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getImagePath($type);
 	}
 	
-	/**
+	/*
 	 * Retrieve the an image URL by type
 	 *
 	 * @param string $type = 'thumbnail'
@@ -122,7 +127,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getThisImageUrl().$filename;
 	}
 	
-	/**
+	/*
 	 * Retrieve the URL to the folder that the image is stored in
 	 *
 	 * @return string
@@ -137,7 +142,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 			: $url;
 	}
 	
-	/**
+	/*
 	 * Retrieve the upload URL
 	 *
 	 * @return string
@@ -147,7 +152,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->url->getFileUploadUrl();
 	}
 	
-	/**
+	/*
 	 * Retrieve the alt text for the image
 	 *
 	 * @return string
@@ -157,7 +162,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->getMetaValue('image_alt');
 	}
 	
-	/**
+	/*
 	 * Retrieve the description for the image
 	 *
 	 * @return string
@@ -167,7 +172,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getData('post_content');
 	}
 	
-	/**
+	/*
 	 * Retrieve the title for the image
 	 *
 	 * @return string
@@ -177,7 +182,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getData('post_title');
 	}
 	
-	/**
+	/*
 	 * Retrieve the caption for the image
 	 *
 	 * @return string
@@ -187,16 +192,20 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment\AbstractModel
 		return $this->_getData('post_excerpt');
 	}
 	
-	/**
+	/*
 	 * Required for interface
 	 *
 	 * @return string
-	**/
+	 */
 	public function getContent()
 	{
 		return $this->getDescription();
 	}
-	
+
+	/*
+	 *
+	 * @return string
+	 */
 	public function getUrl()
 	{
 		return $this->getFullSizeImage();

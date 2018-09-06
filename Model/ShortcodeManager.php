@@ -4,6 +4,7 @@
  */
 namespace FishPig\WordPress\Model;
 
+/* Constructor Args */
 use FishPig\WordPress\Helper\Autop;
 
 class ShortcodeManager

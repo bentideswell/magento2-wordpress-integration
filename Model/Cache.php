@@ -1,11 +1,16 @@
 <?php
-/**
+/*
  *
-**/
+ *
+ *
+ */
 namespace FishPig\WordPress\Model;
 
-use \Magento\Framework\Cache\Frontend\Decorator\TagScope;
-use \Magento\Framework\App\Cache\Type\FrontendPool;
+/* Parent Class */
+use Magento\Framework\Cache\Frontend\Decorator\TagScope;
+
+/* Constructor Args */
+use Magento\Framework\App\Cache\Type\FrontendPool;
 
 class Cache extends TagScope
 {
@@ -16,15 +21,17 @@ class Cache extends TagScope
 	 */
 	const TYPE_IDENTIFIER = 'fishpig_wordpress';
 
-	 /*
-	  * Cache tag used to distinguish the cache type from all other cache
-	  *
-	  * @const string
-		*/
+	/*
+	 * Cache tag used to distinguish the cache type from all other cache
+	 *
+	 * @const string
+	*/
 	const CACHE_TAG = 'FISHPIG_WP';
 
 	/*
-	 * @param \Magento\Framework\App\Cache\Type\FrontendPool $cacheFrontendPool
+	 *
+	 *
+	 *
 	 */
 	public function __construct(FrontendPool $cacheFrontendPool)
 	{
