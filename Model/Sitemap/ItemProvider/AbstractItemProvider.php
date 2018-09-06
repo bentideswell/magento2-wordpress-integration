@@ -4,24 +4,19 @@
  */
 namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 
-use \FishPig\WordPress\Model\App;
-use \FishPig\WordPress\Model\AppFactory;
-use \FishPig\WordPress\Model\App\Factory as WpFactory;
-/*use \Magento\Sitemap\Model\SitemapItemInterfaceFactory;*/
+/* Constructor Args */
+use \FishPig\WordPress\Model\Factory;
 use \Magento\Store\Model\App\Emulation;
+
+/* Misc */
 use \Magento\Framework\App\ObjectManager;
 
 abstract class AbstractItemProvider/* implements ItemProviderInterface*/
-{
+{	
 	/*
-	 * @var \FishPig\WordPress\Model\App
+	 * @var \FishPig\WordPress\Model\Factory
 	 */
-	protected $appFactory;
-	
-	/*
-	 * @var \FishPig\WordPress\Model\App
-	 */
-	protected $wpFactory;
+	protected $factory;
 	
 	/*
 	 * @var \Magento\Store\Model\App\Emulation;
@@ -30,14 +25,12 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 	
 	/*
 	 *
-	 * @param \FishPig\WordPress\Model\App
-	 * @param \Magento\Store\Model\App\Emulation
+	 *
 	 */
-	public function __construct(AppFactory $appFactory, WpFactory $wpFactory, Emulation $emulation)
+	public function __construct(Factory $factory, Emulation $emulation)
 	{
-		$this->appFactory = $appFactory;
 		$this->emulation  = $emulation;
-		$this->wpFactory  = $wpFactory;
+		$this->wpFactory  = $factory;
 		
 		// OM required as SitemapItemInterfaceFactory is not present in Magento 2.2 and below so constructor injection breaks compilation
 		$this->itemFactory = ObjectManager::getInstance()->create('Magento\Sitemap\Model\SitemapItemInterfaceFactory');
@@ -52,8 +45,6 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 	{
 		try {
 			$this->emulation->startEnvironmentEmulation($storeId);
-		
-			$app = $this->appFactory->create()->init();
 			
 			$items = $this->_getItems($storeId);
 			
@@ -67,6 +58,6 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 			throw $e;
 		}
 		
-		return array();
+		return [];
 	}
 }

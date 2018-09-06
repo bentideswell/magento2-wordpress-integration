@@ -11,7 +11,7 @@ class Post extends AbstractItemProvider
 	 */
 	protected function _getItems($storeId)
 	{
-		$collection = $this->wpFactory->getFactory('FishPig\WordPress\Model\ResourceModel\Post\Collection')->create();
+		$collection = $this->factory->getFactory('FishPig\WordPress\Model\ResourceModel\Post\Collection')->create();
 		$items = [];
   
 		foreach($collection as $post) {
