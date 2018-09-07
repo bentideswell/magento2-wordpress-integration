@@ -31,7 +31,13 @@ class Url
 	 * @var 
 	 */
 	protected $storeManager = null;
-	 
+	
+	/*
+	 *
+	 * @var string
+	 */
+	protected $magentoUrl = [];
+	
 	/*
 	 * Constructor
 	 */
@@ -50,14 +56,29 @@ class Url
 	  */
 	public function getMagentoUrl()
 	{
-		return rtrim(
-			str_ireplace(
-				'index.php',
-				'',
-				$this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK)
-			),
-			'/'
-		);
+		$store = $this->storeManager->getStore();
+		$storeId = (int)$store->getId();
+		
+		if (!isset($this->magentoUrl[$storeId])) {
+			$magentoUrl = rtrim(
+				str_ireplace(
+					'index.php',
+					'',
+					$store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK)
+				),
+				'/'
+			);
+	
+			if ($store->isUseStoreInUrl()) {
+				if (preg_match('/(.*)' . $store->getCode() . '[\/]*$/', $magentoUrl, $matches)) {
+					$magentoUrl = $matches[1];
+				}
+			}
+			
+			$this->magentoUrl[$storeId] = rtrim($magentoUrl, '/');
+		}
+		
+		return $this->magentoUrl[$storeId];
 	}
 	
 	/*

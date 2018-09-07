@@ -6,6 +6,7 @@
 				<enabled>1</enabled>
 				<path>wp</path>
 				<theme_integration>1</theme_integration>
+				<ignore_store_code>0</ignore_store_code>
 			</setup>
 		</wordpress>
 	</default>

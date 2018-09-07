@@ -58,7 +58,7 @@ class UrlTest
 		if ($this->url->isRoot()) {
 			if ($homeUrl !== $magentoUrl) {
 				IntegrationException::throwException(
-					sprintf('Your home URL is incorrect and should match your Magento URL. Change to. %s', $magentoUrl)
+					sprintf('Your home URL (%s) is incorrect and should match your Magento URL. Change to. %s', $homeUrl, $magentoUrl)
 				);
 			}
 		}

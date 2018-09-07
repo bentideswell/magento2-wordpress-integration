@@ -1,3 +1,6 @@
+07/08/2018 - 2.0.0.7
+- Added Ignore Store Code option. When enabled, the blog is delivered without the Magento store code in the URL. This is useful if you have store codes and want a single blog from the root (eg. store A = /uk/ and store B = /us/ and you want a blog at /blog/).
+
 07/08/2018 - 2.0.0.5
 - Small bug fixes from version 2.0.0.0's release.
 
