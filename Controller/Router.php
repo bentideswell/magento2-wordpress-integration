@@ -12,7 +12,6 @@ use Magento\Framework\App\ActionFactory;
 use FishPig\WordPress\Model\IntegrationManager;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
-use FishPig\WordPress\Model\TaxonomyManager;
 
 /* Misc */
 use Magento\Framework\App\RequestInterface;
@@ -69,15 +68,13 @@ class Router implements RouterInterface
          ActionFactory $actionFactory, 	
     IntegrationManager $integrationManager,
                    Url $url,
-               Factory $factory,
-       TaxonomyManager $taxonomyManager
+               Factory $factory
   )
   {
     $this->actionFactory      = $actionFactory;
     $this->integrationManager = $integrationManager;
     $this->url                = $url;
     $this->factory            = $factory;
-    $this->taxonomyManager    = $taxonomyManager;
   }
 
   /*
@@ -85,7 +82,7 @@ class Router implements RouterInterface
    */
 	public function match(RequestInterface $request)
 	{
-    $this->integrationManager->runTests();
+	  $this->integrationManager->runTests();
 
 		$fullRequestUri = $this->getPathInfo($request);
 		$blogRoute      = $this->url->getBlogRoute();
@@ -308,7 +305,7 @@ class Router implements RouterInterface
 	 */
 	protected function _getTaxonomyRoutes($uri = '')
 	{
-		foreach($this->taxonomyManager->getTaxonomies() as $taxonomy) {
+		foreach($this->factory->get('TaxonomyManager')->getTaxonomies() as $taxonomy) {
 			if (($routes = $taxonomy->getUris($uri)) !== false) {
 				foreach($routes as $routeId => $route) {
 					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
