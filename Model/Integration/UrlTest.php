@@ -46,28 +46,30 @@ class UrlTest
 		}
 
 		$magentoUrl = $this->url->getMagentoUrl();
-
-		if ($this->url->getHomeUrl() === $this->url->getSiteurl()) {
+		$homeUrl    = $this->url->getHomeUrl();
+		$siteUrl    = $this->url->getSiteUrl();
+		
+		if ($homeUrl === $siteUrl) {
 			IntegrationException::throwException(
-				sprintf('Your WordPress Home URL matches your Site URL (%s). Your SiteURL should be the WordPress installation URL and the WordPress Home URL should be the integrated blog URL.', $this->url->getSiteurl())
+				sprintf('Your WordPress Home URL matches your Site URL (%s). Your SiteURL should be the WordPress installation URL and the WordPress Home URL should be the integrated blog URL.', $siteUrl)
 			);
 		}
 
 		if ($this->url->isRoot()) {
-			if ($this->url->getHomeUrl() !== $magentoUrl) {
+			if ($homeUrl !== $magentoUrl) {
 				IntegrationException::throwException(
 					sprintf('Your home URL is incorrect and should match your Magento URL. Change to. %s', $magentoUrl)
 				);
 			}
 		}
 		else {
-			if (strpos($this->url->getHomeUrl(), $magentoUrl) !== 0) {
+			if (strpos($homeUrl, $magentoUrl) !== 0) {
 				IntegrationException::throwException(
-					sprintf('Your home URL (%s) is invalid as it does not start with the Magento base URL (%s).', $this->url->getHomeUrl(), $magentoUrl)
+					sprintf('Your home URL (%s) is invalid as it does not start with the Magento base URL (%s).', $homeUrl, $magentoUrl)
 				);
 			}
 			
-			if ($this->url->getHomeUrl() === $magentoUrl) {
+			if ($homeUrl === $magentoUrl) {
 				IntegrationException::throwException('Your WordPress Home URL matches your Magento URL. Try changing your Home URL to something like ' . $magentoUrl . '/blog');
 			}
 		}

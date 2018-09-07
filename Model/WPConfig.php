@@ -5,7 +5,8 @@
 namespace FishPig\WordPress\Model;
 
 /* Constructor Args */
-use FishPig\WordPress\Model\Path;
+use FishPig\WordPress\Model\DirectoryList;
+use Magento\Store\Model\StoreManagerInterface;
 
 /* Misc */
 use FishPig\WordPress\Model\Integration\IntegrationException;
@@ -14,29 +15,33 @@ class WPConfig
 {   
 	/*
 	 *
-	 * @var Path
+	 * @var DirectoryList
 	 *
 	 */
-	protected $path;
+	protected $wpDirectoryList;
+	
+	/*
+	 *
+	 * @var StoreManagerInterface
+	 *
+	 */
+	protected $storeManager;
 	
 	/*
 	 *
 	 * @var array
 	 *
 	 */
-	protected $data;
+	protected $data = [];
 	
 	/*
 	 *
 	 *
 	 */
-	public function __construct(Path $wpPath)
+	public function __construct(DirectoryList $wpDirectoryList, StoreManagerInterface $storeManager)
 	{
-		$this->path = $wpPath->getPath();
-		
-		if ($this->path) {
-			$this->initialise();
-		}
+		$this->storeManager    = $storeManager;
+		$this->wpDirectoryList = $wpDirectoryList;
 	}
 
 	/*
@@ -45,10 +50,12 @@ class WPConfig
 	 */
 	protected function initialise()
 	{
-		if (is_null($this->data)) {
-			$this->data = false;
+		$storeId = $this->getStoreId();
+		
+		if (!isset($this->data[$storeId])) {
+			$this->data[$storeId] = false;
 			
-			$wpConfig = file_get_contents($this->path . '/wp-config.php');
+			$wpConfig = file_get_contents($this->wpDirectoryList->getBasePath() . '/wp-config.php');
 
 			# Cleanup comments
 			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
@@ -60,37 +67,29 @@ class WPConfig
 				IntegrationException::throwException('Unable to extract values from wp-config.php');
 			}
 
-			$this->data = array_combine($matches[1], $matches[3]);
+			$this->data[$storeId] = array_combine($matches[1], $matches[3]);
 			
 			if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {			
 				$temp = array_combine($matches[1], $matches[2]);
 				
 				foreach($temp as $k => $v) {
 					if ($v === 'true') {
-						$this->data[$k] = true;
+						$this->data[$storeId][$k] = true;
 					}
 					else if ($v === 'false') {
-						$this->data[$k] = false;
+						$this->data[$storeId][$k] = false;
 					}
 					else {
-						$this->data[$k] = $v;
+						$this->data[$storeId][$k] = $v;
 					}
 				}
 			}
 
 			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
-				$this->data['DB_TABLE_PREFIX'] = $match[2];
+				$this->data[$storeId]['DB_TABLE_PREFIX'] = $match[2];
 			}
 			else {
-				$this->data['DB_TABLE_PREFIX'] = 'wp_';
-			}
-
-			foreach($this->data as $key => $value) {
-				$key = 'FISHPIG_' . $key;
-				
-				if (!defined($key))	{
-					define($key, $value);
-				}
+				$this->data[$storeId]['DB_TABLE_PREFIX'] = 'wp_';
 			}
 		}
 	}
@@ -103,10 +102,24 @@ class WPConfig
 	 */
 	public function getData($key = null)
 	{
+		$storeId = $this->getStoreId();
+		
+		$this->initialise();
+		
 		if (is_null($key)) {
-			return $this->data;
+			return isset($this->data[$storeId]) ? $this->data[$storeId] : false;
 		}
 		
-		return isset($this->data[$key]) ? $this->data[$key] : false;
+		return isset($this->data[$storeId][$key]) ? $this->data[$storeId][$key] : false;
+	}
+	
+	/*
+	 * Get the store ID
+	 *
+	 * @return int
+	 */
+	protected function getStoreId()
+	{
+		return (int)$this->storeManager->getStore()->getId();
 	}
 }

@@ -5,7 +5,7 @@
 namespace FishPig\WordPress\Model\Integration;
 
 /* Constructor Args */
-use FishPig\WordPress\Model\Path;
+use FishPig\WordPress\Model\DirectoryList;
 
 /* Misc */
 use FishPig\WordPress\Model\Integration\IntegrationException;
@@ -16,15 +16,15 @@ class PathTest
 	 *
 	 *
 	 */
-	protected $path;
+	protected $wpDirectoryList;
 
 	/*
 	 *
 	 *
 	 */
-	public function __construct(Path $path)
+	public function __construct(DirectoryList $wpDirectoryList)
 	{
-		$this->path = $path;
+		$this->wpDirectoryList = $wpDirectoryList;
 	}
 	
 	/*
@@ -33,7 +33,7 @@ class PathTest
 	 */
 	public function runTest()
 	{
-		if ($this->path->getPath() === false) {
+		if ($this->wpDirectoryList->isValidBasePath() === false) {
 			IntegrationException::throwException(
 				'Unable to find a WordPress installation at specified path.'
 			);

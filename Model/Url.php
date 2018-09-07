@@ -7,6 +7,7 @@ namespace FishPig\WordPress\Model;
 /* Constructor Args */
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Network;
+use FishPig\WordPress\Model\WPConfig;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Url
@@ -15,6 +16,11 @@ class Url
 	 * @var OptionManager
 	 */
 	protected $optionManger;
+	
+	/*
+	 * @var WPConfig
+	 */
+	protected $wpConfig;
 	
 	/*
 	 * @var Network
@@ -29,9 +35,10 @@ class Url
 	/*
 	 * Constructor
 	 */
-	public function __construct(OptionManager $optionManager, Network $network, StoreManagerInterface $storeManager)
+	public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager)
 	{
 		$this->optionManager = $optionManager;
+		$this->wpConfig      = $wpConfig;
 		$this->network       = $network;
 		$this->storeManager  = $storeManager;
 	}
@@ -71,7 +78,6 @@ class Url
 	  */
 	public function getUrl($uri = '')
 	{
-		
 		$url = $this->getHomeUrl()	. '/' . $uri;
 		
 		if (!$this->hasTrailingSlash()) {
@@ -102,8 +108,10 @@ class Url
 	  */
 	public function getSiteurl($extra = '')
 	{
-		$siteUrl = defined('FISHPIG_WP_SITEURL') ? FISHPIG_WP_SITEURL : $this->optionManager->getOption('siteurl');
-		
+		if (!($siteUrl = $this->wpConfig->getData('WP_SITEURL'))) {
+			$siteUrl = $this->optionManager->getOption('siteurl');
+		}
+
 		return rtrim(rtrim($siteUrl, '/') . '/' . ltrim($extra, '/'), '/');
 	}
 	
@@ -114,11 +122,37 @@ class Url
 	  */
 	public function getHomeUrl()
 	{
-		$home = defined('FISHPIG_WP_HOME') ? FISHPIG_WP_HOME : $this->optionManager->getOption('home');
+		if (!($home = $this->wpConfig->getData('WP_HOME'))) {
+			$home = $this->optionManager->getOption('home');
+		}
 		
 		return rtrim($home, '/');
 	}
+	
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getBaseFileUploadUrl()
+	{
+		return rtrim($this->getWpContentUrl(), '/') . '/uploads/';
+	}
 
+	/*
+	 *
+	 *
+	 * @return 
+	 */
+	public function getWpContentUrl()
+	{
+		if (!($contentUrl = $this->wpConfig->getData('WP_CONTENT_URL'))) {
+			$contentUrl = $this->getSiteUrl() . '/wp-content/';
+		}
+		
+		return $contentUrl;
+	}
+	
 	/*
 	 * Retrieve the upload URL
 	 *
@@ -160,20 +194,19 @@ class Url
 	
 	/*
 	 *
-	 *
-	 * @return 
-	 */
-	public function getBaseFileUploadUrl()
-	{
-		return $this->getSiteUrl() . '/wp-content/uploads/';
-	}
-	
-	/*
-	 *
 	 * @return bool
 	 */
 	public function isRoot()
 	{
 		return false;
+	}
+
+	/*
+	 *
+	 * @return int
+	 */
+	protected function getStoreId()
+	{
+		return (int)$this->storeManager->getStore()->getId();
 	}
 }

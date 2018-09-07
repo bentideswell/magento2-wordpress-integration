@@ -10,7 +10,7 @@ use FishPig\WordPress\Model\OptionManager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\State;
-use FishPig\WordPress\Model\Path;
+use FishPig\WordPress\Model\DirectoryList;
 
 /* Misc */
 use FishPig\WordPress\Model\Integration\IntegrationException;
@@ -50,7 +50,7 @@ class Theme
 	 * @var
 	 *
 	 */
-	protected $path;
+	protected $wpDirectoryList;
 	
 	/*
 	 *
@@ -62,14 +62,14 @@ class Theme
 		 ScopeConfigInterface $scopeConfig,
 		StoreManagerInterface $storeManager,
 		                State $state,
-		                 Path $path
+		        DirectoryList $wpDirectoryList
   )
   {
-    $this->optionManager = $optionManager;
-    $this->scopeConfig   = $scopeConfig;
-    $this->storeManager  = $storeManager;
-    $this->state         = $state;
-    $this->path          = $path;
+    $this->optionManager   = $optionManager;
+    $this->scopeConfig     = $scopeConfig;
+    $this->storeManager    = $storeManager;
+    $this->state           = $state;
+    $this->wpDirectoryList = $wpDirectoryList;
   }
 
 	/*
@@ -83,7 +83,7 @@ class Theme
 			return $this;
 		}
 
-		if (!$this->path->isValid()) {
+		if (!$this->wpDirectoryList->isValidBasePath()) {
 			IntegrationException::throwException('Empty or invalid path set.');
 		}
 
@@ -165,7 +165,7 @@ class Theme
 	 */
 	public function getTargetDir()
 	{
-		return $this->path->getPath() . '/wp-content/themes/' . self::THEME_NAME;
+		return $this->wpDirectoryList->getThemeDir() . '/' . self::THEME_NAME;
 	}
 	
 	/*

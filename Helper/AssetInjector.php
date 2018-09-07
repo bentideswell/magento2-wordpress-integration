@@ -11,7 +11,7 @@ use FishPig\WordPress\Model\IntegrationManager;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Module\ModuleListInterface;
-use FishPig\WordPress\Model\Path as WordPressPath;
+use FishPig\WordPress\Model\DirectoryList as WPDirectoryList;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\Url as WordPressURL;
 
@@ -49,7 +49,7 @@ class AssetInjector
 		StoreManagerInterface $storeManager, 
 		        DirectoryList $directoryList, 
 		  ModuleListInterface $moduleList,
-		        WordPressPath $wpPath,
+		      WPDirectoryList $wpDirectoryList,
 		     ShortcodeManager $shortcode,
 		         WordPressURL $wpUrl
 	)
@@ -58,7 +58,7 @@ class AssetInjector
 		$this->storeManager       = $storeManager;
 		$this->directoryList      = $directoryList;
 		$this->moduleVersion      = $moduleList->getOne('FishPig_WordPress')['setup_version'];
-		$this->wpPath             = $wpPath;
+		$this->wpDirectoryList    = $wpDirectoryList;
 		$this->shortcodeManager   = $shortcode;
 		$this->wpUrl              = $wpUrl;
 	}
@@ -303,7 +303,7 @@ class AssetInjector
 		}
 
 		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);		
-		$localScriptFile 	 = $this->wpPath->getPath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
+		$localScriptFile 	 = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
 		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
 		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
 
@@ -322,7 +322,7 @@ class AssetInjector
 		}
 
 		if (self::DEBUG) {
-			$debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->wpPath->getPath()), '', $localScriptFile)), '-') . '.js';
+			$debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->wpDirectoryList->getBasePath()), '', $localScriptFile)), '-') . '.js';
 			$debugFilename = preg_replace('/[_-]{1,}/', '-', $debugFilename);
 			$newScriptFile = dirname($newScriptFile) . DIRECTORY_SEPARATOR . $debugFilename;
 			$newScriptUrl = dirname($newScriptUrl) . '/' . $debugFilename;
@@ -371,7 +371,7 @@ class AssetInjector
 				$localScriptFile = $baseMergedPath . basename($externalScriptUrl);
 			}
 			else {
-				$localScriptFile = $this->wpPath->getPath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
+				$localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
 			}
 			
 			$scriptContents[] = file_get_contents($localScriptFile);
