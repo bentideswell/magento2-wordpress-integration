@@ -196,7 +196,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 	 */
 	public function addCloudFilter($taxonomy)
 	{
-		$cloudIdsSelect = $this->getResource()->getFactory()->getFactory('Term')->create()->getCollection()
+		$cloudIdsSelect = $this->wpContext->getFactory()->create('Term')->getCollection()
 			->addTaxonomyFilter($taxonomy)
 			->addOrderByItemCount()
 			->setPageSize(20)
@@ -207,9 +207,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
 		return $this->addTaxonomyFilter($taxonomy)->addFieldToFilter(
 			'main_table.term_id', 
-			array(
-				'in' => $this->context->getCompatibilityHelper()->createZendDbSqlExpression($cloudIdsSelect)
-			)
+			array('in' => new \Zend_Db_Expr($cloudIdsSelect))
 		);
 	}
 }

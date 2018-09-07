@@ -22,7 +22,9 @@ abstract class AbstractWrapper extends AbstractBlock
 	 */	
 	protected function _prepareLayout()
 	{
-		$this->getEntity()->applyPageConfigData($this->pageConfig);
+		if ($this->getEntity()) {
+			$this->getEntity()->applyPageConfigData($this->pageConfig);
+		}
 
 		return parent::_prepareLayout();
 	}
