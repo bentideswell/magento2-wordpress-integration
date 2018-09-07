@@ -88,7 +88,13 @@ class Integrate extends Template
 	 *
 	 */
 	protected $exception;
-	
+
+	/*
+	 *
+	 *
+	 */
+	protected $success = false;
+
 	/*
 	 *
 	 * 
@@ -167,15 +173,19 @@ class Integrate extends Template
 		if ($exception = $this->exception) {
 			$messages[] = $this->_getMessage($exception->getMessage(), 'error');
 		}
-		else {
+		else if ($this->success) {
 			$messages[] = $this->_getMessage($this->success);
 			
 			if ($msg = $this->_getYoastSeoMessage()) {
 				$messages[] = $msg;
 			}
 		}
-
-		return '<div class="messages">' . implode("\n", $messages) . '</div>'. $this->_getExtraHtml();
+		
+		if ($messages) {
+			return '<div class="messages">' . implode("\n", $messages) . '</div>'. $this->_getExtraHtml();
+		}
+		
+		return '';
 	}
 
 	/*
