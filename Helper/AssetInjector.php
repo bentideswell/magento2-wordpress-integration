@@ -119,8 +119,17 @@ class AssetInjector
 
 		$content = implode("\n", $assets);
 
-		// VC Frontend Editor
-		if (isset($_GET['vc_editable'])) {
+		// If Visual Editor Mode, remove Magento JS and include WordPress JS without RequireJS
+		$isVisualEditorMode = false;
+		
+		foreach($shortcodes as $class => $shortcodeInstance) {
+			if (method_exists($shortcodeInstance, 'isVisualEditorMode') && ($buffer = $shortcodeInstance->isVisualEditorMode())) {
+				$isVisualEditorMode = true;
+				break;
+			}
+		}
+		
+		if ($isVisualEditorMode) {
 			$bodyHtml = preg_replace('/<script[^>]*>.*<\/script>/Uis', '', $bodyHtml);
 			$bodyHtml = str_replace('</body>', "\n\n" . $content . "\n\n" . '</body>', $bodyHtml);
 			
