@@ -166,6 +166,12 @@ if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php')) {
 	@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
 }
 
+
+/* WPBakery */
+if (isset($_GET['vc_editable'])) {
+	ini_set('display_errors', 0);
+}
+
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
 

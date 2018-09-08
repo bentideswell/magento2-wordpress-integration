@@ -81,7 +81,7 @@ class AssetInjector
 		if (!($shortcodes = $this->shortcodeManager->getShortcodesThatRequireAssets())) {
 			return false;
 		}
-
+		
 		self::$status = true;
 		
 		$assets = [];
@@ -118,6 +118,14 @@ class AssetInjector
 		}
 
 		$content = implode("\n", $assets);
+
+		// VC Frontend Editor
+		if (isset($_GET['vc_editable'])) {
+			$bodyHtml = preg_replace('/<script[^>]*>.*<\/script>/Uis', '', $bodyHtml);
+			$bodyHtml = str_replace('</body>', "\n\n" . $content . "\n\n" . '</body>', $bodyHtml);
+			
+			return $bodyHtml;
+		}
 
 		if (trim($content) === '') {
 			return false;
