@@ -39,9 +39,11 @@ class Autop extends AbstractHelper
 			'_autop_newline_preservation_helper',
 			'wp_html_split',
 			'get_html_split_regex',
+			'shortcode_unautop',
 		))) {
 			$string = fp_wpautop($string);
-			
+
+			$string = fp_shortcode_unautop($string);
 			// Fix shortcodes that get P'd off!
 			$string = preg_replace('/<p>\[/', '[', $string);
 			$string = preg_replace('/\]<\/p>/', ']', $string);

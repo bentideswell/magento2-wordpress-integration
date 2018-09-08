@@ -409,8 +409,8 @@ class Post extends AbstractMeta implements ViewableInterface
 		$key = '__processed_post_content';
 		
 		if (!$this->hasData($key)) {
-			$postContent = $this->shortcodeManager->renderShortcode($this->_getData('post_content'), $this);
 			$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
+			$postContent = $this->shortcodeManager->renderShortcode($this->_getData('post_content'), $this);
 
 			$this->setData($key, $postContent);
 		}
