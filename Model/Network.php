@@ -26,7 +26,7 @@ class Network
 	 */
 	public function getSiteId()
 	{
-		return 0;
+		return 1;
 	}
 
 	/*
@@ -36,7 +36,7 @@ class Network
 	 */
 	public function getBlogId()
 	{
-		return 0;
+		return 1;
 	}
 
 	/*

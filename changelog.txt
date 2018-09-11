@@ -1,3 +1,6 @@
+11/09/2018 - 2.0.0.12
+- Fixed issue with image URLs.
+
 08/09/2018 - 2.0.0.9
 - Added support for the WPBakery Page Builder Frontend Editor.
 
