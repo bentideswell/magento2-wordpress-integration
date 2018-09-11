@@ -10,20 +10,6 @@ use FishPig\WordPress\Block\AbstractBlock;
 class Form extends AbstractBlock
 {
 	/**
-	 * Inject the comments js
-	 *
-	 * @return $this
-	 */
-	protected function _prepareLayout()
-	{
-		if (($head = $this->getLayout()->getBlock('head')) !== false) {
-			$head->addJs('fishpig/wordpress/comments.js');
-		}
-
-		return parent::_prepareLayout();
-	}
-	
-	/**
 	 * Ensure a valid template is set
 	 *
 	 * @return $this
