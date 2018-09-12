@@ -201,12 +201,7 @@ class Url
 			
 
 			if (!$url) {
-				if ($this->network->getBlogId() !== 1) {
-					$url = $this->getBaseFileUploadUrl() . 'sites/' . $this->network->getBlogId() . '/';
-				}
-				else {
-					$url = $this->getBaseFileUploadUrl();
-				}
+				$url = $this->getBaseFileUploadUrl();
 			}
 		}
 		
