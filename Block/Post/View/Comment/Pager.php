@@ -5,10 +5,24 @@
 namespace FishPig\WordPress\Block\Post\View\Comment;
 
 /* Parent Class */
-use FishPig\WordPress\Block\Post\PostList\Pager as ParentClass;
+use FishPig\WordPress\Block\Post\PostList\Pager as PostListPager;
 
-class Pager extends ParentClass
+class Pager extends PostListPager
 {
+	/*
+	 * Only display the pager if the Post is set
+	 *
+	 * @return string
+	 */
+	public function toHtml()
+	{
+		if ($this->getPost()) {
+			return parent::toHtml();
+		}
+		
+		return '';
+	}
+	
 	/**
 	 * Gets the comments per page limit
 	 *
@@ -55,16 +69,6 @@ class Pager extends ParentClass
 		}
 		
 		return $this->getPost()->getUrl() . '#comments';
-	}
-	
-	/**
-	 * Retrieve the post object
-	 *
-	 * @return \FishPig\WordPress\Model\Post
-	 */
-	public function getPost()
-	{
-		return Mage::registry('wordpress_post');
 	}
 	
 	/**

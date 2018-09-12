@@ -123,7 +123,7 @@ class Posts extends AbstractWidget
 		if (!$this->hasCategory()) {
 			$this->setCategory(false);
 			if ($this->getCategoryId()) {
-				$category = Mage::getModel('wordpress/term')->setTaxonomy('category')->load($this->getCategoryId());
+				$category = $this->factory->create('Term')->setTaxonomy('category')->load($this->getCategoryId());
 
 				if ($category->getId()) {
 					$this->setCategory($category)->setCategoryId($category->getId());

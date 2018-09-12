@@ -188,13 +188,6 @@ class Item extends Post
 	public function isItemActive()
 	{
 		return false;
-		$currentUrl = Mage::getUrl('*/*/*', array('_current' => true, '_use_rewrite' => true));
-		
-		if (strpos($currentUrl, '?') !== false) {
-			$currentUrl = substr($currentUrl, 0, strpos($currentUrl, '?'));
-		}
-		
-		return $currentUrl === $this->getUrl();
 	}
 	
 	/**

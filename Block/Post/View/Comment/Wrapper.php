@@ -25,6 +25,7 @@ class Wrapper extends AbstractComment
 		}	
 			
 		if ($this->getCommentCount() > 0 && ($pagerBlock = $this->getChildBlock('pager')) !== false) {
+			$pagerBlock->setPost($this->getPost());
 			$pagerBlock->setCollection($this->getComments());
 		}
 

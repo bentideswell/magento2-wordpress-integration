@@ -134,12 +134,7 @@ class Image extends AbstractModel
 	 */
 	protected function _getThisImageUrl()
 	{
-		$url = $this->getFileUploadUrl() . dirname($this->getFile()) . '/';
-		
-		return $url;
-		return Mage::app()->getStore()->isCurrentlySecure()
-			? str_replace('http://', 'https://', $url)
-			: $url;
+		return $this->getFileUploadUrl() . dirname($this->getFile()) . '/';
 	}
 	
 	/*

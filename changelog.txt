@@ -1,3 +1,6 @@
+12/09/2018 - 2.0.0.15
+- Removed M1 references
+
 11/09/2018 - 2.0.0.14
 - Removed comments.js
 

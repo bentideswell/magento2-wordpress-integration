@@ -255,21 +255,12 @@ class Post extends AbstractMeta implements ViewableInterface
 	/*
 	 * Get the parent term
 	 * This is the term with the taxonomy as $taxonomy with the lowest term_id
-	 * If Yoast SEO is installed, the primary category will be used (if $taxonomy === category)
 	 *
 	 * @param string $taxonomy
 	 * @return \FishPig\WordPress\Model\Term
 	  */
 	public function getParentTerm($taxonomy)
 	{
-		/*
-		if ($taxonomy === 'category' && $this->_app->isAddonInstalled('WordPressSEO')) {
-			if ($category = Mage::helper('wp_addon_yoastseo')->getPostPrimaryCategory($this)) {
-				return $category;
-			}
-		}
-	   */
-		
 		$terms = $this->getTermCollection($taxonomy)
 			->setPageSize(1)
 			->setCurPage(1)
