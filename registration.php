@@ -1,9 +1,8 @@
 <?php
-/*
- *
- * WordPress
- * https://fishpig.co.uk/
- *
+/**
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell (ben@fishpig.co.uk)
+ * @url      https://fishpig.co.uk/magento/wordpress-integration/
  */
 use \Magento\Framework\Component\ComponentRegistrar;
 
@@ -13,37 +12,17 @@ ComponentRegistrar::register(
 	__DIR__
 );
 
-/*
- *
+/**
  * Translation function fix
- *
+ * If app/functions.php exists (Magento 2.2 and below)
+ * Swap it for our version (the same file with a call to function_exists)
  */
 $functionsFile = BP . '/app/functions.php';
 
 if (is_file($functionsFile)) {
-	@file_put_contents($functionsFile, "<?php
-/**
- * Create value-object \Magento\Framework\Phrase
- * @deprecated The global function __() is now loaded via Magento Framework, the below require is only
- *             for backwards compatibility reasons and this file will be removed in a future version
- * @see        Magento\Framework\Phrase\__.php
- * @SuppressWarnings(PHPMD.ShortMethodName)
- * @return \Magento\Framework\Phrase
- */
-if (!function_exists('__')) {
-	function __()
-	{
-	    $argc = func_get_args();
-	
-	    $text = array_shift($argc);
-	    if (!empty($argc) && is_array($argc[0])) {
-	        $argc = $argc[0];
-	    }
-	
-	    return new \Magento\Framework\Phrase($text, $argc);
+	if (strpos(file_get_contents($functionsFile), 'function_exists') === false) {
+		@file_put_contents($functionsFile, __DIR__ . '/functions.php');
 	}
-}
-");
 }
 
 if (!function_exists('__')) {
