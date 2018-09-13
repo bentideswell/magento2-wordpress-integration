@@ -13,18 +13,36 @@ ComponentRegistrar::register(
 	__DIR__
 );
 
-// Protection against installing module in incorrect directory
-$currentLocation = __DIR__;
+/*
+ *
+ * Translation function fix
+ *
+ */
+$functionsFile = BP . '/app/functions.php';
 
-if (strpos($currentLocation, 'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR) !== false) {
-	$relativeLocation = 'app' . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'FishPig' . DIRECTORY_SEPARATOR . 'WordPress';
+if (is_file($functionsFile)) {
+	@file_put_contents($functionsFile, "<?php
+/*
+ * Translation function has been removed for WordPress Integration
+ * This file is deprecated from Magento 2.3
+ */
+");
+}
+
+if (!function_exists('__')) {
+	function __()
+	{
+		$argc = func_get_args();
+		$text = array_shift($argc);
+
+		if (!empty($argc) && is_array($argc[0])) {
+			$argc = $argc[0];
+		}
 	
-	if (strpos($currentLocation, $relativeLocation) === false) {
-		throw new \Exception(sprintf(
-			"%s is installed in the wrong folder. Please install the module in %s and make sure that you use the correct capitalisation of the module name (%s).",
-			"FishPig_WordPress",
-			$relativeLocation,
-			'FishPig' . DIRECTORY_SEPARATOR . 'WordPress'
-		));
+		if (isset($GLOBALS['phrase_as_string'])) {
+			return (string)new \Magento\Framework\Phrase($text, $argc);
+		}
+	
+		return new \Magento\Framework\Phrase($text, $argc);
 	}
 }

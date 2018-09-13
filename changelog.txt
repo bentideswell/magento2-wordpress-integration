@@ -1,3 +1,6 @@
+13/09/2018 - 2.0.1.0
+- Added translation fix to registration.php
+
 12/09/2018 - 2.0.0.15
 - Removed M1 references
 
