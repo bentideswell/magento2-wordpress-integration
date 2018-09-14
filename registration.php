@@ -20,8 +20,11 @@ ComponentRegistrar::register(
 $functionsFile = BP . '/app/functions.php';
 
 if (is_file($functionsFile)) {
-	if (strpos(file_get_contents($functionsFile), 'function_exists') === false) {
-		@file_put_contents($functionsFile, __DIR__ . '/functions.php');
+	$legacyFunctions = @file_get_contents($functionsFile);
+	$fpFunctions     = @file_get_contents(__DIR__ . '/functions.php');
+	
+	if (strpos($legacyFunctions, 'function_exists') === false) {
+		@file_put_contents($functionsFile, $fpFunctions);
 	}
 }
 
