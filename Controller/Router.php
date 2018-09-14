@@ -309,13 +309,7 @@ class Router implements RouterInterface
 			if (($routes = $taxonomy->getUris($uri)) !== false) {
 				foreach($routes as $routeId => $route) {
 					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
-					$this->addRoute(rtrim($route, '/') . '/feed', '*/term/feed', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
-					
-					if ($taxonomy->getExtraRoutes()) {
-						foreach($taxonomy->getExtraRoutes() as $pattern => $newRoute) {
-							$this->addRoute(str_replace('*', $route, $pattern), $newRoute, array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
-						}
-					}
+#					$this->addRoute(rtrim($route, '/') . '/feed', '*/term/feed', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
 				}
 			}
 		}

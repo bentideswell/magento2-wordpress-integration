@@ -67,7 +67,7 @@ class PostType extends AbstractModel implements ViewableInterface
 			$structure = str_replace('%postname%', '%postnames%', $structure);
 		}
 
-		if ($this->withFront()) {
+		if ($this->url->isRoot() && $this->withFront()) {
 			$structure = $this->getFront() . '/' . $structure;
 		}
 
@@ -470,7 +470,7 @@ class PostType extends AbstractModel implements ViewableInterface
 		$routes = array();
 		
 		foreach($objects as $objectId => $object) {
-			if (($children = self::createLookupTable($objectId, $byParent)) !== false) {
+			if (($children = self::createArrayTree($objectId, $byParent)) !== false) {
 				$objects[$objectId]['children'] = $children;
 			}
 
@@ -506,5 +506,34 @@ class PostType extends AbstractModel implements ViewableInterface
 		}
 
 		return $urls;
+	}
+	
+	/**
+	 * Create an array tree. This is used for creating static URL lookup tables
+	 * for categories and pages
+	 *
+	 * @param int $id
+	 * @param array $pool
+	 * @param string $field = 'parent'
+	 * @return false|array
+	 */
+	protected static function createArrayTree($id, &$pool)
+	{
+		if (isset($pool[$id]) && $pool[$id]) {
+			$children = $pool[$id];
+			
+			unset($pool[$id]);
+			
+			foreach($children as $childId => $child) {
+				unset($children[$childId]['parent']);
+				if (($result = self::createArrayTree($childId, $pool)) !== false) {
+					$children[$childId]['children'] = $result;
+				}
+			}
+
+			return $children;
+		}
+		
+		return false;
 	}
 }

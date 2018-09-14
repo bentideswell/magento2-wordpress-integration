@@ -53,7 +53,7 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 					array(
 						'id' => 'term_id', 
 						'url_key' => 'slug',
-						new \Zend_Db_Expr("TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug))")
+//				  'url_key' => new \Zend_Db_Expr("IF(parent=0,TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug)), slug)")
 					)
 				)
 				->join(
@@ -109,7 +109,13 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 	 */
 	public function getSlug()
 	{
-		return trim($this->getData('rewrite/slug'), '/');
+		$slug = trim($this->getData('rewrite/slug'), '/');
+		
+		if ($this->url->isRoot() && $this->withFront()) {
+			$slug = $this->getFront() . '/' . $slug;
+		}
+		
+		return $slug;
 	}
 	
 	/**
@@ -129,6 +135,38 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 		return $this;
 	}
 	
+	/*
+	 * Does the URL include the front
+	 *
+	 * @return bool
+	 */
+	public function withFront()
+	{
+		return (int)$this->getData('rewrite/with_front') === 1;
+	}
+	
+	/*
+	 * Get the front value
+	 *
+	 * @return string
+	 */
+	public function getFront()
+	{
+		if (!$this->withFront()) {
+			return false;
+		}
+		
+		if (!$this->hasFront()) {
+			$postPermalink = $this->factory->create('Post')->setPostType('post')->getTypeInstance()->getPermalinkStructure();
+			
+			if (substr($postPermalink, 0, 1) !== '%') {
+				$this->setFront(trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/'));
+			}
+		}
+		
+		return $this->getData('front');
+	}
+
 	/**
 	 * Get a collection of terms that belong this taxonomy and $post
 	 *

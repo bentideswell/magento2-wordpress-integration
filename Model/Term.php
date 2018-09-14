@@ -95,7 +95,7 @@ class Term extends AbstractModel implements ViewableInterface
 			$this->setParentTerm(false);
 			
 			if ($this->getParentId()) {
-				$parentTerm = clone $term;
+				$parentTerm = clone $this;
 				
 				$parentTerm->clearInstance()->load($this->getParentId());
 				
