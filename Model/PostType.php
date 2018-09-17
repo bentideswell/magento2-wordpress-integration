@@ -67,8 +67,8 @@ class PostType extends AbstractModel implements ViewableInterface
 			$structure = str_replace('%postname%', '%postnames%', $structure);
 		}
 
-		if ($this->url->isRoot() && $this->withFront()) {
-			$structure = $this->getFront() . '/' . $structure;
+		if ($this->withFront() && ($front = $this->url->getFront())) {
+			$structure = $front . '/' . $structure;
 		}
 
 		return $structure;
@@ -82,28 +82,6 @@ class PostType extends AbstractModel implements ViewableInterface
 	public function withFront()
 	{
 		return (int)$this->getData('rewrite/with_front') === 1;
-	}
-	
-	/*
-	 * Get the front value
-	 *
-	 * @return string
-	 */
-	public function getFront()
-	{
-		if (!$this->withFront()) {
-			return false;
-		}
-		
-		if (!$this->hasFront()) {
-			$postPermalink = $this->factory->create('Post')->setPostType('post')->getTypeInstance()->getPermalinkStructure();
-			
-			if (substr($postPermalink, 0, 1) !== '%') {
-				$this->setFront(trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/'));
-			}
-		}
-		
-		return $this->getData('front');
 	}
 	
 	/**

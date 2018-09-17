@@ -111,10 +111,10 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 	{
 		$slug = trim($this->getData('rewrite/slug'), '/');
 		
-		if ($this->url->isRoot() && $this->withFront()) {
-			$slug = $this->getFront() . '/' . $slug;
+		if ($this->withFront() && ($front = $this->url->getFront())) {
+			$slug = $front . '/' . $slug;
 		}
-		
+
 		return $slug;
 	}
 	
@@ -145,28 +145,6 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 		return (int)$this->getData('rewrite/with_front') === 1;
 	}
 	
-	/*
-	 * Get the front value
-	 *
-	 * @return string
-	 */
-	public function getFront()
-	{
-		if (!$this->withFront()) {
-			return false;
-		}
-		
-		if (!$this->hasFront()) {
-			$postPermalink = $this->factory->create('Post')->setPostType('post')->getTypeInstance()->getPermalinkStructure();
-			
-			if (substr($postPermalink, 0, 1) !== '%') {
-				$this->setFront(trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/'));
-			}
-		}
-		
-		return $this->getData('front');
-	}
-
 	/**
 	 * Get a collection of terms that belong this taxonomy and $post
 	 *

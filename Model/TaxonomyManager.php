@@ -72,7 +72,7 @@ class TaxonomyManager
 			return $this;
 		}
 		
-		if ($taxonomyData = $this->getTaxonomyDataFromAddon()) {
+		if (false && ($taxonomyData = $this->getTaxonomyDataFromAddon())) {
 			foreach($taxonomyData as $taxonomy) {
 				$this->registerTaxonomy(
 					$this->getTaxonomyFactory()->create()->addData($taxonomy)
@@ -108,6 +108,7 @@ class TaxonomyManager
 					'rewrite' => array(
 						'hierarchical' => true,
 						'slug' => $bases['category'],
+						'with_front' => (int)($bases['category'] === 'category'),
 					),
 					'_builtin' => true,
 				])
@@ -125,6 +126,7 @@ class TaxonomyManager
 					'hierarchical' => false,
 					'rewrite' => array(
 						'slug' => $bases['post_tag'],
+						'with_front' => (int)($bases['post_tag'] === 'tag'),
 					),
 					'_builtin' => true,
 				])

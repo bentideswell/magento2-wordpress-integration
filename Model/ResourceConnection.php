@@ -21,7 +21,7 @@ class ResourceConnection
 	/*
 	 * @var 
 	 */
-	protected $tablePrefix = '';
+	protected $tablePrefix = [];
 	
 	/*
 	 * @var 

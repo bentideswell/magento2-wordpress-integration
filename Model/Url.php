@@ -8,6 +8,7 @@ namespace FishPig\WordPress\Model;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Network;
 use FishPig\WordPress\Model\WPConfig;
+use FishPig\WordPress\Model\Factory;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Url
@@ -30,7 +31,12 @@ class Url
 	/*
 	 * @var 
 	 */
-	protected $storeManager = null;
+	protected $storeManager;
+	
+	/*
+	 *
+	 */
+	protected $factory;
 	
 	/*
 	 *
@@ -39,14 +45,21 @@ class Url
 	protected $magentoUrl = [];
 	
 	/*
+	 *
+	 *
+	 */
+	protected $front = [];
+	
+	/*
 	 * Constructor
 	 */
-	public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager)
+	public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager, Factory $factory)
 	{
 		$this->optionManager = $optionManager;
 		$this->wpConfig      = $wpConfig;
 		$this->network       = $network;
 		$this->storeManager  = $storeManager;
+		$this->factory       = $factory;
 	}
 
 	/*
@@ -224,5 +237,28 @@ class Url
 	protected function getStoreId()
 	{
 		return (int)$this->storeManager->getStore()->getId();
+	}
+	
+	/*
+	 * Get front
+	 *
+	 */
+	public function getFront()
+	{
+		$storeId = $this->getStoreId();
+		
+		if (!isset($this->front[$storeId])) {
+			$this->front[$storeId] = '';
+			
+			if ($this->isRoot()) {
+				$postPermalink = $this->factory->create('Post')->setPostType('post')->getTypeInstance()->getPermalinkStructure();
+			
+				if (substr($postPermalink, 0, 1) !== '%') {
+					$this->front[$storeId] = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');
+				}
+			}
+		}
+		
+		return $this->front[$storeId];
 	}
 }
