@@ -10,6 +10,8 @@ namespace FishPig\WordPress\Block\Adminhtml\Catalog\Product\Edit\Tab;
 use FishPig\WordPress\Api\Data\PostAssociationInterface;
 use FishPig\WordPress\Api\Data\PostAssociationSearchResultsInterface;
 use FishPig\WordPress\Api\PostAssociationRepositoryInterface;
+use FishPig\WordPress\Model\Post\Source\PostStatus;
+use FishPig\WordPress\Model\Post\Source\PostType;
 use FishPig\WordPress\Model\ResourceModel\Post\Collection;
 use FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory;
 use Magento\Backend\Block\Widget\Grid\Extended;
@@ -44,10 +46,26 @@ class PostAssociation extends Extended
     private $searchCriteriaBuilderFactory;
 
     /**
+     * @var PostType
+     */
+    private $postTypeSource;
+
+    /**
+     * @var PostStatus
+     */
+    private $postStatusSource;
+
+    /**
      * PostAssociation constructor
      *
      * @param Context $context
      * @param Data $backendHelper
+     * @param Registry $registry
+     * @param CollectionFactory $postCollectionFactory
+     * @param PostAssociationRepositoryInterface $postAssociationRepository
+     * @param SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory
+     * @param PostType $postTypeSource
+     * @param PostStatus $postStatusSource
      * @param array $data
      */
     public function __construct(
@@ -57,6 +75,8 @@ class PostAssociation extends Extended
         CollectionFactory $postCollectionFactory,
         PostAssociationRepositoryInterface $postAssociationRepository,
         SearchCriteriaBuilderFactory $searchCriteriaBuilderFactory,
+        PostType $postTypeSource,
+        PostStatus $postStatusSource,
         array $data = []
     ) {
         parent::__construct(
@@ -68,6 +88,8 @@ class PostAssociation extends Extended
         $this->postcollectionFactory = $postCollectionFactory;
         $this->postAssociationRepository = $postAssociationRepository;
         $this->searchCriteriaBuilderFactory = $searchCriteriaBuilderFactory;
+        $this->postTypeSource = $postTypeSource;
+        $this->postStatusSource = $postStatusSource;
     }
 
     /**
