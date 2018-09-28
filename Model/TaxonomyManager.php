@@ -72,7 +72,7 @@ class TaxonomyManager
 			return $this;
 		}
 		
-		if (false && ($taxonomyData = $this->getTaxonomyDataFromAddon())) {
+		if ($taxonomyData = $this->getTaxonomyDataFromAddon()) {
 			foreach($taxonomyData as $taxonomy) {
 				$this->registerTaxonomy(
 					$this->getTaxonomyFactory()->create()->addData($taxonomy)

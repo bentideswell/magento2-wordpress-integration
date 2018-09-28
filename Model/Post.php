@@ -199,6 +199,15 @@ class Post extends AbstractMeta implements ViewableInterface
 	}
 	
 	/*
+	 * @deprecated use self::getExcerpt($maxWords)
+	 *
+	 */
+	public function getPostExcerpt($maxWords = 0)
+	{
+		return $this->getExcerpt($maxWords);
+	}
+
+	/*
 	 * Determine twhether the post has a more tag in it's content field
 	 *
 	 * @return bool
