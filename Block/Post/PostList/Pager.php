@@ -10,20 +10,16 @@ use Magento\Theme\Block\Html\Pager as MagentoPager;
 /* Constructor Args */
 use Magento\Framework\View\Element\Template\Context;
 use FishPig\WordPress\Model\OptionManager;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+
+/* Misc */
+use Magento\Store\Model\ScopeInterface;
+
 class Pager extends MagentoPager
 {
 	/*
 	 * @var OptionManager
 	 */
 	protected $optionManager;
-	
-	/*
-	 *
-	 * @ScopeConfigInterface
-	 *
-	 */
-	protected $scopeConfig;
 	
   /*
    * Constructor
@@ -32,10 +28,9 @@ class Pager extends MagentoPager
    * @param App
    * @param array $data
    */
-  public function __construct(Context $context, OptionManager $optionManager, ScopeConfigInterface $scopeConfig, array $data = [])
+  public function __construct(Context $context, OptionManager $optionManager, array $data = [])
   {
     $this->optionManager = $optionManager;
-    $this->scopeConfig   = $scopeConfig;
     
     parent::__construct($context, $data);
   }
@@ -59,7 +54,7 @@ class Pager extends MagentoPager
 		$this->setFrameLength(
 			(int)$this->scopeConfig->getValue(
 				'design/pagination/pagination_frame',
-				\Magento\Store\Model\ScopeInterface::SCOPE_STORE
+				ScopeInterface::SCOPE_STORE
 			)
 		);
 	}
