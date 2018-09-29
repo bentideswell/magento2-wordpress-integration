@@ -1,4 +1,4 @@
-29/09/2018 - 2.0.1.8
+29/09/2018 - 2.0.1.9
 - Removed ScopeConfigInterface for Pager constructor as this is already available via the Context object
 
 14/09/2018 - 2.0.1.4

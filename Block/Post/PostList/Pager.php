@@ -52,7 +52,7 @@ class Pager extends MagentoPager
 		$this->setAvailableLimit([$baseLimit => $baseLimit]);
 
 		$this->setFrameLength(
-			(int)$this->scopeConfig->getValue(
+			(int)$this->_scopeConfig->getValue(
 				'design/pagination/pagination_frame',
 				ScopeInterface::SCOPE_STORE
 			)
