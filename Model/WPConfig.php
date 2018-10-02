@@ -54,7 +54,7 @@ class WPConfig
 		
 		if (!isset($this->data[$storeId])) {
 			$this->data[$storeId] = false;
-			
+
 			$wpConfig = file_get_contents($this->wpDirectoryList->getBasePath() . '/wp-config.php');
 
 			# Cleanup comments

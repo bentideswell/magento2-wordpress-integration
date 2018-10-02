@@ -1,3 +1,6 @@
+02/10/2018 - 2.0.1.10
+- Fixed path issue when using different paths for different stores.
+
 29/09/2018 - 2.0.1.9
 - Removed ScopeConfigInterface for Pager constructor as this is already available via the Context object
 

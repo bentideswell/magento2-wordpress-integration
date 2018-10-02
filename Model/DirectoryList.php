@@ -11,6 +11,7 @@ use FishPig\WordPress\Model\WPConfig\Proxy as WPConfig;
 
 /* Misc */
 use Exception;
+use Magento\Store\Model\ScopeInterface;
 
 class DirectoryList
 {   
@@ -51,15 +52,15 @@ class DirectoryList
   public function getBasePath()
   {
 	  $storeId = $this->getStoreId();
-	  
+
 	  if (!isset($this->basePath[$storeId])) {
 		  $this->basePath[$storeId] = false;
 
-			if (!($path = trim($this->scopeConfig->getValue('wordpress/setup/path')))) {
+			if (!($path = trim($this->scopeConfig->getValue('wordpress/setup/path', ScopeInterface::SCOPE_STORE, $storeId)))) {
 				// Might not be right but worth a shot!
 				$path = 'wp';
 			}
-		
+
 			if (substr($path, 0, 1) !== '/') {
 				if (is_dir(BP . '/' . $path)) {
 					$path = BP . '/' . $path;
