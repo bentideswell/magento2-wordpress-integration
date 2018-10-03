@@ -15,6 +15,7 @@ use FishPig\WordPress\Model\Factory;
 
 /* Misc */
 use Magento\Framework\App\RequestInterface;
+use FishPig\WordPress\Model\Integration\IntegrationException;
 
 class Router implements RouterInterface
 {
@@ -84,6 +85,7 @@ class Router implements RouterInterface
 	{
 	  $this->integrationManager->runTests();
 
+		$this->request  = $request;
 		$fullRequestUri = $this->getPathInfo($request);
 		$blogRoute      = $this->url->getBlogRoute();
 
@@ -229,6 +231,16 @@ class Router implements RouterInterface
 	protected function _getHomepageRoutes($uri = '')
 	{
 		$homepage = $this->factory->get('Homepage');
+		
+		if (!$uri) {
+			if ($postId = (int)$this->request->getParam('p')) {
+				$keys = strtolower(implode('-', array_keys($this->request->getParams())));
+			
+				if (strpos($keys, 'preview') !== false) {
+					return $this->addRoute('', '*/post/view', ['id' => $postId]);
+				}
+			}
+		}
 		
 		if ($frontPageId = $homepage->getFrontPageId()) {
 			$this->addRoute('', '*/post/view', ['id' => $frontPageId, 'is_front' => 1]);

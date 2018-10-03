@@ -1,3 +1,6 @@
+03/10/2018 - 2.0.1.14
+- Improved Elementor support, especially when using Root. Ensure you have define('COOKIEPATH', '/'); in your wp-config.php file.
+
 03/10/2018 - 2.0.1.11
 - Fixed fatal PHP error that occurs when using the Custom Sidebars plugin.
 

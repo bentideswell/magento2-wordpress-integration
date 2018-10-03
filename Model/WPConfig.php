@@ -55,7 +55,7 @@ class WPConfig
 		if (!isset($this->data[$storeId])) {
 			$this->data[$storeId] = false;
 
-			$wpConfig = file_get_contents($this->wpDirectoryList->getBasePath() . '/wp-config.php');
+			$wpConfig = file_get_contents($this->getConfigFilePath());
 
 			# Cleanup comments
 			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
@@ -121,5 +121,15 @@ class WPConfig
 	protected function getStoreId()
 	{
 		return (int)$this->storeManager->getStore()->getId();
+	}
+	
+	/*
+	 * Get the path to the wp-config.php file
+	 *
+	 * @return string
+	 */
+	public function getConfigFilePath()
+	{
+		return $this->wpDirectoryList->getBasePath() . '/wp-config.php';
 	}
 }
