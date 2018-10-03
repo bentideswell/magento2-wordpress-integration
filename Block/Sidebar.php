@@ -12,6 +12,7 @@ use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\WidgetManager;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Plugin;
+use Magento\Framework\Registry;
 
 class Sidebar extends Template
 {	
@@ -42,12 +43,14 @@ class Sidebar extends Template
        WidgetManager $widgetManager,
        OptionManager $optionManager,
               Plugin $plugin,
+            Registry $registry,
   	           array $data = []
   )
   {
 		$this->widgetManager = $widgetManager;
 		$this->optionManager = $optionManager;
 		$this->plugin        = $plugin;
+		$this->registry      = $registry;
 		
     parent::__construct($context, $data);
   }
@@ -145,7 +148,7 @@ class Sidebar extends Template
 			return $this->getWidgetArea();
 		}
 		
-		if ($post = $this->_registry->registry('wordpress_post')) {
+		if ($post = $this->registry->registry('wordpress_post')) {
 			if ($value = $post->getMetaValue('_cs_replacements')) {
 				$value = @unserialize($value);
 
@@ -172,12 +175,12 @@ class Sidebar extends Template
 				}
 			}
 		}
-		else if ($postType = $this->_registry->registry('wordpress_post_type')) {
+		else if ($postType = $this->registry->registry('wordpress_post_type')) {
 			if (isset($settings['post_type_archive'][$postType->getPostType()][$this->getWidgetArea()])) {
 				return $settings['post_type_archive'][$postType->getPostType()][$this->getWidgetArea()];
 			}
 		}
-		else if ($term = $this->_registry->registry('wordpress_term')) {
+		else if ($term = $this->registry->registry('wordpress_term')) {
 			if ($widgetArea = $this->_getArrayValue($settings, $term->getTaxonomy() . '_archive/' . $term->getId() . '/' . $this->getWidgetArea())) {
 				return $widgetArea;
 			}
@@ -187,7 +190,7 @@ class Sidebar extends Template
 				return $widgetArea;
 			}	
 		}
-		else if ($author = $this->_registry->registry('wordpress_author')) {
+		else if ($author = $this->registry->registry('wordpress_author')) {
 			if ($widgetArea = $this->_getArrayValue($settings, 'authors/' . $author->getId() . '/' . $this->getWidgetArea())) {
 				return $widgetArea;
 			}

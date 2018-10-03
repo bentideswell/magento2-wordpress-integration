@@ -1,3 +1,6 @@
+03/10/2018 - 2.0.1.11
+- Fixed fatal PHP error that occurs when using the Custom Sidebars plugin.
+
 02/10/2018 - 2.0.1.10
 - Fixed path issue when using different paths for different stores.
 
