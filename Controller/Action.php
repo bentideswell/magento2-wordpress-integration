@@ -232,20 +232,29 @@ abstract class Action extends ParentAction
 		if ($this->getRequest()->getParam('preview') !== 'true') {
 			return false;
 		}
+
+		$previewId = 0;
 		
 		if ($entity = $this->_getEntity()) {
+			$previewId = (int)$entity->getId();	
 			$this->registry->unregister($entity::ENTITY);
 		}
 
 		foreach(['p', 'page_id', 'preview_id'] as $previewIdKey) {
 			if (0 !== (int)$this->getRequest()->getParam($previewIdKey))	{
-				return $this->resultFactory
-					->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-					->setModule('wordpress')
-					->setController('post')
-					->setParams(['preview_id' => (int)$this->getRequest()->getParam($previewIdKey)])
-					->forward('preview');
+				$previewId = (int)$this->getRequest()->getParam($previewIdKey);
+				
+				break;
 			}
+		}
+		
+		if ($previewId) {
+			return $this->resultFactory
+				->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+				->setModule('wordpress')
+				->setController('post')
+				->setParams(['preview_id' => $previewId])
+				->forward('preview');
 		}
 
 		return false;

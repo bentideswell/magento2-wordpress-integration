@@ -17,7 +17,7 @@ class Preview extends View
   protected function _getEntity()
   {
     $post = $this->factory->create('Post')->load(
-    	$this->getRequest()->getParam('preview_id')
+    	(int)$this->getRequest()->getParam('preview_id')
     );
     
     if ($revision = $post->getLatestRevision()) {

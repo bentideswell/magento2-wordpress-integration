@@ -1,3 +1,6 @@
+04/10/2018 - 2.0.1.15
+- Fixed issue with previews
+
 03/10/2018 - 2.0.1.14
 - Improved Elementor support, especially when using Root. Ensure you have define('COOKIEPATH', '/'); in your wp-config.php file.
 
