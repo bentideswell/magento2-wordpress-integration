@@ -62,8 +62,19 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 					'parent'
 				);
 
-		if ($results = $connection->fetchAll($select)) {
-			$this->setAllUris(PostType::generateRoutesFromArray($results, $this->getSlug()));
+		if ($results = $connection->fetchAll($select)) {			
+			if ((int)$this->getData('rewrite/hierarchical') === 1) {
+				$this->setAllUris(PostType::generateRoutesFromArray($results, $this->getSlug()));
+			}
+			else {
+				$routes = [];
+				
+				foreach($results as $result) {
+					$routes[$result['id']] = $this->getSlug() . '/' . $result['url_key'];
+				}
+				
+				$this->setAllUris($routes);
+			}
 		}
 
 		return $this->_getData('all_uris');
