@@ -188,7 +188,7 @@ class PostType extends AbstractModel implements ViewableInterface
 			$slug = $this->getPostType();
 		}
 		
-		return $slug;
+		return ltrim($slug, '/');
 	}
 	
 	/**
@@ -359,12 +359,11 @@ class PostType extends AbstractModel implements ViewableInterface
 	 */
 	public function getBreadcrumbStructure($post)
 	{
-		$tokens = explode('/', trim($this->getSlug(), '/'));
-
+		$tokens  = explode('/', trim($this->getSlug(), '/'));
 		$objects = [];
 		
 		foreach($tokens as $token) {
-			if ($token === $this->getPostType()) {
+			if ($token === $this->getPostType() || ($this->getArchiveSlug() && trim($this->getArchiveSlug(), '/') === $token)) {
 				if (!$this->isDefault() && $this->hasArchive()) {
 					$objects['post_type'] = $this;
 				}
