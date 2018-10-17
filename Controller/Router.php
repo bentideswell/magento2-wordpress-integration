@@ -298,10 +298,10 @@ class Router implements RouterInterface
 
 		foreach($routes as $routeId => $route) {
 			if ($pageForPostsId && $pageForPostsId === (int)$routeId) {
-				$this->addRoute(rtrim($route, '/'), '*/homepage/view', array('id' => $routeId));
+				$this->addRoute(trim($route, '/'), '*/homepage/view', array('id' => $routeId));
 			}
 			else {
-				$this->addRoute(rtrim($route, '/'), '*/post/view', array('id' => $routeId));
+				$this->addRoute(trim($route, '/'), '*/post/view', array('id' => $routeId));
 			}
 		}
 
