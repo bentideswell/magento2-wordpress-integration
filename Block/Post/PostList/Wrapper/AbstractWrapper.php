@@ -93,21 +93,25 @@ abstract class AbstractWrapper extends AbstractBlock
 		return '';
 	}
 	
-	/**
+	/*
 	 * Gets the post list block
 	 *
-	 * @return Fishpig_Wordpress_Block_Post_List|false
+	 * @return \FishPig\WordPress\Block\ListPost
 	 */
 	public function getPostListBlock()
 	{
-		if ($block = $this->getChildBlock('wp.post.list')) {
-			if (!$block->getWrapperBlock()) {
-				$block->setWrapperBlock($this);
-			}
-
-			return $block;
+		if (!($postListBlock = $this->getChildBlock('wp.post.list'))) {
+			$postListBlock = $this->getLayout()
+				->createBlock('FishPig\WordPress\Block\Post\ListPost')
+				->setTemplate('FishPig_WordPress::post/list.phtml');
+				
+				$this->setChild('wp.post.list', $postListBlock);
 		}
-		
-		return false;
+
+		if ($postListBlock && !$postListBlock->getWrapperBlock()) {
+			$postListBlock->setWrapperBlock($this);
+		}
+
+		return $postListBlock;
 	}
 }

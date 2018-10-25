@@ -71,7 +71,7 @@ abstract class AbstractBlock extends Template
 	 */
   public function renderShortcode($shortcode, $object = null)
   {
-		return $this->shortcodeManager->renderShortcode($content, ['object' => $object]);
+		return $this->shortcodeManager->renderShortcode($shortcode, ['object' => $object]);
   }
 
 	/*
