@@ -1,3 +1,7 @@
+25/10/2018 - 2.0.1.22
+- Performance improvement.
+- Added PHP 7.2 support
+
 15/10/2018 - 2.0.1.19
 - Added throwing object to var/log/wordpress.log context array
 

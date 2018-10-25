@@ -10,13 +10,6 @@ use FishPig\WordPress\Block\AbstractBlock;
 abstract class AbstractWidget extends AbstractBlock
 {
 	/*
-	 * Flag used to determine whether to fix option keys
-	 *
-	 * @var bool
-	 */
-	protected $_fixOptionKeys = false;
-    
-	/*
 	 * Retrieve the default title
 	 *
 	 * @return string
@@ -53,12 +46,6 @@ abstract class AbstractWidget extends AbstractBlock
 				
 				if (isset($data[$this->getWidgetIndex()])) {
 					foreach($data[$this->getWidgetIndex()] as $field => $value) {
-					
-						if ($this->_fixOptionKeys) {
-							$field = preg_replace('/([A-Z]{1})([A-Z]{1,})/e', "'$1' . strtolower('$2');", $field);
-							$field = preg_replace('/([A-Z]{1})/e', "'_' . strtolower('$1');", $field);
-						}
-						
 						$this->setData($field, $value);
 					}
 				}

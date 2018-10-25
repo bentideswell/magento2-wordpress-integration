@@ -71,9 +71,13 @@ class AssetInjector
 		if (self::$status === true) {
 			return false;
 		}
-		
-		$this->integrationManager->runTests();
 
+		if (!defined('ABSPATH')) {
+			return false;
+		}
+				
+		$this->integrationManager->runTests();
+		
 		if ($this->isApiRequest() || $this->isAjaxRequest()) {
 			return false;
 		}
