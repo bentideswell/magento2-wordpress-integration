@@ -70,7 +70,7 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 				$routes = [];
 				
 				foreach($results as $result) {
-					$routes[$result['id']] = $this->getSlug() . '/' . $result['url_key'];
+					$routes[$result['id']] = ltrim($this->getSlug() . '/' . $result['url_key'], '/');
 				}
 				
 				$this->setAllUris($routes);
