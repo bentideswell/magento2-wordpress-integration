@@ -166,11 +166,24 @@ if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php')) {
 	@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
 }
 
-
 /* WPBakery */
 if (isset($_GET['vc_editable'])) {
 	ini_set('display_errors', 0);
 }
+
+// Ensure 404 isn't set 
+add_filter(
+	'status_header', 
+	function($status_header, $code, $description, $protocol) {
+		if ((int)$code === 404) {
+			return '';
+		}
+		
+		return $status_header;
+	}, 
+	10, 
+	4
+);
 
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
