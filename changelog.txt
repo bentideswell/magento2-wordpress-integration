@@ -1,3 +1,6 @@
+31/10/2018 - 2.0.2.1
+- Fixed issue with empty breadcrumb for custom post types
+
 27/10/2018 - 2.0.2.0
 - Fixed 404 issue
 

@@ -68,7 +68,7 @@ class PostType extends AbstractModel implements ViewableInterface
 		}
 
 		if ($this->withFront() && ($front = $this->url->getFront())) {
-			$structure = $front . '/' . $structure;
+			$structure = ltrim($front . '/' . $structure, '/');
 		}
 
 		return $structure;
@@ -404,10 +404,10 @@ class PostType extends AbstractModel implements ViewableInterface
 	{
 		$crumbs = [];
 		
-		if ($this->withFront()) {
+		if ($this->withFront() && ($front = $this->getFront())) {
 			$crumbs['front'] = [
-				'label' => ucwords($this->getFront()),
-				'link'  => $this->url->geturl($this->getFront()),
+				'label' => ucwords($front),
+				'link'  => $this->url->getUrl($front),
 			];
 		}
 		
