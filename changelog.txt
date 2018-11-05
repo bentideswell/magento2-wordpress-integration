@@ -1,3 +1,6 @@
+05/11/2018 - 2.0.2.2
+- Small modification to FishPig WordPress theme.
+
 31/10/2018 - 2.0.2.1
 - Fixed issue with empty breadcrumb for custom post types
 

@@ -176,6 +176,7 @@ add_filter(
 	'status_header', 
 	function($status_header, $code, $description, $protocol) {
 		if ((int)$code === 404) {
+			!defined('FISHPIG_WP_IS_404') ? define('FISHPIG_WP_IS_404', true) : '';
 			return '';
 		}
 		
