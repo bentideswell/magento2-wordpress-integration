@@ -10,6 +10,7 @@ use FishPig\WordPress\Model\Network;
 use FishPig\WordPress\Model\WPConfig;
 use FishPig\WordPress\Model\Factory;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class Url
 {
@@ -53,13 +54,14 @@ class Url
 	/*
 	 * Constructor
 	 */
-	public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager, Factory $factory)
+	public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager, Factory $factory, ScopeConfigInterface $scopeConfig)
 	{
 		$this->optionManager = $optionManager;
 		$this->wpConfig      = $wpConfig;
 		$this->network       = $network;
 		$this->storeManager  = $storeManager;
 		$this->factory       = $factory;
+		$this->scopeConfig   = $scopeConfig;
 	}
 
 	/*
@@ -88,12 +90,30 @@ class Url
 				}
 			}
 			
+			if ($this->ignoreStoreCode()) {
+				if (substr_count($magentoUrl, '/') >= 3) {
+					$magentoUrl = substr($magentoUrl, 0, strpos($magentoUrl, '/', strpos($magentoUrl, '//')+2));
+				}
+			}
+			
 			$this->magentoUrl[$storeId] = rtrim($magentoUrl, '/');
 		}
 		
 		return $this->magentoUrl[$storeId];
 	}
 	
+	/*
+	 * Ignore store code
+	 *
+	 */
+	public function ignoreStoreCode()
+	{
+		return (int)$this->scopeConfig->getValue(
+			'wordpress/setup/ignore_store_code', 
+			\Magento\Store\Model\ScopeInterface::SCOPE_STORE, 
+			(int)$this->storeManager->getStore()->getId()
+		) === 1;
+	}
 	/*
 	 * Get the blog route
 	 *
