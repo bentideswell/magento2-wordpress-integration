@@ -84,11 +84,12 @@ class Url
 				'/'
 			);
 	
+			/*
 			if ($store->isUseStoreInUrl()) {
 				if (preg_match('/(.*)' . $store->getCode() . '[\/]*$/', $magentoUrl, $matches)) {
 					$magentoUrl = $matches[1];
 				}
-			}
+			}*/
 			
 			if ($this->ignoreStoreCode()) {
 				if (substr_count($magentoUrl, '/') >= 3) {

@@ -1,3 +1,6 @@
+10/11/2018 - 2.0.2.4
+- Added support for the custom HTML widget.
+
 05/11/2018 - 2.0.2.2
 - Small modification to FishPig WordPress theme.
 

@@ -38,6 +38,7 @@
 				<item name="meta" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Meta</item>
 				<item name="nav_menu" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\NavMenu</item>
 				<item name="calendar" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Calendar</item>
+				<item name="custom_html" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\CustomHtml</item>
 			</argument>
 		</arguments>
 	</type>
