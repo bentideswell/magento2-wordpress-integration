@@ -1,3 +1,6 @@
+12/11/2018 - 2.0.2.5
+- Improved Asset Injector JS
+
 10/11/2018 - 2.0.2.4
 - Added support for the custom HTML widget.
 

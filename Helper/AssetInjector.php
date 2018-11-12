@@ -285,7 +285,7 @@ class AssetInjector
 	 */
 	protected function getFPJS()
 	{
-		return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i]();}this.fs=[];}})();';
+		return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i](jQuery);}this.fs=[];}})();';
 	}
 	
 	/*
