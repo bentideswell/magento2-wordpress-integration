@@ -186,6 +186,9 @@ add_filter(
 	4
 );
 
+/* Remove wptexturize to fix shortcodes */
+remove_filter('the_content', 'wptexturize');
+
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
 
