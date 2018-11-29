@@ -1,3 +1,6 @@
+29/11/2018 - 2.0.3.1
+- Modified Post List Wrapper block name in layout XML to make it easier to modify layouts (new block name is wp.postlist.wrapper for each wrapper block).
+
 12/11/2018 - 2.0.2.5
 - Improved Asset Injector JS
 
