@@ -226,7 +226,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	protected function _getPostTeaser($includeSuffix = true)
 	{
 		if ($this->hasMoreTag()) {
-			$content = $this->getContent('excerpt');
+			$content = $this->getData('post_content');
 
 			if (preg_match('/<!--more (.*)-->/', $content, $matches)) {
 				$anchor = $matches[1];
@@ -237,12 +237,14 @@ class Post extends AbstractMeta implements ViewableInterface
 				$anchor = $this->_getTeaserAnchor();
 			}
 
-			$excerpt = strip_tags(trim(substr($content, 0, strpos($content, $split))));
+			$excerpt = (trim(substr($content, 0, strpos($content, $split))));
 
 			if ($excerpt !== '' && $includeSuffix && $anchor) {
 				$excerpt .= sprintf(' <a href="%s" class="read-more">%s</a>', $this->getUrl(), $anchor);
 			}
 			
+			$excerpt = strip_tags($this->formatContentString($excerpt), '<a><img><strong>');
+
 			return $excerpt;
 		}
 		
@@ -409,9 +411,7 @@ class Post extends AbstractMeta implements ViewableInterface
 		$key = '__processed_post_content';
 		
 		if (!$this->hasData($key)) {
-			$postContent = $this->_getData('post_content');
-			$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
-			$postContent = $this->shortcodeManager->renderShortcode($postContent, $this);
+			$postContent = $this->formatContentString($this->_getData('post_content'));
 
 			$this->setData($key, $postContent);
 		}
@@ -419,6 +419,14 @@ class Post extends AbstractMeta implements ViewableInterface
 		return $this->getData($key);
 	}
 
+	protected function formatContentString($postContent)
+	{
+		$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
+		$postContent = $this->shortcodeManager->renderShortcode($postContent, $this);
+		
+		return $postContent;
+	}
+	
 	/*
 	 * Returns a collection of comments for this post
 	 *
