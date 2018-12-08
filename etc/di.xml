@@ -16,10 +16,10 @@
 	<type name="FishPig\WordPress\Model\IntegrationManager">
 		<arguments>
 			<argument name="integrationTests" xsi:type="array">
-				<item name="path" xsi:type="object">FishPig\WordPress\Model\Integration\PathTest</item>
-				<item name="url" xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
+				<item name="path"  xsi:type="object">FishPig\WordPress\Model\Integration\PathTest</item>
+				<item name="url"   xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
 				<item name="theme" xsi:type="object">FishPig\WordPress\Model\Integration\ThemeTest</item>
-				<item name="core" xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
+				<item name="core"  xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
 			</argument>
 		</arguments>
 	</type>

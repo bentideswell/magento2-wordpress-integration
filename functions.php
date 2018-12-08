@@ -1,12 +1,12 @@
 <?php
 /*
- * Create value-object \Magento\Framework\Phrase
- * @deprecated The global function __() is now loaded via Magento Framework, the below require is only
- *             for backwards compatibility reasons and this file will be removed in a future version
- * @see        Magento\Framework\Phrase\__.php
- * @SuppressWarnings(PHPMD.ShortMethodName)
- * @return \Magento\Framework\Phrase
+ * This file extends the default Magento translation function so that it works with WordPress too
+ * This doesn't cause any change in behaviour in Magento.
+ * The only change is that when called in WordPress, the return value is always a string.
+ * In Magento the return value is a \Magento\Framework\Phrase object
  */
+declare(strict_types=1);
+
 if (!function_exists('__')) {
 	function __()
 	{
@@ -23,4 +23,6 @@ if (!function_exists('__')) {
 	
 		return new \Magento\Framework\Phrase($text, $argc);
 	}
+	
+	FishPig\WordPress\Model\Integration\CoreTest::setMagentoTranslationPatchIsApplied(true);
 }
