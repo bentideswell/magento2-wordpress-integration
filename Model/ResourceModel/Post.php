@@ -434,7 +434,7 @@ class Post extends AbstractMeta
 	
 	public function getPostsOnDayByYearMonth($dateStr)
 	{
-		$collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
+		$collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')
 			->addPostDateFilter($dateStr)
 			->addIsViewableFilter();
 			

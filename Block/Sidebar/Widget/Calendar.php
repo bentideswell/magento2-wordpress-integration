@@ -24,9 +24,7 @@ class Calendar extends AbstractWidget
 	public function getDateItems()
 	{
 		if (!$this->hasDateItems()) {
-			$this->setDateItems(
-				$this->_getPostDateDataAsArray()
-			);
+			$this->setDateItems($this->_getPostDateDataAsArray());
 		}
 		
 		return $this->_getData('date_items');
@@ -39,7 +37,7 @@ class Calendar extends AbstractWidget
 	 */
 	protected function _getPostDateDataAsArray()
 	{
-		$days = $this->factory->create('Model\ResourceModel\Post')->getPostsOnDayByYearMonth($this->getYear() . '-' . $this->getMonth() . '-%');		
+		$days = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post')->getPostsOnDayByYearMonth($this->getYear() . '-' . $this->getMonth() . '-%');		
 
 		$itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 
@@ -80,12 +78,12 @@ class Calendar extends AbstractWidget
 	protected function _beforeToHtml()
 	{
 		parent::_beforeToHtml();
-		
+
 		$this->_initDate();
 		$this->_initPreviousNextLinks();
 
 		if (!$this->getTemplate()) {
-			$this->setTemplate('sidebar/widget/calendar.phtml');
+			$this->setTemplate('FishPig_WordPress::sidebar/widget/calendar.phtml');
 		}
 
 		return $this;
@@ -99,7 +97,7 @@ class Calendar extends AbstractWidget
 	 */
 	protected function _initDate()
 	{
-		if (($archive = $this->_registry->registry('wordpress_archive')) !== null) {
+		if (($archive = $this->registry->registry('wordpress_archive')) !== null) {
 			$this->setYear($archive->getDatePart('Y'));
 			$this->setMonth($archive->getDatePart('m'));
 			$this->setDaysInMonth($archive->getDatePart('t'));
@@ -113,8 +111,8 @@ class Calendar extends AbstractWidget
 		$this->setMonth(date('m'));
 		$this->setDaysInMonth(date('t'));
 
-		$this->setDefaultTitle($this->dateHelper->formatDate(date('Y-m-d 00:00:00', time()), 'F Y'));
-		
+		$this->setDefaultTitle($this->wpContext->getDateHelper()->formatDate(date('Y-m-d 00:00:00', time()), 'F Y'));
+
 		return $this;
 	}
 	
@@ -142,7 +140,7 @@ class Calendar extends AbstractWidget
 
 		$dateString = date('Y-m-d', strtotime('+1 month', strtotime($this->getYear() . '-' . $this->getMonth() . '-01')));
 
-		$posts = $this->_factory->getFactory('Post')->create()->getCollection()
+		$posts = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')
 			->addIsViewableFilter()
 			->setOrderByPostDate('asc')
 			->addFieldToFilter('post_date', array('gteq' => $dateString))
