@@ -13,7 +13,9 @@ class View extends \FishPig\WordPress\Block\Post
 	 */
 	protected function _prepareLayout()
 	{
-		$this->getPost()->applyPageConfigData($this->pageConfig);
+		if ($this->getPost()) {
+			$this->getPost()->applyPageConfigData($this->pageConfig);
+		}
         
 		return parent::_prepareLayout();
 	}
@@ -24,7 +26,7 @@ class View extends \FishPig\WordPress\Block\Post
 	 */	
 	protected function _beforeToHtml()
 	{
-		if (!$this->getTemplate()) {
+		if (!$this->getTemplate() && $this->getPost()) {
 			$postType = $this->getPost()->getTypeInstance();
 			$this->setTemplate('FishPig_WordPress::post/view.phtml');
 
