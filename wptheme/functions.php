@@ -139,6 +139,13 @@ add_filter(
 /* Remove wptexturize to fix shortcodes */
 remove_filter('the_content', 'wptexturize');
 
+/* Fix the REST API URL */
+function fp_rest_url($rest) {	
+	return get_option('siteurl') . '/index.php/wp-json/';
+}
+
+add_filter( 'rest_url', 'fp_rest_url');
+
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
 
