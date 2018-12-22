@@ -65,6 +65,17 @@ class Network
 	 *
 	 *
 	 * @return false
+	 */	
+	public function getSitePath()
+	{		
+		return false;
+	}
+	
+	/*
+	 *
+	 *
+	 *
+	 * @return false
 	 */
 	public function getNetworkTables()
 	{
