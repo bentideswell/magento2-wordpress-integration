@@ -1,3 +1,7 @@
+03/01/2018 - 2.0.4.7
+- Improved theme update detection system.
+- Added Template option for all post types. Previously was only available for pages.
+
 18/12/2018 - 2.0.4.3
 - Fix for calendar widget
 

@@ -24,6 +24,28 @@ if (!function_exists('fishpig_setup')) {
 
 add_action( 'after_setup_theme', 'fishpig_setup' );
 
+/* Post Templates */
+add_action( 'wp_loaded', 'fishpig_wp_loaded' );
+
+function fishpig_add_page_templates( $page_templates, $wp_theme, $post)
+{
+	return array(
+		'template-1column' => '1 Column',
+		'template-2columns-left' => '2 Columns Left',
+		'template-2columns-right' => '2 Columns Right',
+		'template-3columns' => '3 Columns',		
+		'template-full-width' => 'Full Width',
+	) + $page_templates;
+}
+
+function fishpig_wp_loaded() {
+	if ($post_types = get_post_types(array('public' => true, '_builtin' => false))) {
+		foreach ( $post_types as $post_type) {
+			add_filter("theme_{$post_type}_templates", 'fishpig_add_page_templates', 10, 4);
+		}
+	}
+}
+
 function fishpig_comment_redirect($location)
 {
 	if (strpos($location, '#') !== false) {

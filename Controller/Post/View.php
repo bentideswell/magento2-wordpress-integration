@@ -132,7 +132,7 @@ class View extends Action
     else {
       $template = $post->getMetaValue('_wp_page_template');
     }
-    
+
     $layoutHandles = ['wordpress_post_view_default'];
     
 		if ($post->isFrontPage()) {
@@ -144,8 +144,15 @@ class View extends Action
 
     if ($template) {
     	$templateName = str_replace('.php', '', $template);
-    	$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName;
-    	$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName . '_' . $post->getId();
+    	
+
+    	$layoutHandles[] = 'wordpress_post_view_' . $templateName;
+    	$layoutHandles[] = 'wordpress_post_view_' . $templateName . '_' . $post->getId();
+
+    	if ($postType !== 'post') {
+	    	$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName;
+				$layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName . '_' . $post->getId();
+			}
     }
 
     return array_merge(parent::getLayoutHandles(), $layoutHandles);
