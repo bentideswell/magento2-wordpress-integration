@@ -163,7 +163,15 @@ remove_filter('the_content', 'wptexturize');
 
 /* Fix the REST API URL */
 function fp_rest_url($rest) {	
-	return get_option('siteurl') . '/index.php/wp-json/';
+	$find   = '/wp-json/';
+	$pos    = strpos($rest, $find);
+	$extra  = '';
+
+	if ($pos !== false && strlen($rest) > $pos+strlen($find)) {
+		$extra = substr($rest, $pos+strlen($find));
+	}
+
+	return get_option('siteurl') . '/index.php/wp-json/' . $extra;
 }
 
 add_filter( 'rest_url', 'fp_rest_url');

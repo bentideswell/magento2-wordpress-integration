@@ -1,3 +1,6 @@
+03/01/2018 - 2.0.4.10
+- Improved REST API URL generation.
+
 03/01/2018 - 2.0.4.9
 - Fixed XML Sitemap generation error.
 
