@@ -41,10 +41,14 @@ class WidgetManager
 	public function getWidget($widgetName)
 	{
 		$widgetIndex = preg_match("/([0-9]{1,})$/", $widgetName, $widgetIndexMatch) ? (int)$widgetIndexMatch[1] : 0;
-		$widgetName  = rtrim(preg_replace("/[^a-z_-]/i", '', $widgetName), '-');
-		
+		$widgetName  = rtrim(preg_replace("/[^a-z0-9_-]/i", '', $widgetName), '-');
+
 		if (!isset($this->widgets[$widgetName])) {
-			return false;
+			if (!isset($this->widgets['psw'])) {
+				return false;
+			}
+			
+			$this->widgets[$widgetName] = $this->widgets['psw'];
 		}
 
 		$widgetBlock = $this->layout->createBlock($this->widgets[$widgetName])		
