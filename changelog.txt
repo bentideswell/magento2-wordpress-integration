@@ -1,3 +1,6 @@
+03/01/2018 - 2.0.4.9
+- Fixed XML Sitemap generation error.
+
 03/01/2018 - 2.0.4.8
 - Small modification to widget manager that fixes an issue with WordPress widgets that register names containing numbers
 

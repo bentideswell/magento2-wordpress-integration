@@ -30,7 +30,7 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 	public function __construct(Factory $factory, Emulation $emulation)
 	{
 		$this->emulation  = $emulation;
-		$this->wpFactory  = $factory;
+		$this->factory    = $factory;
 		
 		// OM required as SitemapItemInterfaceFactory is not present in Magento 2.2 and below so constructor injection breaks compilation
 		$this->itemFactory = ObjectManager::getInstance()->create('Magento\Sitemap\Model\SitemapItemInterfaceFactory');
