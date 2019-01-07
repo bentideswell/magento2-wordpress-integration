@@ -1,3 +1,6 @@
+07/01/2019 - 2.0.4.11
+- Fixed issue that caused widgets to stop displaying.
+
 03/01/2018 - 2.0.4.10
 - Improved REST API URL generation.
 
