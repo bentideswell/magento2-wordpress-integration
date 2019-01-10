@@ -102,16 +102,16 @@ class View extends Action
     if ($crumbObjects = $postType->getBreadcrumbStructure($this->getEntityObject())) {
 	    foreach($crumbObjects as $crumbType => $crumbObject) {
 	      $crumbs[$crumbType] = [
-	        'label' => __($crumbObject->getName()),
-	        'title' => __($crumbObject->getName()),
+	        'label' => (string)__($crumbObject->getName()),
+	        'title' => (string)__($crumbObject->getName()),
 	        'link' => $crumbObject->getUrl(),
 	      ];
 	    }
     }
 
     $crumbs['post'] = [
-      'label' => __($this->_getEntity()->getName()),
-      'title' => __($this->_getEntity()->getName())
+      'label' => (string)__($this->_getEntity()->getName()),
+      'title' => (string)__($this->_getEntity()->getName())
     ];  
 
     return $crumbs;

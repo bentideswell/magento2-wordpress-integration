@@ -163,14 +163,14 @@ abstract class Action extends ParentAction
   {
     $crumbs = [
 	    'home' => [
-			'label' => __('Home'),
-			'title' => __('Go to Home Page'),
+			'label' => (string)__('Home'),
+			'title' => (string)__('Go to Home Page'),
 			'link' => $this->url->getMagentoUrl()
 		]];
 	
 		if (!$this->url->isRoot()) {
 			$crumbs['blog'] = [
-				'label' => __('Blog'),
+				'label' => (string)__('Blog'),
 				'link' => $this->url->getHomeUrl()
 			];
 		}

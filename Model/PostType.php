@@ -386,10 +386,13 @@ class PostType extends AbstractModel implements ViewableInterface
 		
 		if ($this->isHierarchical()) {
 			$parent = $post;
+			$buffer = [];
 			
 			while(($parent = $parent->getParentPost()) !== false) {
-		    $objects['parent_post_' . $parent->getId()] = $parent;
+		    $buffer['parent_post_' . $parent->getId()] = $parent;
 			}
+			
+			$objects = $objects + array_reverse($buffer);
 		}
 
 		return $objects ? $objects : false;
