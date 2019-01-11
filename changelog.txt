@@ -1,3 +1,6 @@
+11/01/2019 - 2.0.4.14
+- Fixed issue with URL's XML sitemap.
+
 10/01/2019 - 2.0.4.12
 - Fixed breadcrumbs when page is third level or more.
 
