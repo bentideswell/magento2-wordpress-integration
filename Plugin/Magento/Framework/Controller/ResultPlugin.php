@@ -53,7 +53,7 @@ class ResultPlugin
 		if (!$response) {
 			$response = $this->response;
 		}
-		
+
 		if ($newBodyHtml = $this->assetInjectorFactory->create()->process($response->getBody())) {
 			$response->setBody($newBodyHtml);
 		}
