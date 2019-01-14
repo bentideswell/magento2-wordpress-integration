@@ -7,6 +7,7 @@ namespace FishPig\WordPress\Model\Integration;
 /* Constructor Args */
 use FishPig\WordPress\Helper\Core as CoreHelper;
 use FishPig\WordPress\Model\DirectoryList as WPDirectoryList;
+use Magento\Framework\App\State;
 
 /* Misc */
 use FishPig\WordPress\Model\Integration\IntegrationException;
@@ -25,15 +26,22 @@ class CoreTest
 	 *
 	 */
 	protected $coreHelper;
+	
+	/*
+	 *
+	 *
+	 */
+	protected $state;
 
 	/*
 	 *
 	 *
 	 */
-	public function __construct(CoreHelper $coreHelper, WPDirectoryList $wpDirectoryList)
+	public function __construct(CoreHelper $coreHelper, WPDirectoryList $wpDirectoryList, State $state)
 	{
 		$this->coreHelper      = $coreHelper;
 		$this->wpDirectoryList = $wpDirectoryList;
+		$this->state           = $state;
 	}
 	
 	/*
@@ -105,11 +113,16 @@ class CoreTest
 					$relativeSourceFile = substr($sourceFile, strlen(BP)+1);
 					$relativeTargetFile = substr($targetFile, strlen(BP)+1);
 
-					IntegrationException::throwException(
-						'Unable to patch the translation file ' . $relativeTargetFile . PHP_EOL
+					$exceptionMessage = 'Unable to patch the translation file ' . $relativeTargetFile . PHP_EOL
 						. 'Copy ' . $relativeSourceFile . ' to ' . $relativeTargetFile . PHP_EOL . PHP_EOL
-						. 'cd ' . BP . ' && cp ' . $relativeSourceFile . ' ' . $relativeTargetFile
-					);
+						. 'Run the following via SSH:' . PHP_EOL
+						. 'cd ' . BP . ' && cp ' . $relativeSourceFile . ' ' . $relativeTargetFile;
+	
+					if ($this->state->getAreaCode() === 'adminhtml') {
+						$exceptionMessage = str_replace(PHP_EOL, '<br/>', $exceptionMessage);
+					}
+					
+					IntegrationException::throwException($exceptionMessage);
 				}
 			}
 		}
