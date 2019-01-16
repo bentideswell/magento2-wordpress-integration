@@ -339,7 +339,7 @@ class AssetInjector
 
 		// Check whether the script supports AMD
 		if (strpos($scriptContent, 'define.amd') !== false) {
-			$scriptContent = "__d=define;define=undefined;" . $scriptContent . "define=__d;__d=undefined;";
+			$scriptContent = "__d=define;define=undefined;" . rtrim($scriptContent, ';') . ";define=__d;__d=undefined;";
 		}
 
 		if (self::DEBUG) {
