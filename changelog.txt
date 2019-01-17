@@ -1,3 +1,6 @@
+17/01/2019 - 2.0.4.19
+- Changed theme installation and upgrade process to use DI to generate theme source modules. This is preparation for FishPig_WordPress_RelatedProducts
+
 16/01/2019 - 2.0.4.18
 - Improved AssetInjector.
 

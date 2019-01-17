@@ -12,6 +12,7 @@ use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\State;
 use FishPig\WordPress\Model\DirectoryList;
 use FishPig\WordPress\Model\Logger;
+use Magento\Framework\Module\Dir as ModuleReader;
 
 /* Misc */
 use FishPig\WordPress\Model\Integration\IntegrationException;
@@ -58,6 +59,16 @@ class Theme
 	 * @var Logger
 	 */
 	protected $logger;
+
+	/*
+	 * @var ModuleReader
+	 */
+	protected $moduleReader;
+	
+	/*
+	 * @var array
+	 */
+	protected $themeSourceModules;
 	
 	/*
 	 *
@@ -70,15 +81,19 @@ class Theme
 		StoreManagerInterface $storeManager,
 		                State $state,
 		        DirectoryList $wpDirectoryList,
-		               Logger $logger
+		               Logger $logger,
+		         ModuleReader $moduleReader,
+									  array $themeSourceModules = []
   )
   {
-    $this->optionManager   = $optionManager;
-    $this->scopeConfig     = $scopeConfig;
-    $this->storeManager    = $storeManager;
-    $this->state           = $state;
-    $this->wpDirectoryList = $wpDirectoryList;
-    $this->logger          = $logger;
+    $this->optionManager      = $optionManager;
+    $this->scopeConfig        = $scopeConfig;
+    $this->storeManager       = $storeManager;
+    $this->state              = $state;
+    $this->wpDirectoryList    = $wpDirectoryList;
+    $this->logger             = $logger;
+    $this->moduleReader       = $moduleReader;
+    $this->themeSourceModules = $themeSourceModules;
   }
 
 	/*
@@ -92,49 +107,80 @@ class Theme
 			if (!$this->wpDirectoryList->isValidBasePath()) {
 				IntegrationException::throwException('Empty or invalid path set.');
 			}
-	
-			$targetDir = $this->getTargetDir();
-			$sourceDir = $this->getModuleDir() . '/wptheme';
 			
-			$sourceCssFile = $sourceDir . '/style.css';
-			$targetCssFile = $targetDir . '/style.css';
-	
-			if (!is_dir($targetDir) || !is_file($targetCssFile) || md5_file($sourceCssFile) !== md5_file($targetCssFile)) {
-				// Either theme not installed or version changes
-				if (!is_dir($targetDir)) {
-					@mkdir($targetDir, 0777, true);
-					
-					if (!is_dir($targetDir)) {
-						IntegrationException::throwException(
-							'The FishPig WordPress theme is not installed and due to the permissions of the WordPress theme folder, it cannot be installed automatically. Please copy the contents of app/code/FishPig/WordPress/wptheme to the wp-content/themes/fishpig folder.'
-						);
-					}
+			// Now let's find some source directories
+			$sourceDirs = [];
+			
+			foreach($this->themeSourceModules as $sourceModule => $sourcePrimaryFile) {
+				$moduleDir = $this->moduleReader->getDir($sourceModule);
+				
+				if ($moduleDir && is_dir($moduleDir . '/wptheme')) {
+					$sourceDirs[$moduleDir . '/wptheme'] = $sourcePrimaryFile;
 				}
+			}
+
+			if (!$sourceDirs) {
+				IntegrationException::throwException('Unable to find any WordPress theme source directories.');
+			}
+			
+			$targetDir = $this->getTargetDir();
+
+			// Either theme not installed or version changes
+			if (!is_dir($targetDir)) {
+				@mkdir($targetDir, 0777, true);
 				
-				// Get source files. Loop through and copy to WordPress
-				$sourceFiles = scandir($sourceDir);
-				
-				foreach($sourceFiles as $sourceFile) {
-					if (trim($sourceFile, '.') === '') {
-						continue;
-					}
-					
-					$targetFile = $targetDir . '/' . $sourceFile;
-					$sourceFile = $sourceDir . '/' . $sourceFile;
-					
-					if (!$this->isFileWriteable($targetFile)) {
-						IntegrationException::throwException('Unable to install a WordPress theme file due to permissions. File is ' . $targetFile);
-					}
-					
-					$sourceData = file_get_contents($sourceFile);
-					$targetData = file_exists($targetFile) ? file_get_contents($targetFile) : '';
-					
-					if ($sourceData !== $targetData) {
-						file_put_contents($targetFile, $sourceData);
-					}
+				if (!is_dir($targetDir)) {
+					IntegrationException::throwException(
+						'The FishPig WordPress theme is not installed and due to the permissions of the WordPress theme folder, it cannot be installed automatically. Please copy the contents of app/code/FishPig/WordPress/wptheme to the wp-content/themes/fishpig folder.'
+					);
 				}
 			}
 			
+			foreach($sourceDirs as $sourceDir => $sourcePrimaryFilename) {
+				$sourcePrimaryFile = $sourceDir . '/' . $sourcePrimaryFilename;
+				$targetPrimaryFile = $targetDir . '/' . $sourcePrimaryFilename;
+
+				if (!is_file($targetPrimaryFile) || md5_file($sourcePrimaryFile) !== md5_file($targetPrimaryFile)) {
+					// Get source files. Loop through and copy to WordPress
+					$sourceFiles = scandir($sourceDir);
+
+					foreach($sourceFiles as $sourceFilename) {
+						if (trim($sourceFilename, '.') === '') {
+							continue;
+						}
+						
+						if ($sourceFilename === 'local.php') {
+							continue;
+						}
+
+						$sourceFile = $sourceDir . '/' . $sourceFilename;
+						$targetFile = $targetDir . '/' . $sourceFilename;
+
+						// Don't allow symlinks (below may cover this, but just to be sure)
+						if (is_link($sourceFile)) {
+
+							continue;
+						}
+						
+						// Ignore directories.
+						if (!is_file($sourceFile)) {
+							continue;
+						}
+
+						if (!$this->isFileWriteable($targetFile)) {
+							IntegrationException::throwException('Unable to install/upgrade the FishPig WordPress theme due to permissions. The file that triggered the error is ' . $targetFile);
+						}
+						
+						$sourceData = file_get_contents($sourceFile);
+						$targetData = file_exists($targetFile) ? file_get_contents($targetFile) : '';
+						
+						if ($sourceData !== $targetData) {
+							file_put_contents($targetFile, $sourceData);
+						}
+					}
+				}
+			}
+						
 			if (!$this->isActive()) {
 				IntegrationException::throwException(
 					'The FishPig WordPress theme is installed but is not active. Please login to the WordPress Admin and enable it.'

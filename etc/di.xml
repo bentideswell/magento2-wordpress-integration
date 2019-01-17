@@ -42,6 +42,15 @@
 			</argument>
 		</arguments>
 	</type>
+	<!-- Theme Source Modules -->
+	<type name="FishPig\WordPress\Model\Theme">
+		<arguments>
+			<argument name="themeSourceModules" xsi:type="array">
+				<item name="FishPig_WordPress" xsi:type="string">styles.css</item>
+			</argument>
+		</arguments>
+	</type>
+	
 	<!-- WordPress logger - var/log/wordpress.log -->
 	<type name="FishPig\WordPress\Model\Logger\Handler">
 		<arguments>
