@@ -72,6 +72,19 @@ class OptionManager
 		return $this->data[$storeId][$key];	
 	}
 	
+	public function optionExists($key)
+	{
+		$resource   = $this->resourceConnection;
+		$connection = $resource->getConnection();
+
+		$select = $connection->select()
+			->from($resource->getTable('wordpress_option'), 'option_value')
+			->where('option_name = ?', $key)
+			->limit(1);
+
+		return $connection->fetchOne($select) !== false;
+	}
+	
 	/*
 	 * Get a site option.
 	 * This is implemented in Multisite

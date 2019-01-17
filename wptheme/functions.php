@@ -176,6 +176,25 @@ function fp_rest_url($rest) {
 
 add_filter( 'rest_url', 'fp_rest_url');
 
+// Related Products
+if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php')) {
+	include(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php');	
+}
+else {
+	add_action('add_meta_boxes', function() {
+		add_meta_box(
+			'fishpig',
+			'Related Products',
+			function() {
+				?>
+				<p>Link your WordPress posts (any post type) with Magento products using the new <a href="https://fishpig.co.uk/magento/wordpress-integration/related-products/" target="_blank">Related Products</a> module by FishPig.</p>
+				<button onclick="window.open('https://fishpig.co.uk/magento/wordpress-integration/related-products/');" type="button" class="components-button is-button is-default is-primary is-large">View Module</button>
+				<?php
+			}
+		);
+	});
+}
+
 /* Include local.php*/
 $localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
 

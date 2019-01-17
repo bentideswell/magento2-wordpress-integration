@@ -419,6 +419,9 @@ class Post extends AbstractMeta implements ViewableInterface
 		return $this->getData($key);
 	}
 
+	/*
+	 *
+	 */
 	protected function formatContentString($postContent)
 	{
 		$postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
