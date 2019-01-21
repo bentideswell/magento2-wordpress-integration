@@ -34,7 +34,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getName()
 	{
-		if ($staticPage = $this->getStaticFrontPage()) {
+		if ($staticPage = $this->getFrontStaticPage()) {
 			return $staticPage->getName();
 		}
 
@@ -48,7 +48,7 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getUrl()
 	{
-		if ($staticPage = $this->getStaticFrontPage()) {
+		if ($staticPage = $this->getFrontStaticPage()) {
 			return $staticPage->getUrl();	
 		}
 		
@@ -62,6 +62,10 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getContent()
 	{
+        if ($staticPage = $this->getFrontStaticPage()) {
+            return $staticPage->getContent();
+        }
+
 		return $this->getBlogDescription();
 	}
 	
@@ -78,9 +82,9 @@ class Homepage extends AbstractModel implements ViewableInterface
 		
 		$this->staticPage = false;
 
-		if ((int)$this->getFrontStaticPageId() > 0) {
+		if ((int)$this->getPageForPostsId() > 0) {
 			$staticPage = $this->factory->create('Post')->load(
-				$this->getStaticPageId()
+				$this->getPageForPostsId()
 			);
 			
 			if ($staticPage->getId()) {
