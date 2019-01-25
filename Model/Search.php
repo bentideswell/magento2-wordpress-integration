@@ -31,7 +31,11 @@ class Search extends AbstractModel implements ViewableInterface
 	 */
   public function getSearchTerm()
   {
-		return $this->wpContext->getRequest()->getParam(self::VAR_NAME);
+	  if (!$this->getData('search_term')) {
+			return $this->wpContext->getRequest()->getParam(self::VAR_NAME);
+		}
+		
+		return $this->getData('search_term');
   }
 
 	/*

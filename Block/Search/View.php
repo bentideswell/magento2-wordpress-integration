@@ -16,6 +16,10 @@ class View extends AbstractWrapper
 	 */
 	public function getEntity()
 	{
+		if ($this->getData('entity')) {
+			return $this->getData('entity');
+		}
+		
 		return $this->registry->registry('wordpress_search');
 	}
 
@@ -45,7 +49,7 @@ class View extends AbstractWrapper
 		if (!$searchablePostTypes) {
 			$searchablePostTypes = array('post', 'page');
 		}
-		
+
 		return $collection->addPostTypeFilter($searchablePostTypes);
 	}
 	
@@ -80,7 +84,7 @@ class View extends AbstractWrapper
 	 */
 	public function getSearchTerm($escape = false)
 	{
-		return $this->getEntity()->getSearchTerm($escape);
+		return $this->getEntity() ? $this->getEntity()->getSearchTerm($escape) : '';
 	}
 	
 	/*

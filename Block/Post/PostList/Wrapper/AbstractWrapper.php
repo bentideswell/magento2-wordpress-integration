@@ -6,10 +6,17 @@ namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 
 /* Parent Class */
 use FishPig\WordPress\Block\AbstractBlock;
-#use Magento\Framework\View\Element\Template;
+
+/* Misc */
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 abstract class AbstractWrapper extends AbstractBlock
 {
+	/*
+	 * @var @ViewableInterface
+	 */
+	protected $entity;
+	
 	/*
 	 *
 	 *
@@ -35,7 +42,7 @@ abstract class AbstractWrapper extends AbstractBlock
 	 */
 	public function getIntroText()
 	{
-		return $this->getEntity()->getContent();
+		return $this->getEntity() ? $this->getEntity()->getContent() : '';
 	}
 	
 	/**
@@ -113,5 +120,21 @@ abstract class AbstractWrapper extends AbstractBlock
 		}
 
 		return $postListBlock;
+	}
+	
+	/*
+	 * Ensure a template is set
+	 *
+	 * @return $this
+	 */
+	protected function _beforeToHtml()
+	{
+		parent::_beforeToHtml();
+		
+		if (!$this->getTemplate()) {
+			$this->setTemplate('FishPig_WordPress::post/list/wrapper.phtml');
+		}
+		
+		return $this;
 	}
 }
