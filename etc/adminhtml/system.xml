@@ -29,8 +29,8 @@
           <comment>If Yes, Blog URL is displayed without Magento store code.</comment>
         </field>
       </group>
-      <group id="license" sortOrder="1" showInDefault="1">
-	      <label>Add-On Licenses</label>
+      <group id="addon" sortOrder="9999" showInDefault="1">
+	      <label>Add-On Modules</label>
       </group>
     </section>      
   </system>

@@ -1,3 +1,6 @@
+26/01/2019 - 2.0.5.3
+- Added add-on module version list in config
+
 25/01/2019 - 2.0.5.2
 - Added support for FishPig_WordPress_IntegratedSearch
 
