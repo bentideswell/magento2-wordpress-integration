@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Categories extends AbstractWidget
@@ -13,7 +11,7 @@ class Categories extends AbstractWidget
 	/**
 	 * Returns the current category collection
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Term_Collection
+	 * @return FishPig\WordPress\Model_Resource_Term_Collection
 	 */
 	public function getCategories()
 	{
@@ -48,7 +46,7 @@ class Categories extends AbstractWidget
 	/**
 	 * Determine whether the category is the current category
 	 *
-	 * @param Fishpig_Wordpress_Model_Category $category
+	 * @param FishPig\WordPress\Model_Category $category
 	 * @return bool
 	 */
 	public function isCurrentCategory($category)
@@ -63,7 +61,7 @@ class Categories extends AbstractWidget
 	/**
 	 * Retrieve the current category
 	 *
-	 * @return Fishpig_Wordpress_Model_Category
+	 * @return FishPig\WordPress\Model_Category
 	 */
 	public function getCurrentCategory()
 	{

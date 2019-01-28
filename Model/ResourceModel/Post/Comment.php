@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
 class Comment extends \FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta

@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Model\Menu;
 
 use \FishPig\WordPress\Model\Post;
@@ -93,7 +91,7 @@ class Item extends Post
 	/**
 	 * Retrieve the link object
 	 *
-	 * @return false|Fishpig_Wordpress_Model_Abstract
+	 * @return false|FishPig_WordPress_Model_Abstract
 	 */
 	public function getObject()
 	{
@@ -193,7 +191,7 @@ class Item extends Post
 	/**
 	 * Retrieve children menu items
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Menu_Item_Collection
+	 * @return FishPig_WordPress_Model_Resource_Menu_Item_Collection
 	 */
 	public function getChildrenItems()
 	{

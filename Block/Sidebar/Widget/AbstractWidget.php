@@ -34,7 +34,7 @@ abstract class AbstractWidget extends AbstractBlock
 	/*
 	 * Attempt to load the widget information from the WordPress options table
 	 *
-	 * @return Fishpig_Wordpress_Block_Sidebar_Widget_Abstract
+	 * @return FishPig\WordPress\Block_Sidebar_Widget_Abstract
 	 */
 	protected function _beforeToHtml()
 	{

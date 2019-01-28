@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Post;
 
 use \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
@@ -73,7 +71,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	 * Retrieve the correct renderer and template for $post
 	 *
 	 * @param \FishPig\WordPress\Model\Post $post
-	 * @return Fishpig_Wordpress_Block_Post_List_Renderer
+	 * @return FishPig\WordPress\Block_Post_List_Renderer
 	 */
 	public function renderPost(\FishPig\WordPress\Model\Post $post)
 	{

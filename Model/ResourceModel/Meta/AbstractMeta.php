@@ -1,10 +1,8 @@
 <?php
-/*
- * @category		Fishpig
- * @package		Fishpig_Wordpress
- * @license		http://fishpig.co.uk/license.txt
- * @author		Ben Tideswell <help@fishpig.co.uk>
- * @info			http://fishpig.co.uk/wordpress-integration.html
+/**
+ * @category    FishPig
+ * @package     FishPig_WordPress
+ * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel\Meta;
 

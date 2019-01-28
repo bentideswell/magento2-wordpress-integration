@@ -15,7 +15,7 @@ abstract class AbstractComment extends Post
 	/*
 	 * Returns a collection of comments for the current post
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Comments_Collection
+	 * @return FishPig\WordPress\Model_Resource_Post_Comments_Collection
 	 */
 	public function getComments()
 	{

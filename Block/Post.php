@@ -94,7 +94,7 @@ class Post extends AbstractBlock implements IdentityInterface
 	 * Retrieve the block used to prepare the post
 	 * This should be the root post block
 	 *
-	 * @return Fishpig_Wordpress_Block_Post_Abstract
+	 * @return FishPig\WordPress\Block_Post_Abstract
 	 */
 	protected function _getBlockForPostPrepare()
 	{

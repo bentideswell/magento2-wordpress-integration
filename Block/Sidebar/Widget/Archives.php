@@ -55,7 +55,7 @@ class Archives extends AbstractWidget
 	/*
 	 * Determine whether the archive is the current archive
 	 *
-	 * @param Fishpig_Wordpress_Model_Archive $archive
+	 * @param FishPig\WordPress\Model_Archive $archive
 	 * @return bool
 	 */
 	public function isCurrentArchive($archive)
@@ -71,7 +71,7 @@ class Archives extends AbstractWidget
 	/*
 	 * Retrieve the current archive
 	 *
-	 * @return Fishpig_Wordpress_Model_Archive
+	 * @return FishPig\WordPress\Model_Archive
 	 */
 	public function getCurrentArchive()
 	{

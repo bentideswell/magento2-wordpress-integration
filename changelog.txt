@@ -1,3 +1,6 @@
+28/01/2019 - 2.0.5.4
+- FishPig casing fixes.
+
 26/01/2019 - 2.0.5.3
 - Added add-on module version list in config
 

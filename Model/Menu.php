@@ -1,11 +1,9 @@
 <?php
-/*
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+/**
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
- 
 namespace FishPig\WordPress\Model;
 
 use \FishPig\WordPress\Model\Term;
@@ -42,7 +40,7 @@ class Menu extends Term
 	 */
 	public function _construct()
 	{
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Menu');
+    $this->_init('FishPig\WordPress\Model\ResourceModel\Menu');
 		
 		return parent::_construct();
 	}
@@ -137,7 +135,7 @@ class Menu extends Term
 	/*
 	 * Retrieve the root menu items
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Menu_Item_Collection
+	 * @return FishPig_Wordpress_Model_Resource_Menu_Item_Collection
 	 */
 	public function getMenuItems()
 	{
@@ -159,7 +157,7 @@ class Menu extends Term
 	/*
 	 * Retrieve the object resource model
 	 *
-	 * @return Fishpig_Wordpress_Model_Resource_Post_Collection
+	 * @return FishPig_Wordpress_Model_Resource_Post_Collection
 	 */    
   protected function _getObjectResourceModel()
   {

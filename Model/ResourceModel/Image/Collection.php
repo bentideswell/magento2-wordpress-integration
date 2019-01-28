@@ -1,16 +1,13 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Model\ResourceModel\Image;
 
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection\AbstractCollection
 {
-
 	public function _construct()
 	{
 		parent::_construct();

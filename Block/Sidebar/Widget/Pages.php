@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Pages extends AbstractWidget
@@ -13,7 +11,7 @@ class Pages extends AbstractWidget
 	/**
 	 * Returns the currently loaded page model
 	 *
-	 * @return Fishpig_Wordpress_Model_Page
+	 * @return FishPig\WordPress\Model\Post
 	 */
 	public function getPost()
 	{
@@ -33,7 +31,7 @@ class Pages extends AbstractWidget
 	/**
 	 * Retrieve a collection  of pages
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Page_Collection
+	 * @return FishPig\WordPress\Model\ResourceModel\Post\Collection
 	 */
 	public function getPages()
 	{

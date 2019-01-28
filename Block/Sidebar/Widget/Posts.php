@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class Posts extends AbstractWidget
@@ -13,7 +11,7 @@ class Posts extends AbstractWidget
 	/**
 	 * Cache for post collection
 	 *
-	 * @var Fishpig_Wordpress_Model_Resource_Post_Collection
+	 * @var FishPig_WordPressModel_Resource_Post_Collection
 	 */
 	protected $collection = null;
     
@@ -59,7 +57,7 @@ class Posts extends AbstractWidget
 	/**
 	 * Adds on cateogry/author ID filters
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return FishPig_WordPressModel_Mysql4_Post_Collection
 	 */
 	protected function _getPostCollection()
 	{

@@ -1,8 +1,7 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
@@ -12,7 +11,7 @@ class Comments extends AbstractWidget
 	/*
 	 * Retrieve the recent comments collection
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Comment_Collection
+	 * @return FishPig\WordPress\Model_Mysql4_Post_Comment_Collection
 	 */
 	public function getComments()
 	{

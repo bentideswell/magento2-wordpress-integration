@@ -26,7 +26,7 @@ class View extends AbstractWrapper
 	/*
 	 * Generates and returns the collection of posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return FishPig\WordPress\Model_Mysql4_Post_Collection
 	 */
 	protected function _getPostCollection()
 	{

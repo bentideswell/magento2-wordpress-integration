@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
 class NavMenu extends AbstractWidget
@@ -13,7 +11,7 @@ class NavMenu extends AbstractWidget
 	/**
 	 * Get the menu model for the current widget
 	 *
-	 * @return Fishpig_Wordpress_Model_Menu
+	 * @return FishPig\WordPress\Model_Menu
 	 */
 	public function getMenu()
 	{

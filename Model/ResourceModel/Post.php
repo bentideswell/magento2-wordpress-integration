@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Model\ResourceModel;
 
 /* Parent Class */
@@ -399,7 +397,7 @@ class Post extends AbstractMeta
 	 * @param \FishPig\WordPress\Model\Post $post
 	 * @return \FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection
 	 */
-	public function getPostComments(\Fishpig\Wordpress\Model\Post $post)
+	public function getPostComments(\FishPig\Wordpress\Model\Post $post)
 	{
 		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
 			->setPost($post)

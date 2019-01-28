@@ -1,11 +1,9 @@
 <?php
 /**
- * @category    Fishpig
- * @package     Fishpig_Wordpress
- * @license     http://fishpig.co.uk/license.txt
+ * @category    FishPig
+ * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
-
 namespace FishPig\WordPress\Block\Archive;
 
 use \FishPig\WordPress\Model\Archive;
@@ -23,7 +21,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	/**
 	 * Caches and returns the archive model
 	 *
-	 * @return Fishpig_Wordpress_Model_Archive
+	 * @return FishPig\WordPress\Model_Archive
 	 */
 	public function getArchive()
 	{
@@ -51,7 +49,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	/**
 	 * Generates and returns the collection of posts
 	 *
-	 * @return Fishpig_Wordpress_Model_Mysql4_Post_Collection
+	 * @return FishPig\WordPress\Model_Mysql4_Post_Collection
 	 */
 	protected function _getPostCollection()
 	{
