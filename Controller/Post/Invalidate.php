@@ -90,7 +90,7 @@ class Invalidate extends Action
 
 		$post = $this->factory->create('Post')->load($postId);
 		
-		if ($post->getId()) {
+		if (!$post->getId()) {
 			return false;
 		}
 
