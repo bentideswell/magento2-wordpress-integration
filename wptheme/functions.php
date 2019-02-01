@@ -109,19 +109,19 @@ function fishpig_invalidate_cache( $post_id ) {
 	}
 
 	// Make an invalidation call to Magento
-	$salt = get_option( 'fishpig_salt' );
-	if (!$salt) {
+	if (!($salt = get_option( 'fishpig_salt' ))) {
 		$salt = wp_generate_password( 64, true, true );
 		update_option( 'fishpig_salt', $salt );
 	}
 
 	$nonce_tick = ceil(time() / ( 86400 / 2 ));
+	$nonce      = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|' . 'invalidate_' . $post_id, $salt ), -12, 10 );
 
-	$action = 'invalidate_' . $post_id;
-
-	$nonce = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|' . $action, $salt ), -12, 10 );
-
-	wp_remote_get( home_url( '/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce ) );
+	if (!($magentoUrl = rtrim(get_option('fishpig_magento_base_url'), '/'))) {
+		return;
+	}
+	
+	wp_remote_get( $magentoUrl . '/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce );
 }
 
 add_action( 'save_post', 'fishpig_invalidate_cache' );

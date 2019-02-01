@@ -84,7 +84,7 @@ class ResourceConnection
 			'wordpress_user_meta'         => 'usermeta',
 		]);
 
-		$this->connection[$storeId] = $this->connectionFactory->create([
+		$db = $this->connection[$storeId] = $this->connectionFactory->create([
       'host'     => $this->wpConfig->getData('DB_HOST'),
       'dbname'   => $this->wpConfig->getData('DB_NAME'),
       'username' => $this->wpConfig->getData('DB_USER'),
@@ -96,6 +96,18 @@ class ResourceConnection
 
 		if ($networkTables = $this->network->getNetworkTables()) {
 			$this->applyMapping($networkTables);
+		}
+		
+		/*
+		 * Set Magento base URL as WordPress option
+		 */
+		if ((int)$this->storeManager->getStore()->getId() > 0) {
+			$optionName  = 'fishpig_magento_base_url';
+			$optionTable = $this->getTable('wordpress_option');
+			$baseUrl     = $this->storeManager->getStore()->getBaseUrl();
+	
+			$db->delete($optionTable, $db->quoteInto('option_name=?', $optionName));
+			$db->insert($optionTable, ['option_name' => $optionName, 'option_value' => $baseUrl]);
 		}
 	}
 
