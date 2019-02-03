@@ -147,7 +147,8 @@ class AssetInjector
 		// Now let's build the requireJS from $assets
 		$baseUrl = $this->wpUrl->getSiteurl();
 		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
-		$scripts = array();
+		$scripts    = [];
+		$xtemplates  = [];
 		$scriptRegex = '<script.*<\/script>';
 		$regexes = array(
 			'<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $scriptRegex . '[\s]{0,}<!\[endif\]-->',
@@ -172,7 +173,13 @@ class AssetInjector
 			 */
 			foreach($scripts as $skey => $script) {
 				if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
-					if ($match[2] !== 'text/javascript') {
+					if (in_array($match[2], ['text/template', 'text/x-template'])) {
+						$xtemplates[] = $scripts[$skey];
+						
+						unset($scripts[$skey]);
+						continue;
+					}
+					else if ($match[2] !== 'text/javascript') {
 						unset($scripts[$skey]);
 						continue;
 					}
@@ -245,8 +252,6 @@ class AssetInjector
 					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
 				}
 			}
-
-
 	
 			// Remove final template variable placeholder
 			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
@@ -258,6 +263,10 @@ class AssetInjector
 			foreach($requireJsPaths as $alias => $path) {
 				if (substr($path, -3) === '.js') {
 					$path = substr($path, 0, -3);
+				}
+				
+				if (strpos($path, '&#')) {
+					$path = html_entity_decode($path);
 				}
 
 				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
@@ -272,6 +281,11 @@ class AssetInjector
 			$content .= $requireJsFinal;
 		}
 
+		// Add in the JS templates
+		if ($xtemplates) {
+			$content = implode(PHP_EOL, $xtemplates) . $content;
+		}
+		
 		// Fingers crossed and let's go!
 		$bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
 		
