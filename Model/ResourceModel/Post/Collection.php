@@ -538,4 +538,15 @@ class Collection extends AbstractMetaCollection
 
 		return intval($this->_totalRecords);
 	}
+	
+	/**
+	* Order the collection by the menu order field
+	*
+	* @param string $dir
+	* @return
+	*/
+	public function setOrderByMenuOrder($dir = 'asc')
+	{
+		return $this->getSelect()->order('menu_order ' . $dir);
+	}
 }
