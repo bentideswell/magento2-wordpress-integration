@@ -58,7 +58,7 @@ abstract class Action extends ParentAction
 	  WPContext $wpContext
   )
   {
-	  $this->wpContenxt = $wpContext;
+	  $this->wpContext  = $wpContext;
 		$this->registry   = $wpContext->getRegistry();
 		$this->url        = $wpContext->getUrl();
 		$this->factory    = $wpContext->getFactory();

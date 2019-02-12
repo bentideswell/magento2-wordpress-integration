@@ -105,9 +105,14 @@ class ResourceConnection
 			$optionName  = 'fishpig_magento_base_url';
 			$optionTable = $this->getTable('wordpress_option');
 			$baseUrl     = $this->storeManager->getStore()->getBaseUrl();
-	
-			$db->delete($optionTable, $db->quoteInto('option_name=?', $optionName));
-			$db->insert($optionTable, ['option_name' => $optionName, 'option_value' => $baseUrl]);
+
+			try {
+				$db->delete($optionTable, $db->quoteInto('option_name=?', $optionName));
+				$db->insert($optionTable, ['option_name' => $optionName, 'option_value' => $baseUrl]);
+			}
+			catch (\Exception $e) {
+				
+			}
 		}
 	}
 
