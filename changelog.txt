@@ -1,3 +1,6 @@
+15/02/2019 - 2.0.5.10
+- Fixed issue in category widget template
+
 12/02/2019 - 2.0.5.8
 - Fixed issue that caused fatal PHP error when viewing a private post.
 

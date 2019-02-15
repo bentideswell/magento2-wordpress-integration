@@ -22,7 +22,7 @@
 							<?php foreach($categories as $category): ?>
 								<option value="<?php echo $category->getUrl() ?>"<?php if ($this->isCurrentCategory($category)): ?> selected="selected"<?php endif; ?>><?php echo $category->getName() ?> <?php if ($this->getCount()): ?> (<?php echo $category->getPostCount() ?>)<?php endif; ?></option>
 								<?php if ($this->getHierarchical()): ?>
-									<?php $children = $category->getChildrenCategories() ?>
+									<?php $children = $category->getChildrenTerms() ?>
 									<?php if (count($children) > 0): ?>
 										<?php foreach($children as $child): ?>
 											<option value="<?php echo $child->getUrl() ?>"<?php if ($this->isCurrentCategory($child)): ?> selected="selected"<?php endif; ?>>&nbsp;&nbsp;<?php echo $child->getName() ?> <?php if ($this->getCount()): ?> (<?php echo $child->getPostCount() ?>)<?php endif; ?></option>
