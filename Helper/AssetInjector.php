@@ -105,6 +105,9 @@ class AssetInjector
 			}
 		}
 
+		// Remove duplicate assets
+		$assets = array_unique($assets);
+		
 		// Remove any JS/CSS that is in $inline from $assets to prevent duplication
 		if (count($inline) > 0) {
 			foreach($inline as $asset) {

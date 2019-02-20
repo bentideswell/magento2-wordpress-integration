@@ -1,3 +1,6 @@
+20/02/2019 - 2.0.5.11
+- Remove duplicate assets from asset injector. This fixes bug with Divi Page Builder plugin but probably also fixes other issues, especially with page builders.
+
 15/02/2019 - 2.0.5.10
 - Fixed issue in category widget template
 
