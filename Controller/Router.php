@@ -83,7 +83,9 @@ class Router implements RouterInterface
    */
 	public function match(RequestInterface $request)
 	{
-	  $this->integrationManager->runTests();
+	  if ($this->integrationManager->runTests() === false) {
+		  return false;
+	  }
 
 		$this->request  = $request;
 		$fullRequestUri = $this->getPathInfo($request);
