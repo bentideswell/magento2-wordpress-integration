@@ -76,9 +76,19 @@ abstract class AbstractBlock extends Template
 
 	/*
 	 *
+	 * @return string
 	 */
   public function doShortcode($shortcode, $object = null)
   {
 	  return $this->renderShortcode($shortcode, $object);
+  }
+  
+  /*
+	 *
+	 * @return Factory
+	 */
+  public function getFactory()
+  {
+	  return $this->factory;
   }
 }

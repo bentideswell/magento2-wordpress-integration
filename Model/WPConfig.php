@@ -55,7 +55,13 @@ class WPConfig
 		if (!isset($this->data[$storeId])) {
 			$this->data[$storeId] = false;
 
-			$wpConfig = file_get_contents($this->getConfigFilePath());
+			$configFile = $this->getConfigFilePath();
+			
+			if (!$configFile || !is_file($configFile)) {
+				throw new \Exception('WordPress doesn\'t appear to be installed.');
+			}
+			
+			$wpConfig = file_get_contents($configFile);
 
 			# Cleanup comments
 			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
@@ -130,6 +136,6 @@ class WPConfig
 	 */
 	public function getConfigFilePath()
 	{
-		return $this->wpDirectoryList->getBasePath() . '/wp-config.php';
+		return ($basePath = $this->wpDirectoryList->getBasePath()) ? $basePath . '/wp-config.php' : false;
 	}
 }
