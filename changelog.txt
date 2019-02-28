@@ -1,3 +1,6 @@
+28/02/2019 - 2.0.5.16
+- Added \FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget::getWidgetId method
+
 21/02/2019 - 2.0.5.14
 - Added code to listen to enabled flag
 

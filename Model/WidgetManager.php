@@ -51,6 +51,7 @@ class WidgetManager
 			$this->widgets[$widgetName] = $this->widgets['psw'];
 		}
 
+
 		$widgetBlock = $this->layout->createBlock($this->widgets[$widgetName])		
 			->setWidgetType($widgetName)
 			->setWidgetName($widgetName)

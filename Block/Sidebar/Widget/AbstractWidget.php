@@ -133,4 +133,14 @@ abstract class AbstractWidget extends AbstractBlock
 		
 		return $this->_getData('list_id');
 	}
+	
+	/*
+	 *
+	 *
+	 * @return int
+	 */
+	public function getWidgetId()
+	{
+		return (int)$this->getWidgetIndex();
+	}
 }
