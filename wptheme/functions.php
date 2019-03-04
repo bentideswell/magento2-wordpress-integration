@@ -161,6 +161,18 @@ add_filter(
 /* Remove wptexturize to fix shortcodes */
 remove_filter('the_content', 'wptexturize');
 
+add_filter('the_content', function($content) {
+	if (strpos($content, '{{') !== false) {
+		if (preg_match_all('/(\{\{[^\}]*).*([^\}]*\}\})/Us', $content, $matches)) {
+			foreach(array_unique($matches[0]) as $match) {
+				$content = str_replace($match, str_replace('&#8221;', '"', $match), $content);
+			}
+		}
+	}
+	
+	return $content;
+});
+
 /* Fix the REST API URL */
 function fp_rest_url($rest) {	
 	$find   = '/wp-json/';
