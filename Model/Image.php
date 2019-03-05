@@ -134,7 +134,7 @@ class Image extends AbstractModel
 	 */
 	protected function _getThisImageUrl()
 	{
-		return $this->getFileUploadUrl() . dirname($this->getFile()) . '/';
+		return $this->getFileUploadUrl() . (strpos($this->getFile(), '/') !== false ? dirname($this->getFile()) : $this->getFile()) . '/';
 	}
 	
 	/*

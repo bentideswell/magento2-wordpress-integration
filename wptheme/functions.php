@@ -183,6 +183,8 @@ function fp_rest_url($rest) {
 		$extra = substr($rest, $pos+strlen($find));
 	}
 
+
+	return get_option('siteurl') . '/index.php?rest_route=/' . ltrim($extra, '/');
 	return get_option('siteurl') . '/index.php/wp-json/' . $extra;
 }
 
