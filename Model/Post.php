@@ -169,7 +169,7 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getExcerpt($maxWords = 0)
 	{
-		if ($this->getData('post_excerpt')) {
+		if ($excerpt = trim($this->getData('post_excerpt'))) {
 			return $this->getData('post_excerpt');
 		}
 
