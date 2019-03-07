@@ -12,7 +12,7 @@ class Post extends AbstractItemProvider
 	protected function _getItems($storeId)
 	{
 		$storeBaseUrl =  rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
-		$collection   = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection');
+		$collection   = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')->addIsViewableFilter();
 		$items = [];
   
 		foreach($collection as $post) {
