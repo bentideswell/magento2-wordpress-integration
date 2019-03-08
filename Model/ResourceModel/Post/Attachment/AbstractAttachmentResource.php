@@ -1,13 +1,18 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ *
  */
 namespace FishPig\WordPress\Model\ResourceModel\Post\Attachment;
 
-abstract class AbstractResource extends \FishPig\WordPress\Model\ResourceModel\Post
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Post as PostResource;
+
+abstract class AbstractAttachmentResource extends PostResource
 {
+	/*
+	 *
+	 *
+	 */
 	public function loadSerializedData($attachment)
 	{
 		$attachment->setIsFullyLoaded(true);

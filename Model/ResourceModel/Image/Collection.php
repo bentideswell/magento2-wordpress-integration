@@ -6,13 +6,16 @@
  */
 namespace FishPig\WordPress\Model\ResourceModel\Image;
 
-class Collection extends \FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection\AbstractCollection
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection\AbstractAttachmentCollection;
+
+class Collection extends AbstractAttachmentCollection
 {
 	public function _construct()
 	{
 		parent::_construct();
 		
-        $this->_init('FishPig\WordPress\Model\Image', 'FishPig\WordPress\Model\ResourceModel\Image');
+    $this->_init('FishPig\WordPress\Model\Image', 'FishPig\WordPress\Model\ResourceModel\Image');
 	}
 	
 	/**
@@ -23,10 +26,10 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Post\Attachment\
 	 * @param bool $logQuery
 	 * @return $this
 	 */
-    public function load($printQuery = false, $logQuery = false)
-    {
+  public function load($printQuery = false, $logQuery = false)
+  {
 		$this->getSelect()->where("post_mime_type LIKE 'image%'");
 		
 		return parent::load($printQuery, $logQuery);
-    }
+  }
 }

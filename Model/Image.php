@@ -7,9 +7,9 @@
 namespace FishPig\WordPress\Model;
 
 /* Parent Class */
-use FishPig\WordPress\Model\Post\Attachment\AbstractModel;
+use FishPig\WordPress\Model\Post\Attachment\AbstractAttachmentModel;
 
-class Image extends AbstractModel
+class Image extends AbstractAttachmentModel
 {
 	/*
 	 *

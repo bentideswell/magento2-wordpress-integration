@@ -6,15 +6,26 @@
  */
 namespace FishPig\WordPress\Model\Post\Attachment;
 
-abstract class AbstractModel extends \FishPig\WordPress\Model\Post
+/* Parent Class */
+use FishPig\WordPress\Model\Post;
+
+abstract class AbstractAttachmentModel extends Post
 {
+	/*
+	 *
+	 *
+	 */
 	public function _construct()
 	{
 		$this->setPostType('attachment');
 
 		parent::_construct();
 	}
-	
+
+	/*
+	 *
+	 *
+	 */
 	protected function _afterLoad()
 	{
 		$this->loadSerializedData();
@@ -32,7 +43,11 @@ abstract class AbstractModel extends \FishPig\WordPress\Model\Post
 			$this->getResource()->loadSerializedData($this);
 		}
 	}
-	
+
+	/*
+	 *
+	 *
+	 */
 	public function getMetaValue($key)
 	{
 		return parent::getMetaValue('_wp_attachment_' . $key);

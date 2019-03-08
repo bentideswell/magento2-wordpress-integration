@@ -6,7 +6,10 @@
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
-class Image extends \FishPig\WordPress\Model\ResourceModel\Post\Attachment\AbstractResource
+/* Parent Class */
+use FishPig\WordPress\Model\ResourceModel\Post\Attachment\AbstractAttachmentResource;
+
+class Image extends AbstractAttachmentResource
 {
 	public function isImagePostName($postName)
 	{

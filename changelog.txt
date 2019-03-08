@@ -1,3 +1,6 @@
+08/03/2019 - 2.0.6.3
+- Cleaned up attachment models to prevent duplicate name issues
+
 07/03/2019 - 2.0.6.2
 - Fixed issue with XML sitemap that causes invalid items to sometimes be included.
 
