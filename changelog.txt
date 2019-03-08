@@ -1,3 +1,6 @@
+08/03/2019 - 2.0.6.5
+- Stopped moving script tags that don't have a type or content but have data attributes.
+
 08/03/2019 - 2.0.6.4
 - Fixed issue with JS files that don't have .js in the filename.
 
