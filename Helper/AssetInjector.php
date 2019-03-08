@@ -209,7 +209,19 @@ class AssetInjector
 						$realPathUrl = implode('/', $urlParts);
 					}
 
-					$scripts[$skey] = str_replace($originalScriptUrl, $this->_migrateJsAndReturnUrl($realPathUrl), $script);
+					$migratedScriptUrl = $this->_migrateJsAndReturnUrl($realPathUrl);
+
+					if (strpos($migratedScriptUrl, 'feefo') !== false) {
+						// No .js					
+						if (strpos($migratedScriptUrl, '.js') === false) {
+							// No query string so lets add one to stop Magento adding .js
+							if (strpos($migratedScriptUrl, '?') === false) {
+								$migratedScriptUrl .= '?js=1';	
+							}
+						}
+					}
+										
+					$scripts[$skey] = str_replace($originalScriptUrl, $migratedScriptUrl, $script);
 				}
 				else {
 					$scripts[$skey] = $this->_fixDomReady($script);

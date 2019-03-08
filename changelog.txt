@@ -1,3 +1,6 @@
+08/03/2019 - 2.0.6.4
+- Fixed issue with JS files that don't have .js in the filename.
+
 08/03/2019 - 2.0.6.3
 - Cleaned up attachment models to prevent duplicate name issues
 
