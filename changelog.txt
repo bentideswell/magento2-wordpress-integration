@@ -1,3 +1,6 @@
+11/03/2019 - 2.0.6.6
+- Updated Gravatar URL to use https.
+
 08/03/2019 - 2.0.6.5
 - Stopped moving script tags that don't have a type or content but have data attributes.
 

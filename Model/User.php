@@ -193,7 +193,7 @@ class User extends AbstractMeta implements ViewableInterface
 	 */
 	public function getGravatarUrl($size = 50)
 	{
-		return "http://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getUserEmail()))) . "?d=" . urlencode( $this->_getDefaultGravatarImage() ) . "&s=" . $size;
+		return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getUserEmail()))) . "?d=" . urlencode( $this->_getDefaultGravatarImage() ) . "&s=" . $size;
 	}
 	
 	/*
