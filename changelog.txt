@@ -1,3 +1,6 @@
+12/03/2019 - 2.0.6.7
+- Fixed issue that caused the post used for to display blog posts to display its content at the top of the page, above the posts.
+
 11/03/2019 - 2.0.6.6
 - Updated Gravatar URL to use https.
 

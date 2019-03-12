@@ -33,7 +33,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	public function getIntroText()
 	{
-		return trim($this->getEntity()->getContent());
+		return trim($this->getEntity()->getBlogDescription());
 	}
 	
 	/*
