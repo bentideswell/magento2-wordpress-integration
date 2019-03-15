@@ -195,7 +195,7 @@ if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php')) {
 	include(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php');	
 }
 else {
-	add_action('add_meta_boxes', function() {
+	function fp_related_products_link() {
 		add_meta_box(
 			'fishpig',
 			'Related Products',
@@ -206,7 +206,9 @@ else {
 				<?php
 			}
 		);
-	});
+	}
+
+	add_action('add_meta_boxes', 'fp_related_products_link');
 }
 
 /* Include local.php*/

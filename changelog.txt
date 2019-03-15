@@ -1,3 +1,6 @@
+15/03/2019 - 2.0.6.8
+- Updated WP Theme to work with File Scanner in Magento 2.1.
+
 12/03/2019 - 2.0.6.7
 - Fixed issue that caused the post used for to display blog posts to display its content at the top of the page, above the posts.
 
