@@ -24,5 +24,7 @@ if (!function_exists('__')) {
 		return new \Magento\Framework\Phrase($text, $argc);
 	}
 	
-	FishPig\WordPress\Model\Integration\CoreTest::setMagentoTranslationPatchIsApplied(true);
+	if (class_exists('\FishPig\WordPress\Model\Integration\CoreTest')) {
+		FishPig\WordPress\Model\Integration\CoreTest::setMagentoTranslationPatchIsApplied(true);
+	}
 }
