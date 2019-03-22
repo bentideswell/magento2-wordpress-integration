@@ -2,9 +2,6 @@
 	"name": "bentideswell/magento2-wordpress-integration",
 	"description": "Magento 2 WordPress Integration",
 	"type": "magento2-module",
-	"require": {
-		"magento/product-community-edition": "^2.0.0"
-	},
 	"autoload": {
 		"files": [
 			"registration.php"
