@@ -1,3 +1,6 @@
+26/03/2019 - 2.0.6.11
+- Fixed issue that caused async scripts to break when Magento Minify is enabled
+
 15/03/2019 - 2.0.6.8
 - Updated WP Theme to work with File Scanner in Magento 2.1.
 

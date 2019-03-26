@@ -151,7 +151,7 @@ class AssetInjector
 		$baseUrl = $this->wpUrl->getSiteurl();
 		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
 		$scripts    = [];
-		$returnscripts  = [];
+		$scriptsStatic  = [];
 		$scriptRegex = '<script.*<\/script>';
 		$regexes = array(
 			'<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $scriptRegex . '[\s]{0,}<!\[endif\]-->',
@@ -177,23 +177,29 @@ class AssetInjector
 			foreach($scripts as $skey => $script) {
 				if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
 					if (in_array($match[2], ['text/template', 'text/x-template'])) {
-						$returnscripts[] = $scripts[$skey];
+						$scriptsStatic[] = $scripts[$skey];
 						
 						unset($scripts[$skey]);
 						continue;
 					}
 					else if ($match[2] !== 'text/javascript') {
-						$returnscripts[] = $scripts[$skey];
+						$scriptsStatic[] = $scripts[$skey];
 						
 						unset($scripts[$skey]);
 						continue;
 					}
 				}
+				else if (preg_match('/<script[^>]+async/U', $script, $match)) {
+					$scriptsStatic[] = $scripts[$skey];
+					
+					unset($scripts[$skey]);
+					continue;
+				}
 				else if (preg_match('/<script([^>]*)>(.*)<\/script>/Us', $script, $match)){
 					// Script tags with no SRC but data attributes
 					if (trim($match[2]) === '') {
 						if (strpos($match[1], ' src=') === false && strpos($match[1], ' data-') !== false) {
-							$returnscripts[] = $scripts[$skey];
+							$scriptsStatic[] = $scripts[$skey];
 						
 							unset($scripts[$skey]);
 							continue;
@@ -310,8 +316,8 @@ class AssetInjector
 		}
 
 		// Add in the JS templates
-		if ($returnscripts) {
-			$content = implode(PHP_EOL, $returnscripts) . $content;
+		if ($scriptsStatic) {
+			$content = implode(PHP_EOL, $scriptsStatic) . $content;
 		}
 		
 		// Fingers crossed and let's go!
