@@ -1,3 +1,6 @@
+26/03/2019 - 2.0.6.12
+- Fixed issue that caused URLs to invalid users
+
 26/03/2019 - 2.0.6.11
 - Fixed issue that caused async scripts to break when Magento Minify is enabled
 

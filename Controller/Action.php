@@ -14,22 +14,26 @@ use FishPig\WordPress\Model\Context as WPContext;
 abstract class Action extends ParentAction
 {
 	/*
-	 * @var 
+	 *
+	 *
 	 */
 	protected $wpContext;
 	
 	/*
-	 * @var 
+	 *
+	 *
 	 */
 	protected $registry;
 
 	/*
-	 * @var 
+	 *
+	 *
 	 */	
 	protected $entity;
 
 	/*
-	 * @var 
+	 *
+	 *
 	 */	
 	protected $resultPage;
 
@@ -44,7 +48,8 @@ abstract class Action extends ParentAction
 	protected $factory;
 
 	/*
-	 * @var 
+	 *
+	 *
 	 */
 	abstract protected function _getEntity();
 
@@ -73,7 +78,9 @@ abstract class Action extends ParentAction
    */
   public function execute()
   {
-    $this->_beforeExecute();
+    if ($this->_beforeExecute() === false) {
+		  return $this->_getNoRouteForward();
+    }
 		
 		if ($forward = $this->_getForwardForPreview()) {
 			return $forward;
@@ -106,7 +113,7 @@ abstract class Action extends ParentAction
 	protected function _beforeExecute()
 	{
     if (($entity = $this->_getEntity()) === false) {
-      throw new \Magento\Framework\Exception\NotFoundException(__('Entity not found!'));
+	    return false;
     }
 	    
     if ($entity !== null) {
@@ -187,7 +194,8 @@ abstract class Action extends ParentAction
 	}
     
 	/*
-	 * @var 
+	 *
+	 *
 	 */
 	public function getPage()
 	{
@@ -201,7 +209,8 @@ abstract class Action extends ParentAction
 	}
 
 	/*
-	 * @var 
+	 *
+	 *
 	 */
 	public function getEntityObject()
   {
@@ -213,6 +222,8 @@ abstract class Action extends ParentAction
   }
     
   /*
+	 *
+	 *
 	 * @return bool
 	 */
   protected function _canPreview()
@@ -221,6 +232,7 @@ abstract class Action extends ParentAction
   }
     
 	/*
+	 *
 	 *
 	 */
   protected function _getForwardForPreview()
