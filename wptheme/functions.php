@@ -7,195 +7,289 @@
  * This file will not be deleted or overwritten and is automatically included at the end of this file
  *
  */
+class FishPig_Theme
+{
+	/*
+	 * @var
+	 */
+	static protected $instance;
+	
+	/*
+	 *
+	 *
+	 */
+	protected function __construct()
+	{
+		add_action('after_setup_theme',  array($this, 'onActionAfterSetupTheme'));
+		add_action('wp_loaded',          array($this, 'onActionWpLoaded'));
+		add_action('widgets_init',       array($this, 'onActionWidgetsInit'));
+		add_action('init',               array($this, 'onActionInit'));
+		add_filter('redirect_canonical', array($this, 'onFilterRedirectCanonical'));
+		add_action('save_post', 					array($this, 'onActionSavePost'));
+#		add_filter('preview_post_link',  array($this, 'onFilterPreviewPostLink'), 10, 2);
+		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
+		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
 
-if (!function_exists('fishpig_setup')) {
-	function fishpig_setup() {
-		add_theme_support( 'title-tag' );
-		add_theme_support( 'post-thumbnails' );
+		$this->initRelatedProducts();
+		$this->cleanOldFiles();
+		$this->includeLocalPhpFile();
+	}
+
+	/*
+	 *
+	 *
+	 *
+	 */
+	static public function getInstance()
+	{
+		if (!self::$instance) {
+			($className = __CLASS__) && self::$instance = new $className;
+		}
+
+		return self::$instance;
+	}
+
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onActionAfterSetupTheme()
+	{
+		add_theme_support('title-tag');
+		add_theme_support('post-thumbnails');
 		set_post_thumbnail_size(9999, 9999);
+		
+		add_theme_support('post-formats', array('aside', 'image', 'video', 'quote', 'link', 'gallery', 'status', 'audio', 'chat'));
+		
+		if (function_exists('show_admin_bar')) {
+			show_admin_bar(false);
+		}
+		
+		/* Remove the Emoji JS */
+		remove_action( 'wp_head', 'print_emoji_detection_script', 7 ); 
+		remove_action( 'admin_print_scripts', 'print_emoji_detection_script' ); 
+		remove_action( 'wp_print_styles', 'print_emoji_styles' ); 
+		remove_action( 'admin_print_styles', 'print_emoji_styles' );
+		
+		remove_filter('template_redirect', 'redirect_canonical');
+		
+		/* Remove wptexturize to fix shortcodes */
+		remove_filter('the_content', 'wptexturize');
+	}
 
-		add_theme_support( 'post-formats', array(
-			'aside', 'image', 'video', 'quote', 'link', 'gallery', 'status', 'audio', 'chat'
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onActionWpLoaded()
+	{
+		if ($post_types = get_post_types(array('public' => true, '_builtin' => false))) {
+			foreach ( $post_types as $post_type) {
+				add_filter("theme_{$post_type}_templates", array($this, 'onFilterThemeTemplates'), 10, 4);
+			}
+		}
+	}
+
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onFilterThemeTemplates($page_templates, $wp_theme, $post)
+	{
+		return array(
+			'template-1column' => '1 Column',
+			'template-2columns-left' => '2 Columns Left',
+			'template-2columns-right' => '2 Columns Right',
+			'template-3columns' => '3 Columns',		
+			'template-full-width' => 'Full Width',
+		) + $page_templates;
+	}
+
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onActionWidgetsInit()
+	{
+		register_sidebar(array(
+			'name' => __( 'Left Sidebar', 'fishpig' ),
+			'id' => 'sidebar-1',
+			'description' => 'Add widgets here to appear in your left Magento sidebar.',
+			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+			'after_widget' => '</aside>',
+			'before_title' => '<h2 class="widget-title">',
+			'after_title' => '</h2>',
 		));
 		
-		show_admin_bar(false);
+		register_sidebar(array(
+			'name' => __( 'Right Sidebar', 'fishpig' ),
+			'id' => 'sidebar-2',
+			'description' => 'Add widgets here to appear in your right Magento sidebar.',
+			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+			'after_widget' => '</aside>',
+			'before_title' => '<h2 class="widget-title">',
+			'after_title' => '</h2>',
+		));
 	}
-}
 
-add_action( 'after_setup_theme', 'fishpig_setup' );
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onActionInit()
+	{
+		add_rewrite_rule('^wordpress/post/preview/?$', 'index.php', 'top');
+	}
 
-/* Post Templates */
-add_action( 'wp_loaded', 'fishpig_wp_loaded' );
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onFilterRedirectCanonical($redirect_url)
+	{
+		return is_404() ? false : $redirect_url;
+	}
 
-function fishpig_add_page_templates( $page_templates, $wp_theme, $post)
-{
-	return array(
-		'template-1column' => '1 Column',
-		'template-2columns-left' => '2 Columns Left',
-		'template-2columns-right' => '2 Columns Right',
-		'template-3columns' => '3 Columns',		
-		'template-full-width' => 'Full Width',
-	) + $page_templates;
-}
-
-function fishpig_wp_loaded() {
-	if ($post_types = get_post_types(array('public' => true, '_builtin' => false))) {
-		foreach ( $post_types as $post_type) {
-			add_filter("theme_{$post_type}_templates", 'fishpig_add_page_templates', 10, 4);
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onActionSavePost($post_id)
+	{
+		// If this is just a revision, don't do anything
+		if ( wp_is_post_revision( $post_id ) ) {
+			return;
 		}
+	
+		// Make an invalidation call to Magento
+		$salt = get_option( 'fishpig_salt' );
+		if (!$salt) {
+			$salt = wp_generate_password( 64, true, true );
+			update_option( 'fishpig_salt', $salt );
+		}
+	
+		$nonce_tick = ceil(time() / ( 86400 / 2 ));
+	
+		$action = 'invalidate_' . $post_id;
+	
+		$nonce = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|' . $action, $salt ), -12, 10 );
+	
+		wp_remote_get( home_url( '/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce ) );
 	}
-}
 
-function fishpig_comment_redirect($location)
-{
-	if (strpos($location, '#') !== false) {
-		if (preg_match('/^(.*)(\#comment-([0-9]{1,}))$/', $location, $match)) {
-			$commentId = (int)$match[3];
-			$hash      = $match[2];
-			$query     = array('comment-id' => $commentId);
-			
-			if ($comment = get_comment($commentId)) {
-				$query['comment-status'] = (int)$comment->comment_approved;
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onFilterPreviewPostLink($pl, $post)
+	{
+		if (strpos($pl, 'nonce') !== false) {
+			if (preg_match('/nonce=([a-z0-9]{10})/', $pl, $matches)) {
+				$pl = str_replace($matches[1], substr(wp_hash(wp_nonce_tick()."|post_preview_{$post->ID}|0|", 'nonce'), -12, 10), $pl);
 			}
-
-			$location = $match[1] . '?' . http_build_query($query) . $match[2];
 		}
+		return $pl . '&fishpig=' . time();
 	}
 
-	return $location;
-}
-
-add_filter( 'comment_post_redirect', 'fishpig_comment_redirect' );
-
-function fishpig_widgets_init() {
-	register_sidebar(array(
-		'name' => __( 'Main Sidebar', 'fishpig' ),
-		'id' => 'sidebar-main',
-		'description' => 'Add widgets here to appear in your main Magento sidebar.',
-		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-		'after_widget' => '</aside>',
-		'before_title' => '<h2 class="widget-title">',
-		'after_title' => '</h2>',
-	));
-}
-
-add_action( 'widgets_init', 'fishpig_widgets_init' );
-
-/* Remove the Emoji JS */
-remove_action( 'wp_head', 'print_emoji_detection_script', 7 ); 
-remove_action( 'admin_print_scripts', 'print_emoji_detection_script' ); 
-remove_action( 'wp_print_styles', 'print_emoji_styles' ); 
-remove_action( 'admin_print_styles', 'print_emoji_styles' );
-
-/* Stop WP guessing URLs */
-function fp_remove_404_redirect($redirect_url) {
-	if (is_404()) {
-		return false;
-	}
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onFilterRestUrl($rest)
+	{
+		$find   = '/wp-json/';
+		$pos    = strpos($rest, $find);
+		$extra  = '';
 	
-	return $redirect_url;
-}
-
-add_filter('redirect_canonical', 'fp_remove_404_redirect');
-
-if (!function_exists('fishpig_comment')) {
-	function fishpig_comment( $comment, $args, $depth ) {}
-}
-
-function fishpig_invalidate_cache( $post_id ) {
-	// If this is just a revision, don't do anything
-	if ( wp_is_post_revision( $post_id ) ) {
-		return;
-	}
-
-	// Make an invalidation call to Magento
-	if (!($salt = get_option( 'fishpig_salt' ))) {
-		$salt = wp_generate_password( 64, true, true );
-		update_option( 'fishpig_salt', $salt );
-	}
-
-	$nonce_tick = ceil(time() / ( 86400 / 2 ));
-	$nonce      = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|' . 'invalidate_' . $post_id, $salt ), -12, 10 );
-
-	if (!($magentoUrl = rtrim(get_option('fishpig_magento_base_url'), '/'))) {
-		return;
-	}
+		if ($pos !== false && strlen($rest) > $pos+strlen($find)) {
+			$extra = substr($rest, $pos+strlen($find));
+		}
 	
-	wp_remote_get( $magentoUrl . '/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce );
-}
+		return get_option('siteurl') . '/index.php?rest_route=/' . ltrim($extra, '/');
+		return get_option('siteurl') . '/index.php/wp-json/' . $extra;
+	}
 
-add_action( 'save_post', 'fishpig_invalidate_cache' );
-
-remove_filter('template_redirect', 'redirect_canonical');
-
-add_filter('preview_post_link', 'fishpig_preview_post_link', 10, 2);
-
-function fishpig_preview_post_link($previewLink, $post) {
-	return $previewLink . '&fishpig=' . time();
-}
-
-if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php')) {
-	@unlink(__DIR__ . DIRECTORY_SEPARATOR . 'cpt.php');
-}
-
-/* WPBakery */
-if (isset($_GET['vc_editable'])) {
-	ini_set('display_errors', 0);
-}
-
-// Ensure 404 isn't set 
-add_filter(
-	'status_header', 
-	function($status_header, $code, $description, $protocol) {
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onFilterStatusHeader($status_header, $code, $description, $protocol)
+	{
 		if ((int)$code === 404) {
-			!defined('FISHPIG_WP_IS_404') ? define('FISHPIG_WP_IS_404', true) : '';
 			return '';
 		}
 		
 		return $status_header;
-	}, 
-	10, 
-	4
-);
+	}
 
-/* Remove wptexturize to fix shortcodes */
-remove_filter('the_content', 'wptexturize');
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function includeLocalPhpFile()
+	{
+		$localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
 
-add_filter('the_content', function($content) {
-	if (strpos($content, '{{') !== false) {
-		if (preg_match_all('/(\{\{[^\}]*).*([^\}]*\}\})/Us', $content, $matches)) {
-			foreach(array_unique($matches[0]) as $match) {
-				$content = str_replace($match, str_replace('&#8221;', '"', $match), $content);
+		if (is_file($localFile)) {
+			include($localFile);
+		}
+		
+		return $this;
+	}
+
+	/*
+	 *
+	 *
+	 *
+	 */
+	protected function cleanOldFiles()
+	{
+		$files = array(
+			__DIR__ . '/comments.php',
+			__DIR__ . '/cpt.php',
+		);
+		
+		foreach($files as $file) {
+			if (is_file($file)) {
+				@unlink($file);
 			}
 		}
 	}
-	
-	return $content;
-});
 
-/* Fix the REST API URL */
-function fp_rest_url($rest) {	
-	$find   = '/wp-json/';
-	$pos    = strpos($rest, $find);
-	$extra  = '';
-
-	if ($pos !== false && strlen($rest) > $pos+strlen($find)) {
-		$extra = substr($rest, $pos+strlen($find));
+	/*
+	 *
+	 *
+	 *
+	 */
+	protected function initRelatedProducts()
+	{
+		// Related Products
+		if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php')) {
+			include(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php');	
+		}
+		else {
+			add_action('add_meta_boxes', array($this, 'onActionAddMetaBoxesRelatedProducts'));
+		}
 	}
 
-
-	return get_option('siteurl') . '/index.php?rest_route=/' . ltrim($extra, '/');
-	return get_option('siteurl') . '/index.php/wp-json/' . $extra;
-}
-
-add_filter( 'rest_url', 'fp_rest_url');
-
-// Related Products
-if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php')) {
-	include(__DIR__ . DIRECTORY_SEPARATOR . 'related-products.php');	
-}
-else {
-	function fp_related_products_link() {
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function onActionAddMetaBoxesRelatedProducts()
+	{
 		add_meta_box(
 			'fishpig',
 			'Related Products',
@@ -207,13 +301,19 @@ else {
 			}
 		);
 	}
-
-	add_action('add_meta_boxes', 'fp_related_products_link');
 }
 
-/* Include local.php*/
-$localFile = __DIR__ . DIRECTORY_SEPARATOR . 'local.php';
-
-if (is_file($localFile)) {
-	include($localFile);
+/*
+ * Create the object
+ * This will setup the actions automatically
+ *
+ */
+if (basename(__DIR__) !== 'wptheme') {
+	FishPig_Theme::getInstance();
+}
+else {
+	/*
+	 * If here, this is probably the Magento compiler
+	 * We don't want this to run in Magento as it's a WordPress file
+	 */
 }
