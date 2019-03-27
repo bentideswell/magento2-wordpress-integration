@@ -164,16 +164,24 @@ class Taxonomy extends AbstractModel/* implements ViewableInterface*/
 	 */
 	public function getPostTermsCollection(\FishPig\WordPress\Model\Post $post)
 	{
-		return $this->termFactory->create()->getCollection()
+		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
 			->addTaxonomyFilter($this->getTaxonomyType())
 			->addPostIdFilter($post->getId());
 	}
 	
+	/*
+	 *
+	 *
+	 */
 	public function getTaxonomyType()
 	{
 		return $this->getData('taxonomy_type') ? $this->getData('taxonomy_type') : $this->getData('name');
 	}
-	
+
+	/*
+	 *
+	 *
+	 */
 	public function getTaxonomy()
 	{
 		return $this->getTaxonomyType();
