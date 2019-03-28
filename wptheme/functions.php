@@ -10,9 +10,14 @@
 class FishPig_Theme
 {
 	/*
-	 * @var
+	 * @var FishPig_Theme
 	 */
 	static protected $instance;
+	
+	/*
+	 * @var array
+	 */
+	protected $data = array();
 	
 	/*
 	 *
@@ -20,17 +25,23 @@ class FishPig_Theme
 	 */
 	protected function __construct()
 	{
+		$this->setupDataFromMagento();
+
 		add_action('after_setup_theme',  array($this, 'onActionAfterSetupTheme'));
 		add_action('wp_loaded',          array($this, 'onActionWpLoaded'));
 		add_action('widgets_init',       array($this, 'onActionWidgetsInit'));
 		add_action('init',               array($this, 'onActionInit'));
 		add_filter('redirect_canonical', array($this, 'onFilterRedirectCanonical'));
-		add_action('save_post', 					array($this, 'onActionSavePost'));
 #		add_filter('preview_post_link',  array($this, 'onFilterPreviewPostLink'), 10, 2);
 		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
 		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
 
-		$this->initRelatedProducts();
+		if ((int)$this->getMagentoData('version') === 2) {
+			add_action('save_post', array($this, 'invalidateMagento2FPC'));
+			
+			$this->initRelatedProducts();
+		}
+		
 		$this->cleanOldFiles();
 		$this->includeLocalPhpFile();
 	}
@@ -49,6 +60,35 @@ class FishPig_Theme
 		return self::$instance;
 	}
 
+	/*
+	 *
+	 *
+	 *
+	 */
+	protected function setupDataFromMagento()
+	{
+		if ($data = get_option('fishpig_magento')) {
+			
+			if (strlen($data) > 2 && substr($data, 0, 1) === '{' && substr($data, -1) === '}') {
+				$this->data = json_decode($data, true);
+			}			
+		}
+	}
+
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function getMagentoData($key = null, $default = null)
+	{
+		if ($key === null) {
+			return $this->data;
+		}
+		
+		return isset($this->data[$key]) ? $this->data[$key] : $default;
+	}
+	
 	/*
 	 *
 	 *
@@ -161,7 +201,7 @@ class FishPig_Theme
 	 *
 	 *
 	 */
-	public function onActionSavePost($post_id)
+	public function invalidateMagento2FPC($post_id)
 	{
 		// If this is just a revision, don't do anything
 		if ( wp_is_post_revision( $post_id ) ) {
@@ -170,6 +210,7 @@ class FishPig_Theme
 	
 		// Make an invalidation call to Magento
 		$salt = get_option( 'fishpig_salt' );
+		
 		if (!$salt) {
 			$salt = wp_generate_password( 64, true, true );
 			update_option( 'fishpig_salt', $salt );

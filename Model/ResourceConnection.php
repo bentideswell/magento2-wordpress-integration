@@ -9,6 +9,7 @@ use Magento\Framework\App\ResourceConnection\ConnectionFactory;
 use FishPig\WordPress\Model\WPConfig;
 use FishPig\WordPress\Model\Network;
 use Magento\Store\Model\StoreManagerInterface;
+use FishPig\WordPress\Model\Logger;
 
 class ResourceConnection
 {
@@ -34,6 +35,11 @@ class ResourceConnection
 	protected $network;
 	
 	/*
+	 * @var Logger
+	 */
+	protected $logger;
+	
+	/*
 	 * @var 
 	 */
 	protected $_tables = [];
@@ -45,13 +51,15 @@ class ResourceConnection
 		    ConnectionFactory $connectionFactory, 
 		             WPConfig $wpConfig, 
 		              Network $network, 
-		StoreManagerInterface $storeManager
+		StoreManagerInterface $storeManager,
+		               Logger $logger
 	)
 	{
 		$this->connectionFactory = $connectionFactory;
 		$this->network           = $network;
 		$this->wpConfig          = $wpConfig;
 		$this->storeManager      = $storeManager;
+		$this->logger            = $logger;
 	}
 	
 	/*
@@ -97,25 +105,56 @@ class ResourceConnection
 		if ($networkTables = $this->network->getNetworkTables()) {
 			$this->applyMapping($networkTables);
 		}
-		
-		/*
-		 * Set Magento base URL as WordPress option
-		 */
+
+		// Pass some data to WordPress via it's options table
 		if ((int)$this->storeManager->getStore()->getId() > 0) {
 			$optionName  = 'fishpig_magento_base_url';
 			$optionTable = $this->getTable('wordpress_option');
 			$baseUrl     = $this->storeManager->getStore()->getBaseUrl();
 
 			try {
-				$db->delete($optionTable, $db->quoteInto('option_name=?', $optionName));
-				$db->insert($optionTable, ['option_name' => $optionName, 'option_value' => $baseUrl]);
+				$this->_setOptionValue('fishpig_magento_base_url', $this->storeManager->getStore()->getBaseUrl());
+				$this->_setOptionValue('fishpig_magento_version',  '2');
+				
+				$this->_setOptionValue('fishpig_magento', json_encode([
+					'base_url' => $this->storeManager->getStore()->getBaseUrl(),
+					'version' => 2
+				]));
 			}
 			catch (\Exception $e) {
-				
+				$this->logger->error($e);
 			}
 		}
 	}
 
+	/*
+	 *
+	 *
+	 * @param  string $optionName
+	 * @param  mixed  $newValue
+	 * @return void
+	 */
+	protected function _setOptionValue($optionName, $newValue)
+	{
+		$db          = $this->getConnection();
+		$optionTable = $this->getTable('wordpress_option');
+
+		$optionData = $db->fetchRow(
+			$db->select()->from($optionTable, ['option_id', 'option_value'])->where('option_name=?', $optionName)->limit(1)
+		);
+		
+		if ($optionData) {	
+			list($optionId, $optionValue) = array_values($optionData);
+
+			if ($optionValue !== $newValue) {
+				$db->update($optionTable, ['option_value' => $newValue], 'option_id=' . (int)$optionId);
+			}
+		}
+		else {
+			$db->insert($optionTable, ['option_name' => $optionName, 'option_value' => $newValue]);
+		}
+	}
+	
 	/*
 	 *
 	 *
