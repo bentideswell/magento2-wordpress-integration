@@ -297,7 +297,6 @@ class FishPig_Theme
 	protected function cleanOldFiles()
 	{
 		$files = array(
-			__DIR__ . '/comments.php',
 			__DIR__ . '/cpt.php',
 		);
 		

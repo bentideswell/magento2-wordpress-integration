@@ -1,3 +1,6 @@
+02/04/2019 - 2.0.7.3
+- Updated WordPress theme.
+
 27/03/2019 - 2.0.7.0
 - Updated WordPress theme.
 
