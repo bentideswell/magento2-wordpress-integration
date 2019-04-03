@@ -122,7 +122,10 @@ class View extends Action
 	 */
   public function getLayoutHandles()
   {
-    $post = $this->getEntityObject();
+    if (!($post = $this->getEntityObject())) {
+	    return [];
+    }
+
     $postType = $post->getPostType();
     
     if ($postType == 'revision' && $post->getParentPost()) {

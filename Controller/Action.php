@@ -252,7 +252,7 @@ abstract class Action extends ParentAction
 			$this->registry->unregister($entity::ENTITY);
 		}
 
-		foreach(['p', 'page_id', 'preview_id'] as $previewIdKey) {
+		foreach(['preview_id', 'p', 'page_id'] as $previewIdKey) {
 			if (0 !== (int)$this->getRequest()->getParam($previewIdKey))	{
 				$previewId = (int)$this->getRequest()->getParam($previewIdKey);
 				

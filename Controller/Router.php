@@ -83,6 +83,8 @@ class Router implements RouterInterface
    */
 	public function match(RequestInterface $request)
 	{
+
+
 	  if ($this->integrationManager->runTests() === false) {
 		  return false;
 	  }
@@ -117,6 +119,7 @@ class Router implements RouterInterface
 				$this->getUrlAlias($request)
 			);
 		
+
 		if (count($route['params']) > 0) {
 			foreach($route['params'] as $key => $value) {
 				$request->setParam($key, $value);
@@ -347,8 +350,8 @@ class Router implements RouterInterface
 	 */
 	public function getPathInfo(RequestInterface $request)
 	{
-		$pathInfo = strtolower(trim($request->getPathInfo(), '/'));
-		
+		$pathInfo = strtolower(trim($request->getOriginalPathInfo(), '/'));
+
 		if ($magentoUrlPath = parse_url($this->url->getMagentoUrl(), PHP_URL_PATH)) {
 			$magentoUrlPath = ltrim($magentoUrlPath, '/');
 			

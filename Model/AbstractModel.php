@@ -86,7 +86,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
 	 */
 	public function getIdentities()
   {
-    return [self::CACHE_TAG . '_' . $this->getId()];
+    return [static::CACHE_TAG . '_' . $this->getId()];
   }
 	
 	/*

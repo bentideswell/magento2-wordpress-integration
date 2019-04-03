@@ -33,7 +33,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	public function getIntroText()
 	{
-		return trim($this->getEntity()->getBlogDescription());
+		return $this->getEntity() ? trim($this->getEntity()->getBlogDescription()) : '';
 	}
 	
 	/*
@@ -43,7 +43,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	public function getBlogHomepageUrl()
 	{
-		return $this->getEntity()->getUrl();
+		return $this->getEntity() ? $this->getEntity()->getUrl() : '';
 	}
 	
 	/*

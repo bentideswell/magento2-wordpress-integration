@@ -72,4 +72,15 @@ abstract class AbstractCollection extends AbstractDbCollection
 		
 		return $this;
 	}
+	
+	/*
+	 * Force the collection to be empty
+	 *
+	 */
+	public function forceEmpty()
+	{
+		$this->getSelect()->where('1=2')->limit(1);
+		
+		return $this;
+	}
 }

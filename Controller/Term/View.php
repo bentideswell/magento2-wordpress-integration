@@ -61,6 +61,10 @@ class View extends Action
 	 */
   public function getLayoutHandles()
   {
+	  if (!$this->_getEntity()) {
+		  return [];
+	  }
+
     $taxonomyType = $this->_getEntity()->getTaxonomyType();
 
     return array_merge(

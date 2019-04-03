@@ -53,9 +53,16 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 	 */
 	protected function _getPostCollection()
 	{
-		return parent::_getPostCollection()
-			->addArchiveDateFilter($this->getArchiveId(), $this->getArchive()->getIsDaily())
-			->addPostTypeFilter('post');
+		$postCollection = parent::_getPostCollection()->addPostTypeFilter('post');		
+		
+		if ($this->getArchive()) {
+			$postCollection->addArchiveDateFilter($this->getArchiveId(), $this->getArchive()->getIsDaily());
+		}
+		else {
+			$postCollection->forceEmpty();
+		}
+		
+		return $postCollection;
 	}
 
 	/**

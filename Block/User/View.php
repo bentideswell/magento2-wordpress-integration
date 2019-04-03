@@ -29,6 +29,7 @@ class View extends AbstractWrapper
 	 */
 	protected function _getPostCollection()
 	{
-		return parent::_getPostCollection()->addFieldToFilter('post_author', $this->getEntity()->getId());
+		return parent::_getPostCollection()
+			->addFieldToFilter('post_author', $this->getEntity() ? $this->getEntity()->getId() : 0);
 	}
 }

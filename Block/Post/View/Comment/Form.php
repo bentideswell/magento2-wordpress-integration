@@ -55,9 +55,9 @@ class Form extends AbstractBlock
 	 */
 	public function getLoginLink()
 	{
-		return $this->getUrl('customer/account/login', array(
-			'referer' => base64_encode($this->getPost()->getPermalink() . '#respond'),
-		));
+		$ref = $this->getPost() ? base64_encode($this->getPost()->getPermalink() . '#respond') : '';
+		
+		return $this->getUrl('customer/account/login', ['referer' => $ref]);
 	}
 
 	/**

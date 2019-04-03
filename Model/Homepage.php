@@ -62,9 +62,9 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 */
 	public function getContent()
 	{
-        if ($staticPage = $this->getFrontStaticPage()) {
-            return $staticPage->getContent();
-        }
+    if ($staticPage = $this->getFrontStaticPage()) {
+      return $staticPage->getContent();
+    }
 
 		return $this->getBlogDescription();
 	}
@@ -124,6 +124,15 @@ class Homepage extends AbstractModel implements ViewableInterface
 			}
 		}
 		
+		return false;
+	}
+	
+	/*
+	 *
+	 *
+	 */
+	public function getResourceCollection()
+	{
 		return false;
 	}
 }

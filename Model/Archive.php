@@ -102,7 +102,7 @@ class Archive extends AbstractModel implements ViewableInterface
 			return $this->getPostCount() > 0;
 		}
 
-		return $this->getPostCollection()->count() > 0;
+		return count($this->getPostCollection()) > 0;
 	}
 	
 	/*
@@ -113,7 +113,7 @@ class Archive extends AbstractModel implements ViewableInterface
 	public function getPostCollection()
 	{
 		if (!$this->hasPostCollection()) {
-			$collection = $this->getPostCollection()
+			$collection = parent::getPostCollection()
 				->addIsViewableFilter()
 				->addArchiveDateFilter($this->getId(), $this->getIsDaily())
 				->setOrderByPostDate();
@@ -132,5 +132,14 @@ class Archive extends AbstractModel implements ViewableInterface
 	public function getContent()
 	{
 		return '';
+	}
+	
+	/*
+	 *
+	 *
+	 */
+	public function getResourceCollection()
+	{
+		return false;
 	}
 }
