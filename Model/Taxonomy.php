@@ -13,8 +13,18 @@ use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 /* Misc */
 use FishPig\WordPress\Model\PostTypeManager;
 
-class Taxonomy extends AbstractModel/* implements ViewableInterface*/
+class Taxonomy extends AbstractResourcelessModel/* implements ViewableInterface*/
 {	
+	/*
+	 * @const string
+   */
+	const ENTITY = 'wordpress_taxonomy';
+	
+	/*
+	 * @const string
+   */
+	const CACHE_TAG = 'wordpress_taxonomy';
+	
 	/**
 	 * Get the URI's that apply to $uri
 	 *

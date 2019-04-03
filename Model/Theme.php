@@ -241,16 +241,6 @@ class Theme
 	/*
 	 *
 	 *
-	 *
-	 */
-	public function canAutoInstallTheme()
-	{
-		return (int)$this->_request->getParam('install-theme') === 1;
-	}
-	
-	/*
-	 *
-	 *
 	 * @return bool
 	 */
 	public function isThemeIntegrated()

@@ -8,7 +8,16 @@ namespace FishPig\WordPress\Model\Post;
 
 class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 {
+	/*
+	 * @const string
+	 */
+	const ENTITY = 'wordpress_post_comment';
 
+	/*
+	 * @const string
+   */
+	const CACHE_TAG = 'wordpress_post_comment';
+	
 	/**
 	 * Base URL used for Gravatar images
 	 *
@@ -17,6 +26,11 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	const GRAVATAR_BASE_URL = 'http://www.gravatar.com/avatar/';
 	const GRAVATAR_BASE_URL_SECURE = 'https://secure.gravatar.com/avatar/';
 	
+	/*
+	 *
+	 *
+	 *
+	 */
 	public function _construct()
 	{
 		$this->_init('FishPig\WordPress\Model\ResourceModel\Post\Comment');
@@ -95,7 +109,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */	
 	public function getGuid()
 	{
-		return $this->url->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId());
+		return $this->getPost() ? $this->url->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId()) : '';
 	}
 	
 	/**
@@ -234,7 +248,9 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 	 */
 	public function getAnchor()
 	{
-		return sprintf('<a href="%s" title="%s">%s</a>', $this->getUrl(), $this->getCommentAuthor(), $this->getPost()->getPostTitle());
+		return $this->getPost()
+			? sprintf('<a href="%s" title="%s">%s</a>', $this->getUrl(), $this->getCommentAuthor(), $this->getPost()->getPostTitle())
+			: '';
 	}
 	
 	/**

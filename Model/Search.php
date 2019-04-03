@@ -7,12 +7,18 @@ namespace FishPig\WordPress\Model;
 /* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Search extends AbstractModel implements ViewableInterface
+class Search extends AbstractResourcelessModel implements ViewableInterface
 {
 	/*
 	 * @const string
 	 */
 	const ENTITY = 'wordpress_search';
+	
+
+	/*
+	 * @const string
+   */
+	const CACHE_TAG = 'wordpress_search';
 	
 	/*
 	 * @const string

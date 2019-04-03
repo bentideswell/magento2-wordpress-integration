@@ -6,9 +6,9 @@
  */
 namespace FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection;
+use FishPig\WordPress\Model\ResourceModel\Post\Collection;
 
-abstract class AbstractAttachmentCollection extends AbstractCollection
+abstract class AbstractAttachmentCollection extends Collection
 {
 
 	/**

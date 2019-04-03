@@ -102,7 +102,7 @@ class User extends AbstractMeta implements ViewableInterface
 	 */
 	public function loadCurrentLoggedInUser()
 	{
-		return $this->getResource()->loadCurrentLoggedInUser($this);
+		return $this;
 	}
 	
 	/*

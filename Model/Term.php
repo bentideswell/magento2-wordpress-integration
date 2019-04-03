@@ -67,7 +67,7 @@ class Term extends AbstractModel implements ViewableInterface
 	 */
 	public function getTaxonomyInstance()
 	{
-		return $this->taxonomyManager->getTaxonomy($this->getTaxonomy());
+		return $this->getTaxonomy() ? $this->taxonomyManager->getTaxonomy($this->getTaxonomy()) : false;
 	}
 
 	/*
@@ -178,9 +178,9 @@ class Term extends AbstractModel implements ViewableInterface
 	public function getUri()
 	{
 		if (!$this->hasUri()) {
-			$this->setUri(
-				$this->getTaxonomyInstance()->getUriById($this->getId())
-			);
+			if ($taxonomy = $this->getTaxonomyInstance()) {
+				$this->setUri($taxonomy->getUriById($this->getId()));
+			}
 		}
 		
 		return $this->_getData('uri');

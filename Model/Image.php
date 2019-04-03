@@ -205,4 +205,22 @@ class Image extends AbstractAttachmentModel
 	{
 		return $this->getFullSizeImage();
 	}
+
+	/*
+	 *
+	 * @return false
+	 */
+	public function getNextPost()
+	{
+		return false;
+	}
+
+	/*
+	 *
+	 * @return false
+	 */
+	public function getPreviousPost()
+	{
+		return false;
+	}
 }

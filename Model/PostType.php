@@ -5,7 +5,7 @@
 namespace FishPig\WordPress\Model;
 
 /* Parent Class */
-use FishPig\WordPress\Model\AbstractModel;
+use FishPig\WordPress\Model\AbstractResourcelessModel;
 
 /* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
@@ -16,13 +16,18 @@ use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Factory;
 
-class PostType extends AbstractModel implements ViewableInterface
+class PostType extends AbstractResourcelessModel implements ViewableInterface
 {
 	/**
 	 *
 	**/
 	const ENTITY = 'wordpress_post_type';
 
+	/*
+	 * @const string
+   */
+	const CACHE_TAG = 'wordpress_post_type';
+	
 	/**
 	 * Cache of URI's for hierarchical post types
 	 *
@@ -334,6 +339,16 @@ class PostType extends AbstractModel implements ViewableInterface
 		return $this->_getData('post_type') ? $this->_getData('post_type') : $this->_getData('name');
 	}
 
+	/*
+	 *
+	 *
+	 * @return string
+	 */
+	public function getId()
+	{
+		return $this->getPostType();
+	}
+	
 	/**
 	 * @return string
 	**/	
@@ -515,5 +530,14 @@ class PostType extends AbstractModel implements ViewableInterface
 		}
 		
 		return false;
+	}
+	
+	/*
+	 *
+	 *
+	 */
+	public function load($modelId, $field = null)
+	{
+		return $this->factory->create('PostTypeManager')->getPostType($modelId);
 	}
 }

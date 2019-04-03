@@ -60,6 +60,10 @@ class Factory
 	 */
 	protected function getClassNameFromType($type)
 	{
+		if (trim($type) === '') {
+			return false;
+		}
+
 		if (strpos($type, 'FishPig') === 0) {
 			return $type;
 		}

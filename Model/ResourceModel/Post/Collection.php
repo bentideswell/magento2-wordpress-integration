@@ -226,19 +226,17 @@ class Collection extends AbstractMetaCollection
 			$stickyIds = unserialize($sticky);
 			
 			if (count($stickyIds) > 0) {
-				$select = $this->getConnection()
-					->select()
-					->from($this->getTable('wordpress_post'), null)
-					->where('main_table.ID IN (?)', $stickyIds)
-					->limit(1);
-
-				$select->columns(
-					array('value' => new \Zend_Db_Expr("'1'"))
-				);
-
-				$this->getSelect()
-					->columns(array('is_sticky' => new \Zend_Db_Expr('(' . $select . ')')))
-					->order('is_sticky DESC');
+				if ($orders = $this->getSelect()->getPart('order')) {
+					$this->getSelect()->reset('order');					
+				}
+				
+				$this->getSelect()->order('FIELD(main_table.ID, ' . implode(', ', $stickyIds) . ') DESC');
+				
+				if ($orders) {
+					foreach($orders as $order) {
+						$this->getSelect()->order(implode(' ', $order));
+					}
+				}
 			}
 		}
 		

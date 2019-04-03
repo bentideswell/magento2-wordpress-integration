@@ -93,7 +93,7 @@ abstract class AbstractMeta extends AbstractModel
 	 */
 	protected function _getRealMetaKey($key)
 	{
-		if ($this->doesMetaTableHavePrefix()) {
+		if ($this->doesMetaTableHavePrefix() && $key) {
 			if (($tablePrefix = $this->getResource()->getTablePrefix()) !== 'wp_') {
 				if (preg_match('/^(wp_)(.*)$/', $key, $matches)) {
 					return $tablePrefix . $matches[2];

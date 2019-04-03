@@ -5,12 +5,12 @@
 namespace FishPig\WordPress\Model;
 
 /* Parent Class */
-use FishPig\WordPress\Model\AbstractModel;
+use FishPig\WordPress\Model\AbstractResourcelessModel;
 
 /* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Homepage extends AbstractModel implements ViewableInterface
+class Homepage extends AbstractResourcelessModel implements ViewableInterface
 {
 	/*
 	 * @var string
@@ -131,8 +131,8 @@ class Homepage extends AbstractModel implements ViewableInterface
 	 *
 	 *
 	 */
-	public function getResourceCollection()
+	public function load($modelId, $field = null)
 	{
-		return false;
+		return $this;
 	}
 }

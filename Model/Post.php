@@ -337,17 +337,18 @@ class Post extends AbstractMeta implements ViewableInterface
 		if (!$this->hasPreviousPost()) {
 			$this->setPreviousPost(false);
 			
-			$collection = $this->getCollection()
-				->addIsViewableFilter()
-				->addPostTypeFilter($this->getPostType())
-				->addPostDateFilter(array('lt' => $this->_getData('post_date')))
-				->setPageSize(1)
-				->setCurPage(1)
-				->setOrderByPostDate()
-				->load();
+			if ($collection = $this->getCollection()) {
+				$collection->addIsViewableFilter()
+					->addPostTypeFilter($this->getPostType())
+					->addPostDateFilter(array('lt' => $this->_getData('post_date')))
+					->setPageSize(1)
+					->setCurPage(1)
+					->setOrderByPostDate()
+					->load();
 
-			if ($collection->count() > 0) {
-				$this->setPreviousPost($collection->getFirstItem());
+				if ($collection->count() > 0) {
+					$this->setPreviousPost($collection->getFirstItem());
+				}
 			}
 		}
 		
@@ -638,7 +639,7 @@ class Post extends AbstractMeta implements ViewableInterface
 					$this->_urlEncode($this->_getData('permalink'))
 				));
 			}
-			else if ($this->getTypeInstance()->isHierarchical()) {
+			else if ($this->getTypeInstance() && $this->getTypeInstance()->isHierarchical()) {
 				if ($uris = $this->getTypeInstance()->getAllRoutes()) {
 					if (isset($uris[$this->getId()])) {
 						$this->setUrl($this->url->getUrl($uris[$this->getId()] . '/'));
