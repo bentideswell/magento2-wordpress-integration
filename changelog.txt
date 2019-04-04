@@ -1,3 +1,6 @@
+04/04/2019 - 2.0.7.6
+- Fix for RSS feeds
+
 03/04/2019 - 2.0.7.5
 - Multiple small code fixes raised in testing
 - Modified preview functionality to fix issues under certain conditions

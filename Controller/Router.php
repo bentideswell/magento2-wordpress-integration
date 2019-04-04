@@ -265,7 +265,7 @@ class Router implements RouterInterface
 	 */	
 	protected function _getSimpleRoutes($uri = '')
 	{
-		$this->addRoute(array('/^author\/([^\/]{1,})/' => array('author')), '*/user/view');
+		$this->addRoute(array('/^author\/([^\/]{1,})$/' => array('author')), '*/user/view');
 		$this->addRoute(array('/^([1-2]{1}[0-9]{3})$/' => array('year')), '*/archive/view');
 		$this->addRoute(array('/^([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => array('year', 'month')), '*/archive/view');
 		$this->addRoute(array('/^([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})\/([0-3]{1}[0-9]{1})$/' => array('year', 'month', 'day')), '*/archive/view');
@@ -326,7 +326,6 @@ class Router implements RouterInterface
 			if (($routes = $taxonomy->getUris($uri)) !== false) {
 				foreach($routes as $routeId => $route) {
 					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
-#					$this->addRoute(rtrim($route, '/') . '/feed', '*/term/feed', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
 				}
 			}
 		}
@@ -383,7 +382,7 @@ class Router implements RouterInterface
 		
 		$pathInfo = explode('/', $pathInfo);
 		
-		// Clean off pager and feed parts
+		// Clean off pager
 		if (($key = array_search('page', $pathInfo)) !== false) {
 			if (isset($pathInfo[($key+1)]) && preg_match("/[0-9]{1,}/", $pathInfo[($key+1)])) {
 				$request->setParam('page', $pathInfo[($key+1)]);
