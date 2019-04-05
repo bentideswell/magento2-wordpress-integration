@@ -620,7 +620,7 @@ class Post extends AbstractMeta implements ViewableInterface
 		return $this->isPublished()
 			|| ($this->getPostStatus() === 'private' && $this->_app->getConfig()->isLoggedIn());
 	}
-	
+
 	/*
 	 * Wrapper for self::getPermalink()
 	 *
@@ -647,7 +647,7 @@ class Post extends AbstractMeta implements ViewableInterface
 				}
 			}
 		}
-		
+
 		return $this->_getData('url');
 	}
 

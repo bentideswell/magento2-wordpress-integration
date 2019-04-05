@@ -49,9 +49,9 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
 	public function getUrl()
 	{
 		if ($staticPage = $this->getFrontStaticPage()) {
-			return $staticPage->getUrl();	
+			return $staticPage->getUrl();
 		}
-		
+
 		return $this->url->getUrl();
 	}
 		

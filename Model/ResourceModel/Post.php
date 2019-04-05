@@ -80,6 +80,10 @@ class Post extends AbstractMeta
 		return $select;
 	}
 	
+	/*
+	 *
+	 *
+	 */
 	public function completePostSlug($slug, $postId, $postType)
 	{
 		if (!preg_match_all('/(\%[a-z0-9_-]{1,}\%)/U', $slug, $matches)) {

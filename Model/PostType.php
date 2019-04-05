@@ -33,7 +33,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
 	 *
 	 * @var array static
 	 */
-	static $_uriCache = array();
+	static $_uriCache = [];
   
 	/**
 	 * Determine whether post type uses GUID links
@@ -299,16 +299,22 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
 			return false;
 		}
 		
-		if (isset(self::$_uriCache[$this->getPostType()])) {
-			return self::$_uriCache[$this->getPostType()];
-		}
+		$storeId = (int)$this->wpContext->getStoreManager()->getStore()->getId();
 		
+		if (isset(self::$_uriCache[$storeId][$this->getPostType()])) {
+			return self::$_uriCache[$storeId][$this->getPostType()];
+		}
+
 		$resource = $this->wpContext->getResourceConnection();
 		
 		if (!($db = $resource->getConnection())) {
 			return false;
 		}
 
+		if (!isset(self::$_uriCache[$storeId])) {
+			self::$_uriCache[$storeId] = [];
+		}
+		
 		$select = $db->select()
 			->from(['term' => $resource->getTable('wordpress_post')], [
 				'id'      => 'ID',
@@ -317,10 +323,8 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
 			])
 			->where('post_type=?', $this->getPostType())
 			->where('post_status=?', 'publish');
-				
-		self::$_uriCache[$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
-		
-		return self::$_uriCache[$this->getPostType()];
+
+		return self::$_uriCache[$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
 	}
 	
 	/**

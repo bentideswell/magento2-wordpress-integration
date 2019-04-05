@@ -17,6 +17,7 @@ use Magento\Framework\Registry;
 use Magento\Framework\View\Layout;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Request\Http as Request;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Context
 {
@@ -99,22 +100,30 @@ class Context
 
 	/*
 	 *
+	 * @var StoreManagerInterface
+	 *
+	 */
+	protected $storeManager;
+	
+	/*
+	 *
 	 *
 	 *
 	 */
 	public function __construct(
-	ResourceConnection $resourceConnection,
-  	   OptionManager $optionManager,
-    ShortcodeManager $shortcodeManager,
-     PostTypeManager $postTypeManager,
-     TaxonomyManager $taxonomyManager,
-                 Url $url,
-             Factory $factory,
-          DateHelper $dateHelper,
-            Registry $registry,
-              Layout $layout,
-     CustomerSession $customerSession,
-             Request $request
+		ResourceConnection $resourceConnection,
+		OptionManager $optionManager,
+		ShortcodeManager $shortcodeManager,
+		PostTypeManager $postTypeManager,
+		TaxonomyManager $taxonomyManager,
+		Url $url,
+		Factory $factory,
+		DateHelper $dateHelper,
+		Registry $registry,
+		Layout $layout,
+		CustomerSession $customerSession,
+		Request $request,
+		StoreManagerInterface $storeManager
 	)
 	{
 		$this->resourceConnection = $resourceConnection;
@@ -129,6 +138,7 @@ class Context
 		$this->layout             = $layout;
 		$this->customerSession    = $customerSession;
 		$this->request            = $request;
+		$this->storeManager       = $storeManager;
 	}
 
 	/*
@@ -249,5 +259,15 @@ class Context
 	public function getRequest()
 	{
 		return $this->request;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return StoreManagerInterface
+	 */
+	public function getStoreManager()
+	{
+		return $this->storeManager;
 	}
 }

@@ -83,8 +83,6 @@ class Router implements RouterInterface
    */
 	public function match(RequestInterface $request)
 	{
-
-
 	  if ($this->integrationManager->runTests() === false) {
 		  return false;
 	  }
