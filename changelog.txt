@@ -1,3 +1,6 @@
+08/04/2019 - 2.0.7.8
+- WordPress theme update that fixed missing sidebar widgets.
+
 04/04/2019 - 2.0.7.6
 - Fix for RSS feeds
 

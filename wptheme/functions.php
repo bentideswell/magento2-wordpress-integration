@@ -36,7 +36,7 @@ class FishPig_Theme
 		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
 		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
 
-		if ((int)$this->getMagentoData('version') === 2) {
+		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
 			
 			$this->initRelatedProducts();
@@ -155,25 +155,38 @@ class FishPig_Theme
 	 */
 	public function onActionWidgetsInit()
 	{
-		register_sidebar(array(
-			'name' => __( 'Left Sidebar', 'fishpig' ),
-			'id' => 'sidebar-1',
-			'description' => 'Add widgets here to appear in your left Magento sidebar.',
-			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-			'after_widget' => '</aside>',
-			'before_title' => '<h2 class="widget-title">',
-			'after_title' => '</h2>',
-		));
-		
-		register_sidebar(array(
-			'name' => __( 'Right Sidebar', 'fishpig' ),
-			'id' => 'sidebar-2',
-			'description' => 'Add widgets here to appear in your right Magento sidebar.',
-			'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-			'after_widget' => '</aside>',
-			'before_title' => '<h2 class="widget-title">',
-			'after_title' => '</h2>',
-		));
+		if ($this->isMagento1()) {
+			register_sidebar(array(
+				'name' => __( 'Main Sidebar', 'fishpig' ),
+				'id' => 'sidebar-1',
+				'description' => 'Add widgets here to appear in your left Magento sidebar.',
+				'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+				'after_widget' => '</aside>',
+				'before_title' => '<h2 class="widget-title">',
+				'after_title' => '</h2>',
+			));
+			
+			register_sidebar(array(
+				'name' => __( 'Right Sidebar', 'fishpig' ),
+				'id' => 'sidebar-2',
+				'description' => 'Add widgets here to appear in your right Magento sidebar.',
+				'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+				'after_widget' => '</aside>',
+				'before_title' => '<h2 class="widget-title">',
+				'after_title' => '</h2>',
+			));
+		}
+		else {
+			register_sidebar(array(
+				'name' => __( 'Main Sidebar', 'fishpig' ),
+				'id' => 'sidebar-main',
+				'description' => 'Add widgets here to appear in your left Magento sidebar.',
+				'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+				'after_widget' => '</aside>',
+				'before_title' => '<h2 class="widget-title">',
+				'after_title' => '</h2>',
+			));
+		}
 	}
 
 	/*
@@ -340,6 +353,26 @@ class FishPig_Theme
 				<?php
 			}
 		);
+	}
+	
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
+	public function isMagento1()
+	{
+		return !$this->isMagento2();
+	}
+
+	/*
+	 *
+	 *
+	 * @return bool
+	 */
+	public function isMagento2()
+	{
+		return (int)$this->getMagentoData('version') === 2;
 	}
 }
 
