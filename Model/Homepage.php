@@ -135,4 +135,25 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
 	{
 		return $this;
 	}
+	
+	/*
+	 *
+	 * @return string
+	 */
+	public function getRealHomepageUrl()
+	{
+		if (!$this->hasRealHomepageUrl()) {
+			$this->setRealHomepageUrl($this->getUrl());
+			
+			if ($this->getFrontPageId()) {
+				$page = $this->factory->create('FishPig\WordPress\Model\Post')->setTaxonomy('page')->load($this->getFrontPageId());
+	
+				if ($page->getId()) {
+					$this->setRealHomepageUrl($page->getUrl());
+				}
+			}
+		}
+		
+		return $this->_getData('real_homepage_url');
+	}
 }
