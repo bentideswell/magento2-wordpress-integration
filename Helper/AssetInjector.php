@@ -107,7 +107,7 @@ class AssetInjector
 
 		// Remove duplicate assets
 		$assets = array_unique($assets);
-		
+
 		// Remove any JS/CSS that is in $inline from $assets to prevent duplication
 		if (count($inline) > 0) {
 			foreach($inline as $asset) {
@@ -267,7 +267,23 @@ class AssetInjector
 			
 			foreach($scripts as $skey => $script) {
 				$tabs = str_repeat("	", $level);
-				
+
+        // This isn't ready yet
+				if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+          $inlineJsExternalFile = $this->directoryList->getPath('media') . '/js/inex-' . md5($script) . '.js';
+          
+          // Remove the wrapping script tags
+          $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
+          
+          // Save the JS in the external file
+          file_put_contents($inlineJsExternalFile, $script);
+          
+          $inlineJsExternalUrl = $this->storeManager->getStore()
+            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($inlineJsExternalFile);
+          
+          $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
+        }				
+        
 				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
 					$originalScriptUrl = $matches[1];
 					
@@ -382,7 +398,7 @@ class AssetInjector
 			return $newScriptUrl;
 		}
 			
-		$scriptContent = file_get_contents($localScriptFile);
+		$scriptContent = file_get_contents(urldecode($localScriptFile));
 		$scriptContent = $this->_fixDomReady($scriptContent);
 
 		// Check whether the script supports AMD
