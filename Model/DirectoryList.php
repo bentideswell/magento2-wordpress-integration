@@ -62,11 +62,11 @@ class DirectoryList
 			}
 
 			if (substr($path, 0, 1) !== '/') {
-				if (is_dir(BP . '/' . $path)) {
-					$path = BP . '/' . $path;
-				}
-				else if (is_dir(BP . '/pub/' . $path)) {
+        if (is_dir(BP . '/pub/' . $path)) {
 					$path = BP . '/pub/' . $path;
+				}
+				else if (is_dir(BP . '/' . $path)) {
+					$path = BP . '/' . $path;
 				}
 			}
 			
