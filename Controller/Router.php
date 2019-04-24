@@ -236,13 +236,21 @@ class Router implements RouterInterface
 		$homepage = $this->factory->get('Homepage');
 		
 		if (!$uri) {
-			if ($postId = (int)$this->request->getParam('p')) {
-				$keys = strtolower(implode('-', array_keys($this->request->getParams())));
-			
-				if (strpos($keys, 'preview') !== false) {
-					return $this->addRoute('', '*/post/view', ['id' => $postId]);
-				}
-			}
+  		$keys = ['page_id', 'post_id', 'p'];
+  		
+  		foreach($keys as $key) {
+    		if ($postId = (int)$this->request->getParam($key)) {
+      		break;
+    		}
+  		}
+  		
+  		if ($postId) {
+    		$paramKeys = strtolower(implode('-', array_keys($this->request->getParams())));
+    		
+    		if (strpos($paramKeys, 'preview') !== false || strpos($paramKeys, 'vc_editable') !== false) {
+          return $this->addRoute('', '*/post/view', ['id' => $postId]);
+    		}
+  		}
 		}
 		
 		if ($frontPageId = $homepage->getFrontPageId()) {

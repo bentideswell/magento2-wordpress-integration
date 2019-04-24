@@ -1,3 +1,6 @@
+24/04/2019 - 2.0.7.14
+- Added fix for WPBakery when page/post is empty.
+
 16/04/2019 - 2.0.7.12
 - Modified inline JS in asset injector. This has been moved to an external file.
 
