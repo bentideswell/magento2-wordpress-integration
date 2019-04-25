@@ -1,3 +1,6 @@
+25/04/2019 - 2.0.7.15
+- Improved post preview functionality
+
 24/04/2019 - 2.0.7.14
 - Added fix for WPBakery when page/post is empty.
 
