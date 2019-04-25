@@ -268,19 +268,21 @@ class AssetInjector
 			foreach($scripts as $skey => $script) {
 				$tabs = str_repeat("	", $level);
 
-        // This isn't ready yet
 				if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
           $inlineJsExternalFile = $this->directoryList->getPath('media') . '/js/inex-' . md5($script) . '.js';
+          
+          $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
           
           // Remove the wrapping script tags
           $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
           
           // Save the JS in the external file
           file_put_contents($inlineJsExternalFile, $script);
+          file_put_contents($inlineJsExternalFileMin, $script);
           
           $inlineJsExternalUrl = $this->storeManager->getStore()
             ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($inlineJsExternalFile);
-          
+
           $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
         }				
         
