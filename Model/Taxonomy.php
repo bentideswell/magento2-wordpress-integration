@@ -133,7 +133,7 @@ class Taxonomy extends AbstractResourcelessModel/* implements ViewableInterface*
 		$slug = trim($this->getData('rewrite/slug'), '/');
 		
 		if ($this->withFront() && ($front = $this->url->getFront())) {
-			$slug = $front . '/' . $slug;
+			$slug = rtrim($front . '/' . $slug, '/');
 		}
 
 		return $slug;

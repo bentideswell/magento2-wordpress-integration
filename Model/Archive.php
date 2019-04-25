@@ -88,7 +88,7 @@ class Archive extends AbstractModel implements ViewableInterface
 	 */
 	public function getUrl()
 	{
-		return $this->url->getUrl($this->getId() . '/');
+		return $this->url->getUrlWithFront($this->getId() . '/');
 	}
 	
 	/*

@@ -89,7 +89,7 @@ class User extends AbstractMeta implements ViewableInterface
 	public function getUrl()
 	{
 		if (!$this->hasUrl()) {
-			$this->setUrl($this->url->getUrl('author/' . urlencode($this->getUserNicename()) . '/'));
+			$this->setUrl($this->url->getUrlWithFront('author/' . urlencode($this->getUserNicename()) . '/'));
 		}
 		
 		return $this->_getData('url');

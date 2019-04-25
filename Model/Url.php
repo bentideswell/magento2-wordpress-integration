@@ -141,7 +141,22 @@ class Url
 		
 		return $url;
 	}
-	
+
+	/*
+	 * Generate a WordPress frontend URL with the Front var in it
+	 *
+	 * @param string $uri = ''
+	 * @return string
+	  */
+	public function getUrlWithFront($uri = '')
+	{
+  	if ($front = $this->getFront()) {
+    	$uri = ltrim($front . '/' . $uri, '/');
+  	}
+
+    return $this->getUrl($uri);
+	}
+
 	/*
 	 * Determine whether to use a trailing slash on URLs
 	 *

@@ -271,11 +271,15 @@ class Router implements RouterInterface
 	 */	
 	protected function _getSimpleRoutes($uri = '')
 	{
-		$this->addRoute(array('/^author\/([^\/]{1,})$/' => array('author')), '*/user/view');
-		$this->addRoute(array('/^([1-2]{1}[0-9]{3})$/' => array('year')), '*/archive/view');
-		$this->addRoute(array('/^([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => array('year', 'month')), '*/archive/view');
-		$this->addRoute(array('/^([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})\/([0-3]{1}[0-9]{1})$/' => array('year', 'month', 'day')), '*/archive/view');
-		$this->addRoute(array('/^search\/(.*)$/' => array('s')), '*/search/view');
+		if ($front = $this->url->getFront()) {
+			$front .= '\/';
+		}
+
+		$this->addRoute(array('/^' . $front . 'author\/([^\/]{1,})$/' => array('author')), '*/user/view');
+		$this->addRoute(array('/^' . $front . '([1-2]{1}[0-9]{3})$/' => array('year')), '*/archive/view');
+		$this->addRoute(array('/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => array('year', 'month')), '*/archive/view');
+		$this->addRoute(array('/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})\/([0-3]{1}[0-9]{1})$/' => array('year', 'month', 'day')), '*/archive/view');
+		$this->addRoute(array('/^' . $front . 'search\/(.*)$/' => array('s')), '*/search/view');
 		$this->addRoute('search', '*/search/index', array('redirect_broken_url' => 1)); # Fix broken search URLs
 #		$this->addRoute('/^index.php/i', '*/index/forward');
 #		$this->addRoute('/^wp-content\/(.*)/i', '*/index/forwardFile');
