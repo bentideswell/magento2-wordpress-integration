@@ -90,6 +90,7 @@ class AssetInjector
 		
 		$assets = [];
 		$inline = [];
+		$metaLinks = [];
 		
 		// Get assets from plugins
 		foreach($shortcodes as $class => $shortcodeInstance) {
@@ -147,6 +148,18 @@ class AssetInjector
 			return false;
 		}
 
+		// Get Head Meta and Link tags
+		foreach($shortcodes as $class => $shortcodeInstance) {
+			if (method_exists($shortcodeInstance, 'getMetaAndLinkTags') && ($buffer = $shortcodeInstance->getMetaAndLinkTags($bodyHtml))) {
+				$metaLinks = array_merge($inline, $buffer);
+			}
+		}
+    
+    // IF we have any meta or link tags, add them into the head
+    if ($metaLinks) {
+      $bodyHtml = str_replace('</head>', implode("\n", $metaLinks) . "\n</head>", $bodyHtml);
+    }
+		
 		// Now let's build the requireJS from $assets
 		$baseUrl = $this->wpUrl->getSiteurl();
 		$jsTemplate = '<script type="text/javascript" src="%s"></script>';
