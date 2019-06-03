@@ -223,6 +223,12 @@ class AssetInjector
 				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
 					$originalScriptUrl = $matches[1];
 					
+					// Ensure jQuery migrate isn't included multiple times
+					if (strpos($originalScriptUrl, $this->getJqueryMigrateUrl()) === 0) {
+						unset($scripts[$skey]);
+						continue;
+					}
+					
 					// This is needed to fix ../ in URLs
 					$realPathUrl = $originalScriptUrl;
 
@@ -265,9 +271,7 @@ class AssetInjector
 			}
 
 			// Used to set paths for each JS file in requireJs
-			$requireJsPaths = array(
-				'jquery-migrate' => $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js',
-			);
+			$requireJsPaths = ['jquery-migrate' => $this->getJqueryMigrateUrl()];
 			
 			// JS Template for requireJs. This changes through foreach below
 			$requireJsTemplate = "require(['jquery'], function(jQuery) {
@@ -626,4 +630,14 @@ class AssetInjector
 	{
 		return md5($this->moduleVersion . $s);
 	}
+	
+	/*
+   *
+   *
+   * @return string
+   */
+  public function getJqueryMigrateUrl()
+  {
+    return $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js';
+  }
 }

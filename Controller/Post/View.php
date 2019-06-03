@@ -49,31 +49,38 @@ class View extends Action
   {
     if ($entity = $this->_getEntity()) {
       if ($entity->isFrontPage()) {
+
         if ((int)$this->getRequest()->getParam('is_front') === 0) {
           return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($this->url->getHomeUrl());
         }
-        else {
-          // Request is static homepage (page) with a preview set (maybe visual editor)
-          foreach(['p', 'page_id', 'preview_id'] as $paramKey) {
-            if ($previewId = (int)$this->getRequest()->getParam($paramKey)) {
-              $previewPost = $this->factory->create('Post')->load($previewId);
+        else if (strpos($this->_url->getCurrentUrl(), 'is_front/1') !== false) {
+          $realUrl = $entity->getUrl();
+          
+          if (strpos($realUrl, 'is_front/1') === false) {
+            return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($realUrl);
+          }
+        }
+
+        // Request is static homepage (page) with a preview set (maybe visual editor)
+        foreach(['p', 'page_id', 'preview_id'] as $paramKey) {
+          if ($previewId = (int)$this->getRequest()->getParam($paramKey)) {
+            $previewPost = $this->factory->create('Post')->load($previewId);
+            
+            if ($previewPost->getId() && !$previewPost->isPublished()) {
+              $this->getRequest()->setParam('preview_id', $previewPost->getId());
+  
+              $this->registry->unregister($previewPost::ENTITY);
               
-              if ($previewPost->getId() && !$previewPost->isPublished()) {
-                $this->getRequest()->setParam('preview_id', $previewPost->getId());
-    
-                $this->registry->unregister($previewPost::ENTITY);
-                
-                return $this->resultFactory
-                  ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-                    ->setModule('wordpress')
-                    ->setController('post')
-                    ->forward('preview');
-              }
+              return $this->resultFactory
+                ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+                  ->setModule('wordpress')
+                  ->setController('post')
+                  ->forward('preview');
             }
           }
         }
       }
-      
+
       if ($entity->getPostStatus() === 'private' && !$this->wpContext->getCustomerSession()->isLoggedIn()) {
         return $this->_getNoRouteForward();
       }
@@ -178,6 +185,10 @@ class View extends Action
       }
     }
 
+    if ($post->getParentId()) {
+      $layoutHandles[] = 'wordpress_' . $postType . '_view_parent_' . $post->getParentId();
+    }
+    
     return array_merge(parent::getLayoutHandles(), $layoutHandles);
   }
 }
