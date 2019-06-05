@@ -33,6 +33,10 @@ class Autop extends AbstractHelper
 	 */
 	public function addParagraphTagsToString($string)
 	{
+    if (strpos((string)$string, '<!-- wp:' ) !== false) {
+      return $string;
+    }
+  		
 		if ($this->_getFunctionFromWordPress('wpautop', 'wp-includes' . DIRECTORY_SEPARATOR . 'formatting.php', array(
 			'wpautop',
 			'wp_replace_in_html_tags',

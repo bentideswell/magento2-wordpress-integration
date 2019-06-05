@@ -1,3 +1,6 @@
+05/06/2019 - 2.0.7.20
+- Removed wpautop if content has blocks
+
 03/06/2019 - 2.0.7.19
 - Removed multiple jQuery Migrate instances
 - Added redirect for URLs containing is_front/1
