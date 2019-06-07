@@ -35,7 +35,8 @@ class FishPig_Theme
 #		add_filter('preview_post_link',  array($this, 'onFilterPreviewPostLink'), 10, 2);
 		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
 		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
-
+    add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
+    
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
 			
@@ -284,6 +285,21 @@ class FishPig_Theme
 		}
 		
 		return $status_header;
+	}
+
+  /*
+   *
+   *
+   * @param  $headers array
+   * @return array
+   */	
+	public function onFilterWPHeaders($headers)
+	{
+  	if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'text/html') !== false) {
+    	unset($headers['Content-Type']);
+    }
+    
+    return $headers;
 	}
 
 	/*
