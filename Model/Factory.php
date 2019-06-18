@@ -64,17 +64,19 @@ class Factory
 			return false;
 		}
 
-		if (strpos($type, 'FishPig') === 0) {
-			return $type;
-		}
+		if (strpos($type, 'FishPig') !== 0) {
+  		$type   = trim($type, '\\');
+  		$prefix = __NAMESPACE__ . '\\';
+  		
+  		if (strpos($type, '\\') > 0) {
+  			$prefix = 'FishPig\WordPress\\';
+  		}
 
-		$type   = trim($type, '\\');
-		$prefix = __NAMESPACE__ . '\\';
-		
-		if (strpos($type, '\\') > 0) {
-			$prefix = 'FishPig\WordPress\\';
-		}
+      $type = $prefix . $type;
+    }
+    
+    
 
-		return $prefix . $type;
+		return class_exists($type) ? $type : false;
 	}
 }

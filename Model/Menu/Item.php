@@ -110,7 +110,7 @@ class Item extends Post
 					else {
 						$object = $this->factory->create('FishPig\WordPress\Model\\' . ucwords($this->getObjectType()));
 					}
-				
+
 					if ($object && $object->setSkipObjectCache(true)->load($menuObjectId)->getId()) {
 						$this->setObject($object);
 					}

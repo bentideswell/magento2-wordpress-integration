@@ -1,3 +1,6 @@
+18/06/2019 - 2.0.7.23
+- Improved Factory to check class exists before creating.
+
 07/06/2019 - 2.0.7.22
 - Updated WordPress FishPig theme to 3.0.0.6
 
