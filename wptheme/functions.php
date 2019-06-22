@@ -36,7 +36,8 @@ class FishPig_Theme
 		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
 		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
     add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
-    
+    add_action('wp_footer',          array($this, 'onActionWPFooter'), 12);
+
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
 			
@@ -188,6 +189,11 @@ class FishPig_Theme
 				'after_title' => '</h2>',
 			));
 		}
+		
+
+    global $wp_widget_factory;
+    
+    remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'));
 	}
 
 	/*
@@ -370,7 +376,24 @@ class FishPig_Theme
 			}
 		);
 	}
-	
+
+	/*
+   *
+   *
+   *
+   */
+	public function onActionWPFooter()
+	{
+    wp_deregister_script('wp-embed');
+    
+  	// Divi
+    if (isset($_GET['et_fb'])) {
+      wp_dequeue_style('wp-auth-check');
+      wp_dequeue_script('wp-auth-check');
+      remove_action('wp_print_footer_scripts', 'et_fb_output_wp_auth_check_html', 5);
+    }
+	}
+
 	/*
 	 *
 	 *

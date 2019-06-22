@@ -121,6 +121,7 @@ class AssetInjector
 		// Merge inline into assets
 		$assets = array_merge($assets, $inline);
 
+
 		if (count($assets) === 0) {
 			return false;
 		}
@@ -265,7 +266,12 @@ class AssetInjector
 					$scripts[$skey] = $this->_fixDomReady($script);
 				}
 			}
-
+    
+      // After processing, no scripts so return
+      if (count($scripts) === 0) {
+        return $bodyHtml; 
+      }
+      
 			if ($this->canMergeGroups()) {
 				$scripts = $this->_mergeGroups($scripts);
 			}
