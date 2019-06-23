@@ -268,92 +268,90 @@ class AssetInjector
 			}
     
       // After processing, no scripts so return
-      if (count($scripts) === 0) {
-        return $bodyHtml; 
-      }
-      
-			if ($this->canMergeGroups()) {
-				$scripts = $this->_mergeGroups($scripts);
-			}
-
-			// Used to set paths for each JS file in requireJs
-			$requireJsPaths = ['jquery-migrate' => $this->getJqueryMigrateUrl()];
-			
-			// JS Template for requireJs. This changes through foreach below
-			$requireJsTemplate = "require(['jquery'], function(jQuery) {
-	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
-		" . self::TMPL_TAG . "
-});				
-});";
-
-			$level = 2;
-			
-			foreach($scripts as $skey => $script) {
-				$tabs = str_repeat("	", $level);
-
-				if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-          $inlineJsExternalFile = $this->directoryList->getPath('media') . '/js/inex-' . md5($script) . '.js';
+      if (count($scripts) > 0) {
+  			if ($this->canMergeGroups()) {
+  				$scripts = $this->_mergeGroups($scripts);
+  			}
+  
+  			// Used to set paths for each JS file in requireJs
+  			$requireJsPaths = ['jquery-migrate' => $this->getJqueryMigrateUrl()];
+  			
+  			// JS Template for requireJs. This changes through foreach below
+  			$requireJsTemplate = "require(['jquery'], function(jQuery) {
+  	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
+  		" . self::TMPL_TAG . "
+  });				
+  });";
+  
+  			$level = 2;
+  			
+  			foreach($scripts as $skey => $script) {
+  				$tabs = str_repeat("	", $level);
+  
+  				if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+            $inlineJsExternalFile = $this->directoryList->getPath('media') . '/js/inex-' . md5($script) . '.js';
+            
+            $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
+            
+            // Remove the wrapping script tags
+            $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
+            
+            // Save the JS in the external file
+            file_put_contents($inlineJsExternalFile, $script);
+            file_put_contents($inlineJsExternalFileMin, $script);
+            
+            $inlineJsExternalUrl = $this->storeManager->getStore()
+              ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($inlineJsExternalFile);
+  
+            $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
+          }				
           
-          $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
-          
-          // Remove the wrapping script tags
-          $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
-          
-          // Save the JS in the external file
-          file_put_contents($inlineJsExternalFile, $script);
-          file_put_contents($inlineJsExternalFileMin, $script);
-          
-          $inlineJsExternalUrl = $this->storeManager->getStore()
-            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($inlineJsExternalFile);
-
-          $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
-        }				
-        
-				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-					$originalScriptUrl = $matches[1];
-					
-					$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-					$requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
-					
-					$requireJsTemplate = str_replace(
-						self::TMPL_TAG,
-						$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . $tabs . "});" . "\n",
-						$requireJsTemplate
-					);
-					
-					$level++;
-				}
-				else {
-					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
-				}
-			}
-	
-			// Remove final template variable placeholder
-			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
-
-			// Start of paths template
-			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
-
-			// Loop through paths, remove .js and set
-			foreach($requireJsPaths as $alias => $path) {
-				if (substr($path, -3) === '.js') {
-					$path = substr($path, 0, -3);
-				}
-				
-				if (strpos($path, '&#')) {
-					$path = html_entity_decode($path);
-				}
-
-				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
-			}
-				
-			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
-			
-			// Final JS including wrapping script tag
-			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
-
-			// Add the final requireJS code to the $content array
-			$content .= $requireJsFinal;
+  				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+  					$originalScriptUrl = $matches[1];
+  					
+  					$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
+  					$requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
+  					
+  					$requireJsTemplate = str_replace(
+  						self::TMPL_TAG,
+  						$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . $tabs . "});" . "\n",
+  						$requireJsTemplate
+  					);
+  					
+  					$level++;
+  				}
+  				else {
+  					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
+  				}
+  			}
+  	
+  			// Remove final template variable placeholder
+  			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
+  
+  			// Start of paths template
+  			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
+  
+  			// Loop through paths, remove .js and set
+  			foreach($requireJsPaths as $alias => $path) {
+  				if (substr($path, -3) === '.js') {
+  					$path = substr($path, 0, -3);
+  				}
+  				
+  				if (strpos($path, '&#')) {
+  					$path = html_entity_decode($path);
+  				}
+  
+  				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
+  			}
+  				
+  			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
+  			
+  			// Final JS including wrapping script tag
+  			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
+  
+  			// Add the final requireJS code to the $content array
+  			$content .= $requireJsFinal;
+  		}
 		}
 
 		// Add in the JS templates
@@ -361,8 +359,10 @@ class AssetInjector
 			$content = implode(PHP_EOL, $scriptsStatic) . $content;
 		}
 		
-		// Fingers crossed and let's go!
-		$bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
+    if ($content) {
+  		// Fingers crossed and let's go!
+      $bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
+    }
 		
 		return $bodyHtml;
 	}
