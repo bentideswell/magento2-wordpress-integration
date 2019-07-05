@@ -1,3 +1,6 @@
+05/07/2019 - 2.0.7.27
+- Improved theme auto updating
+
 22/06/2019 - 2.0.7.24
 - Cleaned up asset injector
 

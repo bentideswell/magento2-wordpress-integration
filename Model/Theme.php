@@ -158,7 +158,6 @@ class Theme
 
 						// Don't allow symlinks (below may cover this, but just to be sure)
 						if (is_link($sourceFile)) {
-
 							continue;
 						}
 						
@@ -167,14 +166,14 @@ class Theme
 							continue;
 						}
 
-						if (!$this->isFileWriteable($targetFile)) {
-							IntegrationException::throwException('Unable to install/upgrade the FishPig WordPress theme due to permissions. The file that triggered the error is ' . $targetFile);
-						}
-						
 						$sourceData = file_get_contents($sourceFile);
 						$targetData = file_exists($targetFile) ? file_get_contents($targetFile) : '';
 						
 						if ($sourceData !== $targetData) {
+  						if (!$this->isFileWriteable($targetFile)) {
+  							IntegrationException::throwException('Unable to install/upgrade the FishPig WordPress theme due to permissions. The file that triggered the error is ' . $targetFile);
+  						}
+  						
 							file_put_contents($targetFile, $sourceData);
 						}
 					}
