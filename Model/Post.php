@@ -409,12 +409,20 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getContent()
 	{
+  	$content = $this->getData('post_content');
+  	
+  	if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
+    	if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
+      	return $renderedContent;
+      }
+  	}
+
 		$key = '__processed_post_content';
 		
 		if (!$this->hasData($key)) {
-			$postContent = $this->formatContentString($this->_getData('post_content'));
+			$content = $this->formatContentString($content);
 
-			$this->setData($key, $postContent);
+			$this->setData($key, $content);
 		}
 		
 		return $this->getData($key);

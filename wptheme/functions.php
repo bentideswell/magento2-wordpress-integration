@@ -37,7 +37,8 @@ class FishPig_Theme
 		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
     add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
     add_action('wp_footer',          array($this, 'onActionWPFooter'), 12);
-
+		add_action('save_post',          array($this, 'preRenderPostContent'));
+		
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
 			
@@ -216,6 +217,31 @@ class FishPig_Theme
 		return is_404() ? false : $redirect_url;
 	}
 
+	/*
+	 *
+	 *
+	 *
+	 */
+	public function preRenderPostContent($post_id)
+	{
+  	try {
+    	$content = get_the_content(null, null, $post_id);
+    	
+    	if (function_exists('do_blocks')) {
+      	$content = do_blocks($content);
+    	}
+
+    	if (!empty($GLOBALS['wp_embed'])) {
+        $content = $GLOBALS['wp_embed']->autoembed($content);
+      }
+          
+      update_post_meta($post_id, '_post_content_rendered', $content);
+    }
+    catch (Exception $e) {
+      
+    }
+	}
+	
 	/*
 	 *
 	 *

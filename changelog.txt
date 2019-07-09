@@ -1,3 +1,6 @@
+09/07/2019 - 2.0.7.29
+- Added support for core WP blocks.
+
 09/07/2019 - 2.0.7.27
 - Added logging to AbstractBlock. This is stored in var/log/wordpress.log
 - Added price to product shortcode (requires Shortcodes & Widgets add-on module)
