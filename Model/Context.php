@@ -18,6 +18,7 @@ use Magento\Framework\View\Layout;
 use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Request\Http as Request;
 use Magento\Store\Model\StoreManagerInterface;
+use FishPig\WordPress\Model\Logger;
 
 class Context
 {
@@ -105,6 +106,11 @@ class Context
 	 */
 	protected $storeManager;
 	
+	/**
+   * @var Logger
+   */
+  protected $logger;
+	
 	/*
 	 *
 	 *
@@ -123,7 +129,8 @@ class Context
 		Layout $layout,
 		CustomerSession $customerSession,
 		Request $request,
-		StoreManagerInterface $storeManager
+		StoreManagerInterface $storeManager,
+		Logger $logger
 	)
 	{
 		$this->resourceConnection = $resourceConnection;
@@ -139,6 +146,7 @@ class Context
 		$this->customerSession    = $customerSession;
 		$this->request            = $request;
 		$this->storeManager       = $storeManager;
+		$this->logger             = $logger;
 	}
 
 	/*
@@ -270,4 +278,14 @@ class Context
 	{
 		return $this->storeManager;
 	}
+	
+	/*
+   *
+   *
+   * @return Logger
+   */
+  public function getLogger()
+  {
+    return $this->logger;
+  }
 }

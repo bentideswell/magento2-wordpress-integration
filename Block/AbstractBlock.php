@@ -58,6 +58,7 @@ abstract class AbstractBlock extends Template
 		$this->registry         = $wpContext->getRegistry();
 		$this->url              = $wpContext->getUrl();
 		$this->factory          = $wpContext->getFactory();
+		
 
     parent::__construct($context, $data);
   }
@@ -90,5 +91,21 @@ abstract class AbstractBlock extends Template
   public function getFactory()
   {
 	  return $this->factory;
+  }
+  
+  /*
+   * Catch and log any excep§tions to var/log/wordpress.log
+   *
+   */
+  public function toHtml()
+  {
+    try {
+      return parent::toHtml();
+    }
+    catch (\Exception $e) {
+      $this->wpContext->error($e);
+      
+      throw $e;
+    }
   }
 }
