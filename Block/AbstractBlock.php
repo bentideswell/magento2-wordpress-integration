@@ -103,7 +103,7 @@ abstract class AbstractBlock extends Template
       return parent::toHtml();
     }
     catch (\Exception $e) {
-      $this->wpContext->error($e);
+      $this->wpContext->getLogger()->error($e);
       
       throw $e;
     }
