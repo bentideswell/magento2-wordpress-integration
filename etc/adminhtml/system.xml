@@ -29,6 +29,14 @@
           <comment>If Yes, Blog URL is displayed without Magento store code.</comment>
         </field>
       </group>
+      <group id="xmlsitemap" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+        <label>XML Sitemap</label>
+        <comment>Links from your integrated WordPress blog will be automatically added to your Magento XML sitemap.</comment>
+        <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+          <label>Enabled</label>
+          <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+        </field>
+      </group>
       <group id="addon" sortOrder="9999" showInDefault="1">
 	      <label>Add-On Modules</label>
       </group>

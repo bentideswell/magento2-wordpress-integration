@@ -8,6 +8,9 @@
 				<theme_integration>1</theme_integration>
 				<ignore_store_code>0</ignore_store_code>
 			</setup>
+			<xmlsitemap>
+  			<enabled>1</enabled>
+			</xmlsitemap>
 		</wordpress>
 	</default>
 </config>
