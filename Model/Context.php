@@ -19,6 +19,7 @@ use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\App\Request\Http as Request;
 use Magento\Store\Model\StoreManagerInterface;
 use FishPig\WordPress\Model\Logger;
+use FishPig\WordPress\Model\DirectoryList;
 
 class Context
 {
@@ -111,6 +112,11 @@ class Context
    */
   protected $logger;
 	
+	/**
+   * @var DirectoryList
+   */
+  protected $directoryList;
+  
 	/*
 	 *
 	 *
@@ -130,7 +136,8 @@ class Context
 		CustomerSession $customerSession,
 		Request $request,
 		StoreManagerInterface $storeManager,
-		Logger $logger
+		Logger $logger,
+		DirectoryList $directoryList
 	)
 	{
 		$this->resourceConnection = $resourceConnection;
@@ -147,6 +154,7 @@ class Context
 		$this->request            = $request;
 		$this->storeManager       = $storeManager;
 		$this->logger             = $logger;
+		$this->directoryList      = $directoryList;
 	}
 
 	/*
@@ -287,5 +295,14 @@ class Context
   public function getLogger()
   {
     return $this->logger;
+  }
+  
+  /**
+   *
+   * @return DirectoryList
+   */
+  public function getDirectoryList()
+  {
+    return $this->directoryList;
   }
 }

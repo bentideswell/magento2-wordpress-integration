@@ -223,4 +223,33 @@ class Image extends AbstractAttachmentModel
 	{
 		return false;
 	}
+	
+	/**
+	 * @return bool
+	 */
+	public function exists()
+	{
+  	return ($localFile = $this->getLocalFile()) && is_file($localFile);
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLocalFile()
+	{
+    return $this->getFile() 
+      ? $this->wpContext->getDirectoryList()->getWpContentDir() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getFile() 
+      : false;
+	}
+
+	/**
+	 * @return ImageResizer
+	 */
+	public function getResizer()
+	{
+  	return \Magento\Framework\App\ObjectManager::getInstance()
+  	  ->get('FishPig\WordPress\Model\ImageResizerFactory')
+  	    ->create()
+  	      ->setImage($this->getLocalFile());
+	}
 }

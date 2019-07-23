@@ -1,3 +1,6 @@
+23/07/2019 - 2.0.7.33
+- Added ImageResizer model
+
 22/07/2019 - 2.0.7.32
 - Added config option to enable/disable the XML sitemap integration between Magento and WordPress. This option is enabled by default. This feature only works for Magento 2.3 and above.
 
