@@ -875,4 +875,26 @@ class Post extends AbstractMeta implements ViewableInterface
 		
 		return $this;
 	}
+	
+	/**
+   *
+   *
+   */
+	public function applyPageConfigData($pageConfig)
+	{
+  	parent::applyPageConfigData($pageConfig);
+  	
+  	if (!$pageConfig) {
+    	return $this;
+  	}
+  	
+  	if ($this->isFrontPage()) {
+      $pageConfig->addBodyClass('wordpress-frontpage');
+  	}
+  	else if ($this->isPageForPosts()) {
+      $pageConfig->addBodyClass('wordpress-post-list');    	
+  	}
+  	
+  	return $this;
+	}
 }

@@ -1,3 +1,5 @@
+28/07/2019 - 2.0.7.34
+- Added classes for homepage. wordpress-frontpage and wordpress-post-list
 23/07/2019 - 2.0.7.33
 - Added ImageResizer model
 

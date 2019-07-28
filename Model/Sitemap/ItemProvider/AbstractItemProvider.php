@@ -63,7 +63,6 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 			return $items;
 		}
 		catch (\Exception $e) {
-  		exit($e);
 			$this->emulation->stopEnvironmentEmulation();
 			
 			throw $e;

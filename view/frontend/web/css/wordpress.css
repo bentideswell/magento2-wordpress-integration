@@ -14,21 +14,20 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 
 /* General Post Styles */
 .post-list li:after { content: ' '; clear: both; display: block; }
+.post-list li { display: inline-block; width: 48%; vertical-align: top; }
 .post-entry { overflow: hidden; margin: 0 0 20px; }
-.post-date { margin: 0 0 20px; }
-.post-image { float: left; margin-right: 10px; }
+.post-image { margin: 0 0 10px; }
 .post-meta { clear: both; margin: 0 0 20px; text-align: left; }
 .post-meta .post-meta-item { display: inline-block; margin-right: 10px; }
 .post-readmore { margin-top: 10px; }
 
 .post-entry iframe { max-width: 100%; }
+
 /* Comments */
 .comment-list-item { margin: 0 0 20px; }
 .comment-list.children { margin-top: 20px; }
 .comment-image { float: left; margin: 0 10px 10px 0; }
-.comment-meta {}
 .comment-author { font-weight: bold; display: block; }
-.comment-date {}
 .comment-entry { clear: both; margin: 0 0 20px; }
 
 /* Widgets */
@@ -39,6 +38,5 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 .block-blog-categories ul.level1 { margin-top: 1rem; }
 
 .shortcode-product {}
-
 .shortcode-product .products { text-align: left; list-style: none; }
 .shortcode-product .products > li { display: inline-block; width: 24%; text-align: center; }

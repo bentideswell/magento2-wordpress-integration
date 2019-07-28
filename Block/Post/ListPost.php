@@ -77,13 +77,28 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	{
 		// Create post block
 		$postBlock = $this->getLayout()->createBlock('FishPig\WordPress\Block\Post')->setPost($post);
-			
+		
+		$vendors = [
+  		$this->getCustomBlogThemeVendor(),
+  		'FishPig_WordPress',
+		];
+
 		// First try post type specific template then fall back to default
-		$templatesToTry = [
-			'FishPig_WordPress::post/list/renderer/' . $post->getPostType() . '.phtml',
-			'FishPig_WordPress::post/list/renderer/default.phtml'
+		$templates = [
+  		'post/list/renderer/' . $post->getPostType() . '.phtml',
+  		'post/list/renderer/default.phtml',
 		];
 		
+		$templatesToTry = [];
+		
+    foreach($templates as $template) {
+  		foreach($vendors as $vendor) {
+    		if ($vendor) {
+          $templatesToTry[] = $vendor . '::' . $template;
+        }
+      }
+    }
+
 		foreach($templatesToTry as $templateToTry) {
 			if ($this->getTemplateFile($templateToTry)) {
 				$postBlock->setTemplate($templateToTry);
@@ -95,6 +110,15 @@ class ListPost extends \FishPig\WordPress\Block\Post
 		return $postBlock->toHtml();
 	}
 	
+	/*
+   *
+   *
+   */
+  public function getCustomBlogThemeVendor()
+  {
+    return false; 
+  }
+  
 	/*
 	 *
 	 *
