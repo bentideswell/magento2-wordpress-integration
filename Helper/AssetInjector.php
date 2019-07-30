@@ -121,7 +121,6 @@ class AssetInjector
 		// Merge inline into assets
 		$assets = array_merge($assets, $inline);
 
-
 		if (count($assets) === 0) {
 			return false;
 		}
@@ -155,6 +154,16 @@ class AssetInjector
 				$metaLinks = array_merge($inline, $buffer);
 			}
 		}
+    
+    // Extract <link tags from content
+    if (preg_match_all('/<link[^>]+>/', $content, $linkMatches)) {
+      foreach($linkMatches[0] as $linkMatch) {
+        $metaLinks[] = $linkMatch;
+        $content = str_replace($linkMatch, '', $content);
+      }
+    }
+    
+    $content = trim($content);
     
     // IF we have any meta or link tags, add them into the head
     if ($metaLinks) {
@@ -360,8 +369,7 @@ class AssetInjector
 		}
 		
     if ($content) {
-  		// Fingers crossed and let's go!
-      $bodyHtml = str_replace('</body>', $content . '</body>', $bodyHtml);
+      $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
     }
 		
 		return $bodyHtml;
