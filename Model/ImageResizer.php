@@ -49,7 +49,7 @@ class ImageResizer
    *
    */
   public function __construct(
-    DirectoryList $directoryList, 
+    DirectoryList $wpDirectoryList, 
     Filesystem $filesystem, 
     AdapterFactory $imageFactory, 
     StoreManagerInterface $storeManager
