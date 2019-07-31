@@ -1,3 +1,5 @@
+31/07/2019 - 2.0.7.37
+- Added fix for Cornerstone pagebuilder plugin. This requires the latest version of Shortcodes & Widgets
 30/07/2019 - 2.0.7.36
 - Improved CSS migration from WordPress. This is now embedded into the head so that it loads before the content. This stops the content from displaying without the CSS for a second.
 

@@ -12,6 +12,7 @@ use Magento\Framework\App\ActionFactory;
 use FishPig\WordPress\Model\IntegrationManager;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
+use Magento\Framework\Event\Manager as EventManager;
 
 /* Misc */
 use Magento\Framework\App\RequestInterface;
@@ -19,63 +20,58 @@ use FishPig\WordPress\Model\Integration\IntegrationException;
 
 class Router implements RouterInterface
 {
-  /*
-	 *
+  /**
    * @var ActionFactory
-   *
    */
   protected $actionFactory;
 
-	/*
-	 *
+	/**
 	 * @var IntegrationManager
-	 *
 	 */
 	protected $integrationManager;
 	
-	/*
-	 *
+	/**
 	 * @var Url
-	 *
 	 */
 	protected $url;
 	
-	/*
-	 *
+	/**
 	 * @var
-	 *
 	 */
 	protected $callbacks = [];
 	
-	/*
-	 *
+	/**
 	 * @var
-	 *
 	 */
 	protected $routes = [];
 	
-	/*
-	 *
+	/**
 	 * @var
-	 *
 	 */
 	protected $postResourceFactory;
 	
+	/**
+   * @var EventManager
+   */
+  protected $eventManager;
+  
   /*
 	 *
 	 *
    */
   public function __construct(
-         ActionFactory $actionFactory, 	
+    ActionFactory $actionFactory, 	
     IntegrationManager $integrationManager,
-                   Url $url,
-               Factory $factory
+    Url $url,
+    Factory $factory,
+    EventManager $eventManager
   )
   {
-    $this->actionFactory      = $actionFactory;
+    $this->actionFactory = $actionFactory;
     $this->integrationManager = $integrationManager;
-    $this->url                = $url;
-    $this->factory            = $factory;
+    $this->url = $url;
+    $this->factory = $factory;
+    $this->eventManager = $eventManager;
   }
 
   /*
@@ -95,6 +91,11 @@ class Router implements RouterInterface
 			return false;
 		}
 
+    $this->eventManager->dispatch(
+      'wordpress_router_match_before', 
+      ['router' => $this, 'blog_route' => $blogRoute, 'full_request_uri' => $fullRequestUri]
+    );
+    
 		if (!($requestUri = $this->getRouterRequestUri($request))) {
 			$this->addRouteCallback(array($this, '_getHomepageRoutes'));
 		}
