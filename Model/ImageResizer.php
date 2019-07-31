@@ -6,7 +6,6 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\DirectoryList;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Image\AdapterFactory;
 use Magento\Store\Model\StoreManagerInterface;
@@ -14,11 +13,6 @@ use FishPig\WordPress\Model\Image;
 
 class ImageResizer
 {
-  /**
-   * @var DirectoryList
-   */
-  protected $directoryList;
-  
   /**
    * @var Filesystem
    */
@@ -49,13 +43,11 @@ class ImageResizer
    *
    */
   public function __construct(
-    DirectoryList $wpDirectoryList, 
     Filesystem $filesystem, 
     AdapterFactory $imageFactory, 
     StoreManagerInterface $storeManager
   )
   {
-    $this->wpDirectoryList = $wpDirectoryList;
     $this->filesystem = $filesystem;
     $this->imageFactory = $imageFactory;
     $this->storeManager = $storeManager;
