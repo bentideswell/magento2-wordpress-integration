@@ -298,19 +298,20 @@ class AssetInjector
   				$tabs = str_repeat("	", $level);
   
   				if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-            $inlineJsExternalFile = $this->directoryList->getPath('media') . '/js/inex-' . md5($script) . '.js';
-            
+            $inlineJsExternalFile = $this->getBaseJsPath() . 'inex-' . md5($script) . '.js';
             $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
             
             // Remove the wrapping script tags
             $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
             
+            // Ensure that the static asset directory exists
+            $this->createStaticAssetDirectory();
+            
             // Save the JS in the external file
             file_put_contents($inlineJsExternalFile, $script);
             file_put_contents($inlineJsExternalFileMin, $script);
             
-            $inlineJsExternalUrl = $this->storeManager->getStore()
-              ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($inlineJsExternalFile);
+            $inlineJsExternalUrl = $this->getBaseJsUrl() . basename($inlineJsExternalFile);
   
             $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
           }				
@@ -422,8 +423,8 @@ class AssetInjector
 
 		$externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);		
 		$localScriptFile 	 = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
-		$newScriptFile	 	 = $this->directoryList->getPath('media') . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR . $this->_hashString($externalScriptUrlFull) . '.js';
-		$newScriptUrl 		 = $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
+		$newScriptFile	 	 = $this->getBaseJsPath() . $this->_hashString($externalScriptUrlFull) . '.js';
+		$newScriptUrl 		 = $this->getBaseJsUrl() . basename($newScriptFile);
 
 		if (!self::DEBUG && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
 			/* Debug */
@@ -447,8 +448,9 @@ class AssetInjector
 			$scriptContent = '/* ' . $externalScriptUrlFull . ' */' . PHP_EOL . $scriptContent;
 		}
 
-		@mkdir(dirname($newScriptFile));
-			
+    // Ensure that the static asset directory exists
+    $this->createStaticAssetDirectory();
+
 		// Only write data if new script doesn't exist or local file has been updated
 		file_put_contents($newScriptFile, $scriptContent);
 		file_put_contents(dirname($newScriptFile) . DIRECTORY_SEPARATOR . basename($newScriptFile, '.js') . '.min.js', $scriptContent);
@@ -645,13 +647,41 @@ class AssetInjector
 		return md5($this->moduleVersion . $s);
 	}
 	
-	/*
-   *
-   *
+	/**
    * @return string
    */
   public function getJqueryMigrateUrl()
   {
     return $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js';
+  }
+
+	/**
+   * @return string
+   */
+  protected function getBaseJsUrl()
+  {
+    return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_STATIC) . 'frontend/FishPig/WordPress/js/';
+  }
+
+	/**
+   * @return string
+   */
+  protected function getBaseJsPath()
+  {
+    return $this->directoryList->getPath('static') . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'FishPig' . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
+  }
+
+  /**
+   *
+   */
+  protected function createStaticAssetDirectory()
+  {
+    $assetDir = $this->getBaseJsPath();
+    
+    if (!is_dir($assetDir)) {
+      return @mkdir($assetDir, 0777, true) && is_dir($assetDir);
+    }
+
+    return true;
   }
 }
