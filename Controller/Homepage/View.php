@@ -76,7 +76,7 @@ class View extends Action
         } 
       }
     }
-    
-		return array_merge($handles, parent::getLayoutHandles());
+
+		return array_merge(parent::getLayoutHandles(), $handles);
 	}
 }

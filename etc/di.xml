@@ -47,7 +47,7 @@
 	<type name="FishPig\WordPress\Model\Theme">
 		<arguments>
 			<argument name="themeSourceModules" xsi:type="array">
-				<item name="FishPig_WordPress" xsi:type="string">styles.css</item>
+				<item name="FishPig_WordPress" xsi:type="string">style.css</item>
 			</argument>
 		</arguments>
 	</type>

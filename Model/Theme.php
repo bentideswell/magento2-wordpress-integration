@@ -135,7 +135,7 @@ class Theme
 					);
 				}
 			}
-			
+
 			foreach($sourceDirs as $sourceDir => $sourcePrimaryFilename) {
 				$sourcePrimaryFile = $sourceDir . '/' . $sourcePrimaryFilename;
 				$targetPrimaryFile = $targetDir . '/' . $sourcePrimaryFilename;
