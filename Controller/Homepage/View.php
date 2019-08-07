@@ -69,10 +69,12 @@ class View extends Action
 
       if ($page = $entity->getFrontStaticPage()) {
         if ($template = $page->getMetaValue('_wp_page_template')) {
-        	$templateName = str_replace('.php', '', $template);
-
-        	$handles[] = 'wordpress_post_view_' . $templateName;
-        	$handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
+          if ($template !== 'default') {
+          	$templateName = str_replace('.php', '', $template);
+  
+          	$handles[] = 'wordpress_post_view_' . $templateName;
+          	$handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
+          }
         } 
       }
     }
