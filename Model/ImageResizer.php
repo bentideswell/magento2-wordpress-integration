@@ -66,6 +66,10 @@ class ImageResizer
       $image = $image->getLocalFile();
     }  
   
+    if (!$image) {
+      throw new \Exception('Cannot create ' . __CLASS__ . ' as no image is set.');
+    }
+    
     $this->adapter = $this->imageFactory->create();
     
     $this->adapter->open($image);

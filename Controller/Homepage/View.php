@@ -62,10 +62,21 @@ class View extends Action
 	{
 		$handles = ['wordpress_homepage_view'];
 		
-		if (!$this->_getEntity()->getStaticFrontPageId()) {
-			$handles[] = 'wordpress_front_page';
-		}
-		
+		if ($entity = $this->_getEntity()) {
+  		if (!$entity->getStaticFrontPageId()) {
+  			$handles[] = 'wordpress_front_page';
+  		}
+
+      if ($page = $entity->getFrontStaticPage()) {
+        if ($template = $page->getMetaValue('_wp_page_template')) {
+        	$templateName = str_replace('.php', '', $template);
+
+        	$handles[] = 'wordpress_post_view_' . $templateName;
+        	$handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
+        } 
+      }
+    }
+    
 		return array_merge($handles, parent::getLayoutHandles());
 	}
 }
