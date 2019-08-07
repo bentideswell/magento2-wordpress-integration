@@ -16,7 +16,8 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 .post-list li:after { content: ' '; clear: both; display: block; }
 .post-list li { /*display: inline-block; width: 48%; vertical-align: top;*/ }
 .post-entry { overflow: hidden; margin: 0 0 20px; }
-.post-image { margin: 0 10px 10px; }
+.post-image { margin: 0 10px 10px 0; }
+.post-image a { display: inline-block; }
 .post-meta { clear: both; margin: 0 0 20px; text-align: left; }
 .post-meta .post-meta-item { display: inline-block; margin-right: 10px; }
 .post-readmore { margin-top: 10px; }
@@ -40,3 +41,8 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 .shortcode-product {}
 .shortcode-product .products { text-align: left; list-style: none; }
 .shortcode-product .products > li { display: inline-block; width: 24%; text-align: center; }
+
+
+/* Post List Grid */
+.post-list.grid {}
+.post-list.grid li { display: inline-block; width: 48%; vertical-align: top; margin-right: 1%; }

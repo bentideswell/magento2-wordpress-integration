@@ -8,7 +8,7 @@
 <?php $posts = $this->getPosts() ?>
 <?php if (count($posts) > 0): ?>
 	<div class="post-list-wrapper">
-		<ol class="post-list">
+		<ol class="post-list grid">
 			<?php foreach($posts as $post): ?>
 				<?php if ($renderedPostHtml = $this->renderPost($post)): ?>
 					<li class="item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?php echo $post->getPostFormat() ?>">
