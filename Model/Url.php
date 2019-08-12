@@ -79,7 +79,7 @@ class Url
 				str_ireplace(
 					'index.php',
 					'',
-					$store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK)
+					$store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK, false)
 				),
 				'/'
 			);
