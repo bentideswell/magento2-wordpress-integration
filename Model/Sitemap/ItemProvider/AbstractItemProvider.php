@@ -9,6 +9,8 @@ use FishPig\WordPress\Model\Factory;
 use Magento\Store\Model\App\Emulation;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use FishPig\WordPress\Helper\Core as CoreHelper;
+use FishPig\WordPress\Model\Network;
 
 abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 {	
@@ -31,12 +33,14 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 	 *
 	 *
 	 */
-	public function __construct(Factory $factory, Emulation $emulation, StoreManagerInterface $storeManager, ScopeConfigInterface $scopeConfig)
+	public function __construct(Factory $factory, Emulation $emulation, StoreManagerInterface $storeManager, ScopeConfigInterface $scopeConfig, CoreHelper $coreHelper, Network $network)
 	{
 		$this->emulation    = $emulation;
 		$this->factory      = $factory;
 		$this->storeManager = $storeManager;
     $this->scopeConfig  = $scopeConfig;
+    $this->coreHelper   = $coreHelper;
+    $this->network      = $network;
     
 		// OM required as SitemapItemInterfaceFactory is not present in Magento 2.2 and below so constructor injection breaks compilation
 		$this->itemFactory = \Magento\Framework\App\ObjectManager::getInstance()->create('Magento\Sitemap\Model\SitemapItemInterfaceFactory');
@@ -54,12 +58,26 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
   		
 			$this->emulation->startEnvironmentEmulation($storeId);
 
+      if ($this->coreHelper->getHelper()) {
+        $this->coreHelper->getHelper()->simulatedCallback(function($blogId) {
+          if ((int)$blogId !== (int)get_current_blog_id()) {
+            switch_to_blog($blogId);
+          }
+        }, [$this->network->getBlogId()]);
+      }
+      
       if ($this->isEnabledForStore($storeId)) {
   			$items = $this->_getItems($storeId);
   		}
 			
 			$this->emulation->stopEnvironmentEmulation();
 		
+      if ($this->coreHelper->getHelper()) {
+        $this->coreHelper->getHelper()->simulatedCallback(function() {
+          restore_current_blog();
+        });
+      }
+      
 			return $items;
 		}
 		catch (\Exception $e) {
