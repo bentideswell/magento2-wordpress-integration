@@ -11,6 +11,7 @@ use FishPig\WordPress\Model\WPConfig;
 use FishPig\WordPress\Model\Factory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class Url
 {
@@ -75,11 +76,18 @@ class Url
 		$storeId = (int)$store->getId();
 		
 		if (!isset($this->magentoUrl[$storeId])) {
+  		// Determine whether Magento uses secure or unsecure URL on frontend
+  		$useSecure = $this->scopeConfig->isSetFlag(
+  		  'web/secure/use_in_frontend',
+  		  ScopeInterface::SCOPE_STORE,
+  		  (int)$this->storeManager->getStore()->getId()
+  		);
+
 			$magentoUrl = rtrim(
 				str_ireplace(
 					'index.php',
 					'',
-					$store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK, false)
+					$store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK, $useSecure)
 				),
 				'/'
 			);
@@ -111,7 +119,7 @@ class Url
 	{
 		return (int)$this->scopeConfig->getValue(
 			'wordpress/setup/ignore_store_code', 
-			\Magento\Store\Model\ScopeInterface::SCOPE_STORE, 
+			ScopeInterface::SCOPE_STORE, 
 			(int)$this->storeManager->getStore()->getId()
 		) === 1;
 	}
