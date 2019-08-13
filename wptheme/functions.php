@@ -38,6 +38,7 @@ class FishPig_Theme
     add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
     add_action('wp_footer',          array($this, 'onActionWPFooter'), 12);
 		add_action('save_post',          array($this, 'preRenderPostContent'));
+		add_action('admin_init',         array($this, 'onAdminInit'));
 		
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
@@ -438,6 +439,34 @@ class FishPig_Theme
 	public function isMagento2()
 	{
 		return (int)$this->getMagentoData('version') === 2;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return $this
+	 */
+	public function onAdminInit()
+	{
+		register_setting( 'reading', 'custom_404_page_id', 'esc_attr' );
+		
+		add_settings_field(
+			'custom_404_page_id',
+			'<label for="custom_404_page_id">' . __( 'Custom Magento 404 Page' , 'custom_404_page_id' ) . '</label>',
+			(function() {
+        echo wp_dropdown_pages(array(
+  				'name' => 'custom_404_page_id',
+  				'echo' => 0,
+  				'show_option_none' => __( '&mdash; Select &mdash;' ),
+  				'option_none_value' => '0',
+  				'selected' => get_option( 'custom_404_page_id' ),
+        ));       
+#        echo '<p class="description">It is up to search engines to honor this request.</p>';
+			}),
+			'reading'
+		);
+		
+		return $this;
 	}
 }
 
