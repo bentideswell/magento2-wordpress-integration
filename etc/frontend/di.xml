@@ -18,15 +18,4 @@
     <plugin name="result-builtin-cache" sortOrder="50"/>
     <plugin name="result-varnish-cache" sortOrder="60"/>
 	</type>
-	<!-- Custom 404 Page -->
-  <type name="Magento\Framework\App\Router\NoRouteHandlerList">
-    <arguments>
-      <argument name="handlerClassesList" xsi:type="array">
-        <item name="FishPig_WordPress" xsi:type="array">
-          <item name="class" xsi:type="string">FishPig\WordPress\App\Router\NoRouteHandler</item>
-          <item name="sortOrder" xsi:type="string">70</item>
-        </item>
-      </argument>
-    </arguments>
-  </type>
 </config>
