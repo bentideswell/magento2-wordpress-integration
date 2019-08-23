@@ -50,6 +50,8 @@ class Addon extends Field
 			$configBlock->setModuleVersion($moduleInfo['setup_version']);
 		}
 		
+		$configBlock->setVersionUrl('https://api.fishpig.co.uk/v1/version/FishPig_' . $addonModule . '.json');
+
 		return $configBlock->render($element);
 	}
 
