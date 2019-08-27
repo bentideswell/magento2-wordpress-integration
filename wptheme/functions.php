@@ -117,6 +117,7 @@ class FishPig_Theme
 		remove_action( 'admin_print_styles', 'print_emoji_styles' );
 		
 		remove_filter('template_redirect', 'redirect_canonical');
+		remove_action('template_redirect', 'wp_old_slug_redirect');
 		
 		/* Remove wptexturize to fix shortcodes */
 		remove_filter('the_content', 'wptexturize');
