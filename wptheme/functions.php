@@ -449,6 +449,7 @@ class FishPig_Theme
 	 */
 	public function onAdminInit()
 	{
+  	/*
 		register_setting( 'reading', 'custom_404_page_id', 'esc_attr' );
 		
 		add_settings_field(
@@ -466,6 +467,7 @@ class FishPig_Theme
 			}),
 			'reading'
 		);
+		*/
 		
 		return $this;
 	}

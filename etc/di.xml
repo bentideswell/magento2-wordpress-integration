@@ -66,6 +66,7 @@
 		</arguments>
 	</type>
 	<!-- Custom 404 Page -->
+	<!--
   <type name="Magento\Framework\App\Router\NoRouteHandlerList">
     <arguments>
       <argument name="handlerClassesList" xsi:type="array">
@@ -76,4 +77,5 @@
       </argument>
     </arguments>
   </type>
+  -->
 </config>
