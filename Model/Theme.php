@@ -70,6 +70,11 @@ class Theme
 	 */
 	protected $themeSourceModules;
 	
+	/**
+   * @var array
+   */
+  protected $themeMods;
+  
 	/*
 	 *
 	 *
@@ -258,5 +263,33 @@ class Theme
 	protected function getModuleDir()
 	{
 		return dirname(__DIR__);
+	}
+	
+	/**
+   * @return mixed
+   */
+	public function getThemeMods($key = null)
+	{
+    if (!$this->isActive()) {
+      return false;
+    }
+    
+    if (!isset($this->themeMods)) {
+      $this->themeMods = [];
+
+      if ($themeMods = $this->optionManager->getOption('theme_mods_' . self::THEME_NAME)) {
+        $this->themeMods = @unserialize($themeMods);
+      }
+    }
+    
+    if ($this->themeMods) {
+      if ($key !== null) {
+        return isset($this->themeMods[$key]) ? $this->themeMods[$key] : false;
+      }
+      
+      return $this->themeMods;
+    }
+    
+    return false;
 	}
 }
