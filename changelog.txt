@@ -1,3 +1,6 @@
+03/09/2019 - 2.0.8.18
+- Improved AssetInjector efficiency by converting dependencies to Proxy classes.
+
 03/09/2019 - 2.0.8.17
 - Modified CSS inclusion in wordpress_default.xml
 

@@ -7,13 +7,13 @@
 namespace FishPig\WordPress\Helper;
 
 /* Constructor Args */
-use FishPig\WordPress\Model\IntegrationManager;
+use FishPig\WordPress\Model\IntegrationManager\Proxy as IntegrationManager;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\Module\ModuleListInterface;
-use FishPig\WordPress\Model\DirectoryList as WPDirectoryList;
-use FishPig\WordPress\Model\ShortcodeManager;
-use FishPig\WordPress\Model\Url as WordPressURL;
+use FishPig\WordPress\Model\DirectoryList\Proxy as WPDirectoryList;
+use FishPig\WordPress\Model\ShortcodeManager\Proxy as ShortcodeManager;
+use FishPig\WordPress\Model\Url\Proxy as WordPressURL;
 
 class AssetInjector
 {
