@@ -1,3 +1,6 @@
+12/09/2019 - 2.0.8.18
+- Updated WordPress FishPig theme to fix a redirect issue with Yoast.
+
 03/09/2019 - 2.0.8.18
 - Improved AssetInjector efficiency by converting dependencies to Proxy classes.
 

@@ -48,6 +48,11 @@ class FishPig_Theme
 		
 		$this->cleanOldFiles();
 		$this->includeLocalPhpFile();
+
+		// We have Yoast so lets disable some redirects
+    if (isset($GLOBALS['wpseo_rewrite'])) {
+      remove_filter('request', array($GLOBALS['wpseo_rewrite'], 'request'));
+    }
 	}
 
 	/*
