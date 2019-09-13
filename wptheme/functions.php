@@ -241,11 +241,18 @@ class FishPig_Theme
     	if (!empty($GLOBALS['wp_embed'])) {
         $content = $GLOBALS['wp_embed']->autoembed($content);
       }
-          
+      
+      // Auto include the related products shortcode
+      if (class_exists('FishPig_RelatedProducts')) {
+        if ((int)get_option('fprp_autoinclude', 1) === 1) {
+          $content .= '[related_products]';
+        }
+      }
+      
       update_post_meta($post_id, '_post_content_rendered', $content);
     }
     catch (Exception $e) {
-      
+
     }
 	}
 	

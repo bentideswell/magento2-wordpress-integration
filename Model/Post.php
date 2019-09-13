@@ -413,6 +413,10 @@ class Post extends AbstractMeta implements ViewableInterface
   	
   	if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
     	if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
+      	if (strpos($renderedContent, '[') !== false) {
+        	$renderedContent = $this->shortcodeManager->renderShortcode($renderedContent, $this);
+        }
+      	
       	return $renderedContent;
       }
   	}
