@@ -58,8 +58,10 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
   		
 			$this->emulation->startEnvironmentEmulation($storeId);
 
-      if ($this->coreHelper->getHelper()) {
-        $this->coreHelper->getHelper()->simulatedCallback(function($blogId) {
+      $isNetworkAndHaveCoreHelper = $this->network->isEnabled() && ($coreHelper = $this->coreHelper->getHelper());
+
+      if ($isNetworkAndHaveCoreHelper) {
+        $coreHelper->simulatedCallback(function($blogId) {
           if ((int)$blogId !== (int)get_current_blog_id()) {
             switch_to_blog($blogId);
           }
@@ -72,9 +74,11 @@ abstract class AbstractItemProvider/* implements ItemProviderInterface*/
 			
 			$this->emulation->stopEnvironmentEmulation();
 		
-      if ($this->coreHelper->getHelper()) {
-        $this->coreHelper->getHelper()->simulatedCallback(function() {
-          restore_current_blog();
+      if ($isNetworkAndHaveCoreHelper) {
+        $coreHelper->simulatedCallback(function() {
+          if (function_exists('restore_current_blog')) {
+            restore_current_blog();
+          }
         });
       }
       
