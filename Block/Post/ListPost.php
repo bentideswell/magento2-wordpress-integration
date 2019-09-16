@@ -98,6 +98,10 @@ class ListPost extends \FishPig\WordPress\Block\Post
         }
       }
     }
+    
+    if ($rendererTemplate = $this->getData('renderer_template')) {
+      array_unshift($templatesToTry, $rendererTemplate);
+    }
 
 		foreach($templatesToTry as $templateToTry) {
 			if ($this->getTemplateFile($templateToTry)) {
@@ -118,7 +122,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
   {
     return false; 
   }
-  
+
 	/*
 	 *
 	 *
@@ -128,7 +132,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 	{
 		if (!$this->getTemplate()) {
 			$this->setTemplate('FishPig_WordPress::post/list.phtml');
-		}
+    }
 		
 		return parent::_beforeToHtml();
 	}

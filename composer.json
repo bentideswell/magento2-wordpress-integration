@@ -1,7 +1,7 @@
 {
 	"name": "bentideswell/magento2-wordpress-integration",
 	"description": "Magento 2 WordPress Integration",
-	"version": "2.0.8.22",
+	"version": "2.0.8.23",
 	"type": "magento2-module",
 	"autoload": {
 		"files": [
