@@ -1,3 +1,6 @@
+27/09/2019 - 2.0.8.24
+- Improved factory class generation that causes errors on a small number of installs.
+
 16/09/2019 - 2.0.8.23
 - Added setRendererTemplate method to FishPig\WordPress\Block\Post\ListPost so that you can set a custom renderer template.
 

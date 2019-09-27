@@ -108,16 +108,6 @@ class PostTypeManager
 		
 		return $this;
 	}
-	
-	/*
-	 *
-	 *
-	 * @return
-	 */
-	public function getPostTypeFactory()
-	{
-		return $this->factory->create('PostTypeFactory');
-	}
 
 	/*
 	 *

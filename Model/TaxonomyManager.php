@@ -75,7 +75,7 @@ class TaxonomyManager
 		if ($taxonomyData = $this->getTaxonomyDataFromAddon()) {
 			foreach($taxonomyData as $taxonomy) {
 				$this->registerTaxonomy(
-					$this->getTaxonomyFactory()->create()->addData($taxonomy)
+  				$this->factory->create('FishPig\WordPress\Model\Taxonomy')->addData($taxonomy)
 				);
 			}
 		}
@@ -96,7 +96,7 @@ class TaxonomyManager
 			}
 
 			$this->registerTaxonomy(
-				$this->getTaxonomyFactory()->create()->addData([
+				$this->factory->create('FishPig\WordPress\Model\Taxonomy')->addData([
 					'type' => 'category',
 					'taxonomy_type' => 'category',
 					'labels' => array(
@@ -115,7 +115,7 @@ class TaxonomyManager
 			);
 			
 			$this->registerTaxonomy(
-				$this->getTaxonomyFactory()->create()->addData([
+				$this->factory->create('FishPig\WordPress\Model\Taxonomy')->addData([
 					'type' => 'post_tag',
 					'taxonomy_type' => 'post_tag',
 					'labels' => array(
@@ -153,16 +153,6 @@ class TaxonomyManager
 		$this->taxonomies[$storeId][$taxonomy->getTaxonomy()] = $taxonomy;
 		
 		return $this;
-	}
-	
-	/*
-	 *
-	 *
-	 * @return
-	 */
-	public function getTaxonomyFactory()
-	{
-		return $this->factory->get('TaxonomyFactory');
 	}
 
 	/*

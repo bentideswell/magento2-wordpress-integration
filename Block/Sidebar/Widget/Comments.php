@@ -16,10 +16,9 @@ class Comments extends AbstractWidget
 	public function getComments()
 	{
 		if (!$this->hasComments()) {
-			$comments = $this->factory->create('Model\ResourceModel\Post\Comment\CollectionFactory')
-				->create()
-					->addCommentApprovedFilter()
-					->addOrderByDate('desc');
+			$comments = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
+				->addCommentApprovedFilter()
+				->addOrderByDate('desc');
 			
 			$comments->getSelect()->limit($this->getNumber() ? $this->getNumber() : 5 );
 			
