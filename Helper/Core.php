@@ -4,65 +4,34 @@
  */
 namespace FishPig\WordPress\Helper;
 
-/* Parent Class */
 use Magento\Framework\App\Helper\AbstractHelper;
-
-/* Constructor Args */
 use Magento\Framework\App\Helper\Context;
-use Magento\Framework\Module\FullModuleList;
-use Magento\Framework\Module\Dir as ModuleDir;
-use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Helper\CoreInterface;
 
 class Core extends AbstractHelper
 {
-	/*
-	 *
-	 *
+	/**
+	 * @var CoreInterface
 	 */
 	protected $helper;
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
-  public function __construct(Context $context, FullModuleList $fullModuleList, ModuleDir $moduleDir, Factory $factory)
+  public function __construct(Context $context, CoreInterface $helper = null)
   {
-	  $this->fullModuleList = $fullModuleList;
-	  $this->moduleDir      = $moduleDir;
-	  $this->factory        = $factory;
-	  
 	  parent::__construct($context);
+	  
+	  if ($helper) {
+  	  $this->helper = $helper;
+	  }
   }
 
-	/*
-	 *
-	 *
-	 *
+	/**
+	 * @reutrn CoreInterface|false
 	 */
   public function getHelper()
   {
-	  if ($this->helper !== null) {
-		  return $this->helper;
-	  }
-	  
-	  $this->helper = false;
-	  
-		foreach($this->fullModuleList->getNames() as $moduleName) {
-			if (strpos($moduleName, 'FishPig_WordPress_') !== 0) {
-				continue;
-			}
-
-			$coreHelperFile = dirname($this->moduleDir->getDir($moduleName, ModuleDir::MODULE_ETC_DIR)) . '/Helper/Core.php';
-			
-			if (is_file($coreHelperFile)) {
-				if ($coreHelper = $this->factory->get('FishPig\\' . str_replace('FishPig_', '', $moduleName) . '\\Helper\\Core\\Proxy')) {
-					$this->helper = $coreHelper;
-					break;
-				}
-			}
-		}
-
-		return $this->helper;
+    return isset($this->helper) ? $this->helper : false;
   }
 }

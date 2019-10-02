@@ -234,7 +234,7 @@ class Router implements RouterInterface
 	 */
 	protected function _getHomepageRoutes($uri = '')
 	{
-		$homepage = $this->factory->get('Homepage');
+		$homepage = $this->factory->get('FishPig\WordPress\Model\Homepage');
 		
 		if (!$uri) {
   		$keys = ['page_id', 'post_id', 'p'];
@@ -306,11 +306,11 @@ class Router implements RouterInterface
 	 */
 	protected function _getPostRoutes($uri = '')
 	{
-		if (($routes = $this->factory->get('Model\ResourceModel\Post')->getPermalinksByUri($uri)) === false) {
+		if (($routes = $this->factory->get('FishPig\WordPress\Model\ResourceModel\Post')->getPermalinksByUri($uri)) === false) {
 			return false;
 		}
 
-		$pageForPostsId = (int)$this->factory->get('Homepage')->getPageForPostsId();
+		$pageForPostsId = (int)$this->factory->get('FishPig\WordPress\Model\Homepage')->getPageForPostsId();
 
 		foreach($routes as $routeId => $route) {
 			if ($pageForPostsId && $pageForPostsId === (int)$routeId) {
@@ -333,7 +333,7 @@ class Router implements RouterInterface
 	 */
 	protected function _getTaxonomyRoutes($uri = '')
 	{
-		foreach($this->factory->get('TaxonomyManager')->getTaxonomies() as $taxonomy) {
+		foreach($this->factory->get('FishPig\WordPress\Model\TaxonomyManager')->getTaxonomies() as $taxonomy) {
 			if (($routes = $taxonomy->getUris($uri)) !== false) {
 				foreach($routes as $routeId => $route) {
 					$this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));

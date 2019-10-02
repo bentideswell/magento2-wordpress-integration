@@ -288,9 +288,10 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getTermCollection($taxonomy)
 	{
-		return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
-			->addTaxonomyFilter($taxonomy)
-			->addPostIdFilter($this->getId());
+		return $this->factory->create('FishPig\WordPress\Model\Term')
+		  ->getCollection()
+  			->addTaxonomyFilter($taxonomy)
+        ->addPostIdFilter($this->getId());
 	}
 	
 	/*

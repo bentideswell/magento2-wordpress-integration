@@ -7,7 +7,7 @@ namespace FishPig\WordPress\Model;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Model\StoreManagerInterface;
 use FishPig\WordPress\Model\PostType;
-use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Model\PostTypeFactory;
 use FishPig\WordPress\Model\OptionManager;
 
 class PostTypeManager
@@ -38,15 +38,15 @@ class PostTypeManager
 	 *
 	 */
 	public function __construct(
-		        ModuleManager $moduleManager, 
-		StoreManagerInterface $storeManager, 
-        		      Factory $factory, 
-		        OptionManager $optionManager
+    ModuleManager $moduleManager, 
+    StoreManagerInterface $storeManager, 
+    PostTypeFactory $postTypeFactory, 
+    OptionManager $optionManager
 	)
 	{
 		$this->moduleManager   = $moduleManager;
 		$this->storeManager    = $storeManager;
-		$this->factory         = $factory;
+		$this->postTypeFactory = $postTypeFactory;
 		$this->optionManager   = $optionManager;
 		
 		$this->load();
@@ -68,13 +68,13 @@ class PostTypeManager
 		if ($postTypeData = $this->getPostTypeDataFromAddon()) {
 			foreach($postTypeData as $postType) {
 				$this->registerPostType(
-					$this->factory->create('PostType')->addData($postType)
+					$this->postTypeFactory->create()->addData($postType)
 				);
 			}
 		}
 		else {
 			$this->registerPostType(
-				$this->factory->create('PostType')->addData([
+				$this->postTypeFactory->create()->addData([
 					'post_type'  => 'post',
 					'rewrite'    => ['slug' => $this->optionManager->getOption('permalink_structure')],
 					'taxonomies' => ['category', 'post_tag'],
@@ -83,7 +83,7 @@ class PostTypeManager
 			);
 				
 			$this->registerPostType(
-				$this->factory->create('PostType')->addData([
+				$this->postTypeFactory->create()->addData([
 					'post_type'    => 'page',
 					'rewrite'      => ['slug' => '%postname%/'],
 					'hierarchical' => true,

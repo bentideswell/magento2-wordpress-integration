@@ -12,6 +12,15 @@
 			</argument>
 		</arguments>
 	</type>
+	<!-- Factory -->
+	<type name="FishPig\WordPress\Model\Factory">
+		<arguments>
+			<argument name="factories" xsi:type="array">
+				<item name="post" xsi:type="object">FishPig\WordPress\Model\PostFactory</item>
+				<item name="postType" xsi:type="object">FishPig\WordPress\Model\PostTypeFactory</item>
+			</argument>
+		</arguments>
+	</type>
 	<!-- Integration Manager -->
 	<type name="FishPig\WordPress\Model\IntegrationManager">
 		<arguments>

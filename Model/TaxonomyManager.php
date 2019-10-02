@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Model\StoreManagerInterface;
-use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Model\TaxonomyFactory;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Network;
 
@@ -37,22 +37,27 @@ class TaxonomyManager
 	 */
 	protected $taxonomies = [];
 
+  /**
+   * @var TaxonomyFactory
+   */
+  protected $taxonomyFactory;
+  
 	/*
 	 *
 	 * @param  ModuleManaher $moduleManaher
 	 * @return void
 	 */
 	public function __construct(
-		        ModuleManager $moduleManager, 
-		StoreManagerInterface $storeManager, 
-		              Factory $factory, 
-		        OptionManager $optionManager,
-		              Network $network
+    ModuleManager $moduleManager, 
+    StoreManagerInterface $storeManager, 
+    TaxonomyFactory $taxonomyFactory, 
+    OptionManager $optionManager,
+    Network $network
   )
 	{
 		$this->moduleManager   = $moduleManager;
 		$this->storeManager    = $storeManager;
-		$this->factory         = $factory;
+		$this->taxonomyFactory = $taxonomyFactory;
 		$this->optionManager   = $optionManager;
 		$this->network         = $network;
 
@@ -75,7 +80,7 @@ class TaxonomyManager
 		if ($taxonomyData = $this->getTaxonomyDataFromAddon()) {
 			foreach($taxonomyData as $taxonomy) {
 				$this->registerTaxonomy(
-  				$this->factory->create('FishPig\WordPress\Model\Taxonomy')->addData($taxonomy)
+  				$this->taxonomyFactory->create()->addData($taxonomy)
 				);
 			}
 		}
@@ -96,7 +101,7 @@ class TaxonomyManager
 			}
 
 			$this->registerTaxonomy(
-				$this->factory->create('FishPig\WordPress\Model\Taxonomy')->addData([
+				$this->taxonomyFactory->create()->addData([
 					'type' => 'category',
 					'taxonomy_type' => 'category',
 					'labels' => array(
@@ -115,7 +120,7 @@ class TaxonomyManager
 			);
 			
 			$this->registerTaxonomy(
-				$this->factory->create('FishPig\WordPress\Model\Taxonomy')->addData([
+				$this->taxonomyFactory->create()->addData([
 					'type' => 'post_tag',
 					'taxonomy_type' => 'post_tag',
 					'labels' => array(

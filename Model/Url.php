@@ -8,7 +8,7 @@ namespace FishPig\WordPress\Model;
 use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Network;
 use FishPig\WordPress\Model\WPConfig;
-use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Model\PostFactory;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
@@ -38,7 +38,7 @@ class Url
 	/*
 	 *
 	 */
-	protected $factory;
+	protected $postFactory;
 	
 	/*
 	 *
@@ -55,13 +55,20 @@ class Url
 	/*
 	 * Constructor
 	 */
-	public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager, Factory $factory, ScopeConfigInterface $scopeConfig)
+	public function __construct(
+  	OptionManager $optionManager,
+  	Network $network,
+  	WPConfig $wpConfig,
+  	StoreManagerInterface $storeManager,
+  	PostFactory $postFactory,
+  	ScopeConfigInterface $scopeConfig
+	)
 	{
 		$this->optionManager = $optionManager;
 		$this->wpConfig      = $wpConfig;
 		$this->network       = $network;
 		$this->storeManager  = $storeManager;
-		$this->factory       = $factory;
+		$this->postFactory   = $postFactory;
 		$this->scopeConfig   = $scopeConfig;
 	}
 
@@ -295,7 +302,7 @@ class Url
 			$this->front[$storeId] = '';
 			
 			if ($this->isRoot()) {
-				$postPermalink = $this->factory->create('Post')->setPostType('post')->getTypeInstance()->getPermalinkStructure();
+				$postPermalink = $this->postFactory->create()->setPostType('post')->getTypeInstance()->getPermalinkStructure();
 			
 				if (substr($postPermalink, 0, 1) !== '%') {
 					$this->front[$storeId] = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');

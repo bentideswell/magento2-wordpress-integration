@@ -83,7 +83,7 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
 		$this->staticPage = false;
 
 		if ((int)$this->getPageForPostsId() > 0) {
-			$staticPage = $this->factory->create('Post')->load(
+			$staticPage = $this->factory->create('FishPig\WordPress\Model\Post')->load(
 				$this->getPageForPostsId()
 			);
 			

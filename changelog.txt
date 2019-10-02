@@ -1,3 +1,6 @@
+02/10/2019 - 2.0.8.25
+- Modified Factory classes for cloud support
+
 27/09/2019 - 2.0.8.24
 - Improved factory class generation that causes errors on a small number of installs.
 

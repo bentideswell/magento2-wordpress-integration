@@ -30,6 +30,22 @@ class View extends Action
 	  $term   = $this->_getEntity();
 	  
 	  if ($taxonomy = $term->getTaxonomyInstance()) {
+  	  $postTypes = $this->factory->get('PostTypeManager')->getPostTypes();
+  	  
+  	  if (count($postTypes) > 2) {
+        foreach($postTypes as $postType) {
+          if ($postType->hasArchive() && $postType->getArchiveSlug() === $taxonomy->getSlug()) {
+            $crumbs['post_type_archive_' . $postType->getPostType()] = [
+  						'label' => __($postType->getName()),
+  						'title' => __($postType->getName()),
+  						'link' => $postType->getUrl(),
+            ];
+            
+            break;
+          }
+        }
+      }
+      
 		  if ($taxonomy->isHierarchical()) {
 				$buffer = $term;
 				

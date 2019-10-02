@@ -4,12 +4,23 @@
  */
 namespace FishPig\WordPress\Model;
 
+use PostFactory\Proxy as PostFactory;
+use PostTypeFactory\Proxy as PostTypeFactory;
+
 class Factory
 {
 	/*
 	 * @var array
 	 */
 	protected $factories = [];
+	
+	public function __construct(array $factories)
+	{
+  	foreach($factories as $factory) {
+    	$this->factories[get_class($factory)] = $factory;
+  	}
+
+	}
 	
 	/*
 	 * Create an instance of $type
@@ -20,6 +31,16 @@ class Factory
 	public function create($type, array $args = [])
 	{
 		if ($className = $this->getClassNameFromType($type)) {
+  		/*
+    	if (!isset($this->factories[$className . 'Factory'])) {
+      	$e = new \Exception('');
+        echo '<pre>' . $e->getTraceAsString() . '</pre><br/><br/>';
+        echo $className . '<br/>';
+        echo $type;exit;
+      }
+      
+      return $this->factories[$className . 'Factory']->create($args);
+      */
 			return $this->getObjectManager()->create($className, $args);
 		}
 		
