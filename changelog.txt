@@ -1,3 +1,6 @@
+04/10/2019 - 2.0.8.26
+- Updated FishPig WordPress theme
+
 02/10/2019 - 2.0.8.25
 - Modified Factory classes for cloud support
 
