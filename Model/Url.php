@@ -107,14 +107,16 @@ class Url
 			}*/
 			
 			if ($this->ignoreStoreCode()) {
-				if (substr_count($magentoUrl, '/') >= 3) {
-					$magentoUrl = substr($magentoUrl, 0, strpos($magentoUrl, '/', strpos($magentoUrl, '//')+2));
-				}
+  			$storeCode = $this->storeManager->getStore()->getCode();
+  			
+  			if (substr($magentoUrl, -strlen($storeCode)) === $storeCode) {
+    			$magentoUrl = substr($magentoUrl, 0, -strlen($storeCode)-1);
+  			}
 			}
 			
 			$this->magentoUrl[$storeId] = rtrim($magentoUrl, '/');
 		}
-		
+
 		return $this->magentoUrl[$storeId];
 	}
 	
