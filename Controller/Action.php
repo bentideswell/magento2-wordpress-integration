@@ -134,7 +134,9 @@ abstract class Action extends ParentAction
 		
     if ($handles = $this->getLayoutHandles()) {
 	    foreach($handles as $handle) {
-				$this->getPage()->addHandle($handle);
+  	    if ($handle = $this->cleanLayoutHandle($handle)) {
+  				$this->getPage()->addHandle($handle);
+  		  }
 			}
 		}
 
@@ -151,6 +153,15 @@ abstract class Action extends ParentAction
     return $this;
   }
     
+  /**
+   * @param string $handle
+   * @return string
+   */
+  protected function cleanLayoutHandle($handle)
+  {
+    return trim(str_replace(['__', '__'], '_', preg_replace('/[^a-z0-9_]+/', '_', $handle)), '_');
+  }
+  
   /*
 	 * Get an array of extra layout handles to apply
 	 *

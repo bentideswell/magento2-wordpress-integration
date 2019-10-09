@@ -162,7 +162,7 @@ class View extends Action
     else {
       $template = $post->getMetaValue('_wp_page_template');
     }
-
+    
     $layoutHandles = ['wordpress_post_view_default'];
     
     if ($post->isFrontPage()) {
