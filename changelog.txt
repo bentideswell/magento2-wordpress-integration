@@ -1,3 +1,6 @@
+10/10/2019 - 2.0.8.29
+- Fix for Helper/Core.php. You will need to upgrade all FishPig add-on modules when updating to this version.
+
 09/10/2019 - 2.0.8.28
 - Fixed issue with custom templates defined in WordPress that are saved in a sub-directory of the theme directory. The resulting layout handle was incorrectly formed. The fix changes this and a valid layout handle is used.
 

@@ -11,19 +11,19 @@ use FishPig\WordPress\Helper\CoreInterface;
 class Core extends AbstractHelper
 {
 	/**
-	 * @var CoreInterface
+	 * @var array
 	 */
-	protected $helper;
+	protected $coreProxies;
 
 	/**
 	 *
 	 */
-  public function __construct(Context $context, CoreInterface $helper = null)
+  public function __construct(Context $context, $coreProxies = [])
   {
 	  parent::__construct($context);
-	  
-	  if ($helper) {
-  	  $this->helper = $helper;
+
+	  if (count($coreProxies)) {
+  	  $this->coreProxies = $coreProxies;
 	  }
   }
 
@@ -32,6 +32,10 @@ class Core extends AbstractHelper
 	 */
   public function getHelper()
   {
-    return isset($this->helper) ? $this->helper : false;
+    if (count($this->coreProxies)) {
+      return $this->coreProxies[key($this->coreProxies)];
+    }
+    
+    return false;
   }
 }
