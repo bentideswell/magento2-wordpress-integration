@@ -4,10 +4,11 @@ WordPress Integration in Magento 2.
 
 This module allows you to integrate WordPress into Magento 2. 
 
-# Installation Guide
+# Useful Links
 
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/installing-wordpress/" target="_blank">Install WordPress for Magento 2 Integration</a>
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/installation/" target="_blank">Install the Magento 2 WordPress Integration extension</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/" target="_blank">Extension Details</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/installation/" target="_blank">Installation Guide</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/add-ons/" target="_blank">Add-on Modules</a>
 
 # Yoast SEO
 
@@ -17,20 +18,20 @@ You can and should install the Yoast SEO plugin in the WordPress Admin. This is 
 
 # WordPress Shortcodes
 
-You can now use all WordPress shortcodes while integrated into Magento using the <a href="https://fishpig.co.uk/magento-2/wordpress-integration/shortcodes-widgets/" target="_blank">Shortcodes & Widgets add-on module</a>.
+You can now use all WordPress shortcodes while integrated into Magento using the <a href="https://fishpig.co.uk/magento/wordpress-integration/shortcodes-widgets/" target="_blank">Shortcodes & Widgets add-on module</a>. This adds support for all shortcode based plugins, which includes Page Builders such as WP Bakery Page Builder (frontend and backend), Elementor, Divi Page Builder and many more.
 
 # WordPress Integration Add-ons
 
 The following add-ons are currently available and more are on the way.
 
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/multisite/" target="_blank">FishPig_WordPress_Multisite</a>
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/root/" target="_blank">FishPig_WordPress_Root</a>
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/post-types-taxonomies/" target="_blank">FishPig_WordPress_PostTypeTaxonomy</a>
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/shortcodes-widgets/" target="_blank">FishPig_WordPress_ShortcodesWidgets</a>
-- <a href="https://fishpig.co.uk/magento-2/wordpress-integration/advanced-custom-fields/" target="_blank">FishPig_WordPress_ACF</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/multisite/" target="_blank">FishPig_WordPress_Multisite</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/root/" target="_blank">FishPig_WordPress_Root</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/post-types-taxonomies/" target="_blank">FishPig_WordPress_PostTypeTaxonomy</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/shortcodes-widgets/" target="_blank">FishPig_WordPress_ShortcodesWidgets</a>
+- <a href="https://fishpig.co.uk/magento/wordpress-integration/advanced-custom-fields/" target="_blank">FishPig_WordPress_ACF</a>
 - <a href="https://fishpig.co.uk/magento/wordpress-integration/related-products/" target="_blank">FishPig_WordPress_RelatedProducts</a>
 - <a href="https://fishpig.co.uk/magento/wordpress-integration/customer-synchronisation/" target="_blank">FishPig_WordPress_CustomerSynchronisation</a>
 - <a href="https://fishpig.co.uk/magento/wordpress-integration/integrated-search/" target="_blank">FishPig_WordPress_IntegratedSearch</a>
 - <a href="https://fishpig.co.uk/magento/wordpress-integration/amp/" target="_blank">FishPig_WordPress_AMP</a>
 
-For an up to date list, check the <a href="https://fishpig.co.uk/magento-2/wordpress-integration/add-ons/" target="_blank">Magento 2 WordPress Integration Add-ons page</a>.
+For an up to date list, check the <a href="https://fishpig.co.uk/magento/wordpress-integration/add-ons/" target="_blank">Magento 2 WordPress Integration Add-ons page</a>.
