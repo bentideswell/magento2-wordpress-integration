@@ -1,3 +1,6 @@
+11/10/2019 - 2.0.8.30
+- Renamed layout files for changing root templates as new system uses clean layout handles that only allow a-z and _ characters. Old layout handles still work but if you're using custom templates that you defined in WordPress, it is recommended that you rename your layout files.
+
 10/10/2019 - 2.0.8.29
 - Fix for Helper/Core.php. You will need to upgrade all FishPig add-on modules when updating to this version.
 

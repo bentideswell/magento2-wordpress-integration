@@ -135,7 +135,13 @@ abstract class Action extends ParentAction
     if ($handles = $this->getLayoutHandles()) {
 	    foreach($handles as $handle) {
   	    if ($handle = $this->cleanLayoutHandle($handle)) {
-  				$this->getPage()->addHandle($handle);
+          if (!is_array($handle)) {
+            $handle = [$handle];
+          }
+          
+          foreach($handle as $h) {
+    				$this->getPage()->addHandle($h);
+    		  }
   		  }
 			}
 		}
@@ -154,12 +160,15 @@ abstract class Action extends ParentAction
   }
     
   /**
-   * @param string $handle
-   * @return string
+   * @param  string $handle
+   * @return array
    */
   protected function cleanLayoutHandle($handle)
   {
-    return trim(str_replace(['__', '__'], '_', preg_replace('/[^a-z0-9_]+/', '_', $handle)), '_');
+    return [
+      $handle, // Legacy handle. Please use cleaned handle below
+      trim(str_replace(['__', '__'], '_', preg_replace('/[^a-z0-9_]+/', '_', $handle)), '_')
+    ];
   }
   
   /*
