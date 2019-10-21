@@ -1,4 +1,4 @@
-21/10/2019 - 2.0.8.31
+21/10/2019 - 2.0.8.32
 - Fixed issue when featured image is set but does not exist on the server.
 
 11/10/2019 - 2.0.8.30
