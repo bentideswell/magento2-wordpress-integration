@@ -247,6 +247,10 @@ class Image extends AbstractAttachmentModel
 	 */
 	public function getResizer()
 	{
+    if (!is_file($this->getLocalFile())) {
+      return false;
+    }
+
   	return \Magento\Framework\App\ObjectManager::getInstance()
   	  ->get('FishPig\WordPress\Model\ImageResizerFactory')
   	    ->create()
