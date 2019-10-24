@@ -18,13 +18,11 @@ class Core extends AbstractHelper
 	/**
 	 *
 	 */
-  public function __construct(Context $context, $coreProxies = [])
+  public function __construct(Context $context, array $coreProxies = [])
   {
 	  parent::__construct($context);
 
-	  if (count($coreProxies)) {
-  	  $this->coreProxies = $coreProxies;
-	  }
+	  $this->coreProxies = $coreProxies;
   }
 
 	/**
@@ -32,10 +30,6 @@ class Core extends AbstractHelper
 	 */
   public function getHelper()
   {
-    if (count($this->coreProxies)) {
-      return $this->coreProxies[key($this->coreProxies)];
-    }
-    
-    return false;
+    return count($this->coreProxies) ? $this->coreProxies[key($this->coreProxies)] : false;
   }
 }

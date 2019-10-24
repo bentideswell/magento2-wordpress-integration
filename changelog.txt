@@ -1,3 +1,6 @@
+24/10/2019 - 2.0.8.33
+- Fixed issue when using no add-on modules.
+
 21/10/2019 - 2.0.8.32
 - Fixed issue when featured image is set but does not exist on the server.
 
