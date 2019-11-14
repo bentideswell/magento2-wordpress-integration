@@ -1,3 +1,6 @@
+14/11/2019 - 2.0.8.35
+- Added translation function to Search results page title.
+
 24/10/2019 - 2.0.8.33
 - Fixed issue when using no add-on modules.
 

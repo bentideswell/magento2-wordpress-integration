@@ -51,7 +51,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
 	 */
 	public function getName()
 	{
-		return 'Search results for ' . $this->getSearchTerm();
+		return __('Search results for %1', $this->getSearchTerm());
 	}
 
 	/*
