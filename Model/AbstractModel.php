@@ -218,8 +218,14 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
       $pageMainTitle->setPageTitle($this->getName());
     }
       
-		if ($this->getCanonicalUrl()) {
-			$pageConfig->addRemotePageAsset($this->getCanonicalUrl(), 'canonical', ['attributes' => ['rel' => 'canonical']]);
+		if ($canonicalUrl = $this->getCanonicalUrl()) {
+      $page = (int)$this->wpContext->getRequest()->getParam('page');
+      
+      if ($page > 1) {
+        $canonicalUrl = rtrim($canonicalUrl, '/') . '/page/' . $page . ($this->url->hasTrailingSlash() ? '/' : '');
+      }
+
+			$pageConfig->addRemotePageAsset($canonicalUrl, 'canonical', ['attributes' => ['rel' => 'canonical']]);
 		}
 	
     return $this;
