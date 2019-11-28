@@ -283,6 +283,10 @@ class Router implements RouterInterface
 		$this->addRoute(array('/^' . $front . 'search\/(.*)$/' => array('s')), '*/search/view');
 		$this->addRoute('search', '*/search/index', array('redirect_broken_url' => 1)); # Fix broken search URLs
 #		$this->addRoute('/^index.php/i', '*/index/forward');
+
+		$this->addRoute(['/^((newbloguser|wp-(content|includes|admin|cron\.php))\/.*)$/' => ['request_uri']], '*/forwarder/view');
+
+		
 #		$this->addRoute('/^wp-content\/(.*)/i', '*/index/forwardFile');
 #		$this->addRoute('/^wp-includes\/(.*)/i', '*/index/forwardFile');
 #		$this->addRoute('/^wp-cron.php.*/', '*/index/forwardFile');
@@ -290,7 +294,8 @@ class Router implements RouterInterface
 #		$this->addRoute('/^wp-pass.php.*/', '*/index/applyPostPassword');
 #		$this->addRoute('robots.txt', '*/index/robots');
 		$this->addRoute('comments', '*/index/commentsFeed');
-		$this->addRoute(array('/^newbloguser\/(.*)$/' => array('code')), '*/index/forwardNewBlogUser');
+
+		
 		$this->addRoute(array('/^wp-json$/' => []), '*/json/view');
 		$this->addRoute(array('/^wp-json\/(.*)$/' => array('json_route_data')), '*/json/view');
 		

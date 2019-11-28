@@ -1,3 +1,6 @@
+28/11/2019 - 2.0.8.37
+- Added new controller to redirect certain requests to WordPress, such as confirming new blog user.
+
 15/11/2019 - 2.0.8.36
 - Added fix for canonical URLs so that canonical URLs are included for paginated archive pages.
 
