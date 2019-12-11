@@ -86,11 +86,11 @@ class AssetInjector
             return false;
         }
 
-		$this->integrationManager->runTests();
-		
 		if ($this->isApiRequest() || $this->isAjaxRequest()) {
 			return false;
 		}
+
+		$this->integrationManager->runTests();
 
 		if (!($shortcodes = $this->shortcodeManager->getShortcodesThatRequireAssets())) {
 			return false;
