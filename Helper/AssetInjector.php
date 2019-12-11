@@ -63,6 +63,16 @@ class AssetInjector
 		$this->wpUrl              = $wpUrl;
 	}
 	
+	/**
+     * This can be called before creating the object to determine whether it is even needed
+     *
+     * @return bool
+     */
+	static public function isAbspathDefined()
+	{
+        return defined('ABSPATH');
+	}
+	
 	/*
 	 * @return
 	 */
@@ -72,9 +82,9 @@ class AssetInjector
 			return false;
 		}
 
-		if (!defined('ABSPATH')) {
-			return false;
-		}
+        if (!self::isAbspathDefined()) {
+            return false;
+        }
 
 		$this->integrationManager->runTests();
 		

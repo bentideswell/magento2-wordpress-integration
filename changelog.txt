@@ -1,3 +1,6 @@
+11/12/2019 - 2.0.8.38
+- Added small optimisation to the AssetInjector
+
 28/11/2019 - 2.0.8.37
 - Added new controller to redirect certain requests to WordPress, such as confirming new blog user.
 

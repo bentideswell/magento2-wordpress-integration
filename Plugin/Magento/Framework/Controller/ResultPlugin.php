@@ -49,6 +49,13 @@ class ResultPlugin
 	 */
 	public function afterRenderResult(ResultInterface $subject, ResultInterface $result, ResponseInterface $response = null)
 	{
+    	/**
+         * This is usually defined in the AssetInjector but moving it here stops the AssetInjector from being created so often
+         */
+		if (!AssetInjector::isAbspathDefined()) {
+			return $result;
+		}
+
 		// If Magento 2.1.9 or lower, $response won't be passed so load it separately
 		if (!$response) {
 			$response = $this->response;
