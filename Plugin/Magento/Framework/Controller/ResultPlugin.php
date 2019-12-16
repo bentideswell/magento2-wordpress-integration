@@ -4,8 +4,8 @@
 **/
 namespace FishPig\WordPress\Plugin\Magento\Framework\Controller;
 
-use FishPig\WordPress\Helper\AssetInjectorFactory;
-use FishPig\WordPress\Helper\AssetInjector;
+use FishPig\WordPress\Model\AssetInjectorFactory;
+use FishPig\WordPress\Model\AssetInjector;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\App\Response\Http as ResponseHttp;
 use Magento\Framework\App\ResponseInterface;
@@ -14,7 +14,7 @@ class ResultPlugin
 {
 	/*
 	 *
-	 * @var \FishPig\WordPress\Helper\AssetInjectorFactory
+	 * @var \FishPig\WordPress\Model\AssetInjectorFactory
 	 *
 	 */
 	protected $assetInjectorFactory;
@@ -30,7 +30,7 @@ class ResultPlugin
 
 	/*
 	 *
-	 * @param \FishPig\WordPress\Helper\AssetInjectorFactory
+	 * @param \FishPig\WordPress\Model\AssetInjectorFactory
 	 *
 	 */
 	public function __construct(AssetInjectorFactory $assetInjectorFactory, ResponseHttp $response)

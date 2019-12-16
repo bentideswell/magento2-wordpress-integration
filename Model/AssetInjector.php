@@ -4,7 +4,7 @@
  *
  *
  */
-namespace FishPig\WordPress\Helper;
+namespace FishPig\WordPress\Model;
 
 /* Constructor Args */
 use FishPig\WordPress\Model\IntegrationManager\Proxy as IntegrationManager;
@@ -165,20 +165,20 @@ class AssetInjector
 			}
 		}
     
-    // Extract <link tags from content
-    if (preg_match_all('/<link[^>]+>/', $content, $linkMatches)) {
-      foreach($linkMatches[0] as $linkMatch) {
-        $metaLinks[] = $linkMatch;
-        $content = str_replace($linkMatch, '', $content);
-      }
-    }
-    
-    $content = trim($content);
-    
-    // IF we have any meta or link tags, add them into the head
-    if ($metaLinks) {
-      $bodyHtml = str_replace('</head>', implode("\n", $metaLinks) . "\n</head>", $bodyHtml);
-    }
+        // Extract <link tags from content
+        if (preg_match_all('/<link[^>]+>/', $content, $linkMatches)) {
+            foreach($linkMatches[0] as $linkMatch) {
+                $metaLinks[] = $linkMatch;
+                $content = str_replace($linkMatch, '', $content);
+            }
+        }
+        
+        $content = trim($content);
+        
+        // IF we have any meta or link tags, add them into the head
+        if ($metaLinks) {
+            $bodyHtml = str_replace('</head>', implode("\n", $metaLinks) . "\n</head>", $bodyHtml);
+        }
 		
 		// Now let's build the requireJS from $assets
 		$baseUrl = $this->wpUrl->getSiteurl();
@@ -286,92 +286,92 @@ class AssetInjector
 				}
 			}
     
-      // After processing, no scripts so return
-      if (count($scripts) > 0) {
-  			if ($this->canMergeGroups()) {
-  				$scripts = $this->_mergeGroups($scripts);
-  			}
-  
-  			// Used to set paths for each JS file in requireJs
-  			$requireJsPaths = ['jquery-migrate' => $this->getJqueryMigrateUrl()];
-  			
-  			// JS Template for requireJs. This changes through foreach below
-  			$requireJsTemplate = "require(['jquery'], function(jQuery) {
+            // After processing, no scripts so return
+            if (count($scripts) > 0) {
+      			if ($this->canMergeGroups()) {
+      				$scripts = $this->_mergeGroups($scripts);
+      			}
+      
+      			// Used to set paths for each JS file in requireJs
+      			$requireJsPaths = ['jquery-migrate' => $this->getJqueryMigrateUrl()];
+      			
+      			// JS Template for requireJs. This changes through foreach below
+      			$requireJsTemplate = "require(['jquery'], function(jQuery) {
   	require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
   		" . self::TMPL_TAG . "
   });				
   });";
   
-  			$level = 2;
+  			  $level = 2;
   			
-  			foreach($scripts as $skey => $script) {
-  				$tabs = str_repeat("	", $level);
+                foreach($scripts as $skey => $script) {
+      				$tabs = str_repeat("	", $level);
   
-  				if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-            $inlineJsExternalFile = $this->getBaseJsPath() . 'inex-' . md5($script) . '.js';
-            $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
-            
-            // Remove the wrapping script tags
-            $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
-            
-            // Ensure that the static asset directory exists
-            $this->createStaticAssetDirectory();
-            
-            // Save the JS in the external file
-            file_put_contents($inlineJsExternalFile, $script);
-            file_put_contents($inlineJsExternalFileMin, $script);
-            
-            $inlineJsExternalUrl = $this->getBaseJsUrl() . basename($inlineJsExternalFile);
-  
-            $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
-          }				
+                    if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+                        $inlineJsExternalFile = $this->getBaseJsPath() . 'inex-' . md5($script) . '.js';
+                        $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
+                        
+                        // Remove the wrapping script tags
+                        $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
+                        
+                        // Ensure that the static asset directory exists
+                        $this->createStaticAssetDirectory();
+                        
+                        // Save the JS in the external file
+                        file_put_contents($inlineJsExternalFile, $script);
+                        file_put_contents($inlineJsExternalFileMin, $script);
+                        
+                        $inlineJsExternalUrl = $this->getBaseJsUrl() . basename($inlineJsExternalFile);
+              
+                        $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
+                    }				
           
-  				if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-  					$originalScriptUrl = $matches[1];
-  					
-  					$requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-  					$requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
-  					
-  					$requireJsTemplate = str_replace(
-  						self::TMPL_TAG,
-  						$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . $tabs . "});" . "\n",
-  						$requireJsTemplate
-  					);
-  					
-  					$level++;
-  				}
-  				else {
-  					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
-  				}
-  			}
-  	
-  			// Remove final template variable placeholder
-  			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
+                    if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+                        $originalScriptUrl = $matches[1];
+                        
+                        $requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
+                        $requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
+                        
+                        $requireJsTemplate = str_replace(
+                        	self::TMPL_TAG,
+                        	$tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . $tabs . "});" . "\n",
+                        	$requireJsTemplate
+                        );
+                        
+                        $level++;
+                    }
+                    else {
+      					$requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
+                    }
+                }
+      	
+      			// Remove final template variable placeholder
+      			$requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
+      
+      			// Start of paths template
+      			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
   
-  			// Start of paths template
-  			$requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
-  
-  			// Loop through paths, remove .js and set
-  			foreach($requireJsPaths as $alias => $path) {
-  				if (substr($path, -3) === '.js') {
-  					$path = substr($path, 0, -3);
-  				}
-  				
-  				if (strpos($path, '&#')) {
-  					$path = html_entity_decode($path);
-  				}
-  
-  				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
-  			}
-  				
-  			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
-  			
-  			// Final JS including wrapping script tag
-  			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
-  
-  			// Add the final requireJS code to the $content array
-  			$content .= $requireJsFinal;
-  		}
+      			// Loop through paths, remove .js and set
+      			foreach($requireJsPaths as $alias => $path) {
+      				if (substr($path, -3) === '.js') {
+      					$path = substr($path, 0, -3);
+      				}
+      				
+      				if (strpos($path, '&#')) {
+      					$path = html_entity_decode($path);
+      				}
+      
+      				$requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
+      			}
+      				
+      			$requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
+      			
+      			// Final JS including wrapping script tag
+      			$requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
+      
+      			// Add the final requireJS code to the $content array
+      			$content .= $requireJsFinal;
+      		}
 		}
 
 		// Add in the JS templates
@@ -379,9 +379,9 @@ class AssetInjector
 			$content = implode(PHP_EOL, $scriptsStatic) . $content;
 		}
 		
-    if ($content) {
-      $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
-    }
+        if ($content) {
+          $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
+        }
 		
 		return $bodyHtml;
 	}
@@ -458,8 +458,8 @@ class AssetInjector
 			$scriptContent = '/* ' . $externalScriptUrlFull . ' */' . PHP_EOL . $scriptContent;
 		}
 
-    // Ensure that the static asset directory exists
-    $this->createStaticAssetDirectory();
+        // Ensure that the static asset directory exists
+        $this->createStaticAssetDirectory();
 
 		// Only write data if new script doesn't exist or local file has been updated
 		file_put_contents($newScriptFile, $scriptContent);
@@ -658,40 +658,40 @@ class AssetInjector
 	}
 	
 	/**
-   * @return string
-   */
-  public function getJqueryMigrateUrl()
-  {
-    return $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js';
-  }
-
-	/**
-   * @return string
-   */
-  protected function getBaseJsUrl()
-  {
-    return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_STATIC) . 'frontend/FishPig/WordPress/js/';
-  }
-
-	/**
-   * @return string
-   */
-  protected function getBaseJsPath()
-  {
-    return $this->directoryList->getPath('static') . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'FishPig' . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
-  }
-
-  /**
-   *
-   */
-  protected function createStaticAssetDirectory()
-  {
-    $assetDir = $this->getBaseJsPath();
-    
-    if (!is_dir($assetDir)) {
-      return @mkdir($assetDir, 0777, true) && is_dir($assetDir);
+     * @return string
+     */
+    public function getJqueryMigrateUrl()
+    {
+        return $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js';
     }
 
-    return true;
-  }
+	/**
+     * @return string
+     */
+    protected function getBaseJsUrl()
+    {
+        return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_STATIC) . 'frontend/FishPig/WordPress/js/';
+    }
+
+	/**
+     * @return string
+     */
+    protected function getBaseJsPath()
+    {
+        return $this->directoryList->getPath('static') . DIRECTORY_SEPARATOR . 'frontend' . DIRECTORY_SEPARATOR . 'FishPig' . DIRECTORY_SEPARATOR . 'WordPress' . DIRECTORY_SEPARATOR . 'js' . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     *
+     */
+    protected function createStaticAssetDirectory()
+    {
+        $assetDir = $this->getBaseJsPath();
+    
+        if (!is_dir($assetDir)) {
+            return @mkdir($assetDir, 0777, true) && is_dir($assetDir);
+        }
+    
+        return true;
+    }
 }

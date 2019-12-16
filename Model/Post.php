@@ -12,25 +12,25 @@ use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Post extends AbstractMeta implements ViewableInterface
 {
-	/*
-	 *
+	/**
+	 * @const string
 	 */
 	const ENTITY = 'wordpress_post';
 
-	/*
+	/**
 	 * @const string
-   */
+     */
 	const CACHE_TAG = 'wordpress_post';
 	
-	/*
+	/**
 	 * Event data
 	 *
 	 * @var string
-   */
+     */
 	protected $_eventPrefix = 'wordpress_post';
 	protected $_eventObject = 'post';
 		
-	/*
+	/**
 	 *
 	 */
 	public function _construct()
@@ -40,7 +40,7 @@ class Post extends AbstractMeta implements ViewableInterface
 		return parent::_construct();
 	}
 
-	/*
+	/**
 	 *
 	 */
 	public function getName()
@@ -48,7 +48,7 @@ class Post extends AbstractMeta implements ViewableInterface
 		return $this->_getData('post_title');
 	}
 	
-	/*
+	/**
 	 *
 	 */
 	public function getMetaDescription()
@@ -410,17 +410,17 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getContent()
 	{
-  	$content = $this->getData('post_content');
-  	
-  	if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
-    	if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
-      	if (strpos($renderedContent, '[') !== false) {
-        	$renderedContent = $this->shortcodeManager->renderShortcode($renderedContent, $this);
-        }
+      	$content = $this->getData('post_content');
       	
-      	return $renderedContent;
-      }
-  	}
+          if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
+            if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
+                if (strpos($renderedContent, '[') !== false) {
+            	    $renderedContent = $this->shortcodeManager->renderShortcode($renderedContent, $this);
+                }
+          	
+                return $renderedContent;
+            }
+      	}
 
 		$key = '__processed_post_content';
 		
