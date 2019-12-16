@@ -4,20 +4,17 @@
  */
 namespace FishPig\WordPress\Model;
 
-/* Parent Class */
 use FishPig\WordPress\Model\AbstractResourcelessModel;
-
-/* Interface */
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
 class Homepage extends AbstractResourcelessModel implements ViewableInterface
 {
-	/*
+	/**
 	 * @var string
 	 */
 	const ENTITY = 'wordpress_homepage';
 
-	/*
+	/**
 	 * @const string
 	 */
 	const CACHE_TAG = 'wordpress_homepage';
@@ -25,7 +22,7 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
 	/*
 	 * @var
 	 */    
-  protected $staticPage;
+    protected $staticPage;
     
 	/*
 	 *
@@ -62,9 +59,21 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
 	 */
 	public function getContent()
 	{
-    if ($staticPage = $this->getFrontStaticPage()) {
-      return $staticPage->getContent();
-    }
+        if ($staticPage = $this->getFrontStaticPage()) {
+            return $staticPage->getContent();
+        }
+
+		return $this->getBlogDescription();
+	}
+	
+	/**
+	 *
+	 */
+	public function getMetaDescription()
+	{
+        if ($staticPage = $this->getFrontStaticPage()) {
+            return $staticPage->getMetaDescription();   
+        }
 
 		return $this->getBlogDescription();
 	}

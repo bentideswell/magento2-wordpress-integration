@@ -53,7 +53,15 @@ class Post extends AbstractMeta implements ViewableInterface
 	 */
 	public function getMetaDescription()
 	{
-		return $this->getExcerpt(20);
+    	if ($this->hasPostExcerpt()) {
+        	return $this->getData('post_excerpt');
+    	}
+    	
+        if ($teaser = $this->_getPostTeaser(false)) {
+            return $teaser;
+        }
+        
+        return '';
 	}
 
 	/*
