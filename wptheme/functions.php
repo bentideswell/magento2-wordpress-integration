@@ -27,19 +27,19 @@ class FishPig_Theme
 	{
 		$this->setupDataFromMagento();
 
-		add_action('after_setup_theme',  array($this, 'onActionAfterSetupTheme'));
-		add_action('wp_loaded',          array($this, 'onActionWpLoaded'));
-		add_action('widgets_init',       array($this, 'onActionWidgetsInit'));
-		add_action('init',               array($this, 'onActionInit'));
-		add_filter('redirect_canonical', array($this, 'onFilterRedirectCanonical'));
-#		add_filter('preview_post_link',  array($this, 'onFilterPreviewPostLink'), 10, 2);
-		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
-		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
-        add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
-        add_action('wp_footer',          array($this, 'onActionWPFooter'), 12);
-	   	add_action('save_post',          array($this, 'preRenderPostContent'));
-		add_action('admin_init',         array($this, 'onAdminInit'));
-		add_action('admin_menu',         array($this, 'onAdminMenu'));
+		add_action('after_setup_theme',          array($this, 'onActionAfterSetupTheme'));
+		add_action('wp_loaded',                  array($this, 'onActionWpLoaded'));
+		add_action('widgets_init',               array($this, 'onActionWidgetsInit'));
+		add_action('init',                       array($this, 'onActionInit'));
+		add_filter('redirect_canonical',         array($this, 'onFilterRedirectCanonical'));
+#		add_filter('preview_post_link',          array($this, 'onFilterPreviewPostLink'), 10, 2);
+		add_filter('rest_url',                   array($this, 'onFilterRestUrl'));
+		add_filter('status_header',              array($this, 'onFilterStatusHeader'), 10, 4);
+        add_filter('wp_headers',                 array($this, 'onFilterWPHeaders'), 10, 4);
+        add_action('wp_footer',                  array($this, 'onActionWPFooter'), 12);
+	   	add_action('save_post',                  array($this, 'preRenderPostContent'));
+		add_action('admin_menu',                 array($this, 'onAdminMenu'));
+		add_filter('vc_front_render_shortcodes', array($this, 'onVcFrontRenderShortcodes'), 99999);
 		
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
@@ -470,35 +470,13 @@ class FishPig_Theme
         }
     }
     
-	/*
-	 *
-	 *
-	 * @return $this
-	 */
-	public function onAdminInit()
-	{
-  	/*
-		register_setting( 'reading', 'custom_404_page_id', 'esc_attr' );
-		
-		add_settings_field(
-			'custom_404_page_id',
-			'<label for="custom_404_page_id">' . __( 'Custom Magento 404 Page' , 'custom_404_page_id' ) . '</label>',
-			(function() {
-        echo wp_dropdown_pages(array(
-  				'name' => 'custom_404_page_id',
-  				'echo' => 0,
-  				'show_option_none' => __( '&mdash; Select &mdash;' ),
-  				'option_none_value' => '0',
-  				'selected' => get_option( 'custom_404_page_id' ),
-        ));       
-#        echo '<p class="description">It is up to search engines to honor this request.</p>';
-			}),
-			'reading'
-		);
-		*/
-		
-		return $this;
-	}
+    /**
+     *
+     */    
+    public function onVcFrontRenderShortcodes($content)
+    {
+        return '<!--FP-the_content-->' . $content . '<!--/FP-the_content-->';
+    }
 }
 
 /*
