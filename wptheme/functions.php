@@ -35,10 +35,11 @@ class FishPig_Theme
 #		add_filter('preview_post_link',  array($this, 'onFilterPreviewPostLink'), 10, 2);
 		add_filter('rest_url',           array($this, 'onFilterRestUrl'));
 		add_filter('status_header',      array($this, 'onFilterStatusHeader'), 10, 4);
-    add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
-    add_action('wp_footer',          array($this, 'onActionWPFooter'), 12);
-		add_action('save_post',          array($this, 'preRenderPostContent'));
+        add_filter('wp_headers',         array($this, 'onFilterWPHeaders'), 10, 4);
+        add_action('wp_footer',          array($this, 'onActionWPFooter'), 12);
+	   	add_action('save_post',          array($this, 'preRenderPostContent'));
 		add_action('admin_init',         array($this, 'onAdminInit'));
+		add_action('admin_menu',         array($this, 'onAdminMenu'));
 		
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
@@ -50,9 +51,9 @@ class FishPig_Theme
 		$this->includeLocalPhpFile();
 
 		// We have Yoast so lets disable some redirects
-    if (isset($GLOBALS['wpseo_rewrite'])) {
-      remove_filter('request', array($GLOBALS['wpseo_rewrite'], 'request'));
-    }
+        if (isset($GLOBALS['wpseo_rewrite'])) {
+            remove_filter('request', array($GLOBALS['wpseo_rewrite'], 'request'));
+        }
 	}
 
 	/*
@@ -77,7 +78,6 @@ class FishPig_Theme
 	protected function setupDataFromMagento()
 	{
 		if ($data = get_option('fishpig_magento')) {
-			
 			if (strlen($data) > 2 && substr($data, 0, 1) === '{' && substr($data, -1) === '}') {
 				$this->data = json_decode($data, true);
 			}			
@@ -199,9 +199,9 @@ class FishPig_Theme
 		}
 		
 
-    global $wp_widget_factory;
+        global $wp_widget_factory;
     
-    remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'));
+        remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'));
 	}
 
 	/*
@@ -231,30 +231,28 @@ class FishPig_Theme
 	 */
 	public function preRenderPostContent($post_id)
 	{
-  	try {
-    	$post    = get_post($post_id);
-      $content = apply_filters('the_content', $post->post_content);
+        try {
+    	    $post    = get_post($post_id);
+            $content = apply_filters('the_content', $post->post_content);
 
-#    	if (function_exists('do_blocks')) {
-#      	$content = do_blocks($content);
-#    	}
+#       	if (function_exists('do_blocks')) {
+#              	$content = do_blocks($content);
+#    	    }
 
-    	if (!empty($GLOBALS['wp_embed'])) {
-        $content = $GLOBALS['wp_embed']->autoembed($content);
-      }
+        	if (!empty($GLOBALS['wp_embed'])) {
+                $content = $GLOBALS['wp_embed']->autoembed($content);
+            }
       
-      // Auto include the related products shortcode
-      if (class_exists('FishPig_RelatedProducts')) {
-        if ((int)get_option('fprp_autoinclude', 1) === 1) {
-          $content .= '[related_products]';
+            // Auto include the related products shortcode
+            if (class_exists('FishPig_RelatedProducts')) {
+                if ((int)get_option('fprp_autoinclude', 1) === 1) {
+                    $content .= '[related_products]';
+                }
+            }
+          
+            update_post_meta($post_id, '_post_content_rendered', $content);
         }
-      }
-      
-      update_post_meta($post_id, '_post_content_rendered', $content);
-    }
-    catch (Exception $e) {
-
-    }
+        catch (Exception $e) {}
 	}
 	
 	/*
@@ -298,6 +296,7 @@ class FishPig_Theme
 				$pl = str_replace($matches[1], substr(wp_hash(wp_nonce_tick()."|post_preview_{$post->ID}|0|", 'nonce'), -12, 10), $pl);
 			}
 		}
+
 		return $pl . '&fishpig=' . time();
 	}
 
@@ -342,11 +341,11 @@ class FishPig_Theme
    */	
 	public function onFilterWPHeaders($headers)
 	{
-  	if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'text/html') !== false) {
-    	unset($headers['Content-Type']);
-    }
-    
-    return $headers;
+      	if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'text/html') !== false) {
+        	unset($headers['Content-Type']);
+        }
+        
+        return $headers;
 	}
 
 	/*
@@ -419,20 +418,20 @@ class FishPig_Theme
 	}
 
 	/*
-   *
-   *
-   *
-   */
+     *
+     *
+     *
+     */
 	public function onActionWPFooter()
 	{
-    wp_deregister_script('wp-embed');
+        wp_deregister_script('wp-embed');
     
-  	// Divi
-    if (isset($_GET['et_fb'])) {
-      wp_dequeue_style('wp-auth-check');
-      wp_dequeue_script('wp-auth-check');
-      remove_action('wp_print_footer_scripts', 'et_fb_output_wp_auth_check_html', 5);
-    }
+        // Divi
+        if (isset($_GET['et_fb'])) {
+            wp_dequeue_style('wp-auth-check');
+            wp_dequeue_script('wp-auth-check');
+            remove_action('wp_print_footer_scripts', 'et_fb_output_wp_auth_check_html', 5);
+        }
 	}
 
 	/*
@@ -454,7 +453,23 @@ class FishPig_Theme
 	{
 		return (int)$this->getMagentoData('version') === 2;
 	}
-	
+
+	/**
+     * Remove the Customizer menu link
+     */
+    public function onAdminMenu()
+    {
+        global $submenu;
+
+        if (isset($submenu['themes.php'])) {
+            foreach($submenu['themes.php'] as $it => $menuItem ) {
+                if (in_array('Customize', $menuItem) || in_array('Customizer', $menuItem)) {
+                    unset($submenu['themes.php'][$it]);
+                }
+            }
+        }
+    }
+    
 	/*
 	 *
 	 *
@@ -500,3 +515,13 @@ else {
 	 * We don't want this to run in Magento as it's a WordPress file
 	 */
 }
+
+/**
+ *
+ * DO NOT EDIT THIS FILE!
+ *
+ * Any changes you make to this file will be lost
+ * To customise things, create a file at wp-content/themes/fishpig/local.php
+ * This file will not be deleted or overwritten and is automatically included by this file.
+ *
+ */
