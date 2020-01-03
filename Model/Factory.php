@@ -14,15 +14,17 @@ class Factory
 	 */
 	protected $factories = [];
 	
+	/**
+     *
+     */
 	public function __construct(array $factories)
 	{
-  	foreach($factories as $factory) {
-    	$this->factories[get_class($factory)] = $factory;
-  	}
-
+        foreach($factories as $factory) {
+        	$this->factories[get_class($factory)] = $factory;
+        }
 	}
 	
-	/*
+	/**
 	 * Create an instance of $type
 	 *
 	 * @param  string $type
@@ -31,24 +33,13 @@ class Factory
 	public function create($type, array $args = [])
 	{
 		if ($className = $this->getClassNameFromType($type)) {
-  		/*
-    	if (!isset($this->factories[$className . 'Factory'])) {
-      	$e = new \Exception('');
-        echo '<pre>' . $e->getTraceAsString() . '</pre><br/><br/>';
-        echo $className . '<br/>';
-        echo $type;exit;
-      }
-      
-      return $this->factories[$className . 'Factory']->create($args);
-      */
 			return $this->getObjectManager()->create($className, $args);
 		}
 		
 		return false;
 	}
 	
-	/*
-	 *
+	/**
 	 *
 	 * @param  string $type
 	 * @return object|false
@@ -62,8 +53,7 @@ class Factory
 		return false;
 	}
 
-	/*
-	 *
+	/**
 	 *
 	 * @param  string $type
 	 * @return object|false
@@ -73,8 +63,7 @@ class Factory
 		return \Magento\Framework\App\ObjectManager::getInstance();
 	}
 
-	/*
-	 *
+	/**
 	 *
 	 * @param  string $type
 	 * @return string
@@ -86,17 +75,15 @@ class Factory
 		}
 
 		if (strpos($type, 'FishPig') !== 0) {
-  		$type   = trim($type, '\\');
-  		$prefix = __NAMESPACE__ . '\\';
-  		
-  		if (strpos($type, '\\') > 0) {
-  			$prefix = 'FishPig\WordPress\\';
-  		}
+            $type   = trim($type, '\\');
+            $prefix = __NAMESPACE__ . '\\';
 
-      $type = $prefix . $type;
-    }
-    
-    
+            if (strpos($type, '\\') > 0) {
+                $prefix = 'FishPig\WordPress\\';
+            }
+
+            $type = $prefix . $type;
+        }
 
 		return class_exists($type) ? $type : false;
 	}
