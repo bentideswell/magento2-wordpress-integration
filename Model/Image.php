@@ -147,6 +147,14 @@ class Image extends AbstractAttachmentModel
 		return $this->url->getFileUploadUrl();
 	}
 	
+	/**
+     *
+     */
+	public function getFileUploadPath()
+	{
+        return $this->wpContext->getDirectoryList()->getWpContentDir() . DIRECTORY_SEPARATOR . 'uploads';
+	}
+	
 	/*
 	 * Retrieve the alt text for the image
 	 *
@@ -229,7 +237,7 @@ class Image extends AbstractAttachmentModel
 	 */
 	public function exists()
 	{
-  	return ($localFile = $this->getLocalFile()) && is_file($localFile);
+        return ($localFile = $this->getLocalFile()) && is_file($localFile);
 	}
 
 	/**
@@ -237,9 +245,7 @@ class Image extends AbstractAttachmentModel
 	 */
 	public function getLocalFile()
 	{
-    return $this->getFile() 
-      ? $this->wpContext->getDirectoryList()->getWpContentDir() . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $this->getFile() 
-      : false;
+        return $this->getFile() ? $this->getFileUploadPath() . DIRECTORY_SEPARATOR . $this->getFile() : false;
 	}
 
 	/**
@@ -247,13 +253,13 @@ class Image extends AbstractAttachmentModel
 	 */
 	public function getResizer()
 	{
-    if (!is_file($this->getLocalFile())) {
-      return false;
-    }
+        if (!is_file($this->getLocalFile())) {
+            return false;
+        }
 
-  	return \Magento\Framework\App\ObjectManager::getInstance()
-  	  ->get('FishPig\WordPress\Model\ImageResizerFactory')
-  	    ->create()
-  	      ->setImage($this->getLocalFile());
+        return \Magento\Framework\App\ObjectManager::getInstance()
+            ->get('FishPig\WordPress\Model\ImageResizerFactory')
+                ->create()
+                    ->setImage($this->getLocalFile());
 	}
 }

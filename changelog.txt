@@ -1,3 +1,7 @@
+10/01/2020 - 2.0.9.5
+- Added MediaImage widget
+- Added fix for images in multisite additional blogs
+
 03/01/2020 - 2.0.9.4
 - Added in missing image (media_image) widget
 
