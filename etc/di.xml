@@ -29,6 +29,7 @@
 				<item name="network"  xsi:type="object">FishPig\WordPress\Model\Integration\NetworkTest</item>
 				<item name="url"   xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
 				<item name="theme" xsi:type="object">FishPig\WordPress\Model\Integration\ThemeTest</item>
+				<item name="permalink" xsi:type="object">FishPig\WordPress\Model\Integration\PermalinkTest</item>
 				<item name="core"  xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
 			</argument>
 		</arguments>
