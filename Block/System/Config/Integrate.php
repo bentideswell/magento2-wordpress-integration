@@ -145,14 +145,14 @@ class Integrate extends Template
 
 			$this->emulator->startEnvironmentEmulation($storeId);
 
-			$this->integrationManager->runTests();
-			
-			$this->success = sprintf(
-				'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.', 
-				$this->url->getHomeUrl(), 
-				$this->url->getHomeUrl()
-			);
-			
+			if ($this->integrationManager->runTests() === true) {
+    			$this->success = sprintf(
+    				'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.', 
+    				$this->url->getHomeUrl(), 
+    				$this->url->getHomeUrl()
+    			);
+            }
+
 			$this->emulator->stopEnvironmentEmulation();
 		} 
 		catch (\Exception $e) {
