@@ -168,11 +168,15 @@ class AssetInjector
         // Extract <link tags from content
         if (preg_match_all('/<link[^>]+>/', $content, $linkMatches)) {
             foreach($linkMatches[0] as $linkMatch) {
+                if (preg_match('/' . $this->_getIeCondRegex($linkMatch) . '/', $content, $matches)) {
+                    $linkMatch = $matches[0];
+                }
+
                 $metaLinks[] = $linkMatch;
                 $content = str_replace($linkMatch, '', $content);
             }
         }
-        
+
         $content = trim($content);
         
         // IF we have any meta or link tags, add them into the head
@@ -186,10 +190,7 @@ class AssetInjector
 		$scripts    = [];
 		$scriptsStatic  = [];
 		$scriptRegex = '<script.*<\/script>';
-		$regexes = array(
-			'<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $scriptRegex . '[\s]{0,}<!\[endif\]-->',
-			$scriptRegex
-		);
+		$regexes = [$this->_getIeCondRegex($scriptRegex, false), $scriptRegex];
 	
 		// Extract all JS from $content
 		foreach($regexes as $regex) {
@@ -693,5 +694,17 @@ class AssetInjector
         }
     
         return true;
+    }
+    
+    /**
+     *
+     */
+    protected function _getIeCondRegex($inner, $quote = true)
+    {
+        if ($quote) {
+            $inner = preg_quote($inner, '/');
+        }
+        
+        return '<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $inner . '[\s]{0,}<!\[endif\]-->';
     }
 }

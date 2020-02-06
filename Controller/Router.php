@@ -74,14 +74,14 @@ class Router implements RouterInterface
     $this->eventManager = $eventManager;
   }
 
-  /*
-   * @param RequestInterface $request
-   */
+    /**
+     * @param RequestInterface $request
+     */
 	public function match(RequestInterface $request)
 	{
-	  if ($this->integrationManager->runTests() === false) {
-		  return false;
-	  }
+	    if ($this->integrationManager->runTests() === false) {
+            return false;
+	    }
 
 		$this->request  = $request;
 		$fullRequestUri = $this->getPathInfo($request);
@@ -91,10 +91,10 @@ class Router implements RouterInterface
 			return false;
 		}
 
-    $this->eventManager->dispatch(
-      'wordpress_router_match_before', 
-      ['router' => $this, 'blog_route' => $blogRoute, 'full_request_uri' => $fullRequestUri]
-    );
+        $this->eventManager->dispatch(
+            'wordpress_router_match_before', 
+            ['router' => $this, 'blog_route' => $blogRoute, 'full_request_uri' => $fullRequestUri]
+        );
     
 		if (!($requestUri = $this->getRouterRequestUri($request))) {
 			$this->addRouteCallback(array($this, '_getHomepageRoutes'));

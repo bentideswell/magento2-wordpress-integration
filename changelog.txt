@@ -1,3 +1,6 @@
+05/01/2020 - 2.0.9.9
+- Improved AssetInjector so that IE conditional tags are not lost when migrating link tags.
+
 05/01/2020 - 2.0.9.8
 - Removed success message on Admin integrator block when module is disabled for current scope.
 
