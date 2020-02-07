@@ -17,7 +17,9 @@
 				<strong class="product name product-item-name">
 					<a class="product-item-link" href="<?php echo $_product->getProductUrl() ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a>
 				</strong>
+                <?php #echo $block->getReviewsSummaryHtml($_product) ?>
 				<?php echo $block->getProductPrice($_product) ?>
+                <?php #echo $block->getProductSwatchHtml($_product) ?>
 			</li>
 		<?php endforeach; ?>
 		</ol>

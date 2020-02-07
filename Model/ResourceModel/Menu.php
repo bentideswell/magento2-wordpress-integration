@@ -10,8 +10,8 @@ use \FishPig\WordPress\Model\ResourceModel\Term;
 
 class Menu extends Term
 {
-	public function _construct()
-	{
-		$this->_init('wordpress_menu', 'term_id');
-	}
+    public function _construct()
+    {
+        $this->_init('wordpress_menu', 'term_id');
+    }
 }

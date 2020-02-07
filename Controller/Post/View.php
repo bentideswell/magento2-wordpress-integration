@@ -1,24 +1,21 @@
 <?php
-/*
+/**
  *
  */
 namespace FishPig\WordPress\Controller\Post;
 
-/* Parent Class */
 use FishPig\WordPress\Controller\Action;
-
-/* Misc */
 use Magento\Framework\Controller\ResultFactory;
 
 class View extends Action
 {
-  /*
-   * Load and return a Post model
-   *
-   * @return \FishPig\WordPress\Model\Post|false 
-   */
-  protected function _getEntity()
-  {
+    /**
+     * Load and return a Post model
+     *
+     * @return \FishPig\WordPress\Model\Post|false 
+     */
+    protected function _getEntity()
+    {
     $post = $this->factory->create('Post')->load(
       (int)$this->getRequest()->getParam('id')
     );
@@ -28,25 +25,25 @@ class View extends Action
     }
 
     return $post;
-  }
+    }
 
-  /*
-   *
-   *
-   * @return bool
-   */
-  protected function _canPreview()
-  {
+    /**
+     *
+     *
+     * @return bool
+     */
+    protected function _canPreview()
+    {
     return true;
-  }
+    }
 
-  /*
-   *
-   *
-   * @return
-   */
-  protected function _getForward()
-  {
+    /**
+     *
+     *
+     * @return
+     */
+    protected function _getForward()
+    {
     if ($entity = $this->_getEntity()) {
       if ($entity->isFrontPage()) {
 
@@ -55,7 +52,7 @@ class View extends Action
         }
         else if (strpos($this->_url->getCurrentUrl(), 'is_front/1') !== false) {
           $realUrl = $entity->getUrl();
-          
+
           if (strpos($realUrl, 'is_front/1') === false) {
             return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($realUrl);
           }
@@ -65,12 +62,12 @@ class View extends Action
         foreach(['p', 'page_id', 'preview_id'] as $paramKey) {
           if ($previewId = (int)$this->getRequest()->getParam($paramKey)) {
             $previewPost = $this->factory->create('Post')->load($previewId);
-            
+
             if ($previewPost->getId() && !$previewPost->isPublished()) {
               $this->getRequest()->setParam('preview_id', $previewPost->getId());
-  
+
               $this->registry->unregister($previewPost::ENTITY);
-              
+
               return $this->resultFactory
                 ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
                   ->setModule('wordpress')
@@ -85,44 +82,44 @@ class View extends Action
         return $this->_getNoRouteForward();
       }
     }
-    
+
     return parent::_getForward();
-  }
-  
-  /*
-   *
-   */
-  protected function _initLayout()
-  {
+    }
+
+    /**
+     *
+     */
+    protected function _initLayout()
+    {
     parent::_initLayout();
-    
+
     if ($commentId = (int)$this->getRequest()->getParam('comment-id')) {
       $commentStatus = (int)$this->getRequest()->getParam('comment-status');
-      
+
       if ($commentStatus === 0) {
         $this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));
       }
       else {
-        $this->messageManager->addSuccess(__('Your comment has been posted.'));       
+        $this->messageManager->addSuccess(__('Your comment has been posted.'));
       }
     }
-    
-    return $this;
-  }
 
-  /*
-   * Get the blog breadcrumbs
-   *
-   * @return array
-   */
-  protected function _getBreadcrumbs()
-  {
+    return $this;
+    }
+
+    /**
+     * Get the blog breadcrumbs
+     *
+     * @return array
+     */
+    protected function _getBreadcrumbs()
+    {
     if ($this->_getEntity()->isFrontPage()) {
       return [];
     }
-    
+
     $crumbs = parent::_getBreadcrumbs();
-  
+
     // Handle post type breadcrumb
     $postType = $this->getEntityObject()->getTypeInstance();
 
@@ -139,22 +136,22 @@ class View extends Action
     $crumbs['post'] = [
       'label' => (string)__($this->_getEntity()->getName()),
       'title' => (string)__($this->_getEntity()->getName())
-    ];  
+    ];
 
     return $crumbs;
-  }
-    
-  /*
-   * @return array
-   */
-  public function getLayoutHandles()
-  {
+    }
+
+    /**
+     * @return array
+     */
+    public function getLayoutHandles()
+    {
     if (!($post = $this->getEntityObject())) {
       return [];
     }
 
     $postType = $post->getPostType();
-    
+
     if ($postType == 'revision' && $post->getParentPost()) {
       $postType = $post->getParentPost()->getPostType();
       $template = $post->getParentPost()->getMetaValue('_wp_page_template');
@@ -162,19 +159,18 @@ class View extends Action
     else {
       $template = $post->getMetaValue('_wp_page_template');
     }
-    
+
     $layoutHandles = ['wordpress_post_view_default'];
-    
+
     if ($post->isFrontPage()) {
       $layoutHandles[] = 'wordpress_front_page';
     }
-    
+
     $layoutHandles[] = 'wordpress_' . $postType . '_view';
     $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $post->getId();
 
     if ($template) {
       $templateName = str_replace('.php', '', $template);
-      
 
       $layoutHandles[] = 'wordpress_post_view_' . $templateName;
       $layoutHandles[] = 'wordpress_post_view_' . $templateName . '_' . $post->getId();
@@ -188,7 +184,7 @@ class View extends Action
     if ($post->getParentId()) {
       $layoutHandles[] = 'wordpress_' . $postType . '_view_parent_' . $post->getParentId();
     }
-    
+
     return array_merge(parent::getLayoutHandles(), $layoutHandles);
-  }
+    }
 }

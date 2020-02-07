@@ -10,32 +10,32 @@ use Magento\Framework\App\RequestInterface;
 
 class NoRouteHandler implements \Magento\Framework\App\Router\NoRouteHandlerInterface
 {
-  /**
-   * @var Response
-   */
-  protected $response;
-  
-  /**
-   * @var OptionManager
-   */
-  protected $optionManager;
-  
-  /**
-   * @param Response $response
-   * @param OptionManager $optionManager
-   */
-  public function __construct(Response $response, OptionManager $optionManager)
-  {
+    /**
+     * @var Response
+     */
+    protected $response;
+
+    /**
+     * @var OptionManager
+     */
+    protected $optionManager;
+
+    /**
+     * @param Response $response
+     * @param OptionManager $optionManager
+     */
+    public function __construct(Response $response, OptionManager $optionManager)
+    {
     $this->response = $response;
     $this->optionManager = $optionManager;
-  }
-  
-  /**
-   * @param RequestInterface $request
-   * @return bool
-   */
-  public function process(RequestInterface $request)
-  {
+    }
+
+    /**
+     * @param RequestInterface $request
+     * @return bool
+     */
+    public function process(RequestInterface $request)
+    {
     if (!($pageId = (int)$this->optionManager->getOption('custom_404_page_id'))) {
       return false;
     }
@@ -46,7 +46,7 @@ class NoRouteHandler implements \Magento\Framework\App\Router\NoRouteHandlerInte
       ->setControllerName('post')
       ->setActionName('view')
       ->setParam('id', $pageId);
-    
+
     return true;
-  }
+    }
 }

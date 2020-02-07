@@ -1,109 +1,108 @@
 <?php
-/*
+/**
  *
  */
 namespace FishPig\WordPress\Model;
 
-/* Constructor Args */
 use FishPig\WordPress\Helper\Autop;
 use Magento\Cms\Model\Template\FilterProvider;
 
 class ShortcodeManager
 {
-	/*
-	 * @var array
-	 */
-	protected $shortcodes = [];
-	
-	/*
-	 * @var Autop
-	 */
-	protected $autop;
+    /**
+     * @var array
+     */
+    protected $shortcodes = [];
 
-	/*
-	 * @var FilterProvider
-	 */
-	protected $filterProvider;
-	
-	/*
-	 *
-	 *
-	 *
-	 */
-	public function __construct(Autop $autop, FilterProvider $filterProvider, array $shortcodes = [])	
-	{
-		$this->autop          = $autop;
-		$this->filterProvider = $filterProvider;
-		
-		foreach($shortcodes as $alias => $shortcode) {
-			if (!method_exists($shortcode, 'isEnabled') || $shortcode->isEnabled()) {
-				$this->shortcodes[$alias] = $shortcode;
-			}
-		}
-	}
+    /**
+     * @var Autop
+     */
+    protected $autop;
 
-	/*
-	 *
-	 *
-	 *
-	 */
-	public function renderShortcode($input, $args = [])
-	{
-		if ($args && is_object($args)) {
-			$args = ['object' => $args];
-		}
+    /**
+     * @var FilterProvider
+     */
+    protected $filterProvider;
 
-		// Apply Magento block/template filters
-		$input = $this->filterProvider->getBlockFilter()->filter($input);
+    /**
+     *
+     *
+     *
+     */
+    public function __construct(Autop $autop, FilterProvider $filterProvider, array $shortcodes = [])    
+    {
+        $this->autop          = $autop;
+        $this->filterProvider = $filterProvider;
 
-		if ($shortcodes = $this->getShortcodes()) {
-			foreach($shortcodes as $shortcode) {
-				// Legacy support. Old shortcodes returned false when not required
-				if (($returnValue = $shortcode->renderShortcode($input, $args)) !== false) {
-					$input = $returnValue;
-				}
-			}
-		}
+        foreach($shortcodes as $alias => $shortcode) {
+            if (!method_exists($shortcode, 'isEnabled') || $shortcode->isEnabled()) {
+                $this->shortcodes[$alias] = $shortcode;
+            }
+        }
+    }
 
-		return $input;
-	}
-	
-	/*
-	 *
-	 *
-	 *
-	 */
-	public function getShortcodes()
-	{
-		return $this->shortcodes;
-	}
+    /**
+     *
+     *
+     *
+     */
+    public function renderShortcode($input, $args = [])
+    {
+        if ($args && is_object($args)) {
+            $args = ['object' => $args];
+        }
 
-	/*
-	 *
-	 *
-	 *
-	 */
-	public function getShortcodesThatRequireAssets()
-	{
-		$buffer = [];
-		
-		foreach($this->shortcodes as $alias => $shortcode) {
-			if (method_exists($shortcode, 'requiresAssetInjection') && $shortcode->requiresAssetInjection()) {
-				$buffer[$alias] = $shortcode;
-			}
-		}
+        // Apply Magento block/template filters
+        $input = $this->filterProvider->getBlockFilter()->filter($input);
 
-		return $buffer;
-	}
-	
-	/*
-	 *
-	 *
-	 * @param  string $string
-	 * @return string
-	 */
-	public function addParagraphTagsToString($string)
-	{
-		return $this->autop->addParagraphTagsToString($string);
-	}
+        if ($shortcodes = $this->getShortcodes()) {
+            foreach($shortcodes as $shortcode) {
+                // Legacy support. Old shortcodes returned false when not required
+                if (($returnValue = $shortcode->renderShortcode($input, $args)) !== false) {
+                    $input = $returnValue;
+                }
+            }
+        }
+
+        return $input;
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    public function getShortcodes()
+    {
+        return $this->shortcodes;
+    }
+
+    /**
+     *
+     *
+     *
+     */
+    public function getShortcodesThatRequireAssets()
+    {
+        $buffer = [];
+
+        foreach($this->shortcodes as $alias => $shortcode) {
+            if (method_exists($shortcode, 'requiresAssetInjection') && $shortcode->requiresAssetInjection()) {
+                $buffer[$alias] = $shortcode;
+            }
+        }
+
+        return $buffer;
+    }
+
+    /**
+     *
+     *
+     * @param  string $string
+     * @return string
+     */
+    public function addParagraphTagsToString($string)
+    {
+        return $this->autop->addParagraphTagsToString($string);
+    }
 }

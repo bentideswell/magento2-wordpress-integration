@@ -12,52 +12,52 @@ use FishPig\WordPress\Model\DirectoryList as WPDirectoryList;
 
 class HeadAdditional extends \Magento\Framework\View\Element\AbstractBlock
 {
-  /**
-   * @var ModuleManager
-   */
-  protected $moduleManager;
-  
-  /**
-   * @var Layout
-   */
-  protected $layout;
+    /**
+     * @var ModuleManager
+     */
+    protected $moduleManager;
 
-  /**
-   * @var WPUrl
-   */
-  protected $wpUrl;
-  
-  /**
-   * @var WPDirectoryList
-   */
-  protected $wpDirectoryList;
-  
-  /**
-   * @param Context $contenxt
-   * @param array $data = []
-   */
-  public function __construct(
+    /**
+     * @var Layout
+     */
+    protected $layout;
+
+    /**
+     * @var WPUrl
+     */
+    protected $wpUrl;
+
+    /**
+     * @var WPDirectoryList
+     */
+    protected $wpDirectoryList;
+
+    /**
+     * @param Context $contenxt
+     * @param array $data = []
+     */
+    public function __construct(
     Context $context, 
     ModuleManager $moduleManager, 
     Layout $layout, 
     WPUrl $wpUrl, 
     WPDirectoryList $wpDirectoryList, 
     array $data = []
-  )
-  {
+    )
+    {
     $this->moduleManager = $moduleManager;
     $this->layout = $layout;
     $this->wpUrl = $wpUrl;
     $this->wpDirectoryList = $wpDirectoryList;
-    
+
     parent::__construct($context, $data);
-  }
-  
-  /**
-   * @return string
-   */
-  protected function _toHtml()
-  {
+    }
+
+    /**
+     * @return string
+     */
+    protected function _toHtml()
+    {
     if ($this->moduleManager->isEnabled('FishPig_WordPress_PluginShortcodeWidget')) {
       return '';
     }
@@ -66,7 +66,7 @@ class HeadAdditional extends \Magento\Framework\View\Element\AbstractBlock
     $baseWpPath = $this->wpDirectoryList->getBasePath();
     $html = [];
     $layoutHandles = $this->layout->getUpdate()->getHandles();
-    
+
     if (in_array('wordpress_post_view_default', $layoutHandles)) {    
       $cssFiles = [
         'wp-block-library-css' => 'wp-includes/css/dist/block-library/style.min.css',
@@ -79,7 +79,7 @@ class HeadAdditional extends \Magento\Framework\View\Element\AbstractBlock
         }
       }
     }
-    
+
     return $html ? implode(PHP_EOL, $html) : '';
-  }
+    }
 }

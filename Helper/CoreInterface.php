@@ -6,5 +6,5 @@ namespace FishPig\WordPress\Helper;
 
 interface CoreInterface
 {
-  
+
 }

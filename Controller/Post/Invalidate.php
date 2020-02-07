@@ -1,15 +1,12 @@
 <?php
-/*
+/**
  *
  *
  *
  */
 namespace FishPig\WordPress\Controller\Post;
 
-/* Parent Class */
 use Magento\Framework\App\Action\Action;
-
-/* Constructor Args */
 use Magento\Framework\App\Action\Context;
 use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Model\OptionManager;
@@ -17,113 +14,113 @@ use Magento\Framework\App\CacheInterface;
 
 class Invalidate extends Action
 {
-	/*
-	 *
-	 * @var Factory
-	 *
-	 */
-	protected $factory;
-	
-	/*
-	 *
-	 * @var OptionManager
-	 *
-	 */
-	protected $optionManager;
+    /**
+     *
+     * @var Factory
+     *
+     */
+    protected $factory;
 
-	/*
-	 *
-	 * @var CacheInterface
-	 *
-	 */
-	protected $cacheManager;
+    /**
+     *
+     * @var OptionManager
+     *
+     */
+    protected $optionManager;
 
-	/*
-	 *
-	 * @var ManagerInterface
-	 *
-	 */
-	protected $eventManager;
+    /**
+     *
+     * @var CacheInterface
+     *
+     */
+    protected $cacheManager;
 
-	/*
-	 *
-	 *
-	 *
-	 */
-	public function __construct(Context $context,OptionManager $optionManager, Factory $factory, CacheInterface $cacheManager)
-	{
-		$this->optionManager = $optionManager;
-		$this->factory       = $factory;
-		$this->cacheManager  = $cacheManager;
-		$this->eventManager  = $context->getEventManager();
+    /**
+     *
+     * @var ManagerInterface
+     *
+     */
+    protected $eventManager;
 
-		parent::__construct($context);
-	}
+    /**
+     *
+     *
+     *
+     */
+    public function __construct(Context $context,OptionManager $optionManager, Factory $factory, CacheInterface $cacheManager)
+    {
+        $this->optionManager = $optionManager;
+        $this->factory       = $factory;
+        $this->cacheManager  = $cacheManager;
+        $this->eventManager  = $context->getEventManager();
 
-	/*
-	 *
-	 *
-	 * @return void
-	 */
-	public function execute()
-	{
-		$this->getResponse()->appendBody(
-			json_encode([
-				'result' => $this->invalidateCache() ? 'success' : 'failure'
-			])
-		);
-	}
+        parent::__construct($context);
+    }
 
-	/*
-	 *
-	 * Attempt to invalidate cache entry
-	 *
-	 */
-	protected function invalidateCache()
-	{
-		$postId = (int)$this->getRequest()->getParam('id');
-		$nonce  = $this->getRequest()->getParam('nonce');
-		
-		if (!$this->verifyNonce($nonce, 'invalidate_' . $postId)) {
-			return false;
-		}
+    /**
+     *
+     *
+     * @return void
+     */
+    public function execute()
+    {
+        $this->getResponse()->appendBody(
+            json_encode([
+                'result' => $this->invalidateCache() ? 'success' : 'failure'
+            ])
+        );
+    }
 
-		$post = $this->factory->create('Post')->load($postId);
-		
-		if (!$post->getId()) {
-			return false;
-		}
+    /**
+     *
+     * Attempt to invalidate cache entry
+     *
+     */
+    protected function invalidateCache()
+    {
+        $postId = (int)$this->getRequest()->getParam('id');
+        $nonce  = $this->getRequest()->getParam('nonce');
 
-		// Clean cache related objects and then allow FPC plugins to do the same
-		$post->cleanModelCache();
-		$this->eventManager->dispatch('clean_cache_by_tags', ['object' => $post]);
+        if (!$this->verifyNonce($nonce, 'invalidate_' . $postId)) {
+            return false;
+        }
 
-		return true;
-	}
+        $post = $this->factory->create('Post')->load($postId);
 
-	/*
-	 *
-	 * Validate given nonce
-	 *
-	 */
-	protected function verifyNonce($nonce, $action)
-	{
-		if (!($salt = $this->optionManager->getOption('fishpig_salt'))) {
-			return false;
-		}
+        if (!$post->getId()) {
+            return false;
+        }
 
-		$nonce_tick = ceil(time() / ( 86400 / 2 ));
+        // Clean cache related objects and then allow FPC plugins to do the same
+        $post->cleanModelCache();
+        $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $post]);
 
-		// 0-12 hours
-		if (substr(hash_hmac('sha256', $nonce_tick . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
-			return true;
-		}
+        return true;
+    }
 
-		// 12-24 hours
-		if (substr(hash_hmac('sha256', ($nonce_tick - 1) . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
-			return true;
-		}
+    /**
+     *
+     * Validate given nonce
+     *
+     */
+    protected function verifyNonce($nonce, $action)
+    {
+        if (!($salt = $this->optionManager->getOption('fishpig_salt'))) {
+            return false;
+        }
 
-		return false;
-	}
+        $nonce_tick = ceil(time() / ( 86400 / 2 ));
+
+        // 0-12 hours
+        if (substr(hash_hmac('sha256', $nonce_tick . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
+            return true;
+        }
+
+        // 12-24 hours
+        if (substr(hash_hmac('sha256', ($nonce_tick - 1) . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
+            return true;
+        }
+
+        return false;
+    }
 }

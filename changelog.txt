@@ -1,3 +1,6 @@
+07/01/2020 - 2.0.9.10
+- Code formatting clean up
+
 05/01/2020 - 2.0.9.9
 - Improved AssetInjector so that IE conditional tags are not lost when migrating link tags.
 

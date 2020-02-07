@@ -1,141 +1,126 @@
 <?php
-/*
+/**
  *
  */
 namespace FishPig\WordPress\Model;
 
-/* Constructor Args */
 use FishPig\WordPress\Model\DirectoryList;
 use Magento\Store\Model\StoreManagerInterface;
-
-/* Misc */
 use FishPig\WordPress\Model\Integration\IntegrationException;
 
 class WPConfig
 {   
-	/*
-	 *
-	 * @var DirectoryList
-	 *
-	 */
-	protected $wpDirectoryList;
-	
-	/*
-	 *
-	 * @var StoreManagerInterface
-	 *
-	 */
-	protected $storeManager;
-	
-	/*
-	 *
-	 * @var array
-	 *
-	 */
-	protected $data = [];
-	
-	/*
-	 *
-	 *
-	 */
-	public function __construct(DirectoryList $wpDirectoryList, StoreManagerInterface $storeManager)
-	{
-		$this->storeManager    = $storeManager;
-		$this->wpDirectoryList = $wpDirectoryList;
-	}
+    /**
+     * @var DirectoryList
+     */
+    protected $wpDirectoryList;
 
-	/*
-	 *
-	 *
-	 */
-	protected function initialise()
-	{
-		$storeId = $this->getStoreId();
-		
-		if (!isset($this->data[$storeId])) {
-			$this->data[$storeId] = false;
+    /**
+     * @var StoreManagerInterface
+     */
+    protected $storeManager;
 
-			$configFile = $this->getConfigFilePath();
-			
-			if (!$configFile || !is_file($configFile)) {
-				throw new \Exception('WordPress doesn\'t appear to be installed.');
-			}
-			
-			$wpConfig = file_get_contents($configFile);
+    /**
+     * @var array
+     */
+    protected $data = [];
 
-			# Cleanup comments
-			$wpConfig = str_replace("\n", "\n\n", $wpConfig);
-			$wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
-			$wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
-			$wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
+    /**
+     *
+     */
+    public function __construct(DirectoryList $wpDirectoryList, StoreManagerInterface $storeManager)
+    {
+        $this->storeManager    = $storeManager;
+        $this->wpDirectoryList = $wpDirectoryList;
+    }
 
-			if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
-				IntegrationException::throwException('Unable to extract values from wp-config.php');
-			}
+    /**
+     *
+     */
+    protected function initialise()
+    {
+        $storeId = $this->getStoreId();
 
-			$this->data[$storeId] = array_combine($matches[1], $matches[3]);
-			
-			if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {			
-				$temp = array_combine($matches[1], $matches[2]);
-				
-				foreach($temp as $k => $v) {
-					if ($v === 'true') {
-						$this->data[$storeId][$k] = true;
-					}
-					else if ($v === 'false') {
-						$this->data[$storeId][$k] = false;
-					}
-					else {
-						$this->data[$storeId][$k] = $v;
-					}
-				}
-			}
+        if (!isset($this->data[$storeId])) {
+            $this->data[$storeId] = false;
 
-			if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
-				$this->data[$storeId]['DB_TABLE_PREFIX'] = $match[2];
-			}
-			else {
-				$this->data[$storeId]['DB_TABLE_PREFIX'] = 'wp_';
-			}
-		}
-	}
-	
-	/*
-	 *
-	 *
-	 * @param  string|null $key = null
-	 * @return mixed
-	 */
-	public function getData($key = null)
-	{
-		$storeId = $this->getStoreId();
-		
-		$this->initialise();
-		
-		if (is_null($key)) {
-			return isset($this->data[$storeId]) ? $this->data[$storeId] : false;
-		}
-		
-		return isset($this->data[$storeId][$key]) ? $this->data[$storeId][$key] : false;
-	}
-	
-	/*
-	 * Get the store ID
-	 *
-	 * @return int
-	 */
-	protected function getStoreId()
-	{
-		return (int)$this->storeManager->getStore()->getId();
-	}
-	
-	/*
-	 * Get the path to the wp-config.php file
-	 *
-	 * @return string
-	 */
-	public function getConfigFilePath()
-	{
-		return ($basePath = $this->wpDirectoryList->getBasePath()) ? $basePath . '/wp-config.php' : false;
-	}
+            $configFile = $this->getConfigFilePath();
+
+            if (!$configFile || !is_file($configFile)) {
+                throw new \Exception('WordPress doesn\'t appear to be installed.');
+            }
+
+            $wpConfig = file_get_contents($configFile);
+
+            # Cleanup comments
+            $wpConfig = str_replace("\n", "\n\n", $wpConfig);
+            $wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
+            $wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
+            $wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
+
+            if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
+                IntegrationException::throwException('Unable to extract values from wp-config.php');
+            }
+
+            $this->data[$storeId] = array_combine($matches[1], $matches[3]);
+
+            if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {            
+                $temp = array_combine($matches[1], $matches[2]);
+
+                foreach($temp as $k => $v) {
+                    if ($v === 'true') {
+                        $this->data[$storeId][$k] = true;
+                    }
+                    else if ($v === 'false') {
+                        $this->data[$storeId][$k] = false;
+                    }
+                    else {
+                        $this->data[$storeId][$k] = $v;
+                    }
+                }
+            }
+
+            if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
+                $this->data[$storeId]['DB_TABLE_PREFIX'] = $match[2];
+            }
+            else {
+                $this->data[$storeId]['DB_TABLE_PREFIX'] = 'wp_';
+            }
+        }
+    }
+
+    /**
+     * @param  string|null $key = null
+     * @return mixed
+     */
+    public function getData($key = null)
+    {
+        $storeId = $this->getStoreId();
+
+        $this->initialise();
+
+        if (is_null($key)) {
+            return isset($this->data[$storeId]) ? $this->data[$storeId] : false;
+        }
+
+        return isset($this->data[$storeId][$key]) ? $this->data[$storeId][$key] : false;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getStoreId()
+    {
+        return (int)$this->storeManager->getStore()->getId();
+    }
+
+    /**
+     * Get the path to the wp-config.php file
+     *
+     * @return string
+     */
+    public function getConfigFilePath()
+    {
+        return ($basePath = $this->wpDirectoryList->getBasePath()) ? $basePath . '/wp-config.php' : false;
+    }
 }
