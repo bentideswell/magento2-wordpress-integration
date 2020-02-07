@@ -12,19 +12,29 @@ use Magento\Store\Model\ScopeInterface;
 
 class DirectoryList
 {   
-    /**/
+    /**
+     * @
+     */
     protected $scopeConfig;
 
-    /**/
+    /**
+     * @
+     */
     protected $storeManager;
 
-    /**/
+    /**
+     * @
+     */
     protected $wpConfig;
 
-    /**/
+    /**
+     * @
+     */
     protected $basePath = [];
 
-    /**/
+    /**
+     * @
+     */
     public function __construct(StoreManagerInterface $storeManager, ScopeConfigInterface $scopeConfig, WPConfig $wpConfig)
     {
         $this->scopeConfig  = $scopeConfig;
@@ -32,7 +42,8 @@ class DirectoryList
         $this->wpConfig     = $wpConfig;
     }
 
-    /** @return string
+    /**
+     * @return string
      */
     public function getBasePath()
     {

@@ -60,7 +60,7 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
         return $this->getBlogDescription();
     }
 
-    /*
+    /**
      *
      */
     public function getMetaDescription()
