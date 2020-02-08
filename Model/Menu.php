@@ -11,7 +11,7 @@ use \FishPig\WordPress\Model\Term;
 class Menu extends Term
 {
     /**
-     *
+     * @const string
      */
     const ENTITY = 'wordpress_menu';
 
@@ -21,8 +21,6 @@ class Menu extends Term
     const CACHE_TAG = 'wordpress_menu';
 
     /**
-     * Event data
-     *
      * @var string
      */
     protected $_eventPrefix      = 'wordpress_menu';
@@ -40,7 +38,7 @@ class Menu extends Term
      */
     public function _construct()
     {
-    $this->_init('FishPig\WordPress\Model\ResourceModel\Menu');
+        $this->_init('FishPig\WordPress\Model\ResourceModel\Menu');
 
         return parent::_construct();
     }
@@ -161,6 +159,6 @@ class Menu extends Term
      */    
     protected function _getObjectResourceModel()
     {
-    return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection')->addParentItemIdFilter(0);
+        return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection')->addParentItemIdFilter(0);
     }
 }

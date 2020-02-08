@@ -10,8 +10,6 @@ use \Exception;
 class IntegrationException extends Exception
 {
     /**
-     *
-     *
      * @return 
      */
     static public function throwException($message)

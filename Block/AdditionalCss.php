@@ -26,10 +26,10 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
      */
     public function __construct(Context $context, Theme $theme, PostFactory $postFactory)
     {
-    $this->theme = $theme;
-    $this->postFactory = $postFactory;
+        $this->theme = $theme;
+        $this->postFactory = $postFactory;
 
-    parent::__construct($context);
+        parent::__construct($context);
     }
 
     /**
@@ -37,11 +37,11 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
      */
     public function toHtml()
     {
-    if ($additionalCss = $this->getAdditionalCss()) {
-      return $additionalCss;
-    }
+        if ($additionalCss = $this->getAdditionalCss()) {
+            return $additionalCss;
+        }
 
-    return '';
+        return '';
     } 
 
     /**
@@ -49,27 +49,27 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
      */
     public function getAdditionalCss()
     {
-    if (!$this->canIncludeCss()) {
-      return false;
-    }
+        if (!$this->canIncludeCss()) {
+            return false;
+        }
 
-    $postId = (int)$this->theme->getThemeMods('custom_css_post_id');
+        $postId = (int)$this->theme->getThemeMods('custom_css_post_id');
 
-    if (!$postId) {
-      return false;
-    }
+        if (!$postId) {
+            return false;
+        }
 
-    $post = $this->postFactory->create()->load($postId);
+        $post = $this->postFactory->create()->load($postId);
 
-    if (!$post->getId()) {
-      return false;
-    }
+        if (!$post->getId()) {
+            return false;
+        }
 
-    if ($customCss = trim($post->getData('post_content'))) {
-      return '<style type="text/css" id="wp-custom-css">' . $customCss . '</style>';
-    }
+        if ($customCss = trim($post->getData('post_content'))) {
+            return '<style type="text/css" id="wp-custom-css">' . $customCss . '</style>';
+        }
 
-    return false;
+        return false;
     }
 
     /**
@@ -79,6 +79,6 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
      */
     public function canIncludeCss()
     {
-    return true;
+        return true;
     } 
 }

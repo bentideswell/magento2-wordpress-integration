@@ -10,13 +10,9 @@ use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 class Homepage extends AbstractResourcelessModel implements ViewableInterface
 {
     /**
-     * @var string
-     */
-    const ENTITY = 'wordpress_homepage';
-
-    /**
      * @const string
      */
+    const ENTITY = 'wordpress_homepage';
     const CACHE_TAG = 'wordpress_homepage';
 
     /**
@@ -97,7 +93,10 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * If a page is set as a custom homepage, get it's ID @return false|int
+     * If a page is set as a custom homepage, get it's ID
+     *
+     * @return int|false
+
      */
     public function getFrontPageId()
     {
@@ -111,7 +110,9 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * If a page is set as a custom homepage, get it's ID @return false|int
+     * If a page is set as a custom homepage, get it's ID
+     *
+     * @return int|false
      */
     public function getPageForPostsId()
     {

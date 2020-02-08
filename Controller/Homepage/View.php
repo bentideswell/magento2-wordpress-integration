@@ -60,21 +60,21 @@ class View extends Action
         $handles = ['wordpress_homepage_view'];
 
         if ($entity = $this->_getEntity()) {
-          if (!$entity->getStaticFrontPageId()) {
-              $handles[] = 'wordpress_front_page';
-          }
+            if (!$entity->getStaticFrontPageId()) {
+                $handles[] = 'wordpress_front_page';
+            }
 
-      if ($page = $entity->getFrontStaticPage()) {
-        if ($template = $page->getMetaValue('_wp_page_template')) {
-          if ($template !== 'default') {
-              $templateName = str_replace('.php', '', $template);
+            if ($page = $entity->getFrontStaticPage()) {
+                if ($template = $page->getMetaValue('_wp_page_template')) {
+                    if ($template !== 'default') {
+                        $templateName = str_replace('.php', '', $template);
 
-              $handles[] = 'wordpress_post_view_' . $templateName;
-              $handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
-          }
-        } 
-      }
-    }
+                        $handles[] = 'wordpress_post_view_' . $templateName;
+                        $handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
+                    }
+                } 
+            }
+        }
 
         return array_merge(parent::getLayoutHandles(), $handles);
     }

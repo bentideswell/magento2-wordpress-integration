@@ -23,7 +23,7 @@ class PermalinkTest
     }
 
     /**
-     *
+     * @return 
      */
     public function runTest()
     {

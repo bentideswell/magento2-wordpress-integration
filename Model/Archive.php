@@ -28,7 +28,7 @@ class Archive extends AbstractModel implements ViewableInterface
     }
 
     /**
-     *
+     * @return
      */    
     public function getName()
     {

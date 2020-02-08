@@ -63,8 +63,6 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Get the page title
-     *
      * @return string
      */
     public function getPageTitle()
@@ -73,8 +71,6 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Get the meta keywords
-     *
      * @return string
      */
     public function getMetaKeywords()
@@ -83,8 +79,6 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Get the robots meta value
-     *
      * @return string
      */
     public function getRobots()
@@ -95,8 +89,6 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Get the canonical URL
-     *
      * @return string
      */
     public function getCanonicalUrl()
@@ -151,8 +143,6 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Retrieve the post GUID
-     *
      * @return string
      */    
     public function getGuid()
@@ -274,7 +264,7 @@ class Post extends AbstractMeta implements ViewableInterface
      *
      * @param string $taxonomy
      * @return \FishPig\WordPress\Model\Term
-      */
+     */
     public function getParentTerm($taxonomy)
     {
         $terms = $this->getTermCollection($taxonomy)
@@ -296,7 +286,7 @@ class Post extends AbstractMeta implements ViewableInterface
         return $this->factory->create('FishPig\WordPress\Model\Term')
           ->getCollection()
               ->addTaxonomyFilter($taxonomy)
-        ->addPostIdFilter($this->getId());
+              ->addPostIdFilter($this->getId());
     }
 
     /**
@@ -414,9 +404,9 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function getContent()
     {
-          $content = $this->getData('post_content');
+        $content = $this->getData('post_content');
 
-          if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
+        if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
             if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
                 if (strpos($renderedContent, '[') !== false) {
                     $renderedContent = $this->shortcodeManager->renderShortcode($renderedContent, $this);
@@ -424,7 +414,7 @@ class Post extends AbstractMeta implements ViewableInterface
 
                 return $renderedContent;
             }
-          }
+        }
 
         $key = '__processed_post_content';
 
@@ -521,6 +511,9 @@ class Post extends AbstractMeta implements ViewableInterface
         return $this->_getData('user');
     }
 
+    /**
+     * @return int
+     */
     public function getUserId()
     {
         return (int)$this->getPostAuthor();
@@ -634,8 +627,7 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function canBeViewed()
     {
-        return $this->isPublished()
-            || ($this->getPostStatus() === 'private' && $this->_app->getConfig()->isLoggedIn());
+        return $this->isPublished() || ($this->getPostStatus() === 'private' && $this->_app->getConfig()->isLoggedIn());
     }
 
     /**
@@ -734,10 +726,10 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-      * Determine whether children exist
-      *
-      * @return bool
-      */
+     * Determine whether children exist
+     *
+     * @return bool
+     */
     public function hasChildrenPosts()
     {
         return $this->getResource()->hasChildrenPosts($this);
@@ -748,30 +740,40 @@ class Post extends AbstractMeta implements ViewableInterface
      * These are deprecated and will be removed shortly.
      */
 
+    /**
+     *
+     */
     public function getMenuLabel()
     {
         return $this->getPostTitle();
     }
 
+    /**
+     *
+     */
     public function getParentPage()
     {
         return $this->isType('page') ? $this->getParentPost() : false;
     }    
 
+    /**
+     *
+     */
     public function hasChildren()
     {
         return $this->hasChildrenPosts();
     }
 
+    /**
+     *
+     */
     public function getChildren()
     {
         return $this->getChildrenPosts();
     }
 
     /**
-     *
-     *
-     * @return  string
+     * @return string
      */
     public function getMetaTableAlias()
     {
@@ -842,10 +844,10 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-      * Get the latest revision of the post
-      *
-      * @return FishPig\WordPress\Model\Post
-      */
+     * Get the latest revision of the post
+     *
+     * @return FishPig\WordPress\Model\Post
+     */
      public function getLatestRevision()
      {
          if (!$this->hasLatestRevision()) {
@@ -890,19 +892,19 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function applyPageConfigData($pageConfig)
     {
-      parent::applyPageConfigData($pageConfig);
+        parent::applyPageConfigData($pageConfig);
 
-      if (!$pageConfig) {
+        if (!$pageConfig) {
+            return $this;
+        }
+
+        if ($this->isFrontPage()) {
+            $pageConfig->addBodyClass('wordpress-frontpage');
+        }
+        else if ($this->isPageForPosts()) {
+            $pageConfig->addBodyClass('wordpress-post-list');
+        }
+
         return $this;
-      }
-
-      if ($this->isFrontPage()) {
-      $pageConfig->addBodyClass('wordpress-frontpage');
-      }
-      else if ($this->isPageForPosts()) {
-      $pageConfig->addBodyClass('wordpress-post-list');
-      }
-
-      return $this;
     }
 }

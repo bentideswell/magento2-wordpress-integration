@@ -37,13 +37,11 @@ class Collection extends AbstractMetaCollection
     protected $postTypes = [];
 
     /**
-     * Set the resource
-     *
      * @return void
      */
     public function _construct()
     {
-    $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
+        $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
 
         $this->_map['fields']['ID'] = 'main_table.ID';
         $this->_map['fields']['post_type'] = 'main_table.post_type';
@@ -59,7 +57,7 @@ class Collection extends AbstractMetaCollection
      */
     protected function _initSelect()
     {
-      parent::_initSelect();
+        parent::_initSelect();
 
         $this->setOrder('main_table.menu_order', 'ASC');
         $this->setOrder('main_table.post_date', 'DESC');
@@ -171,22 +169,22 @@ class Collection extends AbstractMetaCollection
     }
 
     /**
-      * Filter the collection by a category ID
-      *
-      * @param int $categoryId
-      * @return $this
-      */
+     * Filter the collection by a category ID
+     *
+     * @param int $categoryId
+     * @return $this
+     */
     public function addCategoryIdFilter($categoryId)
     {
         return $this->addTermIdFilter($categoryId, 'category');
     }
 
     /**
-      * Filter the collection by a tag ID
-      *
-      * @param int $categoryId
-      * @return $this
-      */
+     * Filter the collection by a tag ID
+     *
+     * @param int $categoryId
+     * @return $this
+     */
     public function addTagIdFilter($tagId)
     {
         return $this->addTermIdFilter($tagId, 'post_tag');
@@ -305,8 +303,8 @@ class Collection extends AbstractMetaCollection
         $fields = ['publish', 'protected'];
 
         if ($this->wpContext->getCustomerSession()->isLoggedIn()) {
-      $fields[] = 'private';
-    }
+            $fields[] = 'private';
+        }
 
         return $this->addStatusFilter($fields);
     }
@@ -535,10 +533,10 @@ class Collection extends AbstractMetaCollection
     }
 
     /**
-    * Order the collection by the menu order field
-    *
-    * @param string $dir
-    * @return
+     * Order the collection by the menu order field
+     *
+     * @param string $dir
+     * @return
      */
     public function setOrderByMenuOrder($dir = 'asc')
     {

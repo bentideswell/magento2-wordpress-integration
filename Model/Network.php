@@ -19,8 +19,6 @@ class Network
     }
 
     /**
-     * Get the site ID
-     *
      * @return int
      */
     public function getSiteId()
@@ -29,8 +27,6 @@ class Network
     }
 
     /**
-     * Get the blog ID
-     *
      * @return int
      */
     public function getBlogId()
@@ -39,8 +35,6 @@ class Network
     }
 
     /**
-     *
-     *
      * return false
      */
     public function getSiteAndBlogObjects()
@@ -49,9 +43,6 @@ class Network
     }
 
     /**
-     *
-     *
-     *
      * @return false
      */    
     public function getBlogTableValue($key)
@@ -60,9 +51,6 @@ class Network
     }
 
     /**
-     *
-     *
-     *
      * @return false
      */    
     public function getSitePath()
@@ -71,9 +59,6 @@ class Network
     }
 
     /**
-     *
-     *
-     *
      * @return false
      */
     public function getNetworkTables()

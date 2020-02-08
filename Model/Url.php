@@ -52,33 +52,40 @@ class Url
     /**
      *
      */
-    public function __construct(OptionManager $optionManager, Network $network, WPConfig $wpConfig, StoreManagerInterface $storeManager, PostFactory $postFactory, ScopeConfigInterface $scopeConfig)
+    public function __construct(
+        OptionManager $optionManager,
+        Network $network,
+        WPConfig $wpConfig,
+        StoreManagerInterface $storeManager,
+        PostFactory $postFactory,
+        ScopeConfigInterface $scopeConfig
+    )
     {
         $this->optionManager = $optionManager;
-        $this->wpConfig      = $wpConfig;
-        $this->network       = $network;
-        $this->storeManager  = $storeManager;
-        $this->postFactory   = $postFactory;
-        $this->scopeConfig   = $scopeConfig;
+        $this->wpConfig = $wpConfig;
+        $this->network = $network;
+        $this->storeManager = $storeManager;
+        $this->postFactory = $postFactory;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
      * Get the Magento base URL
      *
      * @return string
-      */
+     */
     public function getMagentoUrl()
     {
         $store = $this->storeManager->getStore();
         $storeId = (int)$store->getId();
 
         if (!isset($this->magentoUrl[$storeId])) {
-          // Determine whether Magento uses secure or unsecure URL on frontend
-          $useSecure = $this->scopeConfig->isSetFlag(
-            'web/secure/use_in_frontend',
-            ScopeInterface::SCOPE_STORE,
-            (int)$this->storeManager->getStore()->getId()
-          );
+            // Determine whether Magento uses secure or unsecure URL on frontend
+            $useSecure = $this->scopeConfig->isSetFlag(
+                'web/secure/use_in_frontend',
+                ScopeInterface::SCOPE_STORE,
+                (int)$this->storeManager->getStore()->getId()
+            );
 
             $magentoUrl = rtrim(
                 str_ireplace(
@@ -97,11 +104,11 @@ class Url
             }*/
 
             if ($this->ignoreStoreCode()) {
-              $storeCode = $this->storeManager->getStore()->getCode();
+                $storeCode = $this->storeManager->getStore()->getCode();
 
-              if (substr($magentoUrl, -strlen($storeCode)) === $storeCode) {
-                $magentoUrl = substr($magentoUrl, 0, -strlen($storeCode)-1);
-              }
+                if (substr($magentoUrl, -strlen($storeCode)) === $storeCode) {
+                    $magentoUrl = substr($magentoUrl, 0, -strlen($storeCode)-1);
+                }
             }
 
             $this->magentoUrl[$storeId] = rtrim($magentoUrl, '/');
@@ -111,8 +118,7 @@ class Url
     }
 
     /**
-     * Ignore store code
-     *
+     * @return bool
      */
     public function ignoreStoreCode()
     {
@@ -122,11 +128,10 @@ class Url
             (int)$this->storeManager->getStore()->getId()
         ) === 1;
     }
+
     /**
-     * Get the blog route
-     *
      * @return string
-      */
+     */
     public function getBlogRoute()
     {
         return trim(substr($this->getHomeUrl(), strlen($this->getMagentoUrl())), '/');
@@ -137,7 +142,7 @@ class Url
      *
      * @param string $uri = ''
      * @return string
-      */
+     */
     public function getUrl($uri = '')
     {
         $url = $this->getHomeUrl()    . '/' . $uri;
@@ -154,7 +159,7 @@ class Url
      *
      * @param string $uri = ''
      * @return string
-      */
+     */
     public function getUrlWithFront($uri = '')
     {
         if ($front = $this->getFront()) {

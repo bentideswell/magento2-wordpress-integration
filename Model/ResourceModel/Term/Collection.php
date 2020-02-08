@@ -6,23 +6,22 @@ namespace FishPig\WordPress\Model\ResourceModel\Term;
 
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
- /**
-    * Name prefix of events that are dispatched by model
-    *
-    * @var string
+    /**
+     * @var string
      */
     protected $_eventPrefix = 'wordpress_term_collection';
 
     /**
-     * Name of event parameter
-     *
      * @var string
      */
     protected $_eventObject = 'terms';
 
+    /**
+     *
+     */
     public function _construct()
     {
-    $this->_init('FishPig\WordPress\Model\Term', 'FishPig\WordPress\Model\ResourceModel\Term');
+        $this->_init('FishPig\WordPress\Model\Term', 'FishPig\WordPress\Model\ResourceModel\Term');
     }
 
     /**
@@ -62,7 +61,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      *
      * @param string $dir = 'ASC'
      * @return $this
-      */
+     */
     public function setOrderByName($dir = 'ASC')
     {
         $this->getSelect()

@@ -18,37 +18,27 @@ use Exception;
 class Theme
 {
     /**
-     *
      * @var
-     *
      */
     const THEME_NAME = 'fishpig';
 
     /**
-     *
      * @var
-     *
      */
     protected $optionManager;
 
     /**
-     *
      * @var
-     *
      */
     protected $scopeConfig;
 
     /**
-     *
      * @var
-     *
      */
     protected $storeManager;
 
     /**
-     *
      * @var
-     *
      */
     protected $wpDirectoryList;
 
@@ -74,34 +64,30 @@ class Theme
 
     /**
      *
-     *
-     *
      */
     public function __construct(
-              OptionManager $optionManager,
-         ScopeConfigInterface $scopeConfig,
+        OptionManager $optionManager,
+        ScopeConfigInterface $scopeConfig,
         StoreManagerInterface $storeManager,
-                        State $state,
-                DirectoryList $wpDirectoryList,
-                       Logger $logger,
-                 ModuleReader $moduleReader,
-                                      array $themeSourceModules = []
+        State $state,
+        DirectoryList $wpDirectoryList,
+        Logger $logger,
+        ModuleReader $moduleReader,
+        array $themeSourceModules = []
     )
     {
-    $this->optionManager      = $optionManager;
-    $this->scopeConfig        = $scopeConfig;
-    $this->storeManager       = $storeManager;
-    $this->state              = $state;
-    $this->wpDirectoryList    = $wpDirectoryList;
-    $this->logger             = $logger;
-    $this->moduleReader       = $moduleReader;
-    $this->themeSourceModules = $themeSourceModules;
+        $this->optionManager = $optionManager;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->state = $state;
+        $this->wpDirectoryList = $wpDirectoryList;
+        $this->logger = $logger;
+        $this->moduleReader = $moduleReader;
+        $this->themeSourceModules = $themeSourceModules;
     }
 
     /**
-     *
-     *
-     *
+     * @return
      */
     public function validate()
     {        
@@ -200,9 +186,7 @@ class Theme
     }
 
     /**
-     *
-     *
-     *
+     * @return bool
      */
     public function isFileWriteable($file)
     {
@@ -210,9 +194,7 @@ class Theme
     }
 
     /**
-     *
-     *
-     *
+     * @return bool
      */
     public function isActive()
     {
@@ -220,9 +202,7 @@ class Theme
     }
 
     /**
-     *
-     *
-     *
+     * @return string
      */
     public function getTargetDir()
     {
@@ -230,9 +210,7 @@ class Theme
     }
 
     /**
-     *
-     *
-     *
+     * @return string
      */
     public function getSourceDir()
     {
@@ -240,8 +218,6 @@ class Theme
     }
 
     /**
-     *
-     *
      * @return bool
      */
     public function isThemeIntegrated()
@@ -254,7 +230,6 @@ class Theme
     }
 
     /**
-     *
      * @return string
      */
     protected function getModuleDir()
@@ -267,26 +242,26 @@ class Theme
      */
     public function getThemeMods($key = null)
     {
-    if (!$this->isActive()) {
-      return false;
-    }
+        if (!$this->isActive()) {
+            return false;
+        }
 
-    if (!isset($this->themeMods)) {
-      $this->themeMods = [];
+        if (!isset($this->themeMods)) {
+            $this->themeMods = [];
 
-      if ($themeMods = $this->optionManager->getOption('theme_mods_' . self::THEME_NAME)) {
-        $this->themeMods = @unserialize($themeMods);
-      }
-    }
+            if ($themeMods = $this->optionManager->getOption('theme_mods_' . self::THEME_NAME)) {
+                $this->themeMods = @unserialize($themeMods);
+            }
+        }
 
-    if ($this->themeMods) {
-      if ($key !== null) {
-        return isset($this->themeMods[$key]) ? $this->themeMods[$key] : false;
-      }
+        if ($this->themeMods) {
+            if ($key !== null) {
+                return isset($this->themeMods[$key]) ? $this->themeMods[$key] : false;
+            }
 
-      return $this->themeMods;
-    }
+            return $this->themeMods;
+        }
 
-    return false;
+        return false;
     }
 }

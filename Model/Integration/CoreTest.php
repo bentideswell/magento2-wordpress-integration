@@ -13,25 +13,21 @@ use Exception;
 class CoreTest
 {
     /**
-     *
-     *
+     * @var 
      */
     static protected $magentoTranslationPatchIsApplied;
 
     /**
-     *
-     *
+     * @var 
      */
     protected $coreHelper;
 
     /**
-     *
-     *
+     * @var 
      */
     protected $state;
 
     /**
-     *
      *
      */
     public function __construct(CoreHelper $coreHelper, WPDirectoryList $wpDirectoryList, State $state)
@@ -42,8 +38,7 @@ class CoreTest
     }
 
     /**
-     *
-     *
+     * @return $this
      */
     public function runTest()
     {
@@ -58,8 +53,7 @@ class CoreTest
     }
 
     /**
-     *
-     *
+     * @return 
      */
     static public function setMagentoTranslationPatchIsApplied($flag)
     {
@@ -67,8 +61,7 @@ class CoreTest
     }
 
     /**
-     *
-     *
+     * @return 
      */
     public function isMagentoTranslationPatchApplied()
     {
@@ -76,8 +69,7 @@ class CoreTest
     }
 
     /**
-     *
-     *
+     * @return 
      */
     protected function patchMagento()
     {
@@ -126,8 +118,7 @@ class CoreTest
     }
 
     /**
-     *
-     *
+     * @return 
      */
     protected function patchWordPress()
     {

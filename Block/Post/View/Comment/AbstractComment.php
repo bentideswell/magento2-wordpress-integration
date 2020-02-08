@@ -67,6 +67,9 @@ abstract class AbstractComment extends Post
         return $this->canConvertNewLines() ? nl2br($content) : $content;
     }
 
+    /**
+     * @return string
+     */
     public function getCommentsFormHtml()
     {
         return $this->getFormHtml();
@@ -101,8 +104,8 @@ abstract class AbstractComment extends Post
     /**
      * Retrieve the allowed HTML tags as a string
      *
-      * @return string
-      */
+     * @return string
+     */
     public function getAllowedHtmlTags()
     {
         if (!$this->hasAllowedHtmlTags()) {

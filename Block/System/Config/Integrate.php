@@ -18,104 +18,82 @@ use Magento\Framework\Module\ResourceInterface;
 class Integrate extends Template
 {
     /**
-     *
      * @const string
-     *
      */
     const YOAST_SEO_PLUGIN_URL = 'https://wordpress.org/plugins/wordpress-seo/';
 
     /**
-     *
      * @const string
-     *
      */
     const YOAST_SEO_MODULE_URL = 'https://github.com/bentideswell/magento2-wordpress-integration-yoastseo';
 
     /**
-     *
      * @var \FishPig\WordPress\Model\IntegrationManager
-     *
      */
     protected $integrationManager;
 
     /**
-     *
      * @var \FishPig\WordPress\Model\Url
-     *
      */
     protected $url;
 
     /**
-     *
      * @var \Magento\Store\Model\StoreManager
-     *
      */
     protected $storeManager;
 
     /**
-     *
      * @var \Magento\Store\Model\App\Emulation
-     *
      */
     protected $emulator;
 
     /**
-     *
      * @var \FishPig\WordPress\Helper\Plugin
-     *
      */
     protected $plugin;
 
     /**
-     *
      * @var \Magento\Framework\Module\Manager
-     *
      */
     protected $moduleManager;
 
     /**
-     *
      * @var \Magento\Framework\Module\ResourceInterface
-     *
      */
     protected $resourceInterface;
 
     /**
-     *
-     *
+     * @var
      */
     protected $exception;
 
     /**
-     *
-     *
+     * @var bool
      */
     protected $success = false;
 
     /**
      *
-     * 
-     *
      */
     public function __construct(
-                 Context $context,
-      IntegrationManager $integrationManager,
-                     Url $url,
-            StoreManager $storeManager,
-               Emulation $emulator,
-           ModuleManager $moduleManager,
-                  Plugin $plugin,
-       ResourceInterface $resourceInterface,
-                   array $data = []
+        Context $context,
+        IntegrationManager $integrationManager,
+        Url $url,
+        StoreManager $storeManager,
+        Emulation $emulator,
+        ModuleManager $moduleManager,
+        Plugin $plugin,
+        ResourceInterface $resourceInterface,
+        array $data = []
     )
     {
         $this->integrationManager = $integrationManager;
-        $this->url                = $url;
-        $this->storeManager       = $storeManager;
-        $this->emulator           = $emulator;
-        $this->moduleManager      = $moduleManager;
-        $this->plugin             = $plugin;
-        $this->resourceInterface  = $resourceInterface;
+        $this->url = $url;
+        $this->storeManager = $storeManager;
+        $this->emulator = $emulator;
+        $this->moduleManager = $moduleManager;
+        $this->plugin = $plugin;
+        $this->resourceInterface = $resourceInterface;
 
         parent::__construct($context, $data);
 
@@ -159,9 +137,7 @@ class Integrate extends Template
     }
 
     /**
-     *
-     * 
-     *
+     * @return string
      */
     protected function _toHtml()
     {
@@ -186,9 +162,7 @@ class Integrate extends Template
     }
 
     /**
-     *
-     * 
-     *
+     * @return string
      */
     protected function _getExtraHtml()
     {
@@ -206,9 +180,7 @@ class Integrate extends Template
     }
 
     /**
-     *
-     *
-     *
+     * @return string
      */
     protected function _getYoastSeoMessage()
     {
@@ -245,9 +217,7 @@ class Integrate extends Template
     }
 
     /**
-     *
-     * 
-     *
+     * @return string
      */
     protected function _getMessage($msg, $type = 'success')
     {
@@ -255,9 +225,7 @@ class Integrate extends Template
     }
 
     /**
-     *
-     * 
-     *
+     * @return $this
      */
     protected function _prepareLayout()
     {

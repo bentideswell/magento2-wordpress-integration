@@ -13,7 +13,7 @@ class View extends Action
      */
     protected function _getEntity()
     {
-    $object = $this->factory->create('Term')->load((int)$this->getRequest()->getParam('id'));
+        $object = $this->factory->create('Term')->load((int)$this->getRequest()->getParam('id'));
 
         return $object->getId() ? $object : false;
     }
@@ -25,27 +25,27 @@ class View extends Action
      */
     protected function _getBreadcrumbs()
     {
-      $crumbs = parent::_getBreadcrumbs();
-      $term   = $this->_getEntity();
+        $crumbs = parent::_getBreadcrumbs();
+        $term = $this->_getEntity();
 
-      if ($taxonomy = $term->getTaxonomyInstance()) {
-        $postTypes = $this->factory->get('PostTypeManager')->getPostTypes();
+        if ($taxonomy = $term->getTaxonomyInstance()) {
+            $postTypes = $this->factory->get('PostTypeManager')->getPostTypes();
 
-        if (count($postTypes) > 2) {
-        foreach($postTypes as $postType) {
-          if ($postType->hasArchive() && $postType->getArchiveSlug() === $taxonomy->getSlug()) {
-            $crumbs['post_type_archive_' . $postType->getPostType()] = [
-                          'label' => __($postType->getName()),
-                          'title' => __($postType->getName()),
-                          'link' => $postType->getUrl(),
-            ];
+            if (count($postTypes) > 2) {
+                foreach($postTypes as $postType) {
+                    if ($postType->hasArchive() && $postType->getArchiveSlug() === $taxonomy->getSlug()) {
+                        $crumbs['post_type_archive_' . $postType->getPostType()] = [
+                            'label' => __($postType->getName()),
+                            'title' => __($postType->getName()),
+                            'link' => $postType->getUrl(),
+                        ];
 
-            break;
-          }
-        }
-      }
+                        break;
+                    }
+                }
+            }
 
-          if ($taxonomy->isHierarchical()) {
+            if ($taxonomy->isHierarchical()) {
                 $buffer = $term;
 
                 while($buffer->getParentTerm()) {
@@ -57,11 +57,10 @@ class View extends Action
                         'link' => $buffer->getUrl(),
                     ];
                 }
+            }
+        }
 
-          }
-      }
-
-      $crumbs['term'] = [
+        $crumbs['term'] = [
             'label' => __($term->getName()),
             'title' => __($term->getName())
         ];
@@ -70,25 +69,23 @@ class View extends Action
     }
 
     /**
-     *
      * @return array
-     *
      */
     public function getLayoutHandles()
     {
-      if (!$this->_getEntity()) {
-          return [];
-      }
+        if (!$this->_getEntity()) {
+            return [];
+        }
 
-    $taxonomyType = $this->_getEntity()->getTaxonomyType();
+        $taxonomyType = $this->_getEntity()->getTaxonomyType();
 
-    return array_merge(
-        parent::getLayoutHandles(),
-        array(
-            'wordpress_term_view',
+        return array_merge(
+            parent::getLayoutHandles(),
+            [
+               'wordpress_term_view',
                 'wordpress_' . $taxonomyType . '_view',
                 'wordpress_' . $taxonomyType . '_view_' . $this->_getEntity()->getId(),
-        )
-    );
+            ]
+        );
     }
 }

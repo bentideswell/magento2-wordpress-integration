@@ -11,26 +11,22 @@ use FishPig\WordPress\Model\Context as WPContext;
 abstract class Action extends ParentAction
 {
     /**
-     *
-     *
+     * @var 
      */
     protected $wpContext;
 
     /**
-     *
-     *
+     * @var 
      */
     protected $registry;
 
     /**
-     *
-     *
+     * @var 
      */    
     protected $entity;
 
     /**
-     *
-     *
+     * @var 
      */    
     protected $resultPage;
 
@@ -45,27 +41,22 @@ abstract class Action extends ParentAction
     protected $factory;
 
     /**
-     *
-     *
+     * @return 
      */
     abstract protected function _getEntity();
 
     /**
-     *
      * @param Context   $context
      * @param WPContext $wpContext
      */
-    public function __construct(
-          Context $context,
-      WPContext $wpContext
-    )
+    public function __construct(Context $context, WPContext $wpContext)
     {
-      $this->wpContext  = $wpContext;
-        $this->registry   = $wpContext->getRegistry();
-        $this->url        = $wpContext->getUrl();
-        $this->factory    = $wpContext->getFactory();
+        $this->wpContext = $wpContext;
+        $this->registry = $wpContext->getRegistry();
+        $this->url = $wpContext->getUrl();
+        $this->factory = $wpContext->getFactory();
 
-    parent::__construct($context);
+        parent::__construct($context);
     }    
 
     /**
@@ -75,9 +66,9 @@ abstract class Action extends ParentAction
      */
     public function execute()
     {
-    if ($this->_beforeExecute() === false) {
-          return $this->_getNoRouteForward();
-    }
+        if ($this->_beforeExecute() === false) {
+            return $this->_getNoRouteForward();
+        }
 
         if ($forward = $this->_getForwardForPreview()) {
             return $forward;
@@ -89,11 +80,11 @@ abstract class Action extends ParentAction
 
         $this->checkForAmp();
 
-    $this->_initLayout();
+        $this->_initLayout();
 
-    $this->_afterExecute();
+        $this->_afterExecute();
 
-    return $this->getPage();
+        return $this->getPage();
     }
 
     /**
@@ -109,12 +100,12 @@ abstract class Action extends ParentAction
      */
     protected function _beforeExecute()
     {
-    if (($entity = $this->_getEntity()) === false) {
-        return false;
-    }
+        if (($entity = $this->_getEntity()) === false) {
+            return false;
+        }
 
-    if ($entity !== null) {
-          $this->registry->register($entity::ENTITY, $entity);
+        if ($entity !== null) {
+            $this->registry->register($entity::ENTITY, $entity);
         }
 
         return $this;
@@ -125,35 +116,35 @@ abstract class Action extends ParentAction
      */
     protected function _initLayout()
     {
-      // Remove the default action layout handle
-      // This allows controller to add handles in chosen order
+        // Remove the default action layout handle
+        // This allows controller to add handles in chosen order
         $this->getPage()->getLayout()->getUpdate()->removeHandle($this->getPage()->getDefaultLayoutHandle());
 
-    if ($handles = $this->getLayoutHandles()) {
-        foreach($handles as $handle) {
-          if ($handle = $this->cleanLayoutHandle($handle)) {
-          if (!is_array($handle)) {
-            $handle = [$handle];
-          }
+        if ($handles = $this->getLayoutHandles()) {
+            foreach($handles as $handle) {
+                if ($handle = $this->cleanLayoutHandle($handle)) {
+                    if (!is_array($handle)) {
+                        $handle = [$handle];
+                    }
 
-          foreach($handle as $h) {
-                    $this->getPage()->addHandle($h);
-              }
-            }
+                    foreach($handle as $h) {
+                        $this->getPage()->addHandle($h);
+                    }
+                }
             }
         }
 
-    $this->getPage()->getConfig()->addBodyClass('is-blog');
+        $this->getPage()->getConfig()->addBodyClass('is-blog');
 
         if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {        
-        if ($crumbs = $this->_getBreadcrumbs()) {
-            foreach($crumbs as $key => $crumb) {
-                $breadcrumbsBlock->addCrumb($key, $crumb);
+            if ($crumbs = $this->_getBreadcrumbs()) {
+                foreach($crumbs as $key => $crumb) {
+                    $breadcrumbsBlock->addCrumb($key, $crumb);
+                }
             }
         }
-        }
 
-    return $this;
+        return $this;
     }
 
     /**
@@ -162,10 +153,10 @@ abstract class Action extends ParentAction
      */
     protected function cleanLayoutHandle($handle)
     {
-    return [
-      $handle, // Legacy handle. Please use cleaned handle below
-      trim(str_replace(['__', '__'], '_', preg_replace('/[^a-z0-9_]+/', '_', $handle)), '_')
-    ];
+        return [
+            $handle, // Legacy handle. Please use cleaned handle below
+            trim(str_replace(['__', '__'], '_', preg_replace('/[^a-z0-9_]+/', '_', $handle)), '_')
+        ];
     }
 
     /**
@@ -175,7 +166,7 @@ abstract class Action extends ParentAction
      */
     public function getLayoutHandles()
     {
-      return ['wordpress_default'];
+        return ['wordpress_default'];
     }
 
     /**
@@ -185,12 +176,13 @@ abstract class Action extends ParentAction
      */
     protected function _getBreadcrumbs()
     {
-    $crumbs = [
-        'home' => [
-            'label' => (string)__('Home'),
-            'title' => (string)__('Go to Home Page'),
-            'link' => $this->url->getMagentoUrl()
-        ]];
+        $crumbs = [
+            'home' => [
+                'label' => (string)__('Home'),
+                'title' => (string)__('Go to Home Page'),
+                'link' => $this->url->getMagentoUrl()
+            ]
+        ];
 
         if (!$this->url->isRoot()) {
             $crumbs['blog'] = [
@@ -211,8 +203,7 @@ abstract class Action extends ParentAction
     }
 
     /**
-     *
-     *
+     * @return
      */
     public function getPage()
     {
@@ -231,11 +222,11 @@ abstract class Action extends ParentAction
      */
     public function getEntityObject()
     {
-    if ($this->entity !== null) {
-        return $this->entity;
-    }
+        if ($this->entity !== null) {
+            return $this->entity;
+        }
 
-    return $this->entity = $this->_getEntity();
+        return $this->entity = $this->_getEntity();
     }
 
     /**
@@ -245,7 +236,7 @@ abstract class Action extends ParentAction
      */
     protected function _canPreview()
     {
-    return false;
+        return false;
     }
 
     /**
@@ -254,9 +245,9 @@ abstract class Action extends ParentAction
      */
     protected function _getForwardForPreview()
     {
-    if (!$this->_canPreview()) {
-        return false;
-    }
+        if (!$this->_canPreview()) {
+            return false;
+        }
 
         if ($this->getRequest()->getParam('preview') !== 'true') {
             return false;
@@ -290,19 +281,15 @@ abstract class Action extends ParentAction
     }
 
     /**
-     *
      * @return bool
-     *
      */
     public function checkForAmp()
     {
-      return false;
+        return false;
     }
 
     /**
-     *
      * @return \Magento\Framework\Controller\ResultForwardFactory
-     *
      */
     protected function _getNoRouteForward()
     {

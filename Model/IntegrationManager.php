@@ -35,25 +35,17 @@ class IntegrationManager
 
     /**
      *
-     *
      */
-    public function __construct(
-        array $integrationTests, 
-        Logger $logger, 
-        ScopeConfigInterface $scopeConfig, 
-        StoreManagerInterface $storeManager, 
-        State $state
-    )
+    public function __construct(array $integrationTests, Logger $logger, ScopeConfigInterface $scopeConfig, StoreManagerInterface $storeManager, State $state)
     {
         $this->integrationTests = $integrationTests;
-        $this->logger           = $logger;
-        $this->scopeConfig      = $scopeConfig;
-        $this->storeManager     = $storeManager;
-        $this->state            = $state;
+        $this->logger = $logger;
+        $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
+        $this->state = $state;
     }
 
     /**
-     *
      * @return $this
      */
     public function runTests()

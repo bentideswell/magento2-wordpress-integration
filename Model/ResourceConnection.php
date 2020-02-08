@@ -13,8 +13,7 @@ use FishPig\WordPress\Model\Logger;
 class ResourceConnection
 {
     /**
-     *
-     *
+     * @var 
      */
     protected $connectionFactory;
 
@@ -47,23 +46,22 @@ class ResourceConnection
      * @var 
      */
     public function __construct(
-            ConnectionFactory $connectionFactory, 
-                     WPConfig $wpConfig, 
-                      Network $network, 
+        ConnectionFactory $connectionFactory, 
+        WPConfig $wpConfig, 
+        Network $network, 
         StoreManagerInterface $storeManager,
-                       Logger $logger
+        Logger $logger
     )
     {
         $this->connectionFactory = $connectionFactory;
-        $this->network           = $network;
-        $this->wpConfig          = $wpConfig;
-        $this->storeManager      = $storeManager;
-        $this->logger            = $logger;
+        $this->network = $network;
+        $this->wpConfig = $wpConfig;
+        $this->storeManager = $storeManager;
+        $this->logger = $logger;
     }
 
     /**
-     *
-     *
+     * @return
      */
     protected function loadByStoreId($storeId)
     {        
@@ -92,11 +90,11 @@ class ResourceConnection
         ]);
 
         $db = $this->connection[$storeId] = $this->connectionFactory->create([
-      'host'     => $this->wpConfig->getData('DB_HOST'),
-      'dbname'   => $this->wpConfig->getData('DB_NAME'),
-      'username' => $this->wpConfig->getData('DB_USER'),
-      'password' => $this->wpConfig->getData('DB_PASSWORD'),
-      'active' => '1',    
+            'host' => $this->wpConfig->getData('DB_HOST'),
+            'dbname' => $this->wpConfig->getData('DB_NAME'),
+            'username' => $this->wpConfig->getData('DB_USER'),
+            'password' => $this->wpConfig->getData('DB_PASSWORD'),
+            'active' => '1',    
         ]);
 
         $this->connection[$storeId]->query('SET NAMES UTF8');
@@ -127,15 +125,13 @@ class ResourceConnection
     }
 
     /**
-     *
-     *
      * @param  string $optionName
      * @param  mixed  $newValue
      * @return void
      */
     protected function _setOptionValue($optionName, $newValue)
     {
-        $db          = $this->getConnection();
+        $db = $this->getConnection();
         $optionTable = $this->getTable('wordpress_option');
 
         $optionData = $db->fetchRow(
@@ -155,8 +151,6 @@ class ResourceConnection
     }
 
     /**
-     *
-     *
      * @param  array
      * @return $this
      */
@@ -195,8 +189,6 @@ class ResourceConnection
     }
 
     /**
-     *
-     *
      * @return bool
      */
     public function isConnected()
@@ -219,8 +211,6 @@ class ResourceConnection
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getTablePrefix()
@@ -233,8 +223,6 @@ class ResourceConnection
     }
 
     /**
-     *
-     *
      * @return int
      */
     protected function getStoreId()

@@ -26,8 +26,8 @@ class NoRouteHandler implements \Magento\Framework\App\Router\NoRouteHandlerInte
      */
     public function __construct(Response $response, OptionManager $optionManager)
     {
-    $this->response = $response;
-    $this->optionManager = $optionManager;
+        $this->response = $response;
+        $this->optionManager = $optionManager;
     }
 
     /**
@@ -36,17 +36,17 @@ class NoRouteHandler implements \Magento\Framework\App\Router\NoRouteHandlerInte
      */
     public function process(RequestInterface $request)
     {
-    if (!($pageId = (int)$this->optionManager->getOption('custom_404_page_id'))) {
-      return false;
-    }
+        if (!($pageId = (int)$this->optionManager->getOption('custom_404_page_id'))) {
+            return false;
+        }
 
-    $this->response->setHttpResponseCode(404);
+        $this->response->setHttpResponseCode(404);
 
-    $request->setModuleName('wordpress')
-      ->setControllerName('post')
-      ->setActionName('view')
-      ->setParam('id', $pageId);
+        $request->setModuleName('wordpress')
+            ->setControllerName('post')
+            ->setActionName('view')
+            ->setParam('id', $pageId);
 
-    return true;
+        return true;
     }
 }

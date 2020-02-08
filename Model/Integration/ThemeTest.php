@@ -10,13 +10,11 @@ use FishPig\WordPress\Model\Integration\IntegrationException;
 class ThemeTest
 {
     /**
-     *
-     *
+     * @var 
      */
     protected $theme;
 
     /**
-     *
      *
      */
     public function __construct(Theme $theme)
@@ -25,8 +23,7 @@ class ThemeTest
     }
 
     /**
-     *
-     *
+     * @return 
      */
     public function runTest()
     {

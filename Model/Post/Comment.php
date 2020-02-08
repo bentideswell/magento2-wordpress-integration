@@ -28,8 +28,6 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 
     /**
      *
-     *
-     *
      */
     public function _construct()
     {

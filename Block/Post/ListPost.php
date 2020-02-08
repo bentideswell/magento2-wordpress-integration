@@ -6,8 +6,8 @@
  */
 namespace FishPig\WordPress\Block\Post;
 
-use \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
-use \FishPig\WordPress\Model\ResourceModel\Post\Collection as PostCollection;
+use FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
+use FishPig\WordPress\Model\ResourceModel\Post\Collection as PostCollection;
 
 class ListPost extends \FishPig\WordPress\Block\Post
 {
@@ -91,17 +91,17 @@ class ListPost extends \FishPig\WordPress\Block\Post
 
         $templatesToTry = [];
 
-    foreach($templates as $template) {
-          foreach($vendors as $vendor) {
-            if ($vendor) {
-          $templatesToTry[] = $vendor . '::' . $template;
+        foreach($templates as $template) {
+            foreach($vendors as $vendor) {
+                if ($vendor) {
+                    $templatesToTry[] = $vendor . '::' . $template;
+                }
+            }
         }
-      }
-    }
 
-    if ($rendererTemplate = $this->getData('renderer_template')) {
-      array_unshift($templatesToTry, $rendererTemplate);
-    }
+        if ($rendererTemplate = $this->getData('renderer_template')) {
+            array_unshift($templatesToTry, $rendererTemplate);
+        }
 
         foreach($templatesToTry as $templateToTry) {
             if ($this->getTemplateFile($templateToTry)) {
@@ -115,24 +115,21 @@ class ListPost extends \FishPig\WordPress\Block\Post
     }
 
     /**
-     *
-     *
+     * @return 
      */
     public function getCustomBlogThemeVendor()
     {
-    return false;
+        return false;
     }
 
     /**
-     *
-     *
      *
      */
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
             $this->setTemplate('FishPig_WordPress::post/list.phtml');
-    }
+        }
 
         return parent::_beforeToHtml();
     }

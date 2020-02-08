@@ -17,17 +17,17 @@ use Magento\Framework\Data\Collection\AbstractDb;
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
     /**
-     *
+     * @var
      */
     protected $wpContext;
 
     /**
-     *
+     * @var
      */
     protected $url;
 
     /**
-     *
+     * @var
      */
     protected $optionManager;
 

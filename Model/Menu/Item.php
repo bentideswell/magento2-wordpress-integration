@@ -37,7 +37,7 @@ class Item extends Post
      * Menu item children
      *
      *
-      */
+     */
     protected $_children = null;
 
     /**
@@ -95,7 +95,6 @@ class Item extends Post
      */
     public function getObject()
     {
-
         $this->setObject(false);
 
         if (!$this->isCustomLink()) {

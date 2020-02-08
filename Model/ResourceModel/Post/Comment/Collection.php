@@ -5,8 +5,6 @@
 namespace FishPig\WordPress\Model\ResourceModel\Post\Comment;
 
 use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection;
-
-/** Other */
 use FishPig\WordPress\Model\Post;
 
 class Collection extends AbstractCollection
@@ -15,7 +13,7 @@ class Collection extends AbstractCollection
      * Name prefix of events that are dispatched by model
      *
      * @var string
-      */
+     */
     protected $_eventPrefix = 'wordpress_post_comment_collection';
 
     /**
@@ -37,7 +35,7 @@ class Collection extends AbstractCollection
      */
     public function _construct()
     {
-    $this->_init('FishPig\WordPress\Model\Post\Comment', 'FishPig\WordPress\Model\ResourceModel\Post\Comment');
+        $this->_init('FishPig\WordPress\Model\Post\Comment', 'FishPig\WordPress\Model\ResourceModel\Post\Comment');
 
         return parent::_construct();
     }
@@ -83,11 +81,11 @@ class Collection extends AbstractCollection
     }
 
     /**
-      * Filters the collection of comments
-      * so only comments for a certain post are returned
-      *
-      * @return $this
-      */
+     * Filters the collection of comments
+     * so only comments for a certain post are returned
+     *
+     * @return $this
+     */
     public function addPostIdFilter($postId)
     {
         return $this->addFieldToFilter('comment_post_ID', $postId);
@@ -105,10 +103,10 @@ class Collection extends AbstractCollection
     }
 
     /**
-      * Filter the collection by the comment_author_email column
-      *
-      * @param string $email
-      * @return $this
+     * Filter the collection by the comment_author_email column
+     *
+     * @param string $email
+     * @return $this
      */
     public function addCommentAuthorEmailFilter($email)
     {
@@ -116,9 +114,9 @@ class Collection extends AbstractCollection
     }
 
     /**
-      * Filters the collection so only approved comments are returned
-      *
-      * @return $this
+     * Filters the collection so only approved comments are returned
+     *
+     * @return $this
      */
     public function addCommentApprovedFilter($status = 1)
     {
@@ -126,8 +124,6 @@ class Collection extends AbstractCollection
     }
 
     /**
-     *
-     *
      * @return $this
      */
     protected function _afterLoad()

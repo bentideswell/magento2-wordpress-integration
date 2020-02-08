@@ -13,7 +13,7 @@ use FishPig\WordPress\Model\Context as WPContext;
 abstract class AbstractBlock extends Template
 {
     /**
-     *
+     * @var 
      */
     protected $wpContext;
 
@@ -43,22 +43,20 @@ abstract class AbstractBlock extends Template
     protected $factory;
 
     /**
-     * Constructor
-     *
      * @param Context $context
      * @param App
      * @param array $data
      */
     public function __construct(Context $context, WPContext $wpContext, array $data = [])
     {
-      $this->wpContext        = $wpContext;
-        $this->optionManager    = $wpContext->getOptionManager();
+        $this->wpContext = $wpContext;
+        $this->optionManager = $wpContext->getOptionManager();
         $this->shortcodeManager = $wpContext->getShortcodeManager();
-        $this->registry         = $wpContext->getRegistry();
-        $this->url              = $wpContext->getUrl();
-        $this->factory          = $wpContext->getFactory();
+        $this->registry = $wpContext->getRegistry();
+        $this->url = $wpContext->getUrl();
+        $this->factory = $wpContext->getFactory();
 
-    parent::__construct($context, $data);
+        parent::__construct($context, $data);
     }
 
     /**
@@ -79,7 +77,7 @@ abstract class AbstractBlock extends Template
      */
     public function doShortcode($shortcode, $object = null)
     {
-      return $this->renderShortcode($shortcode, $object);
+        return $this->renderShortcode($shortcode, $object);
     }
 
     /**
@@ -88,7 +86,7 @@ abstract class AbstractBlock extends Template
      */
     public function getFactory()
     {
-      return $this->factory;
+        return $this->factory;
     }
 
     /**
@@ -97,13 +95,13 @@ abstract class AbstractBlock extends Template
      */
     public function toHtml()
     {
-    try {
-      return parent::toHtml();
-    }
-    catch (\Exception $e) {
-      $this->wpContext->getLogger()->error($e);
+        try {
+            return parent::toHtml();
+        }
+        catch (\Exception $e) {
+            $this->wpContext->getLogger()->error($e);
 
-      throw $e;
-    }
+            throw $e;
+        }
     }
 }

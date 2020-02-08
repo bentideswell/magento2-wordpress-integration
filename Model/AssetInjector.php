@@ -297,7 +297,7 @@ class AssetInjector
 
                   // JS Template for requireJs. This changes through foreach below
                   $requireJsTemplate = "require(['jquery'], function(jQuery) {
-      require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
+    require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
           " . self::TMPL_TAG . "
     });
     });";
@@ -345,33 +345,33 @@ class AssetInjector
                     }
                 }
 
-                  // Remove final template variable placeholder
-                  $requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
+                // Remove final template variable placeholder
+                $requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
 
-                  // Start of paths template
-                  $requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
+                // Start of paths template
+                $requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
 
-                  // Loop through paths, remove .js and set
-                  foreach($requireJsPaths as $alias => $path) {
-                      if (substr($path, -3) === '.js') {
-                          $path = substr($path, 0, -3);
-                      }
+                // Loop through paths, remove .js and set
+                foreach($requireJsPaths as $alias => $path) {
+                    if (substr($path, -3) === '.js') {
+                        $path = substr($path, 0, -3);
+                    }
 
-                      if (strpos($path, '&#')) {
-                          $path = html_entity_decode($path);
-                      }
+                    if (strpos($path, '&#')) {
+                        $path = html_entity_decode($path);
+                    }
 
-                      $requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
-                  }
+                    $requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
+                }
 
-                  $requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
+                $requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
 
-                  // Final JS including wrapping script tag
-                  $requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
+                // Final JS including wrapping script tag
+                $requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
 
-                  // Add the final requireJS code to the $content array
-                  $content .= $requireJsFinal;
-              }
+                // Add the final requireJS code to the $content array
+                $content .= $requireJsFinal;
+            }
         }
 
         // Add in the JS templates
@@ -380,7 +380,7 @@ class AssetInjector
         }
 
         if ($content) {
-          $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
+            $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
         }
 
         return $bodyHtml;

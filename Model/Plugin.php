@@ -13,7 +13,6 @@ class Plugin
 {
     /**
      *
-     *
      */
     public function __construct(Network $network, ResourceConnection $resourceConnection, OptionManager $optionManager)
     {

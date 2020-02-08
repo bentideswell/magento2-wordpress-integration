@@ -24,25 +24,17 @@ abstract class AbstractResource extends AbstractDb
 
     /**
      *
-     *
-     * @return
      */
-    public function __construct(
-      Context $context,
-        WPContext $wpContext,
-              $connectionName = null
-    )
+    public function __construct(Context $context, WPContext $wpContext, $connectionName = null)
     {
-        $this->wpContext          = $wpContext;
-        $this->factory            = $wpContext->getFactory();
+        $this->wpContext = $wpContext;
+        $this->factory = $wpContext->getFactory();
         $this->resourceConnection = $wpContext->getResourceConnection();
 
         parent::__construct($context, $connectionName);
     }
 
     /**
-     *
-     *
      * @return
      */
     public function getConnection()
@@ -51,8 +43,6 @@ abstract class AbstractResource extends AbstractDb
     }
 
     /**
-     *
-     *
      * @return
      */
     public function getTable($tableName)
@@ -61,8 +51,6 @@ abstract class AbstractResource extends AbstractDb
     }
 
     /**
-     *
-     *
      * @return
      */
     public function getTablePrefix()

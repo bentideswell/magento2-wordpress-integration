@@ -10,13 +10,11 @@ use FishPig\WordPress\Model\Integration\IntegrationException;
 class PathTest
 {
     /**
-     *
-     *
+     * @var 
      */
     protected $wpDirectoryList;
 
     /**
-     *
      *
      */
     public function __construct(DirectoryList $wpDirectoryList)
@@ -25,8 +23,7 @@ class PathTest
     }
 
     /**
-     *
-     *
+     * @return 
      */
     public function runTest()
     {

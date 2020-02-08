@@ -11,30 +11,26 @@ use FishPig\WordPress\Model\Integration\IntegrationException;
 class UrlTest
 {
     /**
-     *
-     *
+     * @var 
      */
     protected $theme;
 
     /**
-     *
-     *
+     * @var 
      */
     protected $url;
 
     /**
      *
-     *
      */
     public function __construct(Theme $theme, Url $url)
     {
         $this->theme = $theme;
-        $this->url   = $url;
+        $this->url = $url;
     }
 
     /**
-     *
-     *
+     * @return 
      */
     public function runTest()
     {

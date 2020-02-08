@@ -35,7 +35,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
      */
     public function getSearchTerm()
     {
-      if (!$this->getData('search_term')) {
+        if (!$this->getData('search_term')) {
             return $this->wpContext->getRequest()->getParam(self::VAR_NAME);
         }
 
@@ -63,8 +63,6 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     *
-     *
      * @return  string
      */
     public function getUrl()
