@@ -1,3 +1,6 @@
+10/01/2020 - 2.0.9.14
+- Added fix for using socket when connecting to WordPress DB.
+
 07/01/2020 - 2.0.9.12
 - Code formatting clean up
 

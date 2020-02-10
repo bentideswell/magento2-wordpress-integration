@@ -90,7 +90,7 @@ class ResourceConnection
         ]);
 
         $db = $this->connection[$storeId] = $this->connectionFactory->create([
-            'host' => $this->wpConfig->getData('DB_HOST'),
+            'host' => $this->wpConfig->getDbHost(),
             'dbname' => $this->wpConfig->getData('DB_NAME'),
             'username' => $this->wpConfig->getData('DB_USER'),
             'password' => $this->wpConfig->getData('DB_PASSWORD'),

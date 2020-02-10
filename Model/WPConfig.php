@@ -123,4 +123,21 @@ class WPConfig
     {
         return ($basePath = $this->wpDirectoryList->getBasePath()) ? $basePath . '/wp-config.php' : false;
     }
+    
+    /**
+     * Get the DB host
+     * Make a small modification for working with .sock connection strings
+     *
+     * @return string
+     */
+    public function getDbHost()
+    {
+        $dbHost = $this->getData('DB_HOST');
+        
+        if (strpos($dbHost, '.sock') !== false) {
+            $dbHost = str_replace('localhost:/', '/', $dbHost);
+        }
+        
+        return $dbHost;
+    }
 }
