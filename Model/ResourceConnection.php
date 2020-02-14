@@ -110,9 +110,6 @@ class ResourceConnection
             $baseUrl     = $this->storeManager->getStore()->getBaseUrl();
 
             try {
-                $this->_setOptionValue('fishpig_magento_base_url', $this->storeManager->getStore()->getBaseUrl());
-                $this->_setOptionValue('fishpig_magento_version',  '2');
-
                 $this->_setOptionValue('fishpig_magento', json_encode([
                     'base_url' => $this->storeManager->getStore()->getBaseUrl(),
                     'version' => 2
@@ -138,7 +135,7 @@ class ResourceConnection
             $db->select()->from($optionTable, ['option_id', 'option_value'])->where('option_name=?', $optionName)->limit(1)
         );
 
-        if ($optionData) {    
+        if ($optionData) {
             list($optionId, $optionValue) = array_values($optionData);
 
             if ($optionValue !== $newValue) {
