@@ -13,14 +13,10 @@ use Magento\Framework\Module\ModuleListInterface;
 use FishPig\WordPress\Model\DirectoryList\Proxy as WPDirectoryList;
 use FishPig\WordPress\Model\ShortcodeManager\Proxy as ShortcodeManager;
 use FishPig\WordPress\Model\Url\Proxy as WordPressURL;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 
 class AssetInjector
 {
-    /**
-     *
-     */
-    const TMPL_TAG = '__FPTAG823434__';
-
     /**
      * @var bool
      */
@@ -41,6 +37,16 @@ class AssetInjector
     protected $moduleVersion;
 
     /**
+     * @var array
+     */
+    protected $migrationCache = [];
+
+    /**
+     * @var ScopeConfigInterface
+     */
+    protected $scopeConfig;
+    
+    /**
      * @return
      */
     public function __construct(
@@ -50,7 +56,8 @@ class AssetInjector
         ModuleListInterface $moduleList,
         WPDirectoryList $wpDirectoryList,
         ShortcodeManager $shortcode,
-        WordPressURL $wpUrl
+        WordPressURL $wpUrl,
+        ScopeConfigInterface $scopeConfig
     )
     {
         $this->integrationManager = $integrationManager;
@@ -60,6 +67,7 @@ class AssetInjector
         $this->wpDirectoryList = $wpDirectoryList;
         $this->shortcodeManager = $shortcode;
         $this->wpUrl = $wpUrl;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -77,6 +85,83 @@ class AssetInjector
      */
     public function process($bodyHtml)
     {
+        if (!$this->canRun()) {
+            return false;
+        }
+
+        if (!($shortcodes = $this->shortcodeManager->getShortcodesThatRequireAssets())) {
+            return false;
+        }
+
+        self::$status = true;
+
+        if (!($assets = $this->getAssetsFromShortcodes($shortcodes))) {
+            return false;
+        }
+
+        $content = implode("\n", $assets);
+
+        if ($this->isVisualEditorMode($shortcodes)) {
+            // Strip all Magento JS and inject WordPress JS
+            return str_replace(
+                '</body>', 
+                "\n\n" . $content . "\n\n" . '</body>', 
+                preg_replace('/<script[^>]*>.*<\/script>/Uis', '', $bodyHtml)
+            );
+        }
+
+        if (trim($content) === '') {
+            return false;
+        }
+
+        $this->processMetaLinks($shortcodes, $bodyHtml, $content);
+
+        $scripts = $this->extractScriptsFromContent($content);
+
+        if (count($scripts) > 0) {
+            $scriptsStatic = $this->extractStaticScriptsFromArray($scripts);
+            
+            $this->processScriptArrayUrls($scripts);
+
+            if (count($scripts) > 0) {
+                $this->processScriptArrayInlineScripts($scripts);
+
+                $scripts = $this->canMergeGroups() ? $this->_mergeGroups($scripts) : $scripts;
+
+                list($requireGroups, $requireJsPaths)  = $this->processRequireGroupsFromScriptsArray($scripts);
+
+                $requireContextToken = 'RequireFPJS';
+                
+                $requireJsFinal = sprintf(
+                    "<script type=\"text/javascript\">\n%s\n\n%s\n\n%s\n</script>",
+                    $this->getFPJS(),
+                    $this->processRequireJsConfig($requireJsPaths, $requireContextToken),
+                    $this->processRequireGroupsIntoJsString($requireGroups, $requireContextToken)
+                );
+
+                // Add the final requireJS code to the $content array
+                $content .= $requireJsFinal;
+            }
+        }
+
+        if (!empty($scriptsStatic)) {
+            $content = implode(PHP_EOL, $scriptsStatic) . $content;
+        }
+
+        if (!empty($content)) {
+            $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
+        }
+
+        return $bodyHtml;
+    }
+
+    /**
+     * Determine whther to run the Asset injection process
+     *
+     * @return bool
+     */
+    protected function canRun()
+    {
         if (self::$status === true) {
             return false;
         }
@@ -90,17 +175,21 @@ class AssetInjector
         }
 
         $this->integrationManager->runTests();
+        
+        return true;
+    }
 
-        if (!($shortcodes = $this->shortcodeManager->getShortcodesThatRequireAssets())) {
-            return false;
-        }
-
-        self::$status = true;
-
+    /**
+     * Loop through shortcodes and retrieve assets and inline code
+     *
+     * @param array $shortcodes
+     * @return array
+     */
+    protected function getAssetsFromShortcodes(array $shortcodes)
+    {
         $assets = [];
         $inline = [];
-        $metaLinks = [];
-
+        
         // Get assets from plugins
         foreach($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'getRequiredAssets') && ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml))) {
@@ -127,35 +216,37 @@ class AssetInjector
             }
         }
 
-        // Merge inline into assets
-        $assets = array_merge($assets, $inline);
-
-        if (count($assets) === 0) {
-            return false;
-        }
-
-        $content = implode("\n", $assets);
-
-        // If Visual Editor Mode, remove Magento JS and include WordPress JS without RequireJS
-        $isVisualEditorMode = false;
-
+        return $assets = array_merge($assets, $inline) ? $assets : false;
+    }
+    
+    /**
+     * Determine whether the current request is from a visual editor (page builder)
+     *
+     * @param array $shortcodes
+     * @return bool
+     */
+    protected function isVisualEditorMode(array $shortcodes)
+    {
         foreach($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'isVisualEditorMode') && ($buffer = $shortcodeInstance->isVisualEditorMode())) {
-                $isVisualEditorMode = true;
-                break;
+                return true;
             }
         }
 
-        if ($isVisualEditorMode) {
-            $bodyHtml = preg_replace('/<script[^>]*>.*<\/script>/Uis', '', $bodyHtml);
-            $bodyHtml = str_replace('</body>', "\n\n" . $content . "\n\n" . '</body>', $bodyHtml);
-
-            return $bodyHtml;
-        }
-
-        if (trim($content) === '') {
-            return false;
-        }
+        return false;
+    }
+    
+    /**
+     * Find meta links, add them to $bodyHtml and remove them from $content
+     *
+     * @param array $shortcodes
+     * @param string $bodyHtml
+     * @param string $content
+     * @return void
+     */
+    protected function processMetaLinks(array $shortcodes, &$bodyHtml, &$content)
+    {
+        $metaLinks = [];
 
         // Get Head Meta and Link tags
         foreach($shortcodes as $class => $shortcodeInstance) {
@@ -182,12 +273,17 @@ class AssetInjector
         if ($metaLinks) {
             $bodyHtml = str_replace('</head>', implode("\n", $metaLinks) . "\n</head>", $bodyHtml);
         }
+    }
 
-        // Now let's build the requireJS from $assets
-        $baseUrl = $this->wpUrl->getSiteurl();
-        $jsTemplate = '<script type="text/javascript" src="%s"></script>';
-        $scripts    = [];
-        $scriptsStatic  = [];
+    /**
+     * Extract script tags from $content and remove them from $content
+     *
+     * @param string $content
+     * @return array
+     */
+    protected function extractScriptsFromContent(&$content)
+    {
+        $scripts = [];
         $scriptRegex = '<script.*<\/script>';
         $regexes = [$this->_getIeCondRegex($scriptRegex, false), $scriptRegex];
 
@@ -200,190 +296,234 @@ class AssetInjector
                 }
             }
         }
-
-        if (count($scripts) > 0) {
-            /**
-             * Migrate JS to Magento
-             * Add define if required
-             * Modify jQuery document ready events
-             */
-            foreach($scripts as $skey => $script) {
-                if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
-                    if (in_array($match[2], ['text/template', 'text/x-template'])) {
-                        $scriptsStatic[] = $scripts[$skey];
-
-                        unset($scripts[$skey]);
-                        continue;
-                    }
-                    else if ($match[2] !== 'text/javascript') {
-                        $scriptsStatic[] = $scripts[$skey];
-
-                        unset($scripts[$skey]);
-                        continue;
-                    }
-                }
-                else if (preg_match('/<script[^>]+async/U', $script, $match)) {
+        
+        return $scripts ? $scripts : false;
+    }
+    
+    /**
+     *
+     *
+     * @param array $scripts
+     * @return array
+     */
+    protected function extractStaticScriptsFromArray(&$scripts)
+    {
+        foreach($scripts as $skey => $script) {
+            if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
+                if (in_array($match[2], ['text/template', 'text/x-template'])) {
                     $scriptsStatic[] = $scripts[$skey];
 
                     unset($scripts[$skey]);
-                    continue;
                 }
-                else if (preg_match('/<script([^>]*)>(.*)<\/script>/Us', $script, $match)){
-                    // Script tags with no SRC but data attributes
-                    if (trim($match[2]) === '') {
-                        if (strpos($match[1], ' src=') === false && strpos($match[1], ' data-') !== false) {
-                            $scriptsStatic[] = $scripts[$skey];
+                else if ($match[2] !== 'text/javascript') {
+                    $scriptsStatic[] = $scripts[$skey];
 
-                            unset($scripts[$skey]);
-                            continue;
-                        }
-                    }
+                    unset($scripts[$skey]);
                 }
+            }
+            else if (preg_match('/<script[^>]+async/U', $script, $match)) {
+                $scriptsStatic[] = $scripts[$skey];
 
-                if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-                    $originalScriptUrl = $matches[1];
+                unset($scripts[$skey]);
+            }
+            else if (preg_match('/<script([^>]*)>(.*)<\/script>/Us', $script, $match)) {
+                // Script tags with no SRC but data attributes
+                if (trim($match[2]) === '') {
+                    if (strpos($match[1], ' src=') === false && strpos($match[1], ' data-') !== false) {
+                        $scriptsStatic[] = $scripts[$skey];
 
-                    // Ensure jQuery migrate isn't included multiple times
-                    if (strpos($originalScriptUrl, $this->getJqueryMigrateUrl()) === 0) {
                         unset($scripts[$skey]);
-                        continue;
                     }
+                }
+            }
+        }
+        
+        $scripts = array_values($scripts);
+        
+        return $scriptsStatic;
+    }
+    
+    protected function processScriptArrayUrls(&$scripts)
+    {
+        foreach($scripts as $skey => $script) {
+            if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+                $originalScriptUrl = $matches[1];
 
-                    // This is needed to fix ../ in URLs
-                    $realPathUrl = $originalScriptUrl;
+                // This is needed to fix ../ in URLs
+                $realPathUrl = $originalScriptUrl;
 
-                    if (strpos($originalScriptUrl, '../') !== false) {
-                        $urlParts = explode('/', $originalScriptUrl);
+                if (strpos($originalScriptUrl, '../') !== false) {
+                    $urlParts = explode('/', $originalScriptUrl);
 
-                        while(($key = array_search('..', $urlParts)) !== false) {
-                            if (!isset($urlParts[$key-1])) {
-                                break;
-                            }
-
-                            unset($urlParts[$key-1]);
-                            unset($urlParts[$key]);
+                    while(($key = array_search('..', $urlParts)) !== false) {
+                        if (!isset($urlParts[$key-1])) {
+                            break;
                         }
 
-                        $realPathUrl = implode('/', $urlParts);
+                        unset($urlParts[$key-1]);
+                        unset($urlParts[$key]);
                     }
 
-                    $migratedScriptUrl = $this->_migrateJsAndReturnUrl($realPathUrl);
+                    $realPathUrl = implode('/', $urlParts);
+                }
 
-                    if (strpos($migratedScriptUrl, 'feefo') !== false) {
-                        // No .js                    
-                        if (strpos($migratedScriptUrl, '.js') === false) {
-                            // No query string so lets add one to stop Magento adding .js
-                            if (strpos($migratedScriptUrl, '?') === false) {
-                                $migratedScriptUrl .= '?js=1';
-                            }
+                $migratedScriptUrl = $this->_migrateJsAndReturnUrl($realPathUrl);
+
+                if (strpos($migratedScriptUrl, 'feefo') !== false) {
+                    // No .js                    
+                    if (strpos($migratedScriptUrl, '.js') === false) {
+                        // No query string so lets add one to stop Magento adding .js
+                        if (strpos($migratedScriptUrl, '?') === false) {
+                            $migratedScriptUrl .= '?js=1';
                         }
                     }
+                }
 
-                    $scripts[$skey] = str_replace($originalScriptUrl, $migratedScriptUrl, $script);
+                $scripts[$skey] = str_replace($originalScriptUrl, $migratedScriptUrl, $script);
+            }
+            else {
+                $scripts[$skey] = $this->_fixDomReady($script);
+            }
+        }
+    }
+    
+    /**
+     * @param array $scripts
+     * @return void
+     */
+    protected function processScriptArrayInlineScripts(array &$scripts)
+    {
+        foreach($scripts as $skey => $script) {
+            if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+                if ($this->canMigrateInlineScriptToExternal($script)) {
+                    $inlineJsExternalFile = $this->getBaseJsPath() . 'inex-' . md5($script) . '.js';
+                    $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
+
+                    // Remove the wrapping script tags
+                    $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
+
+                    // Ensure that the static asset directory exists
+                    $this->createStaticAssetDirectory();
+
+                    // Save the JS in the external file
+                    file_put_contents($inlineJsExternalFile, $script);
+                    file_put_contents($inlineJsExternalFileMin, $script);
+
+                    $inlineJsExternalUrl = $this->getBaseJsUrl() . basename($inlineJsExternalFile);
+
+                    $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
+                }
+                else if (preg_match('/(<script[^>]*>)(.*)(<\/script>)/Us', trim($script), $match)) {
+                    // Remove comments from inner JS
+                    $match[2] = trim(preg_replace('/\/\*.*\*\//Us', '', $match[2]));
+                    
+                    $scripts[$skey] = $script = sprintf("%sFPJS.eval(function(){%s});%s", $match[1], $match[2], $match[3]);
+                }
+            }
+        }
+        
+        $scripts = array_values($scripts);
+    }
+    
+    /**
+     * @param array $scripts
+     * @param array $requireJsPaths
+     * @return array
+     */
+    protected function processRequireGroupsFromScriptsArray(array $scripts)
+    {
+        $requireJsPaths = [];//'jquery-migrate' => $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js'];
+        $requireGroups = [];
+
+        foreach($scripts as $skey => $script) {
+            if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+                $originalScriptUrl = $matches[1];
+
+                $requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
+                $requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
+
+                if (!$this->canDownloadInParallel() || !$this->canMergeGroups() || strpos($requireJsAlias, 'inex-') === 0) {
+                    $requireGroups[] = $requireJsAlias;
                 }
                 else {
-                    $scripts[$skey] = $this->_fixDomReady($script);
-                }
-            }
-
-            // After processing, no scripts so return
-            if (count($scripts) > 0) {
-                  if ($this->canMergeGroups()) {
-                      $scripts = $this->_mergeGroups($scripts);
-                  }
-
-                  // Used to set paths for each JS file in requireJs
-                  $requireJsPaths = ['jquery-migrate' => $this->getJqueryMigrateUrl()];
-
-                  // JS Template for requireJs. This changes through foreach below
-                  $requireJsTemplate = "require(['jquery'], function(jQuery) {
-    require(['jquery-migrate', 'underscore'], function(jQueryMigrate, _) {
-          " . self::TMPL_TAG . "
-    });
-    });";
-
-                $level = 2;
-
-                foreach($scripts as $skey => $script) {
-                      $tabs = str_repeat("    ", $level);
-
-                    if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-                        $inlineJsExternalFile = $this->getBaseJsPath() . 'inex-' . md5($script) . '.js';
-                        $inlineJsExternalFileMin = substr($inlineJsExternalFile, 0, -3) . '.min.js';
-
-                        // Remove the wrapping script tags
-                        $script = trim(preg_replace('/<[\/]{0,1}script[^>]*>/', '', $script));
-
-                        // Ensure that the static asset directory exists
-                        $this->createStaticAssetDirectory();
-
-                        // Save the JS in the external file
-                        file_put_contents($inlineJsExternalFile, $script);
-                        file_put_contents($inlineJsExternalFileMin, $script);
-
-                        $inlineJsExternalUrl = $this->getBaseJsUrl() . basename($inlineJsExternalFile);
-
-                        $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
-                    }                
-
-                    if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
-                        $originalScriptUrl = $matches[1];
-
-                        $requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-                        $requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
-
-                        $requireJsTemplate = str_replace(
-                            self::TMPL_TAG,
-                            $tabs . "require(['" . $requireJsAlias . "'], function() {\n" . $tabs . self::TMPL_TAG . $tabs . "});" . "\n",
-                            $requireJsTemplate
-                        );
-
-                        $level++;
+                    if (isset($requireGroups[count($requireGroups)-1]) && is_array($requireGroups[count($requireGroups)-1])) {
+                        $requireGroups[count($requireGroups)-1][] = $requireJsAlias;
                     }
                     else {
-                          $requireJsTemplate = str_replace(self::TMPL_TAG, $this->_stripScriptTags($script) . "\n" . self::TMPL_TAG . "\n", $requireJsTemplate);
+                        $requireGroups[] = [$requireJsAlias];
                     }
                 }
+            }
+            else {
+                $requireGroups[] =  $script;
+            }
+        }
+        
+        return [$requireGroups, $requireJsPaths];
+    }
+    
+    /**
+     * The first require call uses require and not $rewquireContextToken so that we can skip
+     * downloading files already downloaded by require
+     *
+     * @param array $requireGroups
+     * @param string $requireContextTokn
+     * @return string
+     */
+    protected function processRequireGroupsIntoJsString($requireGroups, $requireContextToken)
+    {
+        $level = 1;
+        $randomTag = '__FPTAG823434__';
+        $requireJsTemplate = "require(['jquery', 'jquery/jquery-migrate', 'underscore'], function() {\n" . $randomTag . "});\n";
 
-                // Remove final template variable placeholder
-                $requireJsTemplate = str_replace(self::TMPL_TAG, 'FPJS.trigger();', $requireJsTemplate);
+        foreach($requireGroups as $skey => $requireGroup) {
+            $tabs = str_repeat("  ", $level);
 
-                // Start of paths template
-                $requireJsConfig = "requirejs.config({\n  \"paths\": {\n    ";
+            if (is_array($requireGroup) || strpos($requireGroup, '<script') === false) {
+                $requireJsTemplate = str_replace(
+                    $randomTag,
+                    $tabs . $requireContextToken . "(['" . implode("', '", (array)$requireGroup) . "'], function() {\n" . $tabs . $randomTag . $tabs . "});" . "\n",
+                    $requireJsTemplate
+                );
 
-                // Loop through paths, remove .js and set
-                foreach($requireJsPaths as $alias => $path) {
-                    if (substr($path, -3) === '.js') {
-                        $path = substr($path, 0, -3);
-                    }
-
-                    if (strpos($path, '&#')) {
-                        $path = html_entity_decode($path);
-                    }
-
-                    $requireJsConfig .= '"' . $alias . '": "' . $path . '",' . "\n    ";
-                }
-
-                $requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
-
-                // Final JS including wrapping script tag
-                $requireJsFinal = "<script type=\"text/javascript\">" . "\n\n" . $this->getFPJS() . "\n\n" . $requireJsConfig . "\n\n" . $requireJsTemplate . "</script>";
-
-                // Add the final requireJS code to the $content array
-                $content .= $requireJsFinal;
+                $level++;
+            }
+            else {
+                $requireJsTemplate = str_replace($randomTag, $this->_stripScriptTags($requireGroup) . "\n" . $randomTag . "\n", $requireJsTemplate);
             }
         }
 
-        // Add in the JS templates
-        if ($scriptsStatic) {
-            $content = implode(PHP_EOL, $scriptsStatic) . $content;
+        // Remove final template variable placeholder
+        $requireJsTemplate = str_replace($randomTag, $tabs . 'FPJS.trigger();' . PHP_EOL, $requireJsTemplate);
+        
+        return $requireJsTemplate;
+    }
+        
+    /**
+     * @param array $requireJsPaths
+     * @param string $requireContextToken
+     * @return string
+     */
+    protected function processRequireJsConfig($requireJsPaths, $requireContextToken)
+    {   
+        $requireJsConfig = "var " . $requireContextToken . "=requirejs.config({\n  \"baseUrl\": require.toUrl(''),\n  \"context\": \"" . $requireContextToken . "\",\n  \"paths\": {\n    ";
+
+        // Loop through paths, remove .js and set
+        foreach($requireJsPaths as $alias => $path) {
+            if (substr($path, -3) === '.js') {
+                $path = substr($path, 0, -3);
+            }
+
+            if (strpos($path, '&#')) {
+                $path = html_entity_decode($path);
+            }
+
+            $requireJsConfig .= '  "' . $alias . '": "' . $path . '",' . "\n    ";
         }
 
-        if ($content) {
-            $bodyHtml = str_replace('</body>', trim($content) . "\n" . '</body>', $bodyHtml);
-        }
-
-        return $bodyHtml;
+        $requireJsConfig = rtrim($requireJsConfig, "\n ,") . "\n  }\n" . '});';
+        
+        return $requireJsConfig;
     }
 
     /**
@@ -393,7 +533,7 @@ class AssetInjector
      */
     protected function getFPJS()
     {
-        return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i](jQuery);}this.fs=[];}})();';
+        return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i](jQuery);}this.fs=[];};this.eval=function(f){var c=f.toString().substr(8).trim().substr(2).trim().substr(1);jQuery.globalEval(c.substr(0,c.length-1));};})();';
     }
 
     /**
@@ -426,16 +566,20 @@ class AssetInjector
      */
     protected function _migrateJsAndReturnUrl($externalScriptUrlFull)
     {
+        $externalScriptUrlFull = $this->_fixNoProtocolUrl($externalScriptUrlFull);
+
         // Check that the script is a local file
         if (!$this->_isWordPressUrl($externalScriptUrlFull)) {
             return $externalScriptUrlFull;
         }
 
         $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
-        $localScriptFile      = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
-        $newScriptFile          = $this->getBaseJsPath() . $this->_hashString($externalScriptUrlFull) . '.js';
-        $newScriptUrl          = $this->getBaseJsUrl() . basename($newScriptFile);
+        $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
+        $newScriptFile = $this->getBaseJsPath() . $this->_hashString($externalScriptUrlFull) . '.js';
+        $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
+        $this->migrationCache[$newScriptUrl] = $externalScriptUrlFull;
+        
         if (!self::DEBUG && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
             /** Debug */
 #            return preg_replace('/\.js$/', '', preg_replace('/\?.*$/', '', $externalScriptUrlFull));
@@ -488,10 +632,10 @@ class AssetInjector
      * @param string $externalScriptUrlFull
      * @return string
      */
-    protected function _getMergedJsUrl(array $externalScriptUrlFulls)
+    protected function _getMergedJsUrl(array $externalScriptUrlFulls, $prefix = '')
     {
         $DS = DIRECTORY_SEPARATOR;
-        $baseMergedPath = $this->directoryList->getPath('media') . $DS . 'js' . $DS;
+        $baseMergedPath = $this->getBaseJsPath();
         $scriptContents = array();
 
         foreach($externalScriptUrlFulls as $externalScriptUrlFull) {
@@ -504,12 +648,12 @@ class AssetInjector
                 $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
             }
 
-            $scriptContents[] = file_get_contents($localScriptFile);
+            $scriptContents[] = trim(file_get_contents($localScriptFile)) . ';';
         }
 
-        $scriptContent = implode("\n\n", $scriptContents);
-        $newScriptFile = $baseMergedPath . $this->_hashString(implode('-', $externalScriptUrlFulls) . rand(1, 99999)) . '.js';
-        $newScriptUrl = $this ->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/' . basename($newScriptFile);
+        $scriptContent = implode("\n", $scriptContents);
+        $newScriptFile = $baseMergedPath . ltrim($prefix . '-', '-') . $this->_hashString(implode('-', $externalScriptUrlFulls) . $scriptContent) . '.js';
+        $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
         @mkdir(dirname($newScriptFile));
 
@@ -528,11 +672,8 @@ class AssetInjector
      */
     public function isApiRequest()
     {
-        $pathInfo = str_replace(
-            $this->storeManager->getStore()->getBaseUrl(), 
-            '', 
-            $this->storeManager->getStore()->getCurrentUrl()
-        );
+        $store    = $this->storeManager->getStore();
+        $pathInfo = str_replace($store->getBaseUrl(), '', $store->getCurrentUrl());
 
         return strpos($pathInfo, 'api/') === 0;
     }
@@ -555,7 +696,28 @@ class AssetInjector
      */
     protected function _isWordPressUrl($url)
     {
-        return strpos($this->_cleanQueryString($url), $this->wpUrl->getSiteUrl()) === 0;
+        $wpSiteUrl = $this->wpUrl->getSiteUrl();
+
+        if (strpos($url, 'http') !== 0) {
+            $url = substr($wpSiteUrl, 0, strpos($wpSiteUrl, '://')+1) . $url;
+        }
+
+        return strpos($this->_cleanQueryString($url), $wpSiteUrl) === 0;
+    }
+
+    /**
+     * @param string $url
+     * @return string
+     */
+    protected function _fixNoProtocolUrl($url)
+    {
+        $wpSiteUrl = $this->wpUrl->getSiteUrl();
+
+        if (strpos($url, 'http') !== 0) {
+            $url = substr($wpSiteUrl, 0, strpos($wpSiteUrl, '://')+1) . $url;
+        }
+        
+        return $url;
     }
 
     /**
@@ -566,7 +728,7 @@ class AssetInjector
      */
     protected function _isMigratedUrl($url)
     {
-        return strpos($this->_cleanQueryString($url), $this->storeManager-> getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'js/') === 0;
+        return strpos($this->_cleanQueryString($url), $this->getBaseJsUrl()) === 0;
     }
 
     /**
@@ -581,30 +743,30 @@ class AssetInjector
     }
 
     /**
-     *
      * @param string $s
      * @return string
      */
     protected function _stripScriptTags($s)
     {
-        return preg_replace(
-            '/<\/script>$/',
-            '',
-            preg_replace(
-                '/^<script[^>]{0,}>/',
-                '',
-                trim($s)
-            )
-        );
+        return preg_replace('/<\/script>$/', '', preg_replace('/^<script[^>]{0,}>/', '', trim($s)));
     }
 
     /**
      * Determine whether to merge groups
-     * This is currently disabled
      *
      * @return bool
      */
     public function canMergeGroups()
+    {
+        return true;
+    }
+    
+    /**
+     * Determine whether to download some files in parallel
+     *
+     * @return bool
+     */
+    public function canDownloadInParallel()
     {
         return false;
     }
@@ -617,34 +779,116 @@ class AssetInjector
      */
     protected function _mergeGroups($scripts)
     {
-        $buffer = array();
-        $bkey = 1;
-
+        $groups = [];
+        $wpSiteUrl = $this->wpUrl->getSiteurl();
+        
         // Create $buffer for merged groups
         foreach($scripts as $skey => $script) {
-            if (preg_match('/<script[^>]+src=[\'"]{1}(.*)[\'"]{1}/U', $script, $smatch)) {
-                if ($this->_isWordPressUrl($smatch[1]) || $this->_isMigratedUrl($smatch[1])) {
-                    $buffer[$bkey][] = $smatch[1];
+            if (!preg_match('/<script[^>]+src=[\'"]{1}(.*)[\'"]{1}/U', $script, $smatch)) {
+                // Inline script so ignore
+                $groups[] = $script;
+                continue;
+            }
+
+            if (!($realUrl = $this->_getMigratedRealUrl($smatch[1]))) {
+                $realUrl = $smatch[1];
+            }
+
+            if (!$this->_isWordPressUrl($realUrl) && strpos(basename($realUrl), 'inex-') !== 0) {
+                $groups[] = $script;
+                continue;
+            }
+            
+            if (strpos(basename($realUrl), 'inex-') === 0) {
+                $urlBaseKey = 'inex';
+            }
+            else {
+                $urlBasePart = str_replace($wpSiteUrl, '', $this->_fixNoProtocolUrl($realUrl));
+                
+                if (strpos($urlBasePart, '/wp-includes/') === 0) {
+                    $urlBaseKey = 'wp-includes';
+                }
+                else if (strpos($urlBasePart, '/wp-content/plugins/') === 0) {
+                    $urlBaseKey = substr($urlBasePart, strlen('/wp-content/plugins/'));
+                    $urlBaseKey = substr($urlBaseKey, 0, strpos($urlBaseKey, '/'));
+                }
+                else {
+                    $groups[] = $script;
                     continue;
                 }
             }
-
-            $bkey++;
-            $buffer[$bkey] = $script;
-            $bkey++;
-        }
-
-        $scripts = $buffer;
-
-        // Merge groups
-        foreach($scripts as $skey => $script) {
-            if (is_array($script)) {
-                $scripts[$skey] = '<script type="text/javascript" src="' . $this->_getMergedJsUrl($script) . '"></script>';
+            
+            $lastGroupIt = count($groups)-1;
+            
+            if (!$groups || !isset($groups[$lastGroupIt]['key']) || $urlBaseKey !== $groups[$lastGroupIt]['key']) {
+                $groups[] = [
+                    'key' => $urlBaseKey,
+                    'items' => [$skey => $smatch[1]],
+                ];
+            }
+            else {
+                $groups[$lastGroupIt]['items'][$skey] = $smatch[1];  
             }
         }
 
-        return $scripts;
+        foreach($groups as $group) {
+            if (!is_array($group) || count($group['items']) === 1) {
+                continue;
+            }
+            else {
+                $prev = 0;
+                $keysAreConsecutive = true;
+                $itemKeys = array_keys($group['items']);
+                
+                foreach($itemKeys as $i) {
+                    $i = (int)$i;
+                    if (!$prev) {
+                        $prev = $i;
+                    }
+                    else if ($i !== $prev+1) {
+                        $keysAreConsecutive = false;
+                        break;
+                    }
+                    else {
+                        $prev = $i;
+                    }
+                }
+                
+                if (!$keysAreConsecutive) {
+                    break;
+                }
+
+                $firstKey = array_shift($itemKeys);
+
+                foreach($group['items'] as $skey => $itemUrl) {
+                    $scripts[$skey] = '';
+                }
+
+                $scripts[$firstKey] = '<script type="text/javascript" src="' . $this->_getMergedJsUrl($group['items'], $group['key']) . '"></script>';
+            }
+        }
+
+        foreach($scripts as $skey => $script) {
+            if (trim($script) === '') {
+                unset($scripts[$skey]);
+            }
+        }
+
+        return array_values($scripts);
     } 
+
+    /**
+     * @param string $url
+     * @return bool|string
+     */
+    protected function _getMigratedRealUrl($url)
+    {
+        if ($this->_isMigratedUrl($url) && isset($this->migrationCache[$url])) {
+            return $this->migrationCache[$url];
+        }
+
+        return false;
+    }
 
     /**
      * Hash a string (filename) with a version/salt
@@ -655,14 +899,6 @@ class AssetInjector
     protected function _hashString($s)
     {
         return md5($this->moduleVersion . $s);
-    }
-
-    /**
-     * @return string
-     */
-    public function getJqueryMigrateUrl()
-    {
-        return $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js';
     }
 
     /**
@@ -705,5 +941,14 @@ class AssetInjector
         }
 
         return '<!--\[[a-zA-Z0-9 ]{1,}\]>[\s]{0,}' . $inner . '[\s]{0,}<!\[endif\]-->';
+    }
+    
+    /**
+     * @param string $script
+     * @return bool
+     */
+    protected function canMigrateInlineScriptToExternal(&$script)
+    {
+        return false;
     }
 }
