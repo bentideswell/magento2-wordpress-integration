@@ -103,6 +103,14 @@ class ResourceConnection
             $this->applyMapping($networkTables);
         }
 
+        $this->updateMagentoDataInWordPress();
+    }
+
+    /**
+     * @return $this
+     */
+    public function updateMagentoDataInWordPress()
+    {
         // Pass some data to WordPress via it's options table
         if ((int)$this->storeManager->getStore()->getId() > 0) {
             $optionName  = 'fishpig_magento_base_url';
@@ -119,8 +127,10 @@ class ResourceConnection
                 $this->logger->error($e);
             }
         }
+        
+        return $this;
     }
-
+    
     /**
      * @param  string $optionName
      * @param  mixed  $newValue
