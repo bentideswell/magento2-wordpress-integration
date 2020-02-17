@@ -297,7 +297,7 @@ class AssetInjector
             }
         }
         
-        return $scripts ? $scripts : false;
+        return $scripts ? $scripts : [];
     }
     
     /**
