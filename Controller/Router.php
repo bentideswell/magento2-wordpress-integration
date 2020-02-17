@@ -9,6 +9,7 @@ use Magento\Framework\App\ActionFactory;
 use FishPig\WordPress\Model\IntegrationManager;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Model\Theme;
 use Magento\Framework\Event\Manager as EventManager;
 use Magento\Framework\App\RequestInterface;
 use FishPig\WordPress\Model\Integration\IntegrationException;
@@ -51,22 +52,27 @@ class Router implements RouterInterface
     protected $eventManager;
 
     /**
-     *
+     * @var Theme
+     */
+    protected $theme;
+    
+    /**
      *
      */
     public function __construct(
-    ActionFactory $actionFactory,     
-    IntegrationManager $integrationManager,
-    Url $url,
-    Factory $factory,
-    EventManager $eventManager
-    )
-    {
-    $this->actionFactory = $actionFactory;
-    $this->integrationManager = $integrationManager;
-    $this->url = $url;
-    $this->factory = $factory;
-    $this->eventManager = $eventManager;
+        ActionFactory $actionFactory,     
+        IntegrationManager $integrationManager,
+        Url $url,
+        Factory $factory,
+        EventManager $eventManager,
+        Theme $theme
+    ) {
+        $this->actionFactory = $actionFactory;
+        $this->integrationManager = $integrationManager;
+        $this->url = $url;
+        $this->factory = $factory;
+        $this->eventManager = $eventManager;
+        $this->theme = $theme;
     }
 
     /**
@@ -76,6 +82,12 @@ class Router implements RouterInterface
     {
         if ($this->integrationManager->runTests() === false) {
             return false;
+        }
+
+
+        // If theme not integrated, don't display blog
+        if (!$this->theme->isThemeIntegrated()) {
+            return false;      
         }
 
         $this->request  = $request;
