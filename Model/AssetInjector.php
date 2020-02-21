@@ -308,6 +308,8 @@ class AssetInjector
      */
     protected function extractStaticScriptsFromArray(&$scripts)
     {
+        $scriptsStatic = [];
+        
         foreach($scripts as $skey => $script) {
             if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
                 if (in_array($match[2], ['text/template', 'text/x-template'])) {
