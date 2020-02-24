@@ -4,29 +4,10 @@
  */
 namespace FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field;
 
-use Magento\Config\Block\System\Config\Form\Field;
-use Magento\Backend\Block\Template\Context;
-use Magento\Framework\Module\ModuleListInterface;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 
-class Addon extends Field
+class Addon extends \Magento\Config\Block\System\Config\Form\Field
 {
-    /**
-     * @var ModuleListInterface
-     */
-    protected $moduleList;
-
-    /**
-     *
-     *
-     */
-    public function __construct(Context $context, ModuleListInterface $moduleList, array $data = [])
-    {
-        parent::__construct($context, $data);
-
-        $this->moduleList = $moduleList;
-    }
-
     /**
      *
      *
@@ -36,23 +17,29 @@ class Addon extends Field
     protected function _getElementHtml(AbstractElement $element)
     {
         $addonModule = trim(str_replace('wordpress_addon_FishPig_', '', $element->getId()));
-        $moduleInfo  = $this->moduleList->getOne('FishPig_' . $addonModule);
 
-        $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
-            ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Addon');
-
-        if (isset($moduleInfo['setup_version'])) {
-            $configBlock->setModuleVersion($moduleInfo['setup_version']);
+        try {
+            $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
+                ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Version');
+        }
+        catch (\ReflectionException $e) {
+            try {
+                $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
+                    ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Addon');
+            }
+            catch (\Exception $e) {
+                return '';
+            }
         }
 
-        $configBlock->setVersionUrl('https://api.fishpig.co.uk/v1/version/FishPig_' . $addonModule . '.json');
+        if (!isset($configBlock)) {
+            return '';
+        }
 
-        return $configBlock->render($element);
+        return $configBlock->getElementHtml($element);
     }
 
     /**
-     *
-     *
      * @param  AbstractElement $element
      * @return string
      */
@@ -62,12 +49,10 @@ class Addon extends Field
     }
 
     /**
-     *
-     *
      * @param  AbstractElement $element
      * @return string
      */
-    public function render(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    public function render(AbstractElement $element)
     {
         return str_replace('class="label"', 'style="vertical-align: middle;" class="label"', parent::render($element));
     }

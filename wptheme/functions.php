@@ -150,6 +150,7 @@ class FishPig_Theme
 	public function onFilterThemeTemplates($page_templates, $wp_theme, $post)
 	{
 		return array(
+			'template-empty' => 'Empty',
 			'template-1column' => '1 Column',
 			'template-2columns-left' => '2 Columns Left',
 			'template-2columns-right' => '2 Columns Right',
