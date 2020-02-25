@@ -140,4 +140,28 @@ class WPConfig
         
         return $dbHost;
     }
+    
+    /**
+     * @return string
+     */
+    public function getDbName()
+    {
+        return $this->getData('DB_NAME');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbUser()
+    {
+        return $this->getData('DB_USER');
+    }
+
+    /**
+     * @return string
+     */
+    public function getDbPassword()
+    {
+        return $this->getData('DB_PASSWORD');
+    }
 }
