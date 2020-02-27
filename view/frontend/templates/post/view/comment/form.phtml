@@ -18,13 +18,13 @@
 					<div class="field required">
 						<label class="label"><?php echo __('Name') ?></label>
 						<div class="control">
-							<input type="text" id="author" name="author" class="input-text" value=""/>
+							<input type="text" id="author" name="author" class="input-text required-entry" value=""/>
 						</div>
 					</div>
 					<div class="field required">
 						<label for="email" class="label"><?php echo __('Email') ?></label>
 						<div class="control">
-							<input type="text" id="email" name="email" class="input-text" value=""/>
+							<input type="text" id="email" name="email" class="input-text required-entry validate-email" value=""/>
 						</div>
 					</div>
 				<?php endif; ?>
@@ -34,7 +34,7 @@
 						<input type="text" id="url" name="url" class="input-text" value=""/>
 					</div>
 				</div>
-				<div class="field">
+				<div class="field required">
 					<label for="comment" class="label"><?php echo __('Comment') ?></label>
 					<div class="control">
 						<textarea id="comment" name="comment" rows="8" cols="45" class="required-entry"></textarea>
@@ -56,3 +56,4 @@
 	</div>
 	<?php endif; ?>
 </form>
+<script type="text/x-magento-init">{"#respond":{"validation":{}}}</script>

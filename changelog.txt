@@ -1,3 +1,7 @@
+27/02/2020 - 2.0.11.2
+- Fixed issue with message not displaying after posting a comment.
+- Added JS validation to comments form.
+
 25/02/2020 - 2.0.11.1
 - Added methods to get DB details in WPConfig.php
 

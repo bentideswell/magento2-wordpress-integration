@@ -88,15 +88,15 @@ class View extends Action
     {
         parent::_initLayout();
 
-        if ($commentId = (int)$this->getRequest()->getParam('comment-id')) {
-            $commentStatus = (int)$this->getRequest()->getParam('comment-status');
-
-            if ($commentStatus === 0) {
-                $this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));
-            }
-            else {
-                $this->messageManager->addSuccess(__('Your comment has been posted.'));
-            }
+        $commentId = (int)$this->getRequest()->getParam('comment-id');
+        $commentStatus = (int)$this->getRequest()->getParam('comment-status');
+        $unapproved = (int)$this->getRequest()->getParam('unapproved');
+        
+        if ($unapproved > 0 || ($commentId > 0 && $commentStatus === 0)) {
+            $this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));            
+        }
+        else if ($commentId > 0) {
+            $this->messageManager->addSuccess(__('Your comment has been posted.'));
         }
 
         return $this;
