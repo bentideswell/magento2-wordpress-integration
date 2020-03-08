@@ -657,7 +657,9 @@ class AssetInjector
         $newScriptFile = $baseMergedPath . ltrim($prefix . '-', '-') . $this->_hashString(implode('-', $externalScriptUrlFulls) . $scriptContent) . '.js';
         $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
-        @mkdir(dirname($newScriptFile));
+        if (!is_dir(dirname($newScriptFile))) {
+            @mkdir(dirname($newScriptFile));
+        }
 
         // Only write data if new script doesn't exist or local file has been updated
         if (!is_file($newScriptFile) || filemtime($localScriptFile) > filemtime($newScriptFile)) {
