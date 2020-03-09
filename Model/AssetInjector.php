@@ -95,7 +95,7 @@ class AssetInjector
 
         self::$status = true;
 
-        if (!($assets = $this->getAssetsFromShortcodes($shortcodes))) {
+        if (!($assets = $this->getAssetsFromShortcodes($shortcodes, $bodyHtml))) {
             return false;
         }
 
@@ -185,7 +185,7 @@ class AssetInjector
      * @param array $shortcodes
      * @return array
      */
-    protected function getAssetsFromShortcodes(array $shortcodes)
+    protected function getAssetsFromShortcodes(array $shortcodes, &$bodyHtml)
     {
         $assets = [];
         $inline = [];
