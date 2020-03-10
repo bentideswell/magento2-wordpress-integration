@@ -15,14 +15,15 @@ class Preview extends View
      */
     protected function _getEntity()
     {
-    $post = $this->factory->create('Post')->load(
+        $post = $this->factory->create('Post')->load(
             (int)$this->getRequest()->getParam('preview_id')
-    );
+        );
 
-    if (!$post->getId()) {
-        return false;
-    }
+        if (!$post->getId()) {
+            return false;
+        }
 
+        return $post;
         return ($revision = $post->getLatestRevision()) ? $revision : $post;
     }
 
