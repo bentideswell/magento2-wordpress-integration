@@ -93,9 +93,21 @@ class Theme
     {        
         try {
             if (!$this->wpDirectoryList->isValidBasePath()) {
-                IntegrationException::throwException('Empty or invalid path set.');
+                IntegrationException::throwException('Empty or invalid WordPress path.');
             }
 
+            if (!is_dir($this->wpDirectoryList->getContentDir())) {
+                IntegrationException::throwException('Unable to find the wp-content directory at ' . $this->wpDirectoryList->getContentDir());
+            }
+            
+            if (!is_dir($this->wpDirectoryList->getPluginDir())) {
+                IntegrationException::throwException('Unable to find the plugins directory at ' . $this->wpDirectoryList->getPluginDir());
+            }
+
+            if (!is_dir($this->wpDirectoryList->getThemeDir())) {
+                IntegrationException::throwException('Unable to find the themes directory at ' . $this->wpDirectoryList->getThemeDir());
+            }
+            
             // Now let's find some source directories
             $sourceDirs = [];
 
@@ -180,6 +192,8 @@ class Theme
             }
 
             $this->logger->error($e);
+            
+            throw $e;
         }
 
         return $this;

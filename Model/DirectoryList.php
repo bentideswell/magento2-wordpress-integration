@@ -87,7 +87,7 @@ class DirectoryList
     /**
      * @return string
      */    
-    public function getWpContentDir()
+    public function getContentDir()
     {
         if (!($contentDir = $this->wpConfig->getData('WP_CONTENT_DIR'))) {
             $contentDir = $this->getBasePath() . '/wp-content';
@@ -95,13 +95,21 @@ class DirectoryList
 
         return rtrim($contentDir, '/');
     }
+    
+    /**
+     * @return string
+     */    
+    public function getPluginDir()
+    {
+        return $this->getContentDir() . '/plugins';
+    }
 
     /**
      * @return string
      */    
     public function getThemeDir()
     {
-        return $this->getWpContentDir() . '/themes';
+        return $this->getContentDir() . '/themes';
     }
 
     /**
@@ -110,5 +118,16 @@ class DirectoryList
     protected function getStoreId()
     {
         return (int)$this->storeManager->getStore()->getId();
+    }
+    
+    /**
+     * Deprecated
+     */
+    /**
+     * @return string
+     */    
+    public function getWpContentDir()
+    {
+        return $this->getContentDir();
     }
 }
