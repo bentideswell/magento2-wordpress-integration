@@ -119,6 +119,8 @@ class AssetInjector
         $scripts = $this->extractScriptsFromContent($content);
 
         if (count($scripts) > 0) {
+            $this->extractDuplicateScriptsFromArray($scripts);
+            
             $scriptsStatic = $this->extractStaticScriptsFromArray($scripts);
             
             $this->processScriptArrayUrls($scripts);
@@ -300,6 +302,45 @@ class AssetInjector
         return $scripts ? $scripts : [];
     }
     
+    public function extractDuplicateScriptsFromArray(&$scripts)
+    {
+        $toRemove = [
+            '/wp-includes/js/jquery/jquery.js',
+            '/wp-includes/js/jquery/jquery-migrate.min.js',
+        ];
+        
+        $unshift = [];
+
+        foreach($scripts as $key => $script) {
+            foreach($toRemove as $needle) {
+                if (strpos($script, $needle) !== false) {
+                    unset($scripts[$key]);
+                    break;
+                }
+            }
+            
+            if (isset($scripts[$key])) {
+                // Move reCaptcha script to start
+                if (strpos($script, 'www.google.com/recaptcha/') !== false) {
+                    $unshift[] = $script;
+                    unset($scripts[$key]);
+                }
+            }
+        }
+        
+        if ($unshift) {
+            if (count($unshift) > 1) {
+                $unshift = array_reverse($unshift);
+            }
+            
+            foreach($unshift as $script) {
+                array_unshift($scripts, $script);
+            }
+        }
+        
+        $scripts = array_values($scripts);
+    }
+
     /**
      *
      *
@@ -593,7 +634,8 @@ class AssetInjector
 
         // Check whether the script supports AMD
         if (strpos($scriptContent, 'define.amd') !== false) {
-            $scriptContent = "__d=define;define=undefined;" . rtrim($scriptContent, ';') . ";define=__d;__d=undefined;";
+#            $scriptContent = "__d=define;define=undefined;" . rtrim($scriptContent, ';') . ";define=__d;__d=undefined;";
+            $scriptContent = str_replace('define.amd', 'define.xyz', $scriptContent);
         }
 
         if (self::DEBUG) {
