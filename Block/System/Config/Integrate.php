@@ -13,6 +13,7 @@ use Magento\Store\Model\StoreManager;
 use Magento\Store\Model\App\Emulation;
 use Magento\Framework\Module\Manager as ModuleManager;
 use FishPig\WordPress\Model\Plugin;
+use FishPig\WordPress\Model\WPConfig;
 use Magento\Framework\Module\ResourceInterface;
 
 class Integrate extends Template
@@ -71,6 +72,16 @@ class Integrate extends Template
      * @var bool
      */
     protected $success = false;
+    
+    /**
+     * @var string
+     */
+    protected $wpConfigFilePath;
+    
+    /**
+     * @var WPConfig
+     */
+    protected $wpConfig;
 
     /**
      *
@@ -84,6 +95,7 @@ class Integrate extends Template
         ModuleManager $moduleManager,
         Plugin $plugin,
         ResourceInterface $resourceInterface,
+        WPConfig $wpConfig,
         array $data = []
     )
     {
@@ -94,6 +106,7 @@ class Integrate extends Template
         $this->moduleManager = $moduleManager;
         $this->plugin = $plugin;
         $this->resourceInterface = $resourceInterface;
+        $this->wpConfig = $wpConfig;
 
         parent::__construct($context, $data);
 
@@ -119,6 +132,8 @@ class Integrate extends Template
             }
 
             $this->emulator->startEnvironmentEmulation($storeId);
+
+            $this->wpConfigFilePath = $this->wpConfig->getConfigFilePath();
 
             if ($this->integrationManager->runTests() === true) {
                 $this->success = sprintf(
@@ -168,11 +183,26 @@ class Integrate extends Template
     {
         $moduleVersion = $this->resourceInterface->getDbVersion('FishPig_WordPress');
 
+        $configMsg = 'Unable to find <strong style="color:#df4343;">wp-config.php</strong> using the Path provided. You can modify the Path below.';
+            
+        if (isset($this->wpConfigFilePath) && ($configFile = $this->wpConfigFilePath)) {
+            if (is_file($configFile)) {
+                $configMsg = 'The <strong>wp-config.php</strong> file has been loaded from <strong style="color:#109910;">' . $configFile . '</strong>';
+            }
+            else {
+                $configMsg = 'The <strong>wp-config.php</strong> file can not be found at <strong style="color:#df4343;">' . $configFile . '</strong>';
+            }
+        }
+
         return "
         <script>
             require(['jquery'], function($){
                 $(document).ready(function() {
                     document.getElementById('wordpress_setup-head').innerHTML = 'Magento WordPress Integration - v" . $moduleVersion . "';
+                    
+                    var configMsg = document.createElement('p');
+                    configMsg.innerHTML = '" . $configMsg . "';
+                    document.getElementById('wordpress_setup-head').parentNode.appendChild(configMsg);
                 });
             });
         </script>

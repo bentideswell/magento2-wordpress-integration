@@ -475,7 +475,7 @@ class AssetInjector
      */
     protected function processRequireGroupsFromScriptsArray(array $scripts)
     {
-        $requireJsPaths = [];//'jquery-migrate' => $this->wpUrl->getSiteUrl() . '/wp-includes/js/jquery/jquery-migrate.min.js'];
+        $requireJsPaths = [];
         $requireGroups = [];
 
         foreach($scripts as $skey => $script) {
@@ -878,7 +878,7 @@ class AssetInjector
         }
 
         foreach($groups as $group) {
-            if (!is_array($group) || count($group['items']) === 1) {
+            if (!is_array($group) || count($group['items']) === 0) {
                 continue;
             }
             else {
