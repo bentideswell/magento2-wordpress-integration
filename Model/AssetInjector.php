@@ -478,9 +478,7 @@ class AssetInjector
         $requireJsPaths = [];
         $requireGroups = [];
 
-        $changeToCoreVersion = [
-            'jquery-ui' => 'jquery/ui'
-        ];
+        $changeToCoreVersion = $this->getRequireJsMap();
         
         foreach($scripts as $skey => $script) {
             if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
@@ -517,7 +515,7 @@ class AssetInjector
     }
     
     /**
-     * The first require call uses require and not $rewquireContextToken so that we can skip
+     * The first require call uses require and not $requireContextToken so that we can skip
      * downloading files already downloaded by require
      *
      * @param array $requireGroups
@@ -534,9 +532,12 @@ class AssetInjector
             $tabs = str_repeat("  ", $level);
 
             if (is_array($requireGroup) || strpos($requireGroup, '<script') === false) {
+                // Set specific for this grou                
+                $requireTokenForGroup = array_intersect($this->getRequireJsMap(), (array)$requireGroup) ? 'require' : $requireContextToken;
+
                 $requireJsTemplate = str_replace(
                     $randomTag,
-                    $tabs . $requireContextToken . "(['" . implode("', '", (array)$requireGroup) . "'], function() {\n" . $tabs . $randomTag . $tabs . "});" . "\n",
+                    $tabs . $requireTokenForGroup . "(['" . implode("', '", (array)$requireGroup) . "'], function() {\n" . $tabs . $randomTag . $tabs . "});" . "\n",
                     $requireJsTemplate
                 );
 
@@ -1007,5 +1008,15 @@ class AssetInjector
     protected function canMigrateInlineScriptToExternal(&$script)
     {
         return false;
+    }
+    
+    /**
+     * @return array
+     */
+    protected function getRequireJsMap()
+    {
+        return [
+            'jquery-ui' => 'jquery/ui'
+        ];
     }
 }
