@@ -478,14 +478,25 @@ class AssetInjector
         $requireJsPaths = [];
         $requireGroups = [];
 
+        $changeToCoreVersion = [
+            'jquery-ui' => 'jquery/ui'
+        ];
+        
         foreach($scripts as $skey => $script) {
             if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
                 $originalScriptUrl = $matches[1];
 
                 $requireJsAlias = $this->_getRequireJsAlias($originalScriptUrl); // Alias lowercase basename of URL
-                $requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
+
+                if (!isset($changeToCoreVersion[$requireJsAlias])) {
+                    $requireJsPaths[$requireJsAlias] = $originalScriptUrl; // Used to set paths
+                }
 
                 if (!$this->canDownloadInParallel() || !$this->canMergeGroups() || strpos($requireJsAlias, 'inex-') === 0) {
+                    if (isset($changeToCoreVersion[$requireJsAlias])) {
+                        $requireJsAlias = $changeToCoreVersion[$requireJsAlias];
+                    }
+                    
                     $requireGroups[] = $requireJsAlias;
                 }
                 else {
