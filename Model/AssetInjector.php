@@ -253,7 +253,7 @@ class AssetInjector
         // Get Head Meta and Link tags
         foreach($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'getMetaAndLinkTags') && ($buffer = $shortcodeInstance->getMetaAndLinkTags($bodyHtml))) {
-                $metaLinks = array_merge($inline, $buffer);
+                $metaLinks = array_merge($metaLinks, $buffer);
             }
         }
 
