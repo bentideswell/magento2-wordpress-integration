@@ -641,7 +641,7 @@ class AssetInjector
             return $newScriptUrl;
         }
 
-        $scriptContent = file_get_contents(urldecode($localScriptFile));
+        $scriptContent = trim(file_get_contents(urldecode($localScriptFile)));
         $scriptContent = $this->_fixDomReady($scriptContent);
 
         // Check whether the script supports AMD
@@ -663,7 +663,15 @@ class AssetInjector
 
         // Only write data if new script doesn't exist or local file has been updated
         file_put_contents($newScriptFile, $scriptContent);
-        file_put_contents(dirname($newScriptFile) . DIRECTORY_SEPARATOR . basename($newScriptFile, '.js') . '.min.js', $scriptContent);
+        
+        // These files are no longer used directly due to grouping so remove single file
+        if (false) {
+            $minFile = dirname($newScriptFile) . DIRECTORY_SEPARATOR . basename($newScriptFile, '.js') . '.min.js';
+        
+            if (!file_exists($minFile)) {
+                symlink($newScriptFile, $minFile);
+            }
+        }
 
         return $newScriptUrl;
     }
