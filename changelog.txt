@@ -1,3 +1,6 @@
+23/03/2020 - 2.0.11.14
+- Improved AssetInjector so that static JS files don't build up. These files should now stay small in number and no duplicates should be created.
+
 19/03/2020 - 2.0.11.10
 - Improved AssetInjector and revert jQuery UI to Magento 2 version of jQuery UI
 

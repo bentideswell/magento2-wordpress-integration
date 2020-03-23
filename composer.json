@@ -1,7 +1,7 @@
 {
 	"name": "fishpig/magento2-wordpress-integration",
 	"description": "Magento 2 WordPress Integration",
-	"version": "2.0.11.12",
+	"version": "2.0.11.14",
 	"type": "magento2-module",
 	"autoload": {
 		"files": [

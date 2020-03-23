@@ -20,7 +20,8 @@ class AssetInjector
     /**
      * @var bool
      */
-    const DEBUG = false;
+    protected $debug = false;
+    protected $forceRecreate = false;
 
     /**
      * Status determines whether already ran
@@ -630,32 +631,26 @@ class AssetInjector
 
         $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
         $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
-        $newScriptFile = $this->getBaseJsPath() . $this->_hashString($externalScriptUrlFull) . '.js';
+        $newScriptFile = $this->getBaseJsPath() . $this->_hashString($localScriptFile) . '.js';
         $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
         $this->migrationCache[$newScriptUrl] = $externalScriptUrlFull;
         
-        if (!self::DEBUG && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
-            /** Debug */
-#            return preg_replace('/\.js$/', '', preg_replace('/\?.*$/', '', $externalScriptUrlFull));
+        if (!$this->forceRecreate && is_file($newScriptFile) && filemtime($localScriptFile) <= filemtime($newScriptFile)) {
             return $newScriptUrl;
         }
 
-        $scriptContent = trim(file_get_contents(urldecode($localScriptFile)));
+        $scriptContent = file_get_contents(urldecode($localScriptFile));
         $scriptContent = $this->_fixDomReady($scriptContent);
+        $scriptContent = trim($scriptContent);
 
         // Check whether the script supports AMD
         if (strpos($scriptContent, 'define.amd') !== false) {
-#            $scriptContent = "__d=define;define=undefined;" . rtrim($scriptContent, ';') . ";define=__d;__d=undefined;";
             $scriptContent = str_replace('define.amd', 'define.xyz', $scriptContent);
         }
 
-        if (self::DEBUG) {
-            $debugFilename = basename($newScriptFile, '.js') . '-' . trim(preg_replace('/[^a-z0-9_\-\.]{1,}/', '-', str_replace(array('.js', $this->wpDirectoryList->getBasePath()), '', $localScriptFile)), '-') . '.js';
-            $debugFilename = preg_replace('/[_-]{1,}/', '-', $debugFilename);
-            $newScriptFile = dirname($newScriptFile) . DIRECTORY_SEPARATOR . $debugFilename;
-            $newScriptUrl = dirname($newScriptUrl) . '/' . $debugFilename;
-            $scriptContent = '/** ' . $externalScriptUrlFull . ' */' . PHP_EOL . $scriptContent;
+        if ($this->debug) {
+            $scriptContent = '/**' . PHP_EOL . '  ' . $externalScriptUrlFull . PHP_EOL . '  ' . $localScriptFile . PHP_EOL . '*/' . PHP_EOL . PHP_EOL . $scriptContent;
         }
 
         // Ensure that the static asset directory exists
@@ -698,9 +693,14 @@ class AssetInjector
      */
     protected function _getMergedJsUrl(array $externalScriptUrlFulls, $prefix = '')
     {
+        if (count($externalScriptUrlFulls) === 1) {
+            return array_pop($externalScriptUrlFulls);
+        }
+        
         $DS = DIRECTORY_SEPARATOR;
         $baseMergedPath = $this->getBaseJsPath();
-        $scriptContents = array();
+        $scriptContents = [];
+        $localScriptFiles = [];
 
         foreach($externalScriptUrlFulls as $externalScriptUrlFull) {
             $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
@@ -712,13 +712,19 @@ class AssetInjector
                 $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
             }
 
+            $localScriptFiles[] = $localScriptFile;
             $scriptContents[] = trim(file_get_contents($localScriptFile)) . ';';
         }
 
         $scriptContent = implode("\n", $scriptContents);
-        $newScriptFile = $baseMergedPath . ltrim($prefix . '-', '-') . $this->_hashString(implode('-', $externalScriptUrlFulls) . $scriptContent) . '.js';
+        $newScriptFile = $baseMergedPath . ltrim($prefix . '-', '-') . $this->_hashString(implode('-', $localScriptFiles) . $scriptContent) . '.js';
         $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
+        if ($this->debug) {
+            $scriptContent = '/**' . PHP_EOL . '  ' . implode(PHP_EOL . '  ', $externalScriptUrlFulls) . PHP_EOL . 
+                PHP_EOL . '  ' . implode(PHP_EOL . '  ' , $localScriptFiles) . PHP_EOL . '*/' . PHP_EOL . PHP_EOL . $scriptContent;
+        }
+        
         if (!is_dir(dirname($newScriptFile))) {
             @mkdir(dirname($newScriptFile));
         }
