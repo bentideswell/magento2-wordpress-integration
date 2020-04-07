@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
-	<type name="Magento\Framework\App\RouterList">
-		<arguments>
-			<argument name="routerList" xsi:type="array">
-				<item name="wordpress" xsi:type="array">
-					<item name="class" xsi:type="string">FishPig\WordPress\Controller\Router</item>
-					<item name="disable" xsi:type="boolean">false</item>
-					<item name="sortOrder" xsi:type="string">61</item>
-				</item>
-			</argument>
-		</arguments>
-	</type>
-	<!-- Inject any required assets -->
-	<type name="Magento\Framework\Controller\ResultInterface">
-		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="9" disabled="false"/>
-		<!-- Required for some installations -->
-    <plugin name="result-builtin-cache" sortOrder="50"/>
-    <plugin name="result-varnish-cache" sortOrder="60"/>
-	</type>
+    <type name="Magento\Framework\App\RouterList">
+        <arguments>
+            <argument name="routerList" xsi:type="array">
+                <item name="wordpress" xsi:type="array">
+                    <item name="class" xsi:type="string">FishPig\WordPress\Controller\Router</item>
+                    <item name="disable" xsi:type="boolean">false</item>
+                    <item name="sortOrder" xsi:type="string">61</item>
+                </item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- Inject any required assets -->
+    <type name="Magento\Framework\Controller\ResultInterface">
+        <plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="9" disabled="false"/>
+        <!-- Required for some installations -->
+        <plugin name="result-builtin-cache" sortOrder="50"/>
+        <plugin name="result-varnish-cache" sortOrder="60"/>
+    </type>
 </config>
