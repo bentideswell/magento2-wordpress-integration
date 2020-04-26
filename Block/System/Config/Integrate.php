@@ -15,6 +15,8 @@ use Magento\Framework\Module\Manager as ModuleManager;
 use FishPig\WordPress\Model\Plugin;
 use FishPig\WordPress\Model\WPConfig;
 use Magento\Framework\Module\ResourceInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Integrate extends Template
 {
@@ -96,6 +98,7 @@ class Integrate extends Template
         Plugin $plugin,
         ResourceInterface $resourceInterface,
         WPConfig $wpConfig,
+        ScopeConfigInterface $scopeConfig,
         array $data = []
     )
     {
@@ -107,7 +110,8 @@ class Integrate extends Template
         $this->plugin = $plugin;
         $this->resourceInterface = $resourceInterface;
         $this->wpConfig = $wpConfig;
-
+        $this->scopeConfig = $scopeConfig;
+        
         parent::__construct($context, $data);
 
         if ($this->_request->getParam('section') !== 'wordpress') {
@@ -128,6 +132,11 @@ class Integrate extends Template
             }
 
             if ($storeId === 0) {
+                if (!$this->scopeConfig->isSetFlag('wordpress/setup/enabled')) {
+                    // We are at global scope and module is disabled here so return
+                    return;
+                }
+
                 $storeId = (int)$this->storeManager->getDefaultStoreView()->getId();
             }
 
