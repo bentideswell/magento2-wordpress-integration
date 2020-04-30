@@ -82,7 +82,7 @@ class Pages extends AbstractWidget
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/pages.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/pages.phtml');
         }
 
         return parent::_beforeToHtml();

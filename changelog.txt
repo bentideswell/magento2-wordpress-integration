@@ -1,3 +1,6 @@
+30/04/2020 - 2.0.11.18
+- Added FishPig_WordPress prefix to templates
+
 26/04/2020 - 2.0.11.17
 - Stopped integration tests running in global scope of config when module is disabled in global scope. Previously integration tests would run using default store.
 

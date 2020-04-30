@@ -46,7 +46,7 @@ class Comments extends AbstractWidget
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/comments.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/comments.phtml');
         }
 
         return parent::_beforeToHtml();

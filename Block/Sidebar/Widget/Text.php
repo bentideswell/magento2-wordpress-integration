@@ -19,7 +19,7 @@ class Text extends AbstractWidget
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/text.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/text.phtml');
         }
 
         return parent::_beforeToHtml();

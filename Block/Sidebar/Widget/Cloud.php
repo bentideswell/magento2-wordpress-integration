@@ -98,10 +98,13 @@ class Cloud extends AbstractWidget
         return $this->_getData('font_sizes');
     }
 
+    /**
+     *
+     */
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/cloud.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/cloud.phtml');
         }
 
         return parent::_beforeToHtml();

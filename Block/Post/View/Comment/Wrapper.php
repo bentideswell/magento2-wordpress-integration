@@ -16,7 +16,7 @@ class Wrapper extends AbstractComment
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('post/view/comment/wrapper.phtml');
+            $this->setTemplate('FishPig_WordPress::post/view/comment/wrapper.phtml');
         }
 
         if ($this->getCommentCount() > 0 && ($commentsBlock = $this->getChildBlock('comment_list')) !== false) {

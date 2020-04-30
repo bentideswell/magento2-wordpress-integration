@@ -89,12 +89,11 @@ class Archives extends AbstractWidget
 
     /**
      *
-     *
      */
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/archives.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/archives.phtml');
         }
 
         return parent::_beforeToHtml();

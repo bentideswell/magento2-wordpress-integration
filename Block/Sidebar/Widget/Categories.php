@@ -27,6 +27,9 @@ class Categories extends AbstractWidget
         return $collection;
     }
 
+    /**
+     *
+     */
     public function getTaxonomy()
     {
         return $this->_getData('taxonomy') ? $this->_getData('taxonomy') : 'category';
@@ -89,7 +92,7 @@ class Categories extends AbstractWidget
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/categories.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/categories.phtml');
         }
 
         return parent::_beforeToHtml();

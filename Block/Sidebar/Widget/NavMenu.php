@@ -42,10 +42,13 @@ class NavMenu extends AbstractWidget
         return __('Menu');
     }
 
+    /**
+     *
+     */
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/navmenu.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/navmenu.phtml');
         }
 
         return parent::_beforeToHtml();

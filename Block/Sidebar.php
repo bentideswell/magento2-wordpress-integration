@@ -71,7 +71,7 @@ class Sidebar extends Template
         }
 
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar.phtml');
         }
 
         return parent::_beforeToHtml();

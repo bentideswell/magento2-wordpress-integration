@@ -15,7 +15,7 @@ class Comments extends \FishPig\WordPress\Block\Post\View\Comment\AbstractCommen
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('post/view/comments.phtml');
+            $this->setTemplate('FishPig_WordPress::post/view/comments.phtml');
         }
 
         if ($this->getCommentCount() > 0 && ($pagerBlock = $this->getChildBlock('pager')) !== false) {

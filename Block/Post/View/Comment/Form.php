@@ -16,7 +16,7 @@ class Form extends AbstractBlock
     protected function _beforeToHtml()
     {
         if (!$this->getTemplate()) {
-            $this->setTemplate('post/view/comment/form.phtml');
+            $this->setTemplate('FishPig_WordPress::post/view/comment/form.phtml');
         }
 
         return parent::_beforeToHtml();

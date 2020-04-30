@@ -26,7 +26,7 @@ class Posts extends AbstractWidget
         $this->setPosts($this->_getPostCollection());
 
         if (!$this->getTemplate()) {
-            $this->setTemplate('sidebar/widget/posts.phtml');
+            $this->setTemplate('FishPig_WordPress::sidebar/widget/posts.phtml');
         }
 
         return $this;
