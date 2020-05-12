@@ -318,7 +318,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
             ->where('post_type=?', $this->getPostType())
             ->where('post_status=?', 'publish');
 
-        return self::$_uriCache[$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
+        return self::$_uriCache[$storeId][$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
     }
 
     /**
