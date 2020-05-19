@@ -81,29 +81,31 @@ class NavMenu extends AbstractWidget
 
         $html = '';
 
-        foreach ($menuTreeObjects as $current) {
-            $classes = [
-                'menu-item',
-                'menu-item-' . $current->getId(),
-                'menu-item-type-' . $current->getItemType(),
-                'menu-item-object-' . $current->getObjectType(),
-            ];
-
-            if (count($current->getChildrenItems())) {
-                $classes[] = 'menu-item-has-children';
+        if ($menuTreeObjects && count($menuTreeObjects) > 0) {
+            foreach($menuTreeObjects as $current) {
+                $classes = [
+                    'menu-item',
+                    'menu-item-' . $current->getId(),
+                    'menu-item-type-' . $current->getItemType(),
+                    'menu-item-object-' . $current->getObjectType(),
+                ];
+    
+                if (count($current->getChildrenItems())) {
+                    $classes[] = 'menu-item-has-children';
+                }
+    
+                $html .= $indentString . '<li id="menu-item-' . $current->getId() . '" class="' . implode(' ', $classes) . '">' . PHP_EOL;
+                $html .= $indentString . "\t" . '<a href="' . $this->escapeHtml($current->getUrl()) . '" title="' . $this->escapeHtml($current->getLabel()) . '">';
+                $html .= $this->escapeHtml($current->getLabel()) . '</a>' . PHP_EOL;
+    
+                if (count($current->getChildrenItems())) {
+                    $html .= $indentString . "\t" . '<ul class="sub-menu">' . PHP_EOL;
+                    $html .= $this->_getTreeHtmlLevel($level + 1, $current->getChildrenItems()->getItems());
+                    $html .= $indentString . "\t" . '</ul>' . PHP_EOL;
+                }
+    
+                $html .= $indentString . '</li>' . PHP_EOL;
             }
-
-            $html .= $indentString . '<li id="menu-item-' . $current->getId() . '" class="' . implode(' ', $classes) . '">' . PHP_EOL;
-            $html .= $indentString . "\t" . '<a href="' . $this->escapeHtml($current->getUrl()) . '" title="' . $this->escapeHtml($current->getLabel()) . '">';
-            $html .= $this->escapeHtml($current->getLabel()) . '</a>' . PHP_EOL;
-
-            if (count($current->getChildrenItems())) {
-                $html .= $indentString . "\t" . '<ul class="sub-menu">' . PHP_EOL;
-                $html .= $this->_getTreeHtmlLevel($level + 1, $current->getChildrenItems()->getItems());
-                $html .= $indentString . "\t" . '</ul>' . PHP_EOL;
-            }
-
-            $html .= $indentString . '</li>' . PHP_EOL;
         }
 
         return $html;

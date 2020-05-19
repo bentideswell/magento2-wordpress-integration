@@ -1,3 +1,6 @@
+19/05/2020 - 2.0.11.20
+- Fixed small bug in menu widget when no items were present.
+
 12/05/2020 - 2.0.11.19
 - Fixed issue that stopped page URL generation being cached properly. This meant it could be executed once for each page, causing a high CPU and MySQL usage. This is now properly cached so only occurs once.
 
