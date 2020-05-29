@@ -1,3 +1,6 @@
+29/05/2020 - 2.0.11.21
+- Fixed issue with CF7 and other plugins that used $(function(){}) as a shortcut for jQuery(document).ready(function())
+
 19/05/2020 - 2.0.11.20
 - Fixed small bug in menu widget when no items were present.
 

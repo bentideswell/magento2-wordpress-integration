@@ -55,7 +55,7 @@ class Categories extends AbstractWidget
     public function isCurrentCategory($category)
     {
         if ($this->getCurrentCategory()) {
-            return $category->getId() == $this->getCurrentCategory()->getId();
+            return (int)$category->getId() === (int)$this->getCurrentCategory()->getId();
         }
 
         return false;
