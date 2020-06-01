@@ -1,0 +1,32 @@
+<?php
+/**
+ *
+ */
+?>
+<?php $posts = $block->getLoadedPostCollection() ?>
+<?php if (count($posts) > 0): ?>
+	<div class="widget widget-blog widget-blog-posts">
+		<ol class="post-list grid">
+			<?php foreach($posts as $post): ?>
+				<li class="item">
+                    <div class="post-image">
+                        <a href="<?php echo $post->getUrl() ?>" title="<?php echo $block->escapeHtml($post->getName()) ?>">
+                            <?php if ($image = $post->getImage()): ?>
+                                <?php $imageUrl = $image->getResizer() ? $image->getResizer()->constrainOnly(true)->keepFrame(false)->keepAspectRatio(true)->resize(600, null) : '' ?>
+                                <img src="<?php echo $imageUrl ?>" alt="<?php echo $block->escapeHtml($post->getName()) ?>"/>
+                            <?php else: ?>
+                                <span class="empty"></span>
+                            <?php endif; ?>
+                        </a>
+                    </div>
+            		<h2>
+            			<a href="<?php echo $post->getUrl() ?>" title="<?php echo $block->escapeHtml($post->getName()) ?>">
+            				<?php echo $block->escapeHtml($post->getName()) ?>
+            			</a>
+            		</h2>
+				</li>
+			<?php endforeach; ?>
+		</ol>
+	</div>
+
+<?php endif; ?>

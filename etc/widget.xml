@@ -1,0 +1,19 @@
+<widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
+    <widget class="FishPig\WordPress\Block\Widget\ListPosts" id="fishpig_wordpress_listposts">
+        <label>WordPress - Blog Post List</label>
+        <description>Show a list of blog posts from your FishPig WordPress Integrated blog.</description>
+        <parameters>
+            <parameter name="post_limit" xsi:type="text" required="true" visible="true" sort_order="10">
+                <label>Number of Posts</label>
+            </parameter>
+            <parameter name="order_by" xsi:type="select" visible="true" required="true" sort_order="20">
+            <label translate="true">Order Posts By</label>
+                <options>
+                    <option name="recent" value="recent">
+                        <label>Most Recent</label>
+                    </option>
+                </options>
+            </parameter>
+        </parameters>
+    </widget>
+</widgets>

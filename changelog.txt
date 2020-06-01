@@ -1,3 +1,6 @@
+01/06/2020 - 2.0.11.22
+- Added widget to list posts.
+
 29/05/2020 - 2.0.11.21
 - Fixed issue with CF7 and other plugins that used $(function(){}) as a shortcut for jQuery(document).ready(function())
 

@@ -41,6 +41,8 @@ class FishPig_Theme
 		add_action('admin_menu',                 array($this, 'onAdminMenu'));
 		add_filter('vc_front_render_shortcodes', array($this, 'onVcFrontRenderShortcodes'), 99999);
 		add_filter('wp_calculate_image_srcset',  array($this, 'onWpCalculateImageSrcset'));
+        add_filter( 'wp_fatal_error_handler_enabled', '__return_false' );
+
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
 			
