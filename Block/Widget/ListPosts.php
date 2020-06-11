@@ -38,6 +38,9 @@ class ListPosts extends Template implements BlockInterface
     {
         if (!$this->collection) {
             $this->collection = $this->collectionFactory->create()
+                ->setOrderByPostDate()
+                ->addIsViewableFilter()
+                ->setCurPage(1)
                 ->setPageSize((int)$this->getPostLimit());
         }
         

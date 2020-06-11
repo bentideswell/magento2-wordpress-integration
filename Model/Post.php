@@ -292,7 +292,7 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      *
      */
-    public function getTermCollectionAsString($taxonomy)
+    public function getTermCollectionAsString($taxonomy, $joiner = ', ', $lastJoiner = ' &amp; ')
     {
         $key = 'term_collection_as_string_' . $taxonomy;
 
@@ -315,7 +315,7 @@ class Post extends AbstractMeta implements ViewableInterface
             else {
                 $lastItem = array_pop($string);
 
-                $this->setData($key, implode(', ', $string) . ' &amp; ' . $lastItem);
+                $this->setData($key, implode($joiner, $string) . $lastJoiner . $lastItem);
             }
         }    
 

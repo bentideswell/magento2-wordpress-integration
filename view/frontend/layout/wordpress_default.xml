@@ -13,14 +13,14 @@
 			<block class="FishPig\WordPress\Block\Html\HeadAdditional" name="wp.head.additional"/>
     </referenceBlock>
     <referenceContainer name="sidebar.main">
-			<block class="FishPig\WordPress\Block\Sidebar" name="wp.sidebar" before="-">
-				<action method="setWidgetArea">
-					<argument name="widgetArea" xsi:type="string">sidebar-main</argument>
-				</action>
-			</block>
+		<block class="FishPig\WordPress\Block\Sidebar" name="wp.sidebar" before="-">
+			<action method="setWidgetArea">
+				<argument name="widgetArea" xsi:type="string">sidebar-main</argument>
+			</action>
+		</block>
     </referenceContainer>
     <referenceContainer name="before.body.end">
-      <block class="FishPig\WordPress\Block\AdditionalCss" name="wp.additional_css"/>
+        <block class="FishPig\WordPress\Block\AdditionalCss" name="wp.additional_css"/>
     </referenceContainer>
   </body>
 </page>
