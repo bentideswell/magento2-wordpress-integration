@@ -105,4 +105,12 @@ class ShortcodeManager
     {
         return $this->autop->addParagraphTagsToString($string);
     }
+    
+    /**
+     *
+     */
+    public function doShortcode($input, $args = [])
+    {
+        return $this->renderShortcode($input, $args);
+    }
 }
