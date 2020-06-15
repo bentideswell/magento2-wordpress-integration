@@ -180,6 +180,10 @@ class View extends Action
             $layoutHandles[] = 'wordpress_' . $postType . '_view_parent_' . $post->getParentId();
         }
 
+        if ($urlKey = preg_replace('/[^a-z0-9]+/', '_', strtolower(rtrim($post->getPermalink(), '/')))) {
+            $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $urlKey;
+        }
+
         return array_merge(parent::getLayoutHandles(), $layoutHandles);
     }
 }
