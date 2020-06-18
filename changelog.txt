@@ -1,6 +1,7 @@
-18/06/2020 - 2.0.11.27
+18/06/2020 - 2.0.11.28
 - Added cache for getPermalinksByUri in Post resource model.
 - Add setPostCollection method to ListPost block. This allows you to set a custom post collection object and have it display using the list templates and use the custom renderers.
+- Added FishPig\WordPress\Block\Sidebar\Widget\Posts::getPosts to get the post collection.
 
 15/06/2020 - 2.0.11.26
 - Added wordpress_{post_type}_view_{page_slug} as a layout handle.

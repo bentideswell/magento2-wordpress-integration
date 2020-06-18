@@ -23,8 +23,6 @@ class Posts extends AbstractWidget
     {
         parent::_beforeToHtml();
 
-        $this->setPosts($this->_getPostCollection());
-
         if (!$this->getTemplate()) {
             $this->setTemplate('FishPig_WordPress::sidebar/widget/posts.phtml');
         }
@@ -54,6 +52,14 @@ class Posts extends AbstractWidget
         return $this->_getData('number') ? $this->_getData('number') : 5;
     }
 
+    /**
+     *
+     */
+    public function getPosts()
+    {
+        return $this->_getPostCollection();
+    }
+    
     /**
      * Adds on cateogry/author ID filters
      *
