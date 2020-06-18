@@ -25,6 +25,11 @@ class Post extends AbstractMeta
     protected $taxonomyManager;
 
     /**
+     * @var array
+     */
+    protected $uriPermalinksMapCache = [];
+
+    /**
      *
      *
      * @return
@@ -214,106 +219,112 @@ class Post extends AbstractMeta
      */
     public function getPermalinksByUri($uri = '')
     {
-        $originalUri = $uri;
-        $permalinks  = [];
+        if (!isset($this->uriPermalinksMapCache[$uri])) {
+            $this->uriPermalinksMapCache[$uri] = false;
 
-        if ($postTypes = $this->postTypeManager->getPostTypes()) {
-            $fields = $this->getPermalinkSqlFields();
-
-            foreach($postTypes as $postType) {
-                if (!($tokens = $postType->getExplodedPermalinkStructure())) {
-                    continue;
-                }
-
-                $uri = $originalUri;
-
-                if ($postType->permalinkHasTrainingSlash()) {
-                    $uri = rtrim($uri, '/') . '/';
-                }
-
-                $filters = array();
-                $lastToken = $tokens[count($tokens)-1];
-
-                # Allow for trailing static strings (eg. .html)
-                if (substr($lastToken, 0, 1) !== '%') {
-                    if (substr($uri, -strlen($lastToken)) !== $lastToken) {
+            $originalUri = $uri;
+            $permalinks  = [];
+    
+            if ($postTypes = $this->postTypeManager->getPostTypes()) {
+                $fields = $this->getPermalinkSqlFields();
+    
+                foreach($postTypes as $postType) {
+                    if (!($tokens = $postType->getExplodedPermalinkStructure())) {
                         continue;
                     }
-
-                    $uri = substr($uri, 0, -strlen($lastToken));
-
-                    array_pop($tokens);
-                }
-
-                try {
-                    for($i = 0; $i <= 1; $i++) {
-                        if ($i === 1) {
-                            $uri = implode('/', array_reverse(explode('/', $uri)));
-                            $tokens = array_reverse($tokens);
+    
+                    $uri = $originalUri;
+    
+                    if ($postType->permalinkHasTrainingSlash()) {
+                        $uri = rtrim($uri, '/') . '/';
+                    }
+    
+                    $filters = array();
+                    $lastToken = $tokens[count($tokens)-1];
+    
+                    # Allow for trailing static strings (eg. .html)
+                    if (substr($lastToken, 0, 1) !== '%') {
+                        if (substr($uri, -strlen($lastToken)) !== $lastToken) {
+                            continue;
                         }
-
-                        foreach($tokens as $key => $token) {
-                            if (substr($token, 0, 1) === '%') {
-                                if (!isset($fields[trim($token, '%')])) {
-                                    if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($token, '%'))) {
-                                        $endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/' 
-                                            && isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%' 
-                                            && !isset($tokens[$key+3]);
-
-                                        if ($endsWithPostname) {
-                                            $uri = rtrim(substr($uri, strrpos(rtrim($uri, '/'), '/')), '/');
-                                            continue;
+    
+                        $uri = substr($uri, 0, -strlen($lastToken));
+    
+                        array_pop($tokens);
+                    }
+    
+                    try {
+                        for($i = 0; $i <= 1; $i++) {
+                            if ($i === 1) {
+                                $uri = implode('/', array_reverse(explode('/', $uri)));
+                                $tokens = array_reverse($tokens);
+                            }
+    
+                            foreach($tokens as $key => $token) {
+                                if (substr($token, 0, 1) === '%') {
+                                    if (!isset($fields[trim($token, '%')])) {
+                                        if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($token, '%'))) {
+                                            $endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/' 
+                                                && isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%' 
+                                                && !isset($tokens[$key+3]);
+    
+                                            if ($endsWithPostname) {
+                                                $uri = rtrim(substr($uri, strrpos(rtrim($uri, '/'), '/')), '/');
+                                                continue;
+                                            }
                                         }
+    
+                                        break;
                                     }
-
-                                    break;
+    
+                                    if (isset($tokens[$key+1]) && substr($tokens[$key+1], 0, 1) !== '%') {
+                                        $filters[trim($token, '%')] = substr($uri, 0, strpos($uri, $tokens[$key+1]));
+                                        $uri = substr($uri, strpos($uri, $tokens[$key+1]));
+                                    }
+                                    else if (!isset($tokens[$key+1])) {
+                                        $filters[trim($token, '%')] = $uri;
+                                        $uri = '';
+                                    }
+                                    else {
+                                        throw new \Exception('Ignore me #1');
+                                    }
                                 }
-
-                                if (isset($tokens[$key+1]) && substr($tokens[$key+1], 0, 1) !== '%') {
-                                    $filters[trim($token, '%')] = substr($uri, 0, strpos($uri, $tokens[$key+1]));
-                                    $uri = substr($uri, strpos($uri, $tokens[$key+1]));
-                                }
-                                else if (!isset($tokens[$key+1])) {
-                                    $filters[trim($token, '%')] = $uri;
-                                    $uri = '';
+                                else if (substr($uri, 0, strlen($token)) === $token) {
+                                    $uri = substr($uri, strlen($token));
                                 }
                                 else {
-                                    throw new \Exception('Ignore me #1');
+                                    throw new \Exception('Ignore me #2');
                                 }
+    
+                                unset($tokens[$key]);
                             }
-                            else if (substr($uri, 0, strlen($token)) === $token) {
-                                $uri = substr($uri, strlen($token));
+                        }
+    
+                        if ($buffer = $this->getPermalinks($filters, $postType)) {
+                            foreach($buffer as $routeId => $route) {
+                                if (rtrim($route, '/') === $originalUri) {
+                                    $permalinks[$routeId] = $route;
+                                    throw new \Exception('Break');
+                                }    
                             }
-                            else {
-                                throw new \Exception('Ignore me #2');
-                            }
-
-                            unset($tokens[$key]);
+    
+    #                        $permalinks += $buffer;
                         }
                     }
-
-                    if ($buffer = $this->getPermalinks($filters, $postType)) {
-                        foreach($buffer as $routeId => $route) {
-                            if (rtrim($route, '/') === $originalUri) {
-                                $permalinks[$routeId] = $route;
-                                throw new \Exception('Break');
-                            }    
+                    catch (\Exception $e) {
+                        if ($e->getMessage() === 'Break') {
+                            break;
                         }
-
-#                        $permalinks += $buffer;
+    
+                        // Exception thrown to escape nested loops
                     }
-                }
-                catch (\Exception $e) {
-                    if ($e->getMessage() === 'Break') {
-                        break;
-                    }
-
-                    // Exception thrown to escape nested loops
                 }
             }
+
+            $this->uriPermalinksMapCache[$uri] = count($permalinks) > 0 ? $permalinks : false;
         }
 
-        return count($permalinks) > 0 ? $permalinks : false;
+        return $this->uriPermalinksMapCache[$uri];
     }
 
     /**

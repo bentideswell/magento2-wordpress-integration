@@ -46,6 +46,16 @@ class ListPost extends \FishPig\WordPress\Block\Post
     }
 
     /**
+     *
+     */
+    public function setPostCollection($collection)
+    {
+        $this->_postCollection = $collection;
+        
+        return $this;
+    }
+
+    /**
      * Sets the parent block of this block
      * This block can be used to auto generate the post list
      *
