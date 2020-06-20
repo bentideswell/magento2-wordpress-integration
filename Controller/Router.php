@@ -279,7 +279,7 @@ class Router implements RouterInterface
     protected function _getSimpleRoutes($uri = '')
     {
         if ($front = $this->url->getFront()) {
-            $front .= '\/';
+            $front = preg_quote($front . '/', '/');
         }
 
         $this->addRoute(array('/^' . $front . 'author\/([^\/]{1,})$/' => array('author')), '*/user/view');

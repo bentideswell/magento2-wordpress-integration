@@ -1,3 +1,6 @@
+20/06/2020 - 2.0.11.29
+- Fixed issue with blog routes that contain a slash.
+
 18/06/2020 - 2.0.11.28
 - Added cache for getPermalinksByUri in Post resource model.
 - Add setPostCollection method to ListPost block. This allows you to set a custom post collection object and have it display using the list templates and use the custom renderers.
