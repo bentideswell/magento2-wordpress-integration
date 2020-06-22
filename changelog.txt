@@ -1,3 +1,6 @@
+22/06/2020 - 2.0.11.30
+- Added check for module enabled/disabled when using widget.
+
 20/06/2020 - 2.0.11.29
 - Fixed issue with blog routes that contain a slash.
 

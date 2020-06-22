@@ -49,13 +49,17 @@ class OptionManager
 
         if (!isset($this->data[$storeId][$key])) {
             $resource   = $this->resourceConnection;
-            $connection = $resource->getConnection();
 
-            $select = $connection->select()
-                ->from($resource->getTable('wordpress_option'), 'option_value')
-                ->where('option_name = ?', $key);
-
-            $this->data[$storeId][$key] = $connection->fetchOne($select);
+            if ($connection = $resource->getConnection()) {
+                $select = $connection->select()
+                    ->from($resource->getTable('wordpress_option'), 'option_value')
+                    ->where('option_name = ?', $key);
+    
+                $this->data[$storeId][$key] = $connection->fetchOne($select);
+            }
+            else {
+                $this->data[$storeId][$key] = false;
+            }
         }
 
         return $this->data[$storeId][$key];
