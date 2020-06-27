@@ -192,14 +192,16 @@ class Integrate extends Template
     {
         $moduleVersion = $this->resourceInterface->getDbVersion('FishPig_WordPress');
 
-        $configMsg = 'Unable to find <strong style="color:#df4343;">wp-config.php</strong> using the Path provided. You can modify the Path below.';
+        $configMsg = 'Unable to find <span style="color:#df4343;">wp-config.php</span> using the Path provided. You can modify the Path below.';
             
         if (isset($this->wpConfigFilePath) && ($configFile = $this->wpConfigFilePath)) {
+            $relConfigFile = str_replace(BP, '.', $configFile);
+            
             if (is_file($configFile)) {
-                $configMsg = 'The <strong>wp-config.php</strong> file has been loaded from <strong style="color:#109910;">' . $configFile . '</strong>';
+                $configMsg = 'The <strong>wp-config.php</strong> file has been loaded from <span style="color:#109910;" title="' . $configFile . '">' . $relConfigFile . '</span>';
             }
             else {
-                $configMsg = 'The <strong>wp-config.php</strong> file can not be found at <strong style="color:#df4343;">' . $configFile . '</strong>';
+                $configMsg = 'The <strong>wp-config.php</strong> file can not be found at <span style="color:#df4343;" title="' . $configFile . '">' . $relConfigFile . '</span>';
             }
         }
 

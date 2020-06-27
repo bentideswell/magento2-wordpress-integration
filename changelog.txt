@@ -1,3 +1,6 @@
+27/06/2020 - 2.0.11.31
+- Added a fix for editing Elementor Theme Templates when not using Root.
+
 22/06/2020 - 2.0.11.30
 - Added check for module enabled/disabled when using widget.
 

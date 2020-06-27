@@ -20,6 +20,23 @@ class View extends Action
     }
 
     /**
+     * Provides support for Elementor without Root
+     */
+    protected function _getForward()
+    {
+        if ($previewPostId = (int)$this->getRequest()->getParam('elementor-preview')) {
+            return $this->resultFactory
+                ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
+                    ->setModule('wordpress')
+                    ->setController('post')
+                    ->setParams(['id' => $previewPostId])
+                    ->forward('view');
+        }
+        
+        return false;
+    }
+    
+    /**
      * @return bool
      */
     protected function _canPreview()

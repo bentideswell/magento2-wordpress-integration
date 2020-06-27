@@ -44,6 +44,7 @@ class ListPosts extends Template implements BlockInterface
     {
         if (!$this->collection) {
             $this->collection = $this->collectionFactory->create()
+                ->addPostTypeFilter('post')
                 ->setOrderByPostDate()
                 ->addIsViewableFilter()
                 ->setCurPage(1)
