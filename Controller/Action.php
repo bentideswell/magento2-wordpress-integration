@@ -57,6 +57,10 @@ abstract class Action extends ParentAction
         $this->factory = $wpContext->getFactory();
 
         parent::__construct($context);
+        
+        // Used to prevent some installations overwriting this
+        // We will set it again in self::execute
+        $this->pageStorage = (int)$this->getRequest()->getParam('page');
     }    
 
     /**
@@ -66,6 +70,10 @@ abstract class Action extends ParentAction
      */
     public function execute()
     {
+        if (isset($this->pageStorage) && $this->pageStorage > 0) {
+            $this->getRequest()->setParam('page', $this->pageStorage);
+        }
+        
         if ($this->_beforeExecute() === false) {
             return $this->_getNoRouteForward();
         }
