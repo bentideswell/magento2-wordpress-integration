@@ -11,23 +11,23 @@ use FishPig\WordPress\Model\Context as WPContext;
 abstract class Action extends ParentAction
 {
     /**
-     * @var 
+     * @var
      */
     protected $wpContext;
 
     /**
-     * @var 
+     * @var
      */
     protected $registry;
 
     /**
-     * @var 
-     */    
+     * @var
+     */
     protected $entity;
 
     /**
-     * @var 
-     */    
+     * @var
+     */
     protected $resultPage;
 
     /**
@@ -41,7 +41,7 @@ abstract class Action extends ParentAction
     protected $factory;
 
     /**
-     * @return 
+     * @return
      */
     abstract protected function _getEntity();
 
@@ -61,7 +61,7 @@ abstract class Action extends ParentAction
         // Used to prevent some installations overwriting this
         // We will set it again in self::execute
         $this->pageStorage = (int)$this->getRequest()->getParam('page');
-    }    
+    }
 
     /**
      * Load the page defined in view/frontend/layout/samplenewpage_index_index.xml
@@ -129,13 +129,13 @@ abstract class Action extends ParentAction
         $this->getPage()->getLayout()->getUpdate()->removeHandle($this->getPage()->getDefaultLayoutHandle());
 
         if ($handles = $this->getLayoutHandles()) {
-            foreach($handles as $handle) {
+            foreach ($handles as $handle) {
                 if ($handle = $this->cleanLayoutHandle($handle)) {
                     if (!is_array($handle)) {
                         $handle = [$handle];
                     }
 
-                    foreach($handle as $h) {
+                    foreach ($handle as $h) {
                         $this->getPage()->addHandle($h);
                     }
                 }
@@ -144,9 +144,9 @@ abstract class Action extends ParentAction
 
         $this->getPage()->getConfig()->addBodyClass('is-blog');
 
-        if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {        
+        if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {
             if ($crumbs = $this->_getBreadcrumbs()) {
-                foreach($crumbs as $key => $crumb) {
+                foreach ($crumbs as $key => $crumb) {
                     $breadcrumbsBlock->addCrumb($key, $crumb);
                 }
             }
@@ -268,8 +268,8 @@ abstract class Action extends ParentAction
             $this->registry->unregister($entity::ENTITY);
         }
 
-        foreach(['preview_id', 'p', 'page_id'] as $previewIdKey) {
-            if (0 !== (int)$this->getRequest()->getParam($previewIdKey))    {
+        foreach (['preview_id', 'p', 'page_id'] as $previewIdKey) {
+            if (0 !== (int)$this->getRequest()->getParam($previewIdKey)) {
                 $previewId = (int)$this->getRequest()->getParam($previewIdKey);
 
                 break;

@@ -12,20 +12,8 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
      * @const string
      */
     const ENTITY = 'wordpress_search';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_search';
-
-    /**
-     * @const string
-     */
     const VAR_NAME = 's';
-
-    /**
-     * @const string
-     */
     const VAR_NAME_POST_TYPE = 'post_type';
 
     /**
@@ -67,10 +55,14 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
      */
     public function getUrl()
     {
+        if (!($searchTerm = trim($this->getSearchTerm()))) {
+            return false;
+        }
+        
         $extra = '';
 
         if ($postTypes = $this->getPostTypes()) {
-            foreach($postTypes as $postType) {
+            foreach ($postTypes as $postType) {
                 $extra .= self::VAR_NAME_POST_TYPE . '[]=' . urlencode($postType) . '&';
             }
 

@@ -60,7 +60,7 @@ class Router implements RouterInterface
      *
      */
     public function __construct(
-        ActionFactory $actionFactory,     
+        ActionFactory $actionFactory,
         IntegrationManager $integrationManager,
         Url $url,
         Factory $factory,
@@ -84,10 +84,9 @@ class Router implements RouterInterface
             return false;
         }
 
-
         // If theme not integrated, don't display blog
         if (!$this->theme->isThemeIntegrated()) {
-            return false;      
+            return false;
         }
 
         $this->request  = $request;
@@ -99,17 +98,17 @@ class Router implements RouterInterface
         }
 
         $this->eventManager->dispatch(
-            'wordpress_router_match_before', 
+            'wordpress_router_match_before',
             ['router' => $this, 'blog_route' => $blogRoute, 'full_request_uri' => $fullRequestUri]
         );
 
         if (!($requestUri = $this->getRouterRequestUri($request))) {
-            $this->addRouteCallback(array($this, '_getHomepageRoutes'));
+            $this->addRouteCallback([$this, '_getHomepageRoutes']);
         }
 
-        $this->addRouteCallback(array($this, '_getSimpleRoutes'));
-        $this->addRouteCallback(array($this, '_getPostRoutes'));
-        $this->addRouteCallback(array($this, '_getTaxonomyRoutes'));
+        $this->addRouteCallback([$this, '_getSimpleRoutes']);
+        $this->addRouteCallback([$this, '_getPostRoutes']);
+        $this->addRouteCallback([$this, '_getTaxonomyRoutes']);
 
         $this->addExtraRoutesToQueue();
 
@@ -126,12 +125,12 @@ class Router implements RouterInterface
             );
 
         if (count($route['params']) > 0) {
-            foreach($route['params'] as $key => $value) {
+            foreach ($route['params'] as $key => $value) {
                 $request->setParam($key, $value);
             }
         }
 
-        return $this->actionFactory->create('Magento\Framework\App\Action\Forward');
+        return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class);
     }
 
     /**
@@ -144,17 +143,16 @@ class Router implements RouterInterface
     {
         $encodedUri = strtolower(str_replace('----slash----', '/', urlencode(str_replace('/', '----slash----', $uri))));
 
-        foreach($this->callbacks as $callback) {
+        foreach ($this->callbacks as $callback) {
             $this->routes = [];
 
             if (call_user_func($callback, $uri, $this) !== false) {
-                foreach($this->routes as $route => $data) {
+                foreach ($this->routes as $route => $data) {
                     $match = false;
 
                     if (substr($route, 0, 1) !== '/') {
                         $match = $route === $encodedUri || $route === $uri;
-                    }
-                    else if (preg_match($route, $uri, $matches)) {
+                    } elseif (preg_match($route, $uri, $matches)) {
                         $match = true;
 
                         if (isset($data['pattern_keys']) && is_array($data['pattern_keys'])) {
@@ -164,11 +162,11 @@ class Router implements RouterInterface
                                 $data['params'] = [];
                             }
 
-                            foreach($matches as $match) {
+                            foreach ($matches as $match) {
                                 if (($pkey = array_shift($data['pattern_keys'])) !== null) {
                                     $data['params'][$pkey] = $match;
                                 }
-                            }    
+                            }
                         }
                     }
 
@@ -180,7 +178,7 @@ class Router implements RouterInterface
 
                         return $data;
                     }
-                }    
+                }
             }
         }
 
@@ -195,27 +193,26 @@ class Router implements RouterInterface
      * @param array|null $params = array()
      * @return $this
      */
-    public function addRoute($pattern, $path, $params = array())
+    public function addRoute($pattern, $path, $params = [])
     {
         if (is_array($pattern)) {
             $keys = $pattern[key($pattern)];
             $pattern = key($pattern);
-        }
-        else {
+        } else {
             $keys = [];
         }
 
-        $path = array_combine(array('module', 'controller', 'action'), explode('/', $path));
+        $path = array_combine(['module', 'controller', 'action'], explode('/', $path));
 
         if ($path['module'] === '*') {
             $path['module'] = 'wordpress';
         }
 
-        $this->routes[$pattern] = array(
+        $this->routes[$pattern] = [
             'path' => $path,
             'params' => $params,
             'pattern_keys' => $keys,
-        );
+        ];
 
         return $this;
     }
@@ -240,30 +237,29 @@ class Router implements RouterInterface
      */
     protected function _getHomepageRoutes($uri = '')
     {
-        $homepage = $this->factory->get('FishPig\WordPress\Model\Homepage');
+        $homepage = $this->factory->get(\FishPig\WordPress\Model\Homepage::class);
 
         if (!$uri) {
-          $keys = ['page_id', 'post_id', 'p'];
+            $keys = ['page_id', 'post_id', 'p'];
 
-          foreach($keys as $key) {
-            if ($postId = (int)$this->request->getParam($key)) {
-              break;
+            foreach ($keys as $key) {
+                if ($postId = (int)$this->request->getParam($key)) {
+                    break;
+                }
             }
-          }
 
-          if ($postId) {
-            $paramKeys = strtolower(implode('-', array_keys($this->request->getParams())));
+            if ($postId) {
+                $paramKeys = strtolower(implode('-', array_keys($this->request->getParams())));
 
-            if (strpos($paramKeys, 'preview') !== false || strpos($paramKeys, 'vc_editable') !== false) {
-          return $this->addRoute('', '*/post/view', ['id' => $postId]);
+                if (strpos($paramKeys, 'preview') !== false || strpos($paramKeys, 'vc_editable') !== false) {
+                    return $this->addRoute('', '*/post/view', ['id' => $postId]);
+                }
             }
-          }
         }
 
         if ($frontPageId = $homepage->getFrontPageId()) {
             $this->addRoute('', '*/post/view', ['id' => $frontPageId, 'is_front' => 1]);
-        }
-        else {
+        } else {
             $this->addRoute('', '*/homepage/view');
         }
 
@@ -275,19 +271,19 @@ class Router implements RouterInterface
      *
      * @param string $uri = ''
      * @return false|$this
-     */    
+     */
     protected function _getSimpleRoutes($uri = '')
     {
         if ($front = $this->url->getFront()) {
             $front = preg_quote($front . '/', '/');
         }
 
-        $this->addRoute(array('/^' . $front . 'author\/([^\/]{1,})$/' => array('author')), '*/user/view');
-        $this->addRoute(array('/^' . $front . '([1-2]{1}[0-9]{3})$/' => array('year')), '*/archive/view');
-        $this->addRoute(array('/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => array('year', 'month')), '*/archive/view');
-        $this->addRoute(array('/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})\/([0-3]{1}[0-9]{1})$/' => array('year', 'month', 'day')), '*/archive/view');
-        $this->addRoute(array('/^' . $front . 'search\/(.*)$/' => array('s')), '*/search/view');
-        $this->addRoute('search', '*/search/index', array('redirect_broken_url' => 1)); # Fix broken search URLs
+        $this->addRoute(['/^' . $front . 'author\/([^\/]{1,})$/' => ['author']], '*/user/view');
+        $this->addRoute(['/^' . $front . '([1-2]{1}[0-9]{3})$/' => ['year']], '*/archive/view');
+        $this->addRoute(['/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => ['year', 'month']], '*/archive/view');
+        $this->addRoute(['/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})\/([0-3]{1}[0-9]{1})$/' => ['year', 'month', 'day']], '*/archive/view');
+        $this->addRoute(['/^' . $front . 'search\/(.*)$/' => ['s']], '*/search/view');
+        $this->addRoute('search', '*/search/index', ['redirect_broken_url' => 1]); # Fix broken search URLs
 #        $this->addRoute('/^index.php/i', '*/index/forward');
 
         $this->addRoute(['/^((newbloguser|wp-(content|includes|admin|cron\.php))\/.*)$/' => ['request_uri']], '*/forwarder/view');
@@ -300,8 +296,8 @@ class Router implements RouterInterface
 #        $this->addRoute('robots.txt', '*/index/robots');
         $this->addRoute('comments', '*/index/commentsFeed');
 
-        $this->addRoute(array('/^wp-json$/' => []), '*/json/view');
-        $this->addRoute(array('/^wp-json\/(.*)$/' => array('json_route_data')), '*/json/view');
+        $this->addRoute(['/^wp-json$/' => []], '*/json/view');
+        $this->addRoute(['/^wp-json\/(.*)$/' => ['json_route_data']], '*/json/view');
 
         return $this;
     }
@@ -314,18 +310,17 @@ class Router implements RouterInterface
      */
     protected function _getPostRoutes($uri = '')
     {
-        if (($routes = $this->factory->get('FishPig\WordPress\Model\ResourceModel\Post')->getPermalinksByUri($uri)) === false) {
+        if (($routes = $this->factory->get(\FishPig\WordPress\Model\ResourceModel\Post::class)->getPermalinksByUri($uri)) === false) {
             return false;
         }
 
-        $pageForPostsId = (int)$this->factory->get('FishPig\WordPress\Model\Homepage')->getPageForPostsId();
+        $pageForPostsId = (int)$this->factory->get(\FishPig\WordPress\Model\Homepage::class)->getPageForPostsId();
 
-        foreach($routes as $routeId => $route) {
+        foreach ($routes as $routeId => $route) {
             if ($pageForPostsId && $pageForPostsId === (int)$routeId) {
-                $this->addRoute(trim($route, '/'), '*/homepage/view', array('id' => $routeId));
-            }
-            else {
-                $this->addRoute(trim($route, '/'), '*/post/view', array('id' => $routeId));
+                $this->addRoute(trim($route, '/'), '*/homepage/view', ['id' => $routeId]);
+            } else {
+                $this->addRoute(trim($route, '/'), '*/post/view', ['id' => $routeId]);
             }
         }
 
@@ -341,10 +336,10 @@ class Router implements RouterInterface
      */
     protected function _getTaxonomyRoutes($uri = '')
     {
-        foreach($this->factory->get('FishPig\WordPress\Model\TaxonomyManager')->getTaxonomies() as $taxonomy) {
+        foreach ($this->factory->get(\FishPig\WordPress\Model\TaxonomyManager::class)->getTaxonomies() as $taxonomy) {
             if (($routes = $taxonomy->getUris($uri)) !== false) {
-                foreach($routes as $routeId => $route) {
-                    $this->addRoute($route, '*/term/view', array('id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()));
+                foreach ($routes as $routeId => $route) {
+                    $this->addRoute($route, '*/term/view', ['id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()]);
                 }
             }
         }
@@ -384,7 +379,7 @@ class Router implements RouterInterface
     /**
      *
      *
-     * @return 
+     * @return
      */
     public function getUrlAlias(RequestInterface $request)
     {
@@ -397,7 +392,7 @@ class Router implements RouterInterface
 
         if (trim(substr($pathInfo, strlen($blogRoute)), '/') === '') {
             return $pathInfo;
-        }        
+        }
 
         $pathInfo = explode('/', $pathInfo);
 
@@ -427,8 +422,8 @@ class Router implements RouterInterface
         */
 
         // Remove comments pager variable
-        foreach($pathInfo as $i => $part) {
-            $results = array();
+        foreach ($pathInfo as $i => $part) {
+            $results = [];
             if (preg_match("/" . sprintf('^comment-page-%s$', '([0-9]{1,})') . "/", $part, $results)) {
                 if (isset($results[1])) {
                     unset($pathInfo[$i]);

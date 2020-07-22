@@ -7,30 +7,38 @@ namespace FishPig\WordPress\Controller\Search;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use FishPig\WordPress\Model\SearchFactory;
+use FishPig\WordPress\Model\Url as WpUrl;
 use Magento\Framework\Controller\ResultFactory;
 
 class Index extends Action
 {
     /**
-     * @var
+     * @var SearchFactory
      */
     protected $searchFactory;
 
     /**
-     * Constructor
-     *
      * @param Context $context
      * @param PageFactory $resultPageFactory
      */
-    public function __construct(Context $context, SearchFactory $searchFactory)
+    public function __construct(Context $context, SearchFactory $searchFactory, WpUrl $wpUrl)
     {
-    parent::__construct($context);
+        parent::__construct($context);
 
-    $this->searchFactory = $searchFactory;
-    }    
+        $this->searchFactory = $searchFactory;
+        $this->wpUrl = $wpUrl;
+    }
 
+    /**
+     * @return 
+     */
     public function execute()
     {
-        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($this->searchFactory->create()->getUrl());
+        if (!($redirectUrl = $this->searchFactory->create()->getUrl())) {
+            $redirectUrl = $this->wpUrl->getHomeUrl();
+        }
+
+        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)
+            ->setUrl($redirectUrl);
     }
 }
