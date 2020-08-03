@@ -2,13 +2,13 @@
 /**
  *
  */
-
 namespace FishPig\WordPress\Block\Post;
 
-class View extends \FishPig\WordPress\Block\Post
+use FishPig\WordPress\Block\Post;
+
+class View extends Post
 {
     /**
-     *
      *
      */
     protected function _prepareLayout()
@@ -22,11 +22,16 @@ class View extends \FishPig\WordPress\Block\Post
 
     /**
      *
-     *
-     */    
+     */
     protected function _beforeToHtml()
     {
-        if (!$this->getTemplate() && $this->getPost()) {
+        if (!$this->getPost()) {
+            return false;
+        }
+
+        $this->getPost()->getContent();
+        
+        if (!$this->getTemplate()) {
             $postType = $this->getPost()->getTypeInstance();
             $this->setTemplate('FishPig_WordPress::post/view.phtml');
 
