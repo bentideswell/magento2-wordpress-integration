@@ -1,3 +1,6 @@
+06/08/2020 - 2.0.11.37
+- Fixed issue so that text widget calls renderShortcode.
+
 05/08/2020 - 2.0.11.36
 - Increased Router sort_order to 99.
 
