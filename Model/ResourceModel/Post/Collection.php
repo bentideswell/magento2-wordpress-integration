@@ -85,7 +85,7 @@ class Collection extends AbstractMetaCollection
                 if ($postTypes = $this->postTypeManager->getPostTypes()) {
                     $supportedTypes = array();
 
-                    foreach($postTypes as $postType) {
+                    foreach ($postTypes as $postType) {
                         if ($postType->isTaxonomySupported($this->getFlag('source')->getTaxonomy())) {
                             $supportedTypes[] = $postType->getPostType();
                         }
@@ -104,8 +104,7 @@ class Collection extends AbstractMetaCollection
 
         if (count($this->postTypes) === 0) {
             $this->addFieldToFilter('post_type', array('in' => array_keys($this->postTypeManager->getPostTypes())));
-        }
-        else {
+        } else {
             $this->addFieldToFilter('post_type', array('in' => $this->postTypes));
         }
 
@@ -157,11 +156,9 @@ class Collection extends AbstractMetaCollection
 
         if (count($postIds) > 0 && count($categoryIds) > 0) {
             $this->getSelect()->where("{$postSql} {$operator} {$categorySql}");
-        }
-        else if (count($postIds) > 0) {
+        } elseif (count($postIds) > 0) {
             $this->getSelect()->where("{$postSql}");
-        }
-        else if (count($categoryIds) > 0) {
+        } elseif (count($categoryIds) > 0) {
             $this->getSelect()->where("{$categorySql}");
         }
 
@@ -200,8 +197,7 @@ class Collection extends AbstractMetaCollection
     {
         if ($isDaily) {
             $this->getSelect()->where("`main_table`.`post_date` LIKE ?", str_replace("/", "-", $archiveDate)." %");
-        }
-        else {
+        } else {
             $this->getSelect()->where("`main_table`.`post_date` LIKE ?", str_replace("/", "-", $archiveDate)."-%");
         }
 
@@ -228,7 +224,7 @@ class Collection extends AbstractMetaCollection
                 $this->getSelect()->order('FIELD(main_table.ID, ' . implode(', ', $stickyIds) . ') DESC');
 
                 if ($orders) {
-                    foreach($orders as $order) {
+                    foreach ($orders as $order) {
                         $this->getSelect()->order(implode(' ', $order));
                     }
                 }
@@ -342,8 +338,7 @@ class Collection extends AbstractMetaCollection
     {
         if (!is_array($dateStr) && strpos($dateStr, '%') !== false) {
             $this->addFieldToFilter('post_date', array('like' => $dateStr));
-        }
-        else {
+        } else {
             $this->addFieldToFilter('post_date', $dateStr);
         }
 
@@ -376,10 +371,10 @@ class Collection extends AbstractMetaCollection
             $words = array_fill_keys(array_unique($words), 1);
 
             // Ensure main query only contains correct posts
-            foreach($words as $word => $wordWeight) {
+            foreach ($words as $word => $wordWeight) {
                 $conditions = array();
 
-                foreach($fields as $field => $fieldWeight) {
+                foreach ($fields as $field => $fieldWeight) {
                     $conditions[] = $db->quoteInto('`main_table`.`' . $field . '` LIKE ?', '%' . $this->_escapeSearchString($word) . '%');
                 }
 
@@ -394,8 +389,8 @@ class Collection extends AbstractMetaCollection
             // Calculate weight
             $weightSql = array();
 
-            foreach($words as $word => $wordWeight) {
-                foreach($fields as $field => $fieldWeight) {
+            foreach ($words as $word => $wordWeight) {
+                foreach ($fields as $field => $fieldWeight) {
                     $weightSql[] = $db->quoteInto(
                         'IF (`main_table`.`' . $field . '` LIKE ?, ' . ($wordWeight + $fieldWeight) . ', 0)', '%' . $this->_escapeSearchString($word) . '%'
                     );
@@ -412,8 +407,7 @@ class Collection extends AbstractMetaCollection
 
             // Ensure password protected posts aren't included
             $this->addFieldToFilter('post_password', '');
-        }
-        else {
+        } else {
             // Empty search so force no results
             $this->getSelect()->where('1=2');
         }
@@ -444,8 +438,7 @@ class Collection extends AbstractMetaCollection
 
         if (is_array($termId)) {
             $this->getSelect()->where("`tax_{$type}`.`term_id` IN (?)", $termId);
-        }
-        else {
+        } else {
             $this->getSelect()->where("`tax_{$type}`.`term_id` = ?", $termId);
         }
 
@@ -464,8 +457,7 @@ class Collection extends AbstractMetaCollection
 
         if (is_array($term)) {
             $this->getSelect()->where("`terms_{$type}`.`{$field}` IN (?)", $term);
-        }
-        else {
+        } else {
             $this->getSelect()->where("`terms_{$type}`.`{$field}` = ?", $term);
         }
 

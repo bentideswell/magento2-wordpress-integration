@@ -32,13 +32,14 @@ class View extends AbstractWrapper
         $collection = parent::_getPostCollection()    
             ->addSearchStringFilter($this->_getParsedSearchString(), array('post_title' => 5, 'post_content' => 1));
 
+        // Post Types
         $searchablePostTypes = $this->getRequest()->getParam('post_type');
 
         if (!$searchablePostTypes) {
             $postTypes = $this->wpContext->getPostTypeManager()->getPostTypes();
             $searchablePostTypes = array();
 
-            foreach($postTypes as $postType) {
+            foreach ($postTypes as $postType) {
                 if ($postType->isSearchable()) {
                     $searchablePostTypes[] = $postType->getPostType();
                 }
@@ -49,7 +50,19 @@ class View extends AbstractWrapper
             $searchablePostTypes = array('post', 'page');
         }
 
-        return $collection->addPostTypeFilter($searchablePostTypes);
+        $collection->addPostTypeFilter($searchablePostTypes);
+
+        // Category        
+        if ($categorySlug = $this->getRequest()->getParam('cat')) {
+            $collection->addTermFilter($categorySlug, 'category');
+        }
+
+        // Tag
+        if ($tagSlug = $this->getRequest()->getParam('tag')) {
+            $collection->addTermFilter($tagSlug, 'post_tag');
+        }
+
+        return $collection;
     }
 
     /**
@@ -66,7 +79,7 @@ class View extends AbstractWrapper
             $words = array_slice($words, 0, $maxWords);
         }
 
-        foreach($words as $it => $word) {
+        foreach ($words as $it => $word) {
             if (strlen($word) < 3) {
                 unset($words[$it]);
             }

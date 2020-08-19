@@ -59,15 +59,27 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
             return false;
         }
         
-        $extra = '';
+        $extra = [];
 
         if ($postTypes = $this->getPostTypes()) {
             foreach ($postTypes as $postType) {
-                $extra .= self::VAR_NAME_POST_TYPE . '[]=' . urlencode($postType) . '&';
+                $extra[] = self::VAR_NAME_POST_TYPE . '[]=' . urlencode($postType) . '&';
             }
-
-            $extra = '?' . rtrim($extra, '&');
         }
+
+        foreach (['cat', 'tag'] as $key) {
+            if ($value = $this->wpContext->getRequest()->getParam($key)) {
+                if (is_array($value)) {
+                    foreach ($values as $v) {
+                        $extra[] = $key . '[]=' . $v;
+                    }   
+                } else {
+                    $extra[] = $key . '=' . $value;
+                }
+            }
+        }
+
+        $extra = rtrim('?' . implode('&', $extra), '?');
 
         return $this->url->getUrlWithFront('search/' . urlencode($this->getSearchTerm()) . '/' . $extra);
     }
