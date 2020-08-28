@@ -4,35 +4,33 @@
  */
 namespace FishPig\WordPress\Block\Post\PostList;
 
-/** Parent Block */
 use Magento\Theme\Block\Html\Pager as MagentoPager;
 use Magento\Framework\View\Element\Template\Context;
 use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Model\Url as WPUrl;
 use Magento\Store\Model\ScopeInterface;
 
 class Pager extends MagentoPager
 {
     /**
-     * @var OptionManager
-     */
-    protected $optionManager;
-
-    /**
-     * Constructor
-     *
      * @param Context $context
-     * @param App
+     * @param OptionManager $optionManager
+     * @param WPUrl $wpUrl
      * @param array $data
      */
-    public function __construct(Context $context, OptionManager $optionManager, array $data = [])
-    {
-    $this->optionManager = $optionManager;
-
-    parent::__construct($context, $data);
+    public function __construct(
+        Context $context, 
+        OptionManager $optionManager, 
+        WPUrl $wpUrl,
+        array $data = []
+    ) {
+        $this->optionManager = $optionManager;
+        $this->wpUrl = $wpUrl;
+        
+        parent::__construct($context, $data);
     }
 
     /**
-     * Construct the pager and set the limits
      *
      */
     protected function _construct()
@@ -67,20 +65,26 @@ class Pager extends MagentoPager
         if (isset($params[$pageVarName])) {
             $slug = '/' . $pageVarName . '/' . $params[$pageVarName] . '/';
             unset($params[$pageVarName]);
-        }
-        else {
+        } else {
             $slug = '';
         }
 
         $pagerUrl = parent::getPagerUrl($params);
 
-        if (strpos($pagerUrl, '?') !== false) {
-            $pagerUrl = rtrim(substr($pagerUrl, 0, strpos($pagerUrl, '?')), '/') . $slug . substr($pagerUrl, strpos($pagerUrl, '?'));
-        }
-        else {
-            $pagerUrl = rtrim($pagerUrl, '/') . $slug;
+        if (($pos = strpos($pagerUrl, '?')) !== false) {
+            $pagerUrl = rtrim(rtrim(substr($pagerUrl, 0, $pos), '/') . $slug, '/') . $this->getTrailingSlash() . substr($pagerUrl, $pos);
+        } else {
+            $pagerUrl = rtrim(rtrim($pagerUrl, '/') . $slug, '/') . $this->getTrailingSlash();
         }
 
         return $pagerUrl;
+    }
+    
+    /**
+     * @return string
+     */
+    private function getTrailingSlash()
+    {
+        return $this->wpUrl->hasTrailingSlash() ? '/' : '';
     }
 }

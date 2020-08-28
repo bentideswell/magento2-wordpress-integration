@@ -1,3 +1,8 @@
+28/08/2020 - 2.0.11.39
+- Fixed pager URL issue where trailing slash setting in Permalink wasn't respected. This now matches the rest of the site.
+  If you have a trailing slash in your permalink structure, this will be used throughout the site. If you don't have a 
+  trailing slash then this will be omitted from the pager URLs.
+
 19/08/2020 - 2.0.11.38
 - Added cat and tag options to search URL
 
