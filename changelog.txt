@@ -1,3 +1,6 @@
+31/08/2020 - 2.0.11.40
+- Modified shortcode/product.phtml to work with latest version of fishpig/magento2-wordpress-integration-pluginshortcodewidget
+
 28/08/2020 - 2.0.11.39
 - Fixed pager URL issue where trailing slash setting in Permalink wasn't respected. This now matches the rest of the site.
   If you have a trailing slash in your permalink structure, this will be used throughout the site. If you don't have a 
