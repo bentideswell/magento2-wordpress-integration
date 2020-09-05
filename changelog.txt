@@ -1,3 +1,6 @@
+05/09/2020 - 2.0.11.42
+- Added CSS rule to fix non-clickable sidebar links
+
 31/08/2020 - 2.0.11.40
 - Modified shortcode/product.phtml to work with latest version of fishpig/magento2-wordpress-integration-pluginshortcodewidget
 
