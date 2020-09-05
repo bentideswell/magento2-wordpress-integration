@@ -31,6 +31,7 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 .comment-entry { clear: both; margin: 0 0 20px; }
 
 /* Widgets */
+.wp-sidebar { position: relative; } /* Fixes Porto issue where sidebar links aren't clickable */
 .block-blog .block-title { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #c6c6c6; }
 .block-blog .block-title > strong { font-size: 18px; font-weight: 300; }
 .block-blog ul, .block-blog ol { list-style: none; margin: 0; padding: 0; }
