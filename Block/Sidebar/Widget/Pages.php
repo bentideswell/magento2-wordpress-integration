@@ -22,7 +22,7 @@ class Pages extends AbstractWidget
                 if ($post->getPostType() === 'page') {
                     $this->setPost($post);
                 }
-            }    
+            }
         }
 
          return $this->_getData('post');
@@ -38,18 +38,49 @@ class Pages extends AbstractWidget
         return $this->getPosts();
     }
 
+    /**
+     * @return false|array
+     */
+    public function getExcludedPageIds()
+    {
+        if (!$this->hasData('excluded_page_ids')) {
+            $this->setData('excluded_page_ids', false);
+
+            $excluded = explode(',', trim($this->getData('exclude')));
+            
+            foreach ($excluded as $key => $value) {
+                if (($value = (int)trim($value)) === 0) {
+                    unset($excluded[$key]);
+                } else {
+                    $excluded[$key] = $value;
+                }
+            }
+            
+            if ($excluded) {
+                $this->setData('excluded_page_ids', $excluded);
+            }
+        }
+        
+        return $this->getData('excluded_page_ids');
+    }
+
+    /**
+     *
+     */
     public function getPosts()
     {
         $posts = $this->factory->create('Model\ResourceModel\Post\Collection')->addPostTypeFilter('page');
 
         if ($this->hasParentId()) {
             $posts->addPostParentIdFilter($this->getParentId());
-        }
-        else if ($this->getPost() && $this->getPost()->hasChildren()) {
+        } elseif ($this->getPost() && $this->getPost()->hasChildren()) {
             $posts->addPostParentIdFilter($this->getPost()->getId());
-        }
-        else {
+        } else {
             $posts->addPostParentIdFilter(0);
+        }
+        
+        if ($excludedIds = $this->getExcludedPageIds()) {
+            $posts->getSelect()->where('main_table.ID NOT IN (?)', $excludedIds);
         }
 
         return $posts->addIsViewableFilter()->load();
