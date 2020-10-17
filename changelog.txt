@@ -1,3 +1,6 @@
+17/10/2020 - 2.0.11.45
+- Added fix for JS/CSS being removed after first page load.
+
 13/10/2020 - 2.0.11.44
 - Added support for the 'Excluded Page IDs' field in the Pages widget.
 

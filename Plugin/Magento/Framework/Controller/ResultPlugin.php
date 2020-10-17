@@ -13,9 +13,7 @@ use Magento\Framework\App\ResponseInterface;
 class ResultPlugin
 {
     /**
-     *
-     * @var \FishPig\WordPress\Model\AssetInjectorFactory
-     *
+     * @var AssetInjectorFactory
      */
     protected $assetInjectorFactory;
 
@@ -23,14 +21,13 @@ class ResultPlugin
      * This is required for Magento 2.1.9 and lower as 2.1.9 doesn't pass
      * method arguments to 'after' plugins. THis is fixed in 2.2.0
      *
-     * @var \Magento\Framework\App\ResponseInterface
-     *
+     * @var ResponseInterface
      */
     protected $response;
 
     /**
-     *
-     * @param \FishPig\WordPress\Model\AssetInjectorFactory
+     * @param AssetInjectorFactory $assetInjectorFactory
+     * @param ResponseHttp $response
      *
      */
     public function __construct(AssetInjectorFactory $assetInjectorFactory, ResponseHttp $response)
@@ -47,8 +44,11 @@ class ResultPlugin
      * @param  \Magento\Framework\App\Response\Http $respnse
      * @return \Magento\Framework\Controller\ResultInterface
      */
-    public function afterRenderResult(ResultInterface $subject, ResultInterface $result, ResponseInterface $response = null)
-    {
+    public function afterRenderResult(
+        ResultInterface $subject, 
+        ResultInterface $result, 
+        ResponseInterface $response = null
+    ) {
         // If Magento 2.1.9 or lower, $response won't be passed so load it separately
         if (!$response) {
             $response = $this->response;
@@ -57,7 +57,7 @@ class ResultPlugin
         $bodyHtml = $this->transformHtml($response->getBody());
 
         /**
-         * This is usually defined in the AssetInjector but moving it here stops the AssetInjector from being created so often
+         * This is usually defined in the AssetInjector but moving it here stops the AssetInjector from being created as often
          */
         if (AssetInjector::isAbspathDefined()) {
             if ($newBodyHtml = $this->assetInjectorFactory->create()->process($bodyHtml)) {
@@ -71,7 +71,8 @@ class ResultPlugin
     }
 
     /**
-     *
+     * @param string $html
+     * @return string
      */
     public function transformHtml($html)
     {
