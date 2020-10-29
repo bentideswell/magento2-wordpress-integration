@@ -1,3 +1,6 @@
+29/10/2020 - 2.0.11.46
+- Updated FishPig theme in WordPress to allow using taxonomy's in custom post type permalinks.
+
 17/10/2020 - 2.0.11.45
 - Added fix for JS/CSS being removed after first page load.
 

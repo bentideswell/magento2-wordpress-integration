@@ -41,7 +41,8 @@ class FishPig_Theme
 		add_action('admin_menu',                 array($this, 'onAdminMenu'));
 		add_filter('vc_front_render_shortcodes', array($this, 'onVcFrontRenderShortcodes'), 99999);
 		add_filter('wp_calculate_image_srcset',  array($this, 'onWpCalculateImageSrcset'));
-        add_filter( 'wp_fatal_error_handler_enabled', '__return_false' );
+        add_filter('wp_fatal_error_handler_enabled', '__return_false' );
+        add_filter('post_type_link',             array($this, 'onFilterPostTypeLink'), 10, 4);
 
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
@@ -487,6 +488,36 @@ class FishPig_Theme
     public function onVcFrontRenderShortcodes($content)
     {
         return '<!--FP-the_content-->' . $content . '<!--/FP-the_content-->';
+    }
+
+    /**
+     *
+     */
+    public function onFilterPostTypeLink($postLink, $post)
+    {
+        if (strpos($postLink, '%') === false) {
+            return $postLink;
+        }
+    
+        if (!preg_match_all('/\/%([^%]+)%\//U', $postLink, $matches)) {
+            return $postLink;
+        }
+    
+        foreach ($matches[1] as $it => $taxonomy) {
+            $token = $matches[0][$it];
+            $change = '/';
+    
+            if ($terms = get_the_terms($post->ID, $taxonomy)) {
+                foreach ($terms as $term) {
+                    $change = '/' . $term->slug . '/';
+                    break;
+                }
+            }
+            
+            $postLink = str_replace($token, $change, $postLink);
+        }
+        
+        return $postLink;
     }
 }
 
