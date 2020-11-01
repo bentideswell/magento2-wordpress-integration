@@ -13,8 +13,8 @@
     </type>
     <!-- Inject any required assets -->
     <type name="Magento\Framework\Controller\ResultInterface">
-        <plugin name="result-fishpig-wordpress-plugin" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="0"/>
-        <plugin name="result-builtin-cache" type="Magento\PageCache\Model\Controller\Result\BuiltinPlugin" sortOrder="50"/>
-        <plugin name="result-varnish-cache" type="Magento\PageCache\Model\Controller\Result\VarnishPlugin" sortOrder="60"/>
+        <plugin name="result-fishpig-wordpress-plugin" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="40"/>
+        <plugin name="result-builtin-cache" sortOrder="50"/>
+        <plugin name="result-varnish-cache" sortOrder="60"/>
     </type>
 </config>
