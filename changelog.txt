@@ -1,3 +1,6 @@
+04/11/2020 - 2.0.11.28
+- Updated FishPig WordPress theme to improve preview URLs when using Root
+
 01/11/2020 - 2.0.11.47
 - Added fix when using full_page=1 and Amasty_GdprCookie
 

@@ -32,7 +32,10 @@ class FishPig_Theme
 		add_action('widgets_init',               array($this, 'onActionWidgetsInit'));
 		add_action('init',                       array($this, 'onActionInit'));
 		add_filter('redirect_canonical',         array($this, 'onFilterRedirectCanonical'));
-#		add_filter('preview_post_link',          array($this, 'onFilterPreviewPostLink'), 10, 2);
+		add_filter('preview_post_link',          array($this, 'onFilterPreviewPostLink'), 10, 2);
+		add_filter('page_link',                     array($this, 'onPostPageLink'));
+		add_filter('post_link',                     array($this, 'onPostPageLink'));
+		add_filter('vcv:frontend:pageEditable:url', array($this, 'onPostPageLink')); // VisualComposer
 		add_filter('rest_url',                   array($this, 'onFilterRestUrl'));
 		add_filter('status_header',              array($this, 'onFilterStatusHeader'), 10, 4);
         add_filter('wp_headers',                 array($this, 'onFilterWPHeaders'), 10, 4);
@@ -288,25 +291,59 @@ class FishPig_Theme
 		wp_remote_get(home_url('/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce . '&time' . time()));
 	}
 
-	/*
-	 *
-	 *
-	 *
+	/**
+	 * @param string $previewLink
+	 * @param $post
+	 * @return string
 	 */
-	public function onFilterPreviewPostLink($pl, $post)
+	public function onFilterPreviewPostLink($previewLink, $post)
 	{
-		if (strpos($pl, 'nonce') !== false) {
-			if (preg_match('/nonce=([a-z0-9]{10})/', $pl, $matches)) {
-				$pl = str_replace($matches[1], substr(wp_hash(wp_nonce_tick()."|post_preview_{$post->ID}|0|", 'nonce'), -12, 10), $pl);
-			}
-		}
+    	if ($pageForPostsUrl = $this->getPageForPostsUrl()) {
+        	$queryString = substr($previewLink, strpos($previewLink, '?'));
+            $previewLink = $pageForPostsUrl . $queryString;
+    	}
 
-		return $pl . '&fishpig=' . time();
+		return $previewLink . '&fishpig=' . time();
 	}
 
-	/*
-	 *
-	 *
+    /**
+     *
+     */
+    public function onPostPageLink($postLink)
+    {
+        if (isset($this->onPostPageLinkFlag) && $this->onPostPageLinkFlag) {
+            return $postLink;
+        }
+        
+        if (strpos($postLink, 'page_id=') === false && strpos($postLink, '?p=') === false) {
+            return $postLink;
+        }
+
+        $this->onPostPageLinkFlag = true;
+            
+    	if ($pageForPostsUrl = $this->getPageForPostsUrl()) {
+        	$queryString = substr($postLink, strpos($postLink, '?'));
+            $postLink = $pageForPostsUrl . $queryString;
+        }
+        
+        $this->onPostPageLinkFlag = false;
+
+        return $postLink . '&fishpig=' . time() . '&preview=true';
+    }
+
+    /**
+     *
+     */
+    private function getPageForPostsUrl()
+    {
+    	if ($pageForPostsId = (int)get_option('page_for_posts')) {
+            return get_permalink($pageForPostsId);
+    	} 
+    	
+    	return false;
+    }
+
+	/**
 	 *
 	 */
 	public function onFilterRestUrl($rest)
@@ -323,9 +360,7 @@ class FishPig_Theme
 		return get_option('siteurl') . '/index.php/wp-json/' . $extra;
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onFilterStatusHeader($status_header, $code, $description, $protocol)
