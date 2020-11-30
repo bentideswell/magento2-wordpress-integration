@@ -23,7 +23,7 @@ abstract class AbstractCollection extends ParentClass
      */
     public function addMetaFieldToSelect($metaKey)
     {
-        if (($field = $this->_joinMetaField($metaKey)) !== false) {
+        if (($field = $this->joinMetaField($metaKey)) !== false) {
             $this->getSelect()->columns(array($metaKey => $field));
         }
 
@@ -39,7 +39,7 @@ abstract class AbstractCollection extends ParentClass
      */
     public function addMetaFieldToFilter($metaKey, $filter)
     {
-        if (($field = $this->_joinMetaField($metaKey)) !== false) {
+        if (($field = $this->joinMetaField($metaKey)) !== false) {
             $this->addFieldToFilter($field, $filter);
         }
 
@@ -66,7 +66,7 @@ abstract class AbstractCollection extends ParentClass
      * @param string $field
      * @return $this
      */
-    protected function _joinMetaField($field)
+    public function joinMetaField($field)
     {
         $model = $this->getNewEmptyItem();
 
@@ -94,6 +94,14 @@ abstract class AbstractCollection extends ParentClass
         }
 
         return $this->metaFieldsJoined[$field];
+    }
+
+    /**
+     * @deprecated use self::joinMetaField($field) instead
+     */
+    protected function _joinMetaField($field)
+    {
+        return $this->joinMetaField($field);
     }
 
     /**
