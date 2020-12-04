@@ -103,6 +103,8 @@ class AssetInjector
         $content = implode("\n", $assets);
 
         if ($this->isVisualEditorMode($shortcodes)) {
+            $content .= "\n" . '<style type="text/css">#cookie-status{display:none}</style>';
+            
             // Strip all Magento JS and inject WordPress JS
             return str_replace(
                 '</body>', 
