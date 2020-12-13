@@ -339,7 +339,21 @@ class Router implements RouterInterface
         foreach ($this->factory->get(\FishPig\WordPress\Model\TaxonomyManager::class)->getTaxonomies() as $taxonomy) {
             if (($routes = $taxonomy->getUris($uri)) !== false) {
                 foreach ($routes as $routeId => $route) {
-                    $this->addRoute($route, '*/term/view', ['id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()]);
+                    if ($route === $uri) {
+                        return $this->addRoute($route, '*/term/view', ['id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()]);
+                    }
+                }
+            }
+
+            if (($routes = $taxonomy->getRedirectableUris($uri)) !== false) {
+                foreach ($routes as $routeId => $route) {
+                    if ($uri === $route['source']) {
+                        return $this->addRoute($route['source'], '*/term/view', [
+                            'id' => $routeId, 
+                            'taxonomy' => $taxonomy->getTaxonomyType(), 
+                            '__redirect_to' => $this->url->getUrl($route['target'])
+                        ]);
+                    }                    
                 }
             }
         }
