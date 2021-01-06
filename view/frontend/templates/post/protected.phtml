@@ -1,0 +1,32 @@
+<?php
+/**
+ * @FishPig_WordPress
+ */
+?>
+<div class="block block-blog-protected">
+    <div class="block-title">
+        <strong><?= __('Protected') ?></strong>
+    </div>
+    <div class="block-content">
+        <form action="<?= $block->getWpUrl()->getUrl() ?>wp-pass.php" method="post" id="protect<?= $block->getPost()->getId() ?>">
+        	<div class="no-display">
+        		<input type="hidden" name="redirect_to" value="<?= $block->getPost()->getUrl() ?>" />
+        	</div>
+            <fieldset class="fieldset">
+                <div class="field note"><?= __('This %1 is password protected. To view it please enter your password below:', $block->getEntityType()) ?></div>
+                <div class="field name required">
+                    <label class="label" for="protect<?= $block->getPost()->getId() ?>_post_password"><span><?= __('Password') ?></span></label>
+                    <div class="control">
+                        <input name="post_password" id="protect<?= $block->getPost()->getId() ?>_post_password" title="Password" value="" class="input-text" type="text" data-validate="{required:true}" aria-required="true"/>
+                    </div>
+                </div>
+            </fieldset>
+            <div class="actions-toolbar">
+                <div class="primary">
+                    <input type="hidden" name="hideit" id="hideit" value=""/>
+                    <button type="submit" title="<?= __('Submit') ?>" class="action submit primary"><span><?= __('Submit') ?></span></button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>  

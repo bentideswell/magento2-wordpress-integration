@@ -13,7 +13,9 @@
 					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><img src="<?php echo $image->getAvailableImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/></a>
 				</div>
 			<?php endif; ?>
-			<?php if (($content = trim($post->getContent())) !== ''): ?>
+			<?php if (!$post->isViewableForVisitor()): ?>
+			    <?= $block->getPasswordProtectHtml() ?>
+			<?php elseif (($content = trim($post->getContent())) !== ''): ?>
 				<div class="post-content"><?php echo $content ?></div>
 			<?php endif; ?>
 		</div>

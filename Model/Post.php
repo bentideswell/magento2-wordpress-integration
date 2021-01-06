@@ -606,7 +606,15 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function isViewableForVisitor()
     {
-        return true;
+        if ($this->getPostPassword() === '') {
+            return true;
+        }
+
+        $postPassword = \Magento\Framework\App\ObjectManager::getInstance()
+            ->get(\FishPig\WordPress\Model\Post\Password::class)
+                ->getPassword();
+
+        return $postPassword && $postPassword === $this->getPostPassword(); 
     }
 
     /**

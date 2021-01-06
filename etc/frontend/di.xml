@@ -17,4 +17,7 @@
         <plugin name="result-builtin-cache" sortOrder="50"/>
         <plugin name="result-varnish-cache" sortOrder="60"/>
     </type>
+    <type name="Magento\Framework\App\PageCache\Identifier">
+        <plugin name="identifier-builtin-cache" type="FishPig\WordPress\Plugin\Magento\Framework\App\PageCache\IdentifierPlugin"/>
+    </type>
 </config>

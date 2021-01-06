@@ -104,4 +104,12 @@ abstract class AbstractBlock extends Template
             throw $e;
         }
     }
+    
+    /**
+     *
+     */
+    public function getWpUrl()
+    {
+        return $this->url;
+    }
 }

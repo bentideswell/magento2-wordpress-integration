@@ -1,3 +1,6 @@
+06/01/2021 - 2.0.14.0
+- Added support for the post password functionality and support for the full_page cache type.
+
 13/12/2020 - 2.0.12.2
 - Added redirect for term URLs that don't contain the full URL path (eg. contain child slug without parent).
 

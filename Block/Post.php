@@ -107,4 +107,21 @@ class Post extends AbstractBlock implements IdentityInterface
     {
         return $this->getPost() ? $this->getPost()->getIdentities() : [];
     }
+    
+    /**
+     *
+     */
+    public function getPasswordProtectHtml($post = null)
+    {
+	    if (is_null($post)) {
+			$post = $this->getPost();
+		}
+
+		return $this->getLayout()
+			->createBlock(self::class)
+			->setTemplate('FishPig_WordPress::post/protected.phtml')
+			->setEntityType('post')
+			->setPost($post)
+			->toHtml(); 
+    }
 }
