@@ -4,49 +4,47 @@
  */
 namespace FishPig\WordPress\Model\Post;
 
-use Magento\Framework\Session\SessionManagerInterface;
+use FishPig\WordPress\Model\OptionManager;
 
 class Password
 {
     /**
-     * @const string
-     */
-    const SESSION_KEY = 'wordpress_post_password';
-    
-    /**
-     * @static string
-     */
-    static $password = '';
-    
-    /**
      *
      */
-    public function __construct(SessionManagerInterface $coreSession)
+    public function __construct(OptionManager $optionManager)
     {
-        $this->coreSession = $coreSession;
+        $this->optionManager = $optionManager;
     }
-    
-    /**
-     *
-     */
-    public function setPassword($pass)
-    {
-        self::$password = $pass;
-
-        $this->coreSession->setData(self::SESSION_KEY, $pass);
-        
-        return $this;
-    }   
 
     /**
-     *
+     * @return string|false
      */
     public function getPassword()
     {
-        if (self::$password) {
-            return self::$password;
-        }
+        $cookieName = $this->getCookieName();
+        
+        return isset($_COOKIE[$cookieName]) ? $_COOKIE[$cookieName] : false;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function doesPasswordMatch($pass) : bool
+    {
+        $hasher = new PasswordHash( 8, true );
 
-        return self::$password = $this->coreSession->getData(self::SESSION_KEY);
-    } 
+        return $hasher->CheckPassword($pass, $this->getPassword());
+    }
+    
+    /**
+     * @return string
+     */
+    private function getCookieName() : string
+    {
+        if (!($siteUrl = $this->optionManager->getSiteOption('siteurl'))) {
+            $siteUrl = $this->optionManager->getOption('siteurl');
+        }
+        
+        return 'wp-postpass_' . md5($siteUrl);
+    }
 }

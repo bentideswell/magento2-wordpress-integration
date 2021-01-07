@@ -8,7 +8,7 @@
         <strong><?= __('Protected') ?></strong>
     </div>
     <div class="block-content">
-        <form action="<?= $block->getWpUrl()->getUrl() ?>wp-pass.php" method="post" id="protect<?= $block->getPost()->getId() ?>">
+        <form action="<?= $block->getWpUrl()->getSiteurl() ?>/wp-login.php?action=postpass" method="post">
         	<div class="no-display">
         		<input type="hidden" name="redirect_to" value="<?= $block->getPost()->getUrl() ?>" />
         	</div>
@@ -17,7 +17,7 @@
                 <div class="field name required">
                     <label class="label" for="protect<?= $block->getPost()->getId() ?>_post_password"><span><?= __('Password') ?></span></label>
                     <div class="control">
-                        <input name="post_password" id="protect<?= $block->getPost()->getId() ?>_post_password" title="Password" value="" class="input-text" type="text" data-validate="{required:true}" aria-required="true"/>
+                        <input name="post_password" title="<?= __('Password') ?>" value="" class="input-text" type="text" data-validate="{required:true}" aria-required="true"/>
                     </div>
                 </div>
             </fieldset>

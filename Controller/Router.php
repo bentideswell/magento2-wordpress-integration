@@ -286,7 +286,6 @@ class Router implements RouterInterface
         $this->addRoute('search', '*/search/index', ['redirect_broken_url' => 1]); # Fix broken search URLs
 #        $this->addRoute('/^index.php/i', '*/index/forward');
 
-        $this->addRoute('/^wp-pass.php.*/', '*/post/pass');
         $this->addRoute(['/^((newbloguser|wp-(content|includes|admin|cron\.php))\/.*)$/' => ['request_uri']], '*/forwarder/view');
 
 #        $this->addRoute('/^wp-content\/(.*)/i', '*/index/forwardFile');

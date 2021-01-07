@@ -1,3 +1,6 @@
+07/01/2021 - 2.0.14.1
+- Fixed bug with post password functionality. Request is now passed directly to WordPress so that WP can set the cookie.
+
 06/01/2021 - 2.0.14.0
 - Added support for the post password functionality and support for the full_page cache type.
 
