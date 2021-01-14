@@ -146,6 +146,8 @@ abstract class Action extends ParentAction
 
         if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {
             if ($crumbs = $this->_getBreadcrumbs()) {
+                $this->_eventManager->dispatch('wordpress_breadcrumbs', ['breadcrumbs' => &$crumbs]);
+
                 foreach ($crumbs as $key => $crumb) {
                     $breadcrumbsBlock->addCrumb($key, $crumb);
                 }
