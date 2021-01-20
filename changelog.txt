@@ -1,3 +1,6 @@
+20/01/2021 - 2.0.14.5
+Fixed Reply to Comment links.
+
 14/01/2021 - 2.0.14.2
 - Added event for breadcrumbs.
 

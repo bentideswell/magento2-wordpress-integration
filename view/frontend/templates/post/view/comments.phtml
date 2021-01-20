@@ -32,7 +32,7 @@
 					<div class="comment-entry"><?php echo $this->getCommentContent($comment) ?></div>
 					<?php if ($this->canComment()): ?>
 						<div class="reply">
-							<a href="<?php echo $this->getPost()->getUrl() ?>?replytocom=<?php echo $comment->getId() ?>#respond" class="comment-reply-link"><?php echo __('Reply') ?></a> <span>&darr;</span>
+							<a href="#respond" onclick="document.getElementById('comment_parent').value=<?= $comment->getId() ?>;" class="comment-reply-link"><?php echo __('Reply') ?></a> <span>&darr;</span>
 						</div>
 					<?php endif; ?>
 				</div>
