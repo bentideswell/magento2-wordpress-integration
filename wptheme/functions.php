@@ -305,28 +305,19 @@ class FishPig_Theme
 
 		return $previewLink . '&fishpig=' . time();
 	}
-
+	
     /**
      *
      */
     public function onPostPageLink($postLink)
     {
-        if (isset($this->onPostPageLinkFlag) && $this->onPostPageLinkFlag) {
-            return $postLink;
-        }
-        
         if (strpos($postLink, 'page_id=') === false && strpos($postLink, '?p=') === false) {
             return $postLink;
         }
 
-        $this->onPostPageLinkFlag = true;
-            
-    	if ($pageForPostsUrl = $this->getPageForPostsUrl()) {
-        	$queryString = substr($postLink, strpos($postLink, '?'));
-            $postLink = $pageForPostsUrl . $queryString;
-        }
-        
-        $this->onPostPageLinkFlag = false;
+    	$homeUrl = rtrim(get_option('home'), '/') . '/';
+    	$queryString = substr($postLink, strpos($postLink, '?'));
+        $postLink = $homeUrl . $queryString;
 
         return $postLink . '&fishpig=' . time() . '&preview=true';
     }

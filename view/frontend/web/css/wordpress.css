@@ -9,7 +9,7 @@ img.aligncenter { display: block; margin-left: auto; margin-right: auto; }
 .aligncenter { display: block; margin-left: auto; margin-right: auto; }
 
 ol.post-list, 
-ol.comment-list { list-style: none; padding: 0; margin: 0; }
+ol.comment-list  { list-style: none; padding: 0; margin: 0; }
 
 /* General Post Styles */
 .post-list li:after { content: ' '; clear: both; display: block; }
@@ -25,7 +25,7 @@ ol.comment-list { list-style: none; padding: 0; margin: 0; }
 
 /* Comments */
 .comment-list-item { margin: 0 0 20px; }
-.comment-list.children { margin-top: 20px; }
+.comment-list.children { margin-top: 20px; padding-left: 30px; }
 .comment-image { float: left; margin: 0 10px 10px 0; }
 .comment-author { font-weight: bold; display: block; }
 .comment-entry { clear: both; margin: 0 0 20px; }
