@@ -85,6 +85,8 @@ abstract class Action extends ParentAction
         if ($forward = $this->_getForward()) {
             return $forward;
         }
+        
+        $this->initCoreHelper();
 
         $this->checkForAmp();
 
@@ -308,5 +310,19 @@ abstract class Action extends ParentAction
             ->setModule('cms')
             ->setController('noroute')
             ->forward('index');
+    }
+    
+    /**
+     *
+     */
+    protected function initCoreHelper()
+    {
+        try {
+            if ($coreHelper = $this->wpContext->getCoreHelper()->getHelper()) {
+                $coreHelper->isActive();
+            }
+        } catch (\Exception $e) {
+            $this->wpContext->getLogger()->error($e);
+        }
     }
 }

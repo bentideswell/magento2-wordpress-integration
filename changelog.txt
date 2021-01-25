@@ -1,3 +1,6 @@
+25/01/2021 - 2.0.15.1
+- Added call to coreHelper in controller.
+
 21/01/2021 - 2.0.15.0
 - Updated WordPress theme to fix bug that stopped unpublished pages from using Elementor.
 

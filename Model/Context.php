@@ -19,106 +19,11 @@ use Magento\Framework\App\Request\Http as Request;
 use Magento\Store\Model\StoreManagerInterface;
 use FishPig\WordPress\Model\Logger;
 use FishPig\WordPress\Model\DirectoryList;
+use FishPig\WordPress\Helper\Core as CoreHelper;
 
 class Context
 {
     /**
-     *
-     * @var 
-     *
-     */
-    protected $resourceManager;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $optionManager;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $shortcodeManager;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $postTypeManager;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $taxonomyManager;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $url;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $factory;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $dateHelper;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $registry;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $customerSession;
-
-    /**
-     *
-     * @var 
-     *
-     */
-    protected $request;
-
-    /**
-     *
-     * @var StoreManagerInterface
-     *
-     */
-    protected $storeManager;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var DirectoryList
-     */
-    protected $directoryList;
-
-    /**
-     *
-     *
      *
      */
     public function __construct(
@@ -136,29 +41,28 @@ class Context
         Request $request,
         StoreManagerInterface $storeManager,
         Logger $logger,
-        DirectoryList $directoryList
-    )
-    {
+        DirectoryList $directoryList,
+        CoreHelper $coreHelper
+    ) {
         $this->resourceConnection = $resourceConnection;
-        $this->optionManager      = $optionManager;
-        $this->shortcodeManager   = $shortcodeManager;
-        $this->postTypeManager    = $postTypeManager;
-        $this->taxonomyManager    = $taxonomyManager;
-        $this->url                = $url;
-        $this->factory            = $factory;
-        $this->dateHelper         = $dateHelper;
-        $this->registry           = $registry;
-        $this->layout             = $layout;
-        $this->customerSession    = $customerSession;
-        $this->request            = $request;
-        $this->storeManager       = $storeManager;
-        $this->logger             = $logger;
-        $this->directoryList      = $directoryList;
+        $this->optionManager = $optionManager;
+        $this->shortcodeManager = $shortcodeManager;
+        $this->postTypeManager = $postTypeManager;
+        $this->taxonomyManager = $taxonomyManager;
+        $this->url = $url;
+        $this->factory = $factory;
+        $this->dateHelper = $dateHelper;
+        $this->registry = $registry;
+        $this->layout = $layout;
+        $this->customerSession = $customerSession;
+        $this->request = $request;
+        $this->storeManager = $storeManager;
+        $this->logger = $logger;
+        $this->directoryList = $directoryList;
+        $this->coreHelper = $coreHelper;
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getResourceConnection()
@@ -167,8 +71,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getOptionManager()
@@ -177,8 +79,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getShortcodeManager()
@@ -187,8 +87,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getTaxonomyManager()
@@ -197,8 +95,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getPostTypeManager()
@@ -207,8 +103,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getUrl()
@@ -217,8 +111,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getFactory()
@@ -227,8 +119,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getDateHelper()
@@ -237,8 +127,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getRegistry()
@@ -247,8 +135,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getLayout()
@@ -257,8 +143,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getCustomerSession()
@@ -267,8 +151,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return 
      */
     public function getRequest()
@@ -277,8 +159,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return StoreManagerInterface
      */
     public function getStoreManager()
@@ -287,8 +167,6 @@ class Context
     }
 
     /**
-     *
-     *
      * @return Logger
      */
     public function getLogger()
@@ -297,11 +175,18 @@ class Context
     }
 
     /**
-     *
      * @return DirectoryList
      */
     public function getDirectoryList()
     {
-    return $this->directoryList;
+        return $this->directoryList;
+    }
+    
+    /**
+     * @return CoreHelper
+     */
+    public function getCoreHelper()
+    {
+        return $this->coreHelper;
     }
 }
