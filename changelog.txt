@@ -1,3 +1,6 @@
+28/01/2021 - 2.0.15.2
+- Updated FishPig theme in WordPress.
+
 25/01/2021 - 2.0.15.1
 - Added call to coreHelper in controller.
 

@@ -15,16 +15,7 @@
 			</header>
 		<?php endif; ?>
 		<?php while (have_posts()): the_post() ?>
-			<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>				
-				<header class="entry-header">
-					<?php if (is_single()): ?>
-						<h1 class="entry-title"><?php the_title() ?></h1>
-					<?php else: ?>
-						<h2 class="entry-title"><a href="<?php echo esc_url(get_permalink()) ?>"><?php the_title() ?></a></h2>
-					<?php endif; ?>
-				</header>				
-				<div class="entry-content"><?php the_content() ?></div>
-			</article>
+			<article id="post-<?php the_ID() ?>" <?php post_class(); ?>><?php the_content() ?></article>
 		<?php endwhile ?>
 		<?php
 			// Previous/next page navigation.
