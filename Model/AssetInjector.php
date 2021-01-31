@@ -305,6 +305,9 @@ class AssetInjector
         return $scripts ? $scripts : [];
     }
     
+    /**
+     *
+     */
     public function extractDuplicateScriptsFromArray(&$scripts)
     {
         $toRemove = [

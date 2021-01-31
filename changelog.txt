@@ -1,4 +1,4 @@
-31/01/2021 - 2.0.15.3
+31/01/2021 - 2.0.15.4
 - Changed AssetInjector to stop jQuery from sneaking into Magento from WordPress.
 
 28/01/2021 - 2.0.15.2

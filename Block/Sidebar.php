@@ -65,7 +65,7 @@ class Sidebar extends Template
         if ($widgets = $this->getWidgetsArray()) {
             foreach($widgets as $widgetType) {
                 if ($block = $this->widgetManager->getWidget($widgetType)) {
-                    $this->setChild('widget.' . $widgetType, $block);
+                    $this->setChild('wordpress_widget_' . $widgetType, $block);
                 }
             }
         }
