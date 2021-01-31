@@ -309,6 +309,7 @@ class AssetInjector
     {
         $toRemove = [
             '/wp-includes/js/jquery/jquery.js',
+            '/wp-includes/js/jquery/jquery.min.js',
             '/wp-includes/js/jquery/jquery-migrate.min.js',
         ];
         
