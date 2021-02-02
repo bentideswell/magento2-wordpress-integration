@@ -136,7 +136,7 @@ class AssetInjector
                 list($requireGroups, $requireJsPaths)  = $this->processRequireGroupsFromScriptsArray($scripts);
 
                 $requireContextToken = 'RequireFPJS';
-                
+
                 $requireJsFinal = sprintf(
                     "<script type=\"text/javascript\">\n%s\n\n%s\n\n%s\n</script>",
                     $this->getFPJS(),
@@ -427,11 +427,12 @@ class AssetInjector
                             $migratedScriptUrl .= '?js=1';
                         }
                     }
+                } elseif (strpos($migratedScriptUrl, 'recaptcha/api.js?render') !== false) {
+                    $migratedScriptUrl = substr($migratedScriptUrl, 0, strpos($migratedScriptUrl, '?'));
                 }
 
                 $scripts[$skey] = str_replace($originalScriptUrl, $migratedScriptUrl, $script);
-            }
-            else {
+            } else {
                 $scripts[$skey] = $this->_fixDomReady($script);
             }
         }
