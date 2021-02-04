@@ -1,3 +1,6 @@
+04/02/2021 - 2.0.16.0
+- Improved AssetInjector JS and jQuery ready event calling.
+
 02/02/2021 - 2.0.15.5
 - Added more layout files to cover Elementor template options.
 

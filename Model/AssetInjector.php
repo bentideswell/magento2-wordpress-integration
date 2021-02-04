@@ -59,8 +59,7 @@ class AssetInjector
         ShortcodeManager $shortcode,
         WordPressURL $wpUrl,
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
         $this->integrationManager = $integrationManager;
         $this->storeManager = $storeManager;
         $this->directoryList = $directoryList;
@@ -125,7 +124,7 @@ class AssetInjector
             $this->extractDuplicateScriptsFromArray($scripts);
             
             $scriptsStatic = $this->extractStaticScriptsFromArray($scripts);
-            
+
             $this->processScriptArrayUrls($scripts);
 
             if (count($scripts) > 0) {
@@ -314,8 +313,10 @@ class AssetInjector
             '/wp-includes/js/jquery/jquery.js',
             '/wp-includes/js/jquery/jquery.min.js',
             '/wp-includes/js/jquery/jquery-migrate.min.js',
+            '/wp-includes/js/underscore.js',
+            '/wp-includes/js/underscore.min.js',
         ];
-        
+
         $unshift = [];
 
         foreach($scripts as $key => $script) {
@@ -393,12 +394,15 @@ class AssetInjector
         return $scriptsStatic;
     }
     
+    /**
+     *
+     */
     protected function processScriptArrayUrls(&$scripts)
     {
         foreach($scripts as $skey => $script) {
             if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
                 $originalScriptUrl = $matches[1];
-
+                
                 // This is needed to fix ../ in URLs
                 $realPathUrl = $originalScriptUrl;
 
@@ -436,6 +440,7 @@ class AssetInjector
                 $scripts[$skey] = $this->_fixDomReady($script);
             }
         }
+
     }
     
     /**
@@ -534,7 +539,10 @@ class AssetInjector
     {
         $level = 1;
         $randomTag = '__FPTAG823434__';
-        $requireJsTemplate = "require(['jquery', 'jquery/jquery-migrate', 'underscore'], function() {\n" . $randomTag . "});\n";
+        $requireJsTemplate = "require(['jquery', 'jquery/jquery-migrate', 'underscore'], function() {
+        
+        jQuery.fishpigReady=jQuery.fn.fishpigReady=function(x){FPJS.on('fishpig_ready',x);return this;};
+        \n" . $randomTag . "});\n";
 
         foreach($requireGroups as $skey => $requireGroup) {
             $tabs = str_repeat("  ", $level);
@@ -686,8 +694,10 @@ class AssetInjector
      */
     protected function _fixDomReady($scriptContent)
     {
-        $scriptContent = preg_replace('/[a-zA-Z$]{1,}\(document\)\.ready\(/', 'FPJS.on(\'fishpig_ready\', ', $scriptContent);
-        $scriptContent = preg_replace('/(jQuery|\$)\s*\(\s*function\s*\(/iU', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
+        if (strpos($scriptContent, 'ready') !== false) {
+            $scriptContent = preg_replace('/\.ready\(/', '.fishpigReady(', $scriptContent);
+            $scriptContent = preg_replace('/(jQuery|\$)\s*\(\s*function\s*\(/iU', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
+        }
 
         return $scriptContent;
     }
