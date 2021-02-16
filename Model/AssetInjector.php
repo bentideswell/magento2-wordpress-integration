@@ -637,6 +637,11 @@ class AssetInjector
      */
     protected function _migrateJsAndReturnUrl($externalScriptUrlFull)
     {
+        // Decode &amp; characters in query string
+        if (strpos($externalScriptUrlFull, '&amp;') !== false) {
+            $externalScriptUrlFull = str_replace('&amp;', '&', $externalScriptUrlFull);
+        }
+        
         $externalScriptUrlFull = $this->_fixNoProtocolUrl($externalScriptUrlFull);
 
         // Check that the script is a local file

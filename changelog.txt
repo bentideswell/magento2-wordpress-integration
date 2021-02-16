@@ -1,3 +1,6 @@
+16/02/2021 - 2.0.16.1
+- Fix encoded & characters in query string on migrated external JS files
+
 04/02/2021 - 2.0.16.0
 - Improved AssetInjector JS and jQuery ready event calling.
 
