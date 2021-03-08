@@ -700,7 +700,7 @@ class AssetInjector
     protected function _fixDomReady($scriptContent)
     {
         if (strpos($scriptContent, 'ready') !== false) {
-            $scriptContent = preg_replace('/\.ready\(/', '.fishpigReady(', $scriptContent);
+            $scriptContent = preg_replace('/\.ready\(([^\)]+)/', '.fishpigReady($1', $scriptContent);
             $scriptContent = preg_replace('/(jQuery|\$)\s*\(\s*function\s*\(/iU', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
         }
 
