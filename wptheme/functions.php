@@ -535,8 +535,10 @@ class FishPig_Theme
     
             if ($terms = get_the_terms($post->ID, $taxonomy)) {
                 foreach ($terms as $term) {
-                    $change = '/' . $term->slug . '/';
-                    break;
+                    if (is_object($term)) {
+                        $change = '/' . $term->slug . '/';
+                        break;
+                    }
                 }
             }
             

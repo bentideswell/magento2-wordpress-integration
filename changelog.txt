@@ -1,3 +1,6 @@
+17/03/2021 - 2.0.16.3
+- Updated FishPig WordPress theme.
+
 08/02/2021 - 2.0.16.2
 - Added fix for AssetInjector.
 
