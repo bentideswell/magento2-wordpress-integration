@@ -4,6 +4,6 @@
  * @url      https://fishpig.co.uk/magento/wordpress-integration/shortcodes-widgets/
  */
 ?>
-<?php if ($productListHtml = $this->getProductListHtml()): ?>
+<?php if ($productListHtml = $block->getProductListHtml()): ?>
     <div class="product-shortcode"><?= $productListHtml ?></div>
 <?php endif; ?>

@@ -125,26 +125,44 @@ class AssetInjector
             
             $scriptsStatic = $this->extractStaticScriptsFromArray($scripts);
 
-            $this->processScriptArrayUrls($scripts);
-
-            if (count($scripts) > 0) {
+            if (true) {
+                $this->processScriptArrayUrls($scripts);
                 $this->processScriptArrayInlineScripts($scripts);
 
                 $scripts = $this->canMergeGroups() ? $this->_mergeGroups($scripts) : $scripts;
 
-                list($requireGroups, $requireJsPaths)  = $this->processRequireGroupsFromScriptsArray($scripts);
+                $scripts = implode("\n", $scripts);
 
-                $requireContextToken = 'RequireFPJS';
+                $content = trim($content);
+                $content .= "<script type=\"text/javascript\">
+require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
+    $(document).ready(function() {
+        $('body').append('<div id=\"fishpig-wp\">' + " . json_encode(['scripts' => $scripts]) . ".scripts + '</div>');
+    }); 
+});
+</script>";
+            } else {                
+                $this->processScriptArrayUrls($scripts);
+                
+                if (count($scripts) > 0) {
+                    $this->processScriptArrayInlineScripts($scripts);
+    
+                    $scripts = $this->canMergeGroups() ? $this->_mergeGroups($scripts) : $scripts;
 
-                $requireJsFinal = sprintf(
-                    "<script type=\"text/javascript\">\n%s\n\n%s\n\n%s\n</script>",
-                    $this->getFPJS(),
-                    $this->processRequireJsConfig($requireJsPaths, $requireContextToken),
-                    $this->processRequireGroupsIntoJsString($requireGroups, $requireContextToken)
-                );
-
-                // Add the final requireJS code to the $content array
-                $content .= $requireJsFinal;
+                    list($requireGroups, $requireJsPaths)  = $this->processRequireGroupsFromScriptsArray($scripts);
+    
+                    $requireContextToken = 'RequireFPJS';
+    
+                    $requireJsFinal = sprintf(
+                        "<script type=\"text/javascript\">\n%s\n\n%s\n\n%s\n</script>",
+                        $this->getFPJS(),
+                        $this->processRequireJsConfig($requireJsPaths, $requireContextToken),
+                        $this->processRequireGroupsIntoJsString($requireGroups, $requireContextToken)
+                    );
+    
+                    // Add the final requireJS code to the $content array
+                    $content .= $requireJsFinal;
+                }
             }
         }
 
@@ -471,9 +489,9 @@ class AssetInjector
                 }
                 else if (preg_match('/(<script[^>]*>)(.*)(<\/script>)/Us', trim($script), $match)) {
                     // Remove comments from inner JS
-                    $match[2] = trim(preg_replace('/\/\*.*\*\//Us', '', $match[2]));
+#                    $match[2] = trim(preg_replace('/\/\*.*\*\//Us', '', $match[2]));
                     
-                    $scripts[$skey] = $script = sprintf("%sFPJS.eval(function(){%s});%s", $match[1], $match[2], $match[3]);
+#                    $scripts[$skey] = $script = sprintf("%sFPJS.eval(function(){%s});%s", $match[1], $match[2], $match[3]);
                 }
             }
         }
@@ -539,13 +557,17 @@ class AssetInjector
     {
         $level = 1;
         $randomTag = '__FPTAG823434__';
-        $requireJsTemplate = "require(['jquery', 'jquery/jquery-migrate', 'underscore'], function() {
-        
-        jQuery.fishpigReady=jQuery.fn.fishpigReady=function(x){FPJS.on('fishpig_ready',x);return this;};
-        \n" . $randomTag . "});\n";
+        $requireJsTemplate = "require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($) {
+    jQuery.fishpigReady=jQuery.fn.fishpigReady=function(x){FPJS.on('fishpig_ready',x);return this;};
+    
+    jQuery(document).ready(function() {
+        " . $randomTag . "
+    });
+});
+";
 
         foreach($requireGroups as $skey => $requireGroup) {
-            $tabs = str_repeat("  ", $level);
+            $tabs = str_repeat("    ", $level);
 
             if (is_array($requireGroup) || strpos($requireGroup, '<script') === false) {
                 // Set specific for this grou                
@@ -604,7 +626,7 @@ class AssetInjector
      */
     protected function getFPJS()
     {
-        return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i](jQuery);}this.fs=[];};this.eval=function(f){var c=f.toString().substr(8).trim().substr(2).trim().substr(1);jQuery.globalEval(c.substr(0,c.length-1));};})();';
+        return 'FPJS=new(function(){this.fs=[];this.s=false;this.on=function(a,b){if(this.s){b();}else{this.fs.push(b);}};this.trigger=function(){this.s=!0;for(var i in this.fs){this.fs[i](jQuery);}this.fs=[];jQuery.ready();};this.eval=function(f){var c=f.toString().substr(8).trim().substr(2).trim().substr(1);jQuery.globalEval(c.substr(0,c.length-1));};})();';
     }
 
     /**
@@ -699,6 +721,7 @@ class AssetInjector
      */
     protected function _fixDomReady($scriptContent)
     {
+        return $scriptContent;
         if (strpos($scriptContent, 'ready') !== false) {
             $scriptContent = preg_replace('/\.ready\(([^\)]+)/', '.fishpigReady($1', $scriptContent);
             $scriptContent = preg_replace('/(jQuery|\$)\s*\(\s*function\s*\(/iU', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
@@ -748,7 +771,7 @@ class AssetInjector
         }
         
         if (!is_dir(dirname($newScriptFile))) {
-            @mkdir(dirname($newScriptFile));
+            mkdir(dirname($newScriptFile), 0755, true);
         }
 
         // Only write data if new script doesn't exist or local file has been updated
@@ -875,7 +898,7 @@ class AssetInjector
     {
         $groups = [];
         $wpSiteUrl = $this->wpUrl->getSiteurl();
-        
+
         // Create $buffer for merged groups
         foreach($scripts as $skey => $script) {
             if (!preg_match('/<script[^>]+src=[\'"]{1}(.*)[\'"]{1}/U', $script, $smatch)) {
