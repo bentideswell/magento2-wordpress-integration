@@ -22,6 +22,7 @@ class AssetInjector
      */
     protected $debug = false;
     protected $forceRecreate = false;
+    protected $useNewMigrationMethod = true;
 
     /**
      * Status determines whether already ran
@@ -121,29 +122,40 @@ class AssetInjector
         $scripts = $this->extractScriptsFromContent($content);
 
         if (count($scripts) > 0) {
-            $this->extractDuplicateScriptsFromArray($scripts);
+            // Setup dependency strings
+            $magentoDeps = [];
+            $requirePaths = [];
+            
+            $this->extractMagentoDepsFromArray($scripts, $magentoDeps, $requirePaths);
+
+            $depsString = "\n\t'" . implode("',\n\t'", array_keys($magentoDeps)) . "'\n";
+            $depsTokenString = implode(", ", array_values($magentoDeps));
+            $pathsString = $this->generateRequirePathsString($requirePaths, 'require');
             
             $scriptsStatic = $this->extractStaticScriptsFromArray($scripts);
 
-            if (true) {
+            if ($this->useNewMigrationMethod) {
                 $this->processScriptArrayUrls($scripts);
                 $this->processScriptArrayInlineScripts($scripts);
 
                 $scripts = $this->canMergeGroups() ? $this->_mergeGroups($scripts) : $scripts;
 
                 $scripts = implode("\n", $scripts);
+                $scripts = trim(preg_replace('/[ ]{1,}/', ' ', str_replace("\t", ' ', $scripts)));
 
                 $content = trim($content);
                 $content .= "<script type=\"text/javascript\">
-require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
+" . $pathsString . "
+
+require([" . $depsString . "], function(" . $depsTokenString .") {
     $(document).ready(function() {
-        $('body').append('<div id=\"fishpig-wp\">' + " . json_encode(['scripts' => $scripts]) . ".scripts + '</div>');
-    }); 
+        $('body').append('<div id=\"fishpig-wp\">' + " . json_encode(['scripts' => $scripts]) . ".scripts + '</div>');  
+    });
 });
 </script>";
-            } else {                
+            } else {
                 $this->processScriptArrayUrls($scripts);
-                
+
                 if (count($scripts) > 0) {
                     $this->processScriptArrayInlineScripts($scripts);
     
@@ -152,12 +164,14 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
                     list($requireGroups, $requireJsPaths)  = $this->processRequireGroupsFromScriptsArray($scripts);
     
                     $requireContextToken = 'RequireFPJS';
-    
+
                     $requireJsFinal = sprintf(
                         "<script type=\"text/javascript\">\n%s\n\n%s\n\n%s\n</script>",
                         $this->getFPJS(),
                         $this->processRequireJsConfig($requireJsPaths, $requireContextToken),
-                        $this->processRequireGroupsIntoJsString($requireGroups, $requireContextToken)
+                        $this->processRequireGroupsIntoJsString(
+                            $requireGroups, $requireContextToken, $depsString, $depsTokenString, $pathsString
+                        )
                     );
     
                     // Add the final requireJS code to the $content array
@@ -325,26 +339,95 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
     /**
      *
      */
-    public function extractDuplicateScriptsFromArray(&$scripts)
-    {
-        $toRemove = [
-            '/wp-includes/js/jquery/jquery.js',
-            '/wp-includes/js/jquery/jquery.min.js',
-            '/wp-includes/js/jquery/jquery-migrate.min.js',
-            '/wp-includes/js/underscore.js',
-            '/wp-includes/js/underscore.min.js',
+    public function extractMagentoDepsFromArray(&$scripts, &$magentoDeps, &$requirePaths)
+    {   
+        $wpSiteUrl = $this->wpUrl->getSiteUrl();
+        $wpBasePath = $this->wpDirectoryList->getBasePath();
+        
+        $availableInMagento = [
+            'jquery' => [
+                'token' => '$',
+                'paths' => [
+                    '/wp-includes/js/jquery/jquery.min.js',
+                    '/wp-includes/js/jquery/jquery.js',
+                ],
+            ],
+            'jquery/jquery-migrate' => [
+                'paths' => [
+                    '/wp-includes/js/jquery/jquery-migrate.min.js',
+                    '/wp-includes/js/jquery/jquery-migrate.js',
+                ],
+            ],
+            'underscore' => [
+                'token' => '_',
+                'paths' => [
+                    '/wp-includes/js/underscore.min.js',
+                    '/wp-includes/js/underscore.js',
+                ]
+            ],
+            /*
+            'backbone' => [
+                'token' => 'Backbone',
+                'paths' => [
+                    '/wp-includes/js/backbone.min.js',
+                    '/wp-includes/js/backbone.js',
+                    
+                ],
+                'map' => true
+            ]*/
         ];
 
-        $unshift = [];
+
+        if (is_file(BP . '/lib/web/jquery/ui-modules/core.min.js')) {
+            foreach ($this->getjQueryUiModuleNames() as $uiModuleName) {
+                $availableInMagento['jquery-ui-modules/' . $uiModuleName] = [
+                    'token' => 'undefined',
+                    'paths' => [
+                        '/wp-includes/js/jquery/ui/' . $uiModuleName
+                    ]
+                ];
+            }
+        } else {
+            $availableInMagento['jquery/jquery-ui'] = [
+                'paths' => []
+            ];
+            
+            foreach ($this->getjQueryUiModuleNames() as $uiModuleName) {
+                $availableInMagento['jquery/jquery-ui']['paths'][] = '/wp-includes/js/jquery/ui/' . $uiModuleName;
+            }
+        }
+        
+        // Ensure defaults
+        foreach (['jquery', 'jquery/jquery-migrate', 'underscore'] as $moduleName) {
+            $magentoDeps[$moduleName] = !empty($availableInMagento[$moduleName]['token']) ? $availableInMagento[$moduleName]['token'] : 'undefined';
+        }
 
         foreach($scripts as $key => $script) {
-            foreach($toRemove as $needle) {
-                if (strpos($script, $needle) !== false) {
-                    unset($scripts[$key]);
+            foreach($availableInMagento as $moduleName => $moduleData) {
+                foreach ($moduleData['paths'] as $modulePath) {
+                    if (strpos($script, $modulePath) !== false) {
+                        $magentoDeps[$moduleName] = !empty($moduleData['token']) ? $moduleData['token'] : 'undefined';
+                        
+                        if (isset($moduleData['map']) && $moduleData['map'] === true) {
+                            $requirePaths[$moduleName] = substr($this->_migrateJsAndReturnUrl($wpSiteUrl . $modulePath, false), 0, -3);
+                        }
+                        
+                        unset($scripts[$key]);
+                        unset($availableInMagento[$moduleName]);
+                        break;
+                    }
+                }
+                
+                if (in_array($moduleName, $magentoDeps, true)) {
                     break;
                 }
             }
-            
+        }
+
+        // @todo - move this to it's own method
+        $unshift = [];
+
+        foreach($scripts as $key => $script) {
             if (isset($scripts[$key])) {
                 // Move reCaptcha script to start
                 if (strpos($script, 'www.google.com/recaptcha/') !== false) {
@@ -553,11 +636,11 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
      * @param string $requireContextTokn
      * @return string
      */
-    protected function processRequireGroupsIntoJsString($requireGroups, $requireContextToken)
+    protected function processRequireGroupsIntoJsString($requireGroups, $requireContextToken, $magentoDepsString, $magentoDepsTokens, $pathsString)
     {
         $level = 1;
         $randomTag = '__FPTAG823434__';
-        $requireJsTemplate = "require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($) {
+        $requireJsTemplate = $pathsString . "\n\nrequire([" . $magentoDepsString . "], function(" . $magentoDepsTokens . ") {
     jQuery.fishpigReady=jQuery.fn.fishpigReady=function(x){FPJS.on('fishpig_ready',x);return this;};
     
     jQuery(document).ready(function() {
@@ -565,6 +648,9 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
     });
 });
 ";
+
+
+
 
         foreach($requireGroups as $skey => $requireGroup) {
             $tabs = str_repeat("    ", $level);
@@ -657,7 +743,7 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
      * @param string $externalScriptUrlFull
      * @return string
      */
-    protected function _migrateJsAndReturnUrl($externalScriptUrlFull)
+    protected function _migrateJsAndReturnUrl($externalScriptUrlFull, $fixAmd = true)
     {
         // Decode &amp; characters in query string
         if (strpos($externalScriptUrlFull, '&amp;') !== false) {
@@ -673,6 +759,12 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
 
         $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
         $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
+        
+        if (!is_file($localScriptFile)) {
+            $localScriptFile = $this->wpDirectoryList->getContentDir()
+                . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getWpContentUrl())), '/');        
+        }
+        
         $newScriptFile = $this->getBaseJsPath() . $this->_hashString($localScriptFile) . '.js';
         $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
@@ -687,7 +779,7 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
         $scriptContent = trim($scriptContent);
 
         // Check whether the script supports AMD
-        if (strpos($scriptContent, 'define.amd') !== false) {
+        if (strpos($scriptContent, 'define.amd') !== false && $fixAmd) {
             $scriptContent = str_replace('define.amd', 'define.xyz', $scriptContent);
         }
 
@@ -721,10 +813,11 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
      */
     protected function _fixDomReady($scriptContent)
     {
-        return $scriptContent;
-        if (strpos($scriptContent, 'ready') !== false) {
-            $scriptContent = preg_replace('/\.ready\(([^\)]+)/', '.fishpigReady($1', $scriptContent);
-            $scriptContent = preg_replace('/(jQuery|\$)\s*\(\s*function\s*\(/iU', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
+        if (!$this->useNewMigrationMethod) {
+            if (strpos($scriptContent, 'ready') !== false) {
+                $scriptContent = preg_replace('/\.ready\(([^\)]+)/', '.fishpigReady($1', $scriptContent);
+                $scriptContent = preg_replace('/(jQuery|\$)\s*\(\s*function\s*\(/iU', 'FPJS.on(\'fishpig_ready\', function(', $scriptContent);
+            }
         }
 
         return $scriptContent;
@@ -752,8 +845,7 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
 
             if ($this->_isMigratedUrl($externalScriptUrl)) {
                 $localScriptFile = $baseMergedPath . basename($externalScriptUrl);
-            }
-            else {
+            } else {
                 $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl()));
             }
 
@@ -813,13 +905,22 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
      */
     protected function _isWordPressUrl($url)
     {
-        $wpSiteUrl = $this->wpUrl->getSiteUrl();
+        $wpUrls = [
+            $this->wpUrl->getWpContentUrl(),
+            $this->wpUrl->getSiteUrl()
+        ];
 
-        if (strpos($url, 'http') !== 0) {
-            $url = substr($wpSiteUrl, 0, strpos($wpSiteUrl, '://')+1) . $url;
+        foreach ($wpUrls as $wpUrl) {
+            if (strpos($url, 'http') !== 0) {
+                $url = substr($wpUrl, 0, strpos($wpUrl, '://')+1) . $url;
+            }
+    
+            if (strpos($this->_cleanQueryString($url), $wpUrl) === 0) {
+                return true;
+            }
         }
-
-        return strpos($this->_cleanQueryString($url), $wpSiteUrl) === 0;
+        
+        return false;
     }
 
     /**
@@ -875,7 +976,7 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
      */
     public function canMergeGroups()
     {
-        return true;
+        return false;
     }
     
     /**
@@ -1015,7 +1116,7 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
      */
     protected function _hashString($s)
     {
-        return md5($this->moduleVersion . $s);
+        return md5($this->moduleVersion . (int)$this->useNewMigrationMethod . $s);
     }
 
     /**
@@ -1077,5 +1178,63 @@ require(['jquery', 'jquery/jquery-migrate', 'underscore'], function($, _) {
         return [
             'jquery-ui' => 'jquery/ui'
         ];
+    }
+    
+    private function getjQueryUiModuleNames()
+    {
+        return [
+            'dialog',
+            'effect-clip',
+            'effect-highlight',
+            'effect-transfer',
+            'progressbar',
+            'spinner',
+            'autocomplete',
+            'draggable',
+            'effect-drop',
+            'effect-pulsate',
+            'effect',
+            'resizable',
+            'tabs',
+            'button',
+            'droppable',
+            'effect-explode',
+            'effect-scale',
+            'menu',
+            'selectable',
+            'timepicker',
+            'core',
+            'effect-blind',
+            'effect-fade',
+            'effect-shake',
+            'mouse',
+            'slider',
+            'tooltip',
+            'datepicker',
+            'effect-bounce',
+            'effect-fold',
+            'effect-slide',
+            'position',
+            'sortable',
+            'widget'
+        ];
+    }
+    
+    private function generateRequirePathsString($paths, $require = 'require')
+    {
+        $pathsString = $require . ".config({
+    \"paths\": {
+";
+
+        foreach ($paths as $k => $v) {
+            $pathsString .= "\t\t\"{$k}\": \"{$v}\",\n";
+        }
+        
+        $pathsString = rtrim($pathsString, "\n,") . "\n";
+        
+        $pathsString .= "\t}
+});";
+
+        return $pathsString;
     }
 }

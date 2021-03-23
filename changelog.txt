@@ -1,3 +1,6 @@
+23/03/2021 - 2.0.16.5
+- Improved asset injector to provide better plugin/shortcode integration.
+
 20/03/2021 - 2.0.16.4
 - Updated Asset Injector method
 
