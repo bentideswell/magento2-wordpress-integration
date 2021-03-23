@@ -120,7 +120,7 @@ class AssetInjector
         $this->processMetaLinks($shortcodes, $bodyHtml, $content);
 
         $scripts = $this->extractScriptsFromContent($content);
-
+        
         if (count($scripts) > 0) {
             // Setup dependency strings
             $magentoDeps = [];
