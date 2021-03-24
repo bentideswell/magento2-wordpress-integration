@@ -358,13 +358,14 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                     '/wp-includes/js/jquery/jquery-migrate.js',
                 ],
             ],
+            /*
             'underscore' => [
                 'token' => '_',
                 'paths' => [
                     '/wp-includes/js/underscore.min.js',
                     '/wp-includes/js/underscore.js',
                 ]
-            ],
+            ],*/
             /*
             'backbone' => [
                 'token' => 'Backbone',
@@ -378,7 +379,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         ];
 
 
-        if (is_file(BP . '/lib/web/jquery/ui-modules/core.min.js')) {
+        if (is_file(BP . '/lib/web/jquery/ui-modules/core.js')) {
             foreach ($this->getjQueryUiModuleNames() as $uiModuleName) {
                 $availableInMagento['jquery-ui-modules/' . $uiModuleName] = [
                     'token' => 'undefined',
@@ -399,7 +400,9 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         
         // Ensure defaults
         foreach (['jquery', 'jquery/jquery-migrate', 'underscore'] as $moduleName) {
-            $magentoDeps[$moduleName] = !empty($availableInMagento[$moduleName]['token']) ? $availableInMagento[$moduleName]['token'] : 'undefined';
+            if (isset($availableInMagento[$moduleName])) {
+                $magentoDeps[$moduleName] = !empty($availableInMagento[$moduleName]['token']) ? $availableInMagento[$moduleName]['token'] : 'undefined';
+            }
         }
 
         foreach($scripts as $key => $script) {
@@ -446,7 +449,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 array_unshift($scripts, $script);
             }
         }
-        
+
         $scripts = array_values($scripts);
     }
 
@@ -757,15 +760,35 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
             return $externalScriptUrlFull;
         }
 
-        $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
-        $localScriptFile = $this->wpDirectoryList->getBasePath() . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getSiteUrl())), '/');
+        $wpBasePath = $this->wpDirectoryList->getBasePath();
+        $wpContentPath = $this->wpDirectoryList->getContentDir();
+        $wpContentUrl = $this->wpUrl->getWpContentUrl();
+        $wpSiteUrl = $this->wpUrl->getSiteUrl();
         
+        // Clean query string
+        $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
+        
+        // Path to local file
+        $relativeScriptFile = ltrim(substr($externalScriptUrl, strlen($wpSiteUrl)), '/');
+        $localScriptFile = $wpBasePath . '/' . $relativeScriptFile;
+
         if (!is_file($localScriptFile)) {
-            $localScriptFile = $this->wpDirectoryList->getContentDir()
-                . '/' . ltrim(substr($externalScriptUrl, strlen($this->wpUrl->getWpContentUrl())), '/');        
+            $relativeScriptFile = ltrim(substr($externalScriptUrl, strlen($wpContentUrl)), '/');
+            $localScriptFile = $wpContentPath . '/' . $relativeScriptFile;
+            
+            if (!is_file($localScriptFile)) {
+                throw new \Exception('Cannot find ' . $externalScriptUrl . ' in ' . __CLASS__);
+            }
         }
         
-        $newScriptFile = $this->getBaseJsPath() . $this->_hashString($localScriptFile) . '.js';
+        // Path to new script file
+        $newScriptPath = $this->getBaseJsPath();        
+
+        if ($this->debug) {
+            $newScriptPath .= str_replace('/', '-', substr($relativeScriptFile, 0, -3)) . '-';
+        }
+        
+        $newScriptFile = $newScriptPath . $this->_hashString($localScriptFile) . '.js';
         $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
         $this->migrationCache[$newScriptUrl] = $externalScriptUrlFull;
@@ -1180,6 +1203,9 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         ];
     }
     
+    /**
+     * @return array
+     */
     private function getjQueryUiModuleNames()
     {
         return [
@@ -1220,8 +1246,15 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         ];
     }
     
+    /**
+     * @return string
+     */
     private function generateRequirePathsString($paths, $require = 'require')
     {
+        if (!$paths) {
+            return '';
+        }
+        
         $pathsString = $require . ".config({
     \"paths\": {
 ";
@@ -1231,7 +1264,6 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         }
         
         $pathsString = rtrim($pathsString, "\n,") . "\n";
-        
         $pathsString .= "\t}
 });";
 
