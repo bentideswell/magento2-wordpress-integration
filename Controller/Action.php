@@ -131,6 +131,8 @@ abstract class Action extends ParentAction
         $this->getPage()->getLayout()->getUpdate()->removeHandle($this->getPage()->getDefaultLayoutHandle());
 
         if ($handles = $this->getLayoutHandles()) {
+            $handles = array_unique($handles);
+
             foreach ($handles as $handle) {
                 if ($handle = $this->cleanLayoutHandle($handle)) {
                     if (!is_array($handle)) {

@@ -1,3 +1,6 @@
+30/03/2021 - 2.0.17.0
+- Version bumped to bring in to line with add-on modules.
+
 24/03/2021 - 2.0.16.7
 - Even more changes to the asset injector. This is responsible for taking assets (mainly JS and CSS) and injecting them
   into M2 in the correct way. This is easy for CSS but more difficult for JS as this needs to be done so in a way
