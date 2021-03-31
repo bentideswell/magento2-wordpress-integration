@@ -1,3 +1,6 @@
+31/03/2021 - 2.0.17.1
+- Added find internal method to help diagnose issues quicker
+
 30/03/2021 - 2.0.17.0
 - Version bumped to bring in to line with add-on modules.
 
