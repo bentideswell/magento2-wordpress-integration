@@ -4,7 +4,9 @@
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
-/** Parent */
+/**
+ * Parent
+*/
 use FishPig\WordPress\Block\AbstractBlock;
 
 abstract class AbstractWidget extends AbstractBlock
@@ -44,7 +46,7 @@ abstract class AbstractWidget extends AbstractBlock
                 $data = unserialize($data);
 
                 if (isset($data[$this->getWidgetIndex()])) {
-                    foreach($data[$this->getWidgetIndex()] as $field => $value) {
+                    foreach ($data[$this->getWidgetIndex()] as $field => $value) {
                         $this->setData($field, $value);
                     }
                 }
@@ -57,12 +59,12 @@ abstract class AbstractWidget extends AbstractBlock
     /**
      * Set some default values
      *
-     * @param array $defaults
+     * @param  array $defaults
      * @return $this
      */
     protected function _setDataDefaults(array $defaults)
     {
-        foreach($defaults as $key => $value) {
+        foreach ($defaults as $key => $value) {
             if (!$this->hasData($key)) {
                 $this->setData($key, $value);
             }
@@ -74,13 +76,13 @@ abstract class AbstractWidget extends AbstractBlock
     /**
      * Convert data values to something else
      *
-     * @param array $values
+     * @param  array $values
      * @return $this
      */
     protected function _convertDataValues(array $values)
     {
-        foreach($this->getData() as $key => $value) {
-            foreach($values as $find => $replace) {
+        foreach ($this->getData() as $key => $value) {
+            foreach ($values as $find => $replace) {
                 if ($value === $find) {
                     $this->setData($key, $replace);
                     continue;
@@ -89,7 +91,7 @@ abstract class AbstractWidget extends AbstractBlock
         }
 
         return $this;
-    }    
+    }
 
     /**
      * Retrieve the current page title
@@ -105,7 +107,7 @@ abstract class AbstractWidget extends AbstractBlock
         return $this->_getWpOption('name');
     }
 
-    /**    
+    /**
      * Retrieve the meta description for the page
      *
      * @return string

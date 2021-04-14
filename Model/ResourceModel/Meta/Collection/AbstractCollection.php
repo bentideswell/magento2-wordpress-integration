@@ -18,13 +18,13 @@ abstract class AbstractCollection extends ParentClass
     /**
      * Add a meta field to the select statement columns section
      *
-     * @param string $field
+     * @param  string $field
      * @return $this
      */
     public function addMetaFieldToSelect($metaKey)
     {
         if (($field = $this->joinMetaField($metaKey)) !== false) {
-            $this->getSelect()->columns(array($metaKey => $field));
+            $this->getSelect()->columns([$metaKey => $field]);
         }
 
         return $this;
@@ -33,8 +33,8 @@ abstract class AbstractCollection extends ParentClass
     /**
      * Add a meta field to the filter (where) part of the query
      *
-     * @param string $field
-     * @param string|array $filter
+     * @param  string       $field
+     * @param  string|array $filter
      * @return $this
      */
     public function addMetaFieldToFilter($metaKey, $filter)
@@ -49,8 +49,8 @@ abstract class AbstractCollection extends ParentClass
     /**
      * Add a meta field to the SQL order section
      *
-     * @param string $field
-     * @param string $dir = 'asc'
+     * @param  string $field
+     * @param  string $dir   = 'asc'
      * @return $this
      */
     public function addMetaFieldToSort($field, $dir = 'asc')
@@ -63,7 +63,7 @@ abstract class AbstractCollection extends ParentClass
     /**
      * Join a meta field to the query
      *
-     * @param string $field
+     * @param  string $field
      * @return $this
      */
     public function joinMetaField($field)
@@ -73,23 +73,25 @@ abstract class AbstractCollection extends ParentClass
         if (!isset($this->metaFieldsJoined[$field])) {
             $alias = $this->_getMetaFieldAlias($field);
 
-            $meta = new \Magento\Framework\DataObject(array(
+            $meta = new \Magento\Framework\DataObject(
+                [
                 'key' => $field,
                 'alias' => $alias,
-            ));
+                ]
+            );
 
             $this->_eventManager->dispatch($model->getEventPrefix() . '_join_meta_field', ['collection' => $this, 'meta' => $meta]);
 
             if ($meta->getCanSkipJoin()) {
                 $this->metaFieldsJoined[$field] = $meta->getAlias();
-            }
-            else {
+            } else {
                 $condition = "`{$alias}`.`{$model->getMetaTableObjectField()}`=`main_table`.`{$model->getResource()->getIdFieldName()}` AND "
                     . $this->getConnection()->quoteInto("`{$alias}`.`meta_key`=?", $field);
 
-                $this->getSelect()->joinLeft(array($alias => $model->getMetaTable()), $condition, '');
+                $this->getSelect()->joinLeft([$alias => $model->getMetaTable()], $condition, '');
 
-                $this->metaFieldsJoined[$field] = $alias . '.meta_value';;
+                $this->metaFieldsJoined[$field] = $alias . '.meta_value';
+                ;
             }
         }
 
@@ -108,7 +110,7 @@ abstract class AbstractCollection extends ParentClass
      * Convert a meta key to it's alias
      * This is used in all SQL queries
      *
-     * @param string $field
+     * @param  string $field
      * @return string
      */
     protected function _getMetaFieldAlias($field)

@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\Menu;
 
@@ -35,8 +35,6 @@ class Item extends Post
 
     /**
      * Menu item children
-     *
-     *
      */
     protected $_children = null;
 
@@ -100,13 +98,11 @@ class Item extends Post
         if (!$this->isCustomLink()) {
             if ($this->getObjectType()) {
                 if ($menuObjectId = $this->getMetaValue('_menu_item_object_id')) {
-                    if ($this->isPostTypeLink())  {
+                    if ($this->isPostTypeLink()) {
                         $object = $this->factory->create('Post')->setPostType($this->getObjectType());
-                    }
-                    else if ($this->isTaxonomyLink()) {
+                    } elseif ($this->isTaxonomyLink()) {
                         $object = $this->factory->create('Term')->setTaxonomy($this->getObjectType());
-                    }
-                    else {
+                    } else {
                         $object = $this->factory->create('FishPig\WordPress\Model\\' . ucwords($this->getObjectType()));
                     }
 
@@ -153,8 +149,7 @@ class Item extends Post
     {
         if ($this->isCustomLink()) {
             return $this->getMetaValue('_menu_item_url');
-        }
-        else if ($this->getObject() !== false) {
+        } elseif ($this->getObject() !== false) {
             return $this->getObject()->getUrl();
         }
     }
@@ -168,11 +163,9 @@ class Item extends Post
     {
         if ($this->getPostTitle() || $this->isCustomLink()) {
             return $this->getPostTitle();
-        }
-        else if ($this->isPostTypeLink() && $this->getObject()) {
+        } elseif ($this->isPostTypeLink() && $this->getObject()) {
             return $this->getObject()->getPostTitle();
-        }
-        else if ($this->isTaxonomyLink() && $this->getObject()) {
+        } elseif ($this->isTaxonomyLink() && $this->getObject()) {
             return $this->getObject()->getName();
         }
     }

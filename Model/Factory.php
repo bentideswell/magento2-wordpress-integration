@@ -19,7 +19,7 @@ class Factory
      */
     public function __construct(array $factories)
     {
-        foreach($factories as $factory) {
+        foreach ($factories as $factory) {
             $this->factories[get_class($factory)] = $factory;
         }
     }

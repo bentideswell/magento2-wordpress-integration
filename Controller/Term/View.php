@@ -7,7 +7,8 @@ namespace FishPig\WordPress\Controller\Term;
 use FishPig\WordPress\Controller\Action;
 
 class View extends Action
-{   
+{
+   
     /**
      *
      */
@@ -32,7 +33,7 @@ class View extends Action
             $postTypes = $this->factory->get('PostTypeManager')->getPostTypes();
 
             if (count($postTypes) > 2) {
-                foreach($postTypes as $postType) {
+                foreach ($postTypes as $postType) {
                     if ($postType->hasArchive() && $postType->getArchiveSlug() === $taxonomy->getSlug()) {
                         $crumbs['post_type_archive_' . $postType->getPostType()] = [
                             'label' => __($postType->getName()),
@@ -48,7 +49,7 @@ class View extends Action
             if ($taxonomy->isHierarchical()) {
                 $buffer = $term;
 
-                while($buffer->getParentTerm()) {
+                while ($buffer->getParentTerm()) {
                     $buffer = $buffer->getParentTerm();
 
                     $crumbs['term_' . $buffer->getId()] = [

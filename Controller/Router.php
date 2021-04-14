@@ -136,7 +136,7 @@ class Router implements RouterInterface
     /**
      * Execute callbacks and match generated routes against $uri
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return false|array
      */
     protected function _matchRoute($uri = '')
@@ -188,9 +188,9 @@ class Router implements RouterInterface
     /**
      * Add a generated route and it's details
      *
-     * @param array|string $pattern
-     * @param string $path
-     * @param array|null $params = array()
+     * @param  array|string $pattern
+     * @param  string       $path
+     * @param  array|null   $params  = array()
      * @return $this
      */
     public function addRoute($pattern, $path, $params = [])
@@ -232,7 +232,7 @@ class Router implements RouterInterface
     /**
      * Get route data for different homepage URLs
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return $this
      */
     protected function _getHomepageRoutes($uri = '')
@@ -269,7 +269,7 @@ class Router implements RouterInterface
     /**
      * Generate the basic simple routes that power WP
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return false|$this
      */
     protected function _getSimpleRoutes($uri = '')
@@ -283,17 +283,17 @@ class Router implements RouterInterface
         $this->addRoute(['/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})$/' => ['year', 'month']], '*/archive/view');
         $this->addRoute(['/^' . $front . '([1-2]{1}[0-9]{3})\/([0-1]{1}[0-9]{1})\/([0-3]{1}[0-9]{1})$/' => ['year', 'month', 'day']], '*/archive/view');
         $this->addRoute(['/^' . $front . 'search\/(.*)$/' => ['s']], '*/search/view');
-        $this->addRoute('search', '*/search/index', ['redirect_broken_url' => 1]); # Fix broken search URLs
-#        $this->addRoute('/^index.php/i', '*/index/forward');
+        $this->addRoute('search', '*/search/index', ['redirect_broken_url' => 1]); // Fix broken search URLs
+        // $this->addRoute('/^index.php/i', '*/index/forward');
 
         $this->addRoute(['/^((newbloguser|wp-(content|includes|admin|cron\.php))\/.*)$/' => ['request_uri']], '*/forwarder/view');
 
-#        $this->addRoute('/^wp-content\/(.*)/i', '*/index/forwardFile');
-#        $this->addRoute('/^wp-includes\/(.*)/i', '*/index/forwardFile');
-#        $this->addRoute('/^wp-cron.php.*/', '*/index/forwardFile');
-#        $this->addRoute('/^wp-admin[\/]{0,1}$/', '*/index/wpAdmin');
+        // $this->addRoute('/^wp-content\/(.*)/i', '*/index/forwardFile');
+        // $this->addRoute('/^wp-includes\/(.*)/i', '*/index/forwardFile');
+        // $this->addRoute('/^wp-cron.php.*/', '*/index/forwardFile');
+        // $this->addRoute('/^wp-admin[\/]{0,1}$/', '*/index/wpAdmin');
 
-#        $this->addRoute('robots.txt', '*/index/robots');
+        // $this->addRoute('robots.txt', '*/index/robots');
         $this->addRoute('comments', '*/index/commentsFeed');
 
         $this->addRoute(['/^wp-json$/' => []], '*/json/view');
@@ -305,7 +305,7 @@ class Router implements RouterInterface
     /**
      * Generate the post routes
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return false|$this
      */
     protected function _getPostRoutes($uri = '')
@@ -331,7 +331,7 @@ class Router implements RouterInterface
      * Get the custom taxonomy URI's
      * First check whether a valid taxonomy exists in $uri
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return $this
      */
     protected function _getTaxonomyRoutes($uri = '')
@@ -348,12 +348,16 @@ class Router implements RouterInterface
             if (($routes = $taxonomy->getRedirectableUris($uri)) !== false) {
                 foreach ($routes as $routeId => $route) {
                     if ($uri === $route['source']) {
-                        return $this->addRoute($route['source'], '*/term/view', [
-                            'id' => $routeId, 
-                            'taxonomy' => $taxonomy->getTaxonomyType(), 
+                        return $this->addRoute(
+                            $route['source'],
+                            '*/term/view',
+                            [
+                            'id' => $routeId,
+                            'taxonomy' => $taxonomy->getTaxonomyType(),
                             '__redirect_to' => $this->url->getUrl($route['target'])
-                        ]);
-                    }                    
+                            ]
+                        );
+                    }
                 }
             }
         }

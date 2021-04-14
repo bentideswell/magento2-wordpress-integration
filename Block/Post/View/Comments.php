@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Post\View;
 
@@ -10,7 +10,6 @@ class Comments extends \FishPig\WordPress\Block\Post\View\Comment\AbstractCommen
 {
     /**
      * Setup the pager and comments form blocks
-     *
      */
     protected function _beforeToHtml()
     {
@@ -32,7 +31,7 @@ class Comments extends \FishPig\WordPress\Block\Post\View\Comment\AbstractCommen
     /**
      * Get the HTML of the child comments
      *
-     * @param \FishPig\WordPress\Model\Post\Comment $comment
+     * @param  \FishPig\WordPress\Model\Post\Comment $comment
      * @return string
      */
     public function getChildrenCommentsHtml(\FishPig\WordPress\Model\Post\Comment $comment)

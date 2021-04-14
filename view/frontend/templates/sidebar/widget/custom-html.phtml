@@ -5,13 +5,13 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php if ($content = $this->getContent()): ?>
+<?php if ($content = $block->getContent()): ?>
 <div class="block block-blog block-blog-custom-html">
-	<?php if ($title = $this->getTitle()): ?>
-		<div class="block-title">
-			<strong><?php echo __($title) ?></strong>
-		</div>
-	<?php endif; ?>
-	<div class="block-content"><?php echo $content ?></div>
+    <?php if ($title = $block->getTitle()): ?>
+        <div class="block-title">
+            <strong><?= $block->escapeHtml(__($title)) ?></strong>
+        </div>
+    <?php endif; ?>
+    <div class="block-content"><?= $content ?></div>
 </div>
 <?php endif; ?>

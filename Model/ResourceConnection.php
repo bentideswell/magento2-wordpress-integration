@@ -13,17 +13,17 @@ use FishPig\WordPress\Model\Logger;
 class ResourceConnection
 {
     /**
-     * @var 
+     * @var
      */
     protected $connectionFactory;
 
     /**
-     * @var 
+     * @var
      */
     protected $tablePrefix = [];
 
     /**
-     * @var 
+     * @var
      */
     protected $connection = [];
 
@@ -38,21 +38,20 @@ class ResourceConnection
     protected $logger;
 
     /**
-     * @var 
+     * @var
      */
     protected $_tables = [];
 
     /**
-     * @var 
+     * @var
      */
     public function __construct(
-        ConnectionFactory $connectionFactory, 
-        WPConfig $wpConfig, 
-        Network $network, 
+        ConnectionFactory $connectionFactory,
+        WPConfig $wpConfig,
+        Network $network,
         StoreManagerInterface $storeManager,
         Logger $logger
-    )
-    {
+    ) {
         $this->connectionFactory = $connectionFactory;
         $this->network = $network;
         $this->wpConfig = $wpConfig;
@@ -64,17 +63,18 @@ class ResourceConnection
      * @return
      */
     protected function loadByStoreId($storeId)
-    {        
+    {
         $storeId = (int)$storeId;
 
         if (isset($this->connection[$storeId])) {
             return $this;
-        }        
+        }
 
         $this->connection[$storeId]  = false;
         $this->tablePrefix[$storeId] = $this->wpConfig->getData('DB_TABLE_PREFIX');
 
-        $this->applyMapping([
+        $this->applyMapping(
+            [
             'wordpress_menu'              => 'terms',
             'wordpress_menu_item'         => 'posts',
             'wordpress_post'              => 'posts',
@@ -87,15 +87,18 @@ class ResourceConnection
             'wordpress_term_taxonomy'     => 'term_taxonomy',
             'wordpress_user'              => 'users',
             'wordpress_user_meta'         => 'usermeta',
-        ]);
+            ]
+        );
 
-        $db = $this->connection[$storeId] = $this->connectionFactory->create([
+        $db = $this->connection[$storeId] = $this->connectionFactory->create(
+            [
             'host' => $this->wpConfig->getDbHost(),
             'dbname' => $this->wpConfig->getDbName(),
             'username' => $this->wpConfig->getDbUser(),
             'password' => $this->wpConfig->getDbPassword(),
-            'active' => '1',    
-        ]);
+            'active' => '1',
+            ]
+        );
 
         $this->connection[$storeId]->query('SET NAMES UTF8');
 
@@ -118,12 +121,16 @@ class ResourceConnection
             $baseUrl     = $this->storeManager->getStore()->getBaseUrl();
 
             try {
-                $this->_setOptionValue('fishpig_magento', json_encode([
-                    'base_url' => $this->storeManager->getStore()->getBaseUrl(),
-                    'version' => 2
-                ]));
-            }
-            catch (\Exception $e) {
+                $this->_setOptionValue(
+                    'fishpig_magento',
+                    json_encode(
+                        [
+                        'base_url' => $this->storeManager->getStore()->getBaseUrl(),
+                        'version' => 2
+                        ]
+                    )
+                );
+            } catch (\Exception $e) {
                 $this->logger->error($e);
             }
         }
@@ -151,8 +158,7 @@ class ResourceConnection
             if ($optionValue !== $newValue) {
                 $db->update($optionTable, ['option_value' => $newValue], 'option_id=' . (int)$optionId);
             }
-        }
-        else {
+        } else {
             $db->insert($optionTable, ['option_name' => $optionName, 'option_value' => $newValue]);
         }
     }
@@ -167,7 +173,7 @@ class ResourceConnection
 
         $this->loadByStoreId($storeId);
 
-        foreach($tables as $alias => $table) {
+        foreach ($tables as $alias => $table) {
             $this->tables[$storeId][$alias] = $this->getTablePrefix() . $table;
         }
 
@@ -177,7 +183,7 @@ class ResourceConnection
     /**
      * Convert a table alias to a full table name
      *
-     * @param string $alias
+     * @param  string $alias
      * @return string
      */
     public function getTable($alias)
@@ -206,7 +212,7 @@ class ResourceConnection
     /**
      *
      *
-     * @return 
+     * @return
      */
     public function getConnection()
     {
@@ -218,7 +224,7 @@ class ResourceConnection
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getTablePrefix()
     {

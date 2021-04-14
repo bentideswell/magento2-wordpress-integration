@@ -26,9 +26,9 @@ abstract class AbstractAttachmentResource extends PostResource
         $data = unserialize($this->getConnection()->fetchOne($select));
 
         if (is_array($data)) {
-            foreach($data as $key => $value) {
+            foreach ($data as $key => $value) {
                 $attachment->setData($key, $value);
-            }            
+            }
         }
 
         return $this;

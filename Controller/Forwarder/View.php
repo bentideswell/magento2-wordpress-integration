@@ -13,7 +13,7 @@ use Exception;
 class View extends Action
 {
     /**
-     * @var 
+     * @var
      */
     protected $url;
 

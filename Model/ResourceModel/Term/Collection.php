@@ -34,16 +34,15 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     /**
      * Ensures that only posts and not pages are returned
      * WP stores posts and pages in the same DB table
-     *
      */
     protected function _initSelect()
     {
         parent::_initSelect();
 
         $this->getSelect()->join(
-            array('taxonomy' => $this->getTable('wordpress_term_taxonomy')),
+            ['taxonomy' => $this->getTable('wordpress_term_taxonomy')],
             '`main_table`.`term_id` = `taxonomy`.`term_id`',
-            array('term_taxonomy_id', 'taxonomy', 'description', 'count', 'parent')
+            ['term_taxonomy_id', 'taxonomy', 'description', 'count', 'parent']
         );
 
         // Reverse the order. This then matches the WP order
@@ -59,7 +58,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     /**
      * Set the collection by the name field
      *
-     * @param string $dir = 'ASC'
+     * @param  string $dir = 'ASC'
      * @return $this
      */
     public function setOrderByName($dir = 'ASC')
@@ -74,7 +73,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     /**
      * Add a slug filter to the collection
      *
-     * @param string $slug
+     * @param  string $slug
      * @return $this
      */
     public function addSlugFilter($slug)
@@ -85,9 +84,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     /**
      * Filter the collection by taxonomy
      *
-     * @param string $taxonomy
+     * @param  string $taxonomy
      * @return $this
-     */    
+     */
     public function addTaxonomyFilter($taxonomy)
     {
         return $this->addFieldToFilter('taxonomy', $taxonomy);
@@ -96,7 +95,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     /**
      * Filter the collection on the parent field
      *
-     * @param int|\FishPig\WordPress\Model\Term
+     * @param  int|\FishPig\WordPress\Model\Term
      * @return $this
      */
     public function addParentFilter($parentId)
@@ -132,7 +131,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $this->getSelect()
                 ->distinct()
                 ->joinLeft(
-                    array('relationship' => $this->getTable('wordpress_term_relationship')),
+                    ['relationship' => $this->getTable('wordpress_term_relationship')],
                     '`taxonomy`.`term_taxonomy_id` = `relationship`.`term_taxonomy_id`',
                     ''
                 );
@@ -145,13 +144,13 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      * Filter the collection by object ID
      * To pass in multiple object ID's, pass:
      *
-     * @param int|array $objectId
+     * @param  int|array $objectId
      * @return $this
      */
     public function addObjectIdFilter($objectId)
     {
         if (is_array($objectId)) {
-            $objectId = array('in' => $objectId);
+            $objectId = ['in' => $objectId];
         }
 
         return $this->_joinRelationshipTable()->addFieldToFilter('object_id', $objectId);
@@ -159,7 +158,6 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
     /**
      * See self::addObjectIdFilter
-     *
      */
     public function addPostIdFilter($postId)
     {
@@ -185,13 +183,12 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      */
     public function addHasObjectsFilter()
     {
-        return $this->addFieldToFilter('count', array('gt' => 0));
+        return $this->addFieldToFilter('count', ['gt' => 0]);
     }
 
     /**
      * Filter the collection so that only tags in the cloud
      * are returned
-     *
      */
     public function addCloudFilter($taxonomy)
     {
@@ -200,13 +197,13 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             ->addOrderByItemCount()
             ->setPageSize(20)
             ->setCurPage(1)
-                ->getSelect()
-                    ->setPart('columns', array())
-                    ->columns(array('main_table.term_id'));
+            ->getSelect()
+            ->setPart('columns', [])
+            ->columns(['main_table.term_id']);
 
         return $this->addTaxonomyFilter($taxonomy)->addFieldToFilter(
-            'main_table.term_id', 
-            array('in' => new \Zend_Db_Expr($cloudIdsSelect))
+            'main_table.term_id',
+            ['in' => new \Zend_Db_Expr($cloudIdsSelect)]
         );
     }
 }

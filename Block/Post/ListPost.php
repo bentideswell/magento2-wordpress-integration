@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Post;
 
@@ -21,7 +21,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
     /**
      * Returns the collection of posts
      *
-     * @return 
+     * @return
      */
     public function getPosts()
     {
@@ -32,8 +32,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
                         $this->_postCollection->addPostTypeFilter($this->getPostType());
                     }
                 }
-            }
-            else {
+            } else {
                 $this->_postCollection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection');
             }
 
@@ -59,7 +58,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
      * Sets the parent block of this block
      * This block can be used to auto generate the post list
      *
-     * @param AbstractWrapper $wrapper
+     * @param  AbstractWrapper $wrapper
      * @return $this
      */
     public function setWrapperBlock(AbstractWrapper $wrapper)
@@ -80,7 +79,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
     /**
      * Retrieve the correct renderer and template for $post
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return FishPig\WordPress\Block_Post_List_Renderer
      */
     public function renderPost(\FishPig\WordPress\Model\Post $post)
@@ -101,8 +100,8 @@ class ListPost extends \FishPig\WordPress\Block\Post
 
         $templatesToTry = [];
 
-        foreach($templates as $template) {
-            foreach($vendors as $vendor) {
+        foreach ($templates as $template) {
+            foreach ($vendors as $vendor) {
                 if ($vendor) {
                     $templatesToTry[] = $vendor . '::' . $template;
                 }
@@ -113,7 +112,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
             array_unshift($templatesToTry, $rendererTemplate);
         }
 
-        foreach($templatesToTry as $templateToTry) {
+        foreach ($templatesToTry as $templateToTry) {
             if ($this->getTemplateFile($templateToTry)) {
                 $postBlock->setTemplate($templateToTry);
                 break;
@@ -125,7 +124,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getCustomBlogThemeVendor()
     {

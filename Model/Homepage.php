@@ -17,11 +17,11 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
 
     /**
      * @var
-     */    
+     */
     protected $staticPage;
 
     /**
-     * @return  string
+     * @return string
      */
     public function getName()
     {
@@ -33,7 +33,7 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getUrl()
     {
@@ -45,7 +45,7 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getContent()
     {
@@ -69,7 +69,7 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getFrontStaticPage()
     {
@@ -96,7 +96,6 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
      * If a page is set as a custom homepage, get it's ID
      *
      * @return int|false
-
      */
     public function getFrontPageId()
     {

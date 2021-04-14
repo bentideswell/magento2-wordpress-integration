@@ -22,9 +22,9 @@ class Archives extends AbstractWidget
     {
         if (is_null($this->archiveCollection)) {
             $dates = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Archive')->getDatesForWidget();
-            $archiveCollection = array();
+            $archiveCollection = [];
 
-            foreach($dates as $date) {
+            foreach ($dates as $date) {
                 $archiveCollection[] = $this->factory->create('FishPig\WordPress\Model\Archive')->load($date['archive_date'])->setPostCount($date['post_count']);
             }
 
@@ -37,15 +37,15 @@ class Archives extends AbstractWidget
     /**
      * Split a date by spaces and translate
      *
-     * @param string $date
-     * @param string $splitter = ' '
+     * @param  string $date
+     * @param  string $splitter = ' '
      * @return string
      */
     public function translateDate($date, $splitter = ' ')
     {
         $dates = explode($splitter, $date);
 
-        foreach($dates as $it => $part) {
+        foreach ($dates as $it => $part) {
             $dates[$it] = __($part);
         }
 
@@ -55,7 +55,7 @@ class Archives extends AbstractWidget
     /**
      * Determine whether the archive is the current archive
      *
-     * @param FishPig\WordPress\Model_Archive $archive
+     * @param  FishPig\WordPress\Model_Archive $archive
      * @return bool
      */
     public function isCurrentArchive($archive)

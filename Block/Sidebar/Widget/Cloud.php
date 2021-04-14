@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
@@ -30,7 +30,7 @@ class Cloud extends AbstractWidget
             $max = 0;
             $hasPosts = false;
 
-            foreach($tags as $tag) {
+            foreach ($tags as $tag) {
                 $max = $tag->getCount() > $max ? $tag->getCount() : $max;
 
                 if ($tag->getCount() > 0) {
@@ -50,7 +50,7 @@ class Cloud extends AbstractWidget
     /**
      * Retrieve a font size for a tag
      *
-     * @param Varien_Object $tag
+     * @param  Varien_Object $tag
      * @return int
      */
     public function getFontSize($tag)
@@ -58,7 +58,7 @@ class Cloud extends AbstractWidget
         if ($this->getMaximumPopularity() > 0) {
             $percentage = ($tag->getCount() * 100) / $this->getMaximumPopularity();
 
-            foreach($this->getFontSizes() as $percentageLimit => $default) {
+            foreach ($this->getFontSizes() as $percentageLimit => $default) {
                 if ($percentage <= $percentageLimit) {
                     return $default;
                 }
@@ -86,13 +86,13 @@ class Cloud extends AbstractWidget
     public function getFontSizes()
     {
         if (!$this->hasFontSizes()) {
-            return array(
+            return [
                 25 => 90,
                 50 => 100,
                 75 => 120,
                 90 => 140,
                 100 => 150
-            );
+            ];
         }
 
         return $this->_getData('font_sizes');

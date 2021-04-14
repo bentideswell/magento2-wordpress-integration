@@ -5,20 +5,20 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php if ($this->getImageUrl()): ?>
-	<div class="block block-blog block-image">
-		<?php if ($title = $this->getTitle()): ?>
-			<div class="block-title">
-				<strong><?php echo __($title) ?></strong>
-			</div>
-		<?php endif; ?>
-		<div class="block-content">
-    		<?php if ($this->getLinkUrl()): ?><a href="<?php echo $this->getLinkUrl() ?>"<?php if ($this->getLinkTarget()): ?> target="<?php echo $this->getLinkTarget() ?>"<?php endif; ?>><?php endif; ?>
-				<img src="<?php echo $this->getImageUrl() ?>" alt="<?php echo $this->getImageAlt() ?>" style="max-width: 100%;" />
-            <?php if ($this->getLinkUrl()): ?></a><?php endif; ?>
-			<?php if ($this->getCaption()): ?>
-				<p><?php echo $this->getCaption() ?></p>
-			<?php endif; ?>
-		</div>
-	</div>
+<?php if ($block->getImageUrl()): ?>
+    <div class="block block-blog block-image">
+        <?php if ($title = $block->getTitle()): ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($title)) ?></strong>
+            </div>
+        <?php endif; ?>
+        <div class="block-content">
+            <?php if ($block->getLinkUrl()): ?><a href="<?= $block->escapeUrl($block->getLinkUrl()) ?>"<?php if ($block->getLinkTarget()): ?> target="<?= $block->escapeHtml($block->getLinkTarget()) ?>"<?php endif; ?>><?php endif; ?>
+                <img src="<?= $block->escapeUrl($block->getImageUrl()) ?>" alt="<?= $block->escapeHtml($block->getImageAlt()) ?>" style="max-width: 100%;" />
+            <?php if ($block->getLinkUrl()): ?></a><?php endif; ?>
+            <?php if ($block->getCaption()): ?>
+                <p><?= $block->escapeHtml($block->getCaption()) ?></p>
+            <?php endif; ?>
+        </div>
+    </div>
 <?php endif; ?>

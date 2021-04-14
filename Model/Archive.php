@@ -29,7 +29,7 @@ class Archive extends AbstractModel implements ViewableInterface
 
     /**
      * @return
-     */    
+     */
     public function getName()
     {
         return $this->wpContext->getDateHelper()->translateDate($this->_getData('name'));
@@ -41,22 +41,20 @@ class Archive extends AbstractModel implements ViewableInterface
      *
      * @param string $value
      */
-    public function load($modelId, $field = NULL)
+    public function load($modelId, $field = null)
     {
         $this->setId($modelId);
         $extra = '';
 
-        while(strlen($modelId . $extra) < 10) {
+        while (strlen($modelId . $extra) < 10) {
             $extra .= '/01';
         }
 
         if (strlen($modelId) === 7) {
             $format = 'F Y';
-        }
-        else if (strlen($modelId) === 4) {
+        } elseif (strlen($modelId) === 4) {
             $format = 'Y';
-        }
-        else {
+        } else {
             $format = 'F j, Y';
             $this->setIsDaily(true);
         }
@@ -70,7 +68,7 @@ class Archive extends AbstractModel implements ViewableInterface
     /**
      * Get a date formatted string
      *
-     * @param string $format
+     * @param  string $format
      * @return string
      */
     public function getDatePart($format)
@@ -124,7 +122,7 @@ class Archive extends AbstractModel implements ViewableInterface
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getContent()
     {

@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel\Meta;
 
@@ -15,9 +15,9 @@ abstract class AbstractMeta extends AbstractResource
      * This only works if the model is setup to work a meta table
      * If not, null will be returned
      *
-     * @param \FishPig\WordPress\Model\Meta\AbstractMeta $object
-     * @param string $metaKey
-     * @param string $selectField
+     * @param  \FishPig\WordPress\Model\Meta\AbstractMeta $object
+     * @param  string                                     $metaKey
+     * @param  string                                     $selectField
      * @return null|mixed
      */
     public function getMetaValue(\FishPig\WordPress\Model\Meta\AbstractMeta $object, $metaKey, $selectField = 'meta_value')
@@ -41,22 +41,21 @@ abstract class AbstractMeta extends AbstractResource
      * This only works if the model is setup to work a meta table
      *
      * @param \FishPig\WordPress\Model\Meta\AbstractMeta $object
-     * @param string $metaKey
-     * @param string $metaValue
+     * @param string                                     $metaKey
+     * @param string                                     $metaValue
      */
     public function setMetaValue(\FishPig\WordPress\Model\Meta\AbstractMeta $object, $metaKey, $metaValue)
     {
         $metaValue = trim($metaValue);
-        $metaData = array(
+        $metaData = [
             $object->getMetaTableObjectField() => $object->getId(),
             'meta_key' => $metaKey,
             'meta_value' => $metaValue,
-        );
+        ];
 
         if (($metaId = $this->getMetaValue($object, $metaKey, $object->getMetaPrimaryKeyField())) !== false) {
             $this->getConnection()->update($object->getMetaTable(), $metaData, $object->getMetaPrimaryKeyField() . '=' . $metaId);
-        }
-        else {
+        } else {
             $this->getConnection()->insert($object->getMetaTable(), $metaData);
         }
     }
@@ -64,14 +63,14 @@ abstract class AbstractMeta extends AbstractResource
     /**
      * Get an array of all of the meta values associated with this post
      *
-     * @param \FishPig\WordPress\Model\Meta\AbstractMeta $object
+     * @param  \FishPig\WordPress\Model\Meta\AbstractMeta $object
      * @return false|array
      */
     public function getAllMetaValues(\FishPig\WordPress\Model\Meta\AbstractMeta $object)
     {
         $select = $this->getConnection()
             ->select()
-            ->from($object->getMetaTable(), array('meta_key', 'meta_value'))
+            ->from($object->getMetaTable(), ['meta_key', 'meta_value'])
             ->where($object->getMetaTableObjectField() . '=?', $object->getId());
 
         if (($values = $this->getConnection()->fetchPairs($select)) !== false) {

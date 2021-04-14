@@ -8,14 +8,14 @@
         <strong><?= __('Protected') ?></strong>
     </div>
     <div class="block-content">
-        <form action="<?= $block->getWpUrl()->getSiteurl() ?>/wp-login.php?action=postpass" method="post">
-        	<div class="no-display">
-        		<input type="hidden" name="redirect_to" value="<?= $block->getPost()->getUrl() ?>" />
-        	</div>
+        <form action="<?= $block->escapeUrl($block->getWpUrl()->getSiteurl()) ?>/wp-login.php?action=postpass" method="post">
+            <div class="no-display">
+                <input type="hidden" name="redirect_to" value="<?= $block->escapeUrl($block->getPost()->getUrl()) ?>" />
+            </div>
             <fieldset class="fieldset">
-                <div class="field note"><?= __('This %1 is password protected. To view it please enter your password below:', $block->getEntityType()) ?></div>
+                <div class="field note"><?= $block->escapeHtml(__('This %1 is password protected. To view it please enter your password below:', $block->getEntityType())) ?></div>
                 <div class="field name required">
-                    <label class="label" for="protect<?= $block->getPost()->getId() ?>_post_password"><span><?= __('Password') ?></span></label>
+                    <label class="label" for="protect<?= (int)$block->getPost()->getId() ?>_post_password"><span><?= __('Password') ?></span></label>
                     <div class="control">
                         <input name="post_password" title="<?= __('Password') ?>" value="" class="input-text" type="text" data-validate="{required:true}" aria-required="true"/>
                     </div>

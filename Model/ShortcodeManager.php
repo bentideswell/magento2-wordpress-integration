@@ -29,12 +29,12 @@ class ShortcodeManager
      *
      *
      */
-    public function __construct(Autop $autop, FilterProvider $filterProvider, array $shortcodes = [])    
+    public function __construct(Autop $autop, FilterProvider $filterProvider, array $shortcodes = [])
     {
         $this->autop          = $autop;
         $this->filterProvider = $filterProvider;
 
-        foreach($shortcodes as $alias => $shortcode) {
+        foreach ($shortcodes as $alias => $shortcode) {
             if (!method_exists($shortcode, 'isEnabled') || $shortcode->isEnabled()) {
                 $this->shortcodes[$alias] = $shortcode;
             }
@@ -56,7 +56,7 @@ class ShortcodeManager
         $input = $this->filterProvider->getBlockFilter()->filter($input);
 
         if ($shortcodes = $this->getShortcodes()) {
-            foreach($shortcodes as $shortcode) {
+            foreach ($shortcodes as $shortcode) {
                 // Legacy support. Old shortcodes returned false when not required
                 if (($returnValue = $shortcode->renderShortcode($input, $args)) !== false) {
                     $input = $returnValue;
@@ -86,7 +86,7 @@ class ShortcodeManager
     {
         $buffer = [];
 
-        foreach($this->shortcodes as $alias => $shortcode) {
+        foreach ($this->shortcodes as $alias => $shortcode) {
             if (method_exists($shortcode, 'requiresAssetInjection') && $shortcode->requiresAssetInjection()) {
                 $buffer[$alias] = $shortcode;
             }

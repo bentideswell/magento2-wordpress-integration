@@ -45,8 +45,8 @@ class Core extends AbstractHelper
             $this->selectedProxy = false;
 
             if (count($this->coreProxies) > 0) {
-                $this->selectedProxy = isset($this->coreProxies[$this->preferentialCoreProxy]) 
-                    ? $this->coreProxies[$this->preferentialCoreProxy] 
+                $this->selectedProxy = isset($this->coreProxies[$this->preferentialCoreProxy])
+                    ? $this->coreProxies[$this->preferentialCoreProxy]
                     : $this->coreProxies[key($this->coreProxies)];
             }
         }

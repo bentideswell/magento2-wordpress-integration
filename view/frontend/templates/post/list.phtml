@@ -5,18 +5,18 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $posts = $this->getPosts() ?>
+<?php $posts = $block->getPosts() ?>
 <?php if (count($posts) > 0): ?>
-	<div class="post-list-wrapper">
-		<ol class="post-list grid">
-			<?php foreach($posts as $post): ?>
-				<?php if ($renderedPostHtml = $this->renderPost($post)): ?>
-					<li class="item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?php echo $post->getPostFormat() ?>">
-						<?php echo $renderedPostHtml ?>
-					</li>
-				<?php endif; ?>
-			<?php endforeach; ?>
-		</ol>
-		<?php echo $this->getPagerHtml() ?>
-	</div>
+    <div class="post-list-wrapper">
+        <ol class="post-list grid">
+            <?php foreach ($posts as $post): ?>
+                <?php if ($renderedPostHtml = $block->renderPost($post)): ?>
+                    <li class="item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?= $block->escapeHtml($post->getPostFormat()) ?>">
+                        <?= $renderedPostHtml ?>
+                    </li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        </ol>
+        <?= $block->getPagerHtml() ?>
+    </div>
 <?php endif; ?>

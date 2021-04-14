@@ -1,14 +1,15 @@
 <?php
 /**
  *
- */    
+ */
 namespace FishPig\WordPress\Model;
 
 use Magento\Framework\View\Layout;
 use FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget;
 
 class WidgetManager
-{    
+{
+    
     /**
      * @var array
      */
@@ -46,7 +47,7 @@ class WidgetManager
             $this->widgets[$widgetName] = $this->widgets['psw'];
         }
 
-        $widgetBlock = $this->layout->createBlock($this->widgets[$widgetName])        
+        $widgetBlock = $this->layout->createBlock($this->widgets[$widgetName])
             ->setWidgetType($widgetName)
             ->setWidgetName($widgetName)
             ->setWidgetIndex($widgetIndex);

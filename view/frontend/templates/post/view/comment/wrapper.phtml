@@ -5,17 +5,17 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $post = $this->getPost() ?>
-<?php $comments = $this->getComments() ?>
+<?php $post = $block->getPost() ?>
+<?php $comments = $block->getComments() ?>
 <div id="comments" class="comments-wrapper">
-	<?php if (count($comments) > 0): ?>
-		<?php if ($this->getCommentCount() == 1): ?>
-			<h2><?php echo __('1 Comment') ?></h2>
-		<?php else: ?>
-			<h2><?php echo __('%1 Comments', $this->getCommentCount()) ?></h2>
-		<?php endif; ?>
-		<?php echo $this->getCommentsHtml() ?>
-		<?php echo $this->getPagerHtml() ?>
-	<?php endif; ?>
-	<?php echo $this->getFormHtml() ?>
+    <?php if (count($comments) > 0): ?>
+        <?php if ($block->getCommentCount() == 1): ?>
+            <h2><?= $block->escapeHtml(__('1 Comment')) ?></h2>
+        <?php else: ?>
+            <h2><?= $block->escapeHtml(__('%1 Comments', (int)$block->getCommentCount())) ?></h2>
+        <?php endif; ?>
+        <?= $block->getCommentsHtml() ?>
+        <?= $block->getPagerHtml() ?>
+    <?php endif; ?>
+    <?= $block->getFormHtml() ?>
 </div>

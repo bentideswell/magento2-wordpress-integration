@@ -7,7 +7,8 @@ namespace FishPig\WordPress\Controller\Archive;
 use FishPig\WordPress\Controller\Action;
 
 class View extends Action
-{    
+{
+    
     /**
      * Load the Archive model
      *
@@ -27,12 +28,14 @@ class View extends Action
      */
     protected function _getBreadcrumbs()
     {
-    return array_merge(    
-        parent::_getBreadcrumbs(), [
+        return array_merge(
+            parent::_getBreadcrumbs(),
+            [
             'archives' => [
             'label' => __($this->_getEntity()->getName()),
             'title' => __($this->_getEntity()->getName())
-        ]]);
+            ]]
+        );
     }
 
     /**
@@ -41,9 +44,9 @@ class View extends Action
      */
     public function getLayoutHandles()
     {
-    return array_merge(
-        parent::getLayoutHandles(),
-        ['wordpress_archive_view']
-    );
+        return array_merge(
+            parent::getLayoutHandles(),
+            ['wordpress_archive_view']
+        );
     }
 }

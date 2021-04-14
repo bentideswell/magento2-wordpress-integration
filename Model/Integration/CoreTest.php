@@ -13,17 +13,17 @@ use Exception;
 class CoreTest
 {
     /**
-     * @var 
+     * @var
      */
-    static protected $magentoTranslationPatchIsApplied;
+    protected static $magentoTranslationPatchIsApplied;
 
     /**
-     * @var 
+     * @var
      */
     protected $coreHelper;
 
     /**
-     * @var 
+     * @var
      */
     protected $state;
 
@@ -53,15 +53,15 @@ class CoreTest
     }
 
     /**
-     * @return 
+     * @return
      */
-    static public function setMagentoTranslationPatchIsApplied($flag)
+    public static function setMagentoTranslationPatchIsApplied($flag)
     {
         self::$magentoTranslationPatchIsApplied = (bool)$flag;
     }
 
     /**
-     * @return 
+     * @return
      */
     public function isMagentoTranslationPatchApplied()
     {
@@ -69,7 +69,7 @@ class CoreTest
     }
 
     /**
-     * @return 
+     * @return
      */
     protected function patchMagento()
     {
@@ -83,7 +83,7 @@ class CoreTest
         $sourceHash   = $this->hashFile($sourceFile);
         $canShellExec = function_exists('shell_exec') && !in_array('shell_exec', explode(',', ini_get('disable_functions')));
 
-        foreach($targetFiles as $targetFile) {
+        foreach ($targetFiles as $targetFile) {
             if (!is_file($targetFile)) {
                 continue;
             }
@@ -118,7 +118,7 @@ class CoreTest
     }
 
     /**
-     * @return 
+     * @return
      */
     protected function patchWordPress()
     {
@@ -148,7 +148,7 @@ class CoreTest
                 // Can't write file so change permissions to 0777
                 @chmod($transFile, 0777);
 
-                if (!is_writable($transFile)) {        
+                if (!is_writable($transFile)) {
                     // The permissions cannot be changed so throw exception
                     throw new Exception(__("Can't write file '%1'.", $transFile));
                 }
@@ -173,7 +173,7 @@ class CoreTest
     /**
      * Get the permissions for $file
      *
-     * @param string $file
+     * @param  string $file
      * @return mixed
      */
     protected function _getFilePermissions($file)

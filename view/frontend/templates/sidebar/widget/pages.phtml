@@ -5,22 +5,22 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $pages = $this->getPages() ?>
+<?php $pages = $block->getPages() ?>
 <?php if (count($pages) > 0): ?>
-	<div class="block block-blog block-blog-pages">
-		<?php if ($title = $this->getTitle()): ?>
-			<div class="block-title">
-				<strong><?php echo $title ?></strong>
-			</div>
-		<?php endif; ?>
-		<div class="block-content">
-			<ul id="wp-page-list">
-				<?php foreach($pages as $page): ?>
-					<li class="item">
-						<a href="<?php echo $page->getUrl() ?>" title="<?php echo $page->getPostTitle() ?>"><?php echo $this->escapeHtml($page->getPostTitle()) ?></a>
-					</li>
-				<?php endforeach; ?>
-			</ul>
-		</div>
-	</div>
+    <div class="block block-blog block-blog-pages">
+        <?php if ($title = $block->getTitle()): ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($title)) ?></strong>
+            </div>
+        <?php endif; ?>
+        <div class="block-content">
+            <ul id="wp-page-list">
+                <?php foreach ($pages as $page): ?>
+                    <li class="item">
+                        <a href="<?= $block->escapeUrl($page->getUrl()) ?>" title="<?= $block->escapeHtml($page->getPostTitle()) ?>"><?= $block->escapeHtml($page->getPostTitle()) ?></a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
 <?php endif; ?>

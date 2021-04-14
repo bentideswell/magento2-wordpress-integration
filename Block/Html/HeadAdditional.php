@@ -35,17 +35,16 @@ class HeadAdditional extends AbstractBlock
 
     /**
      * @param Context $contenxt
-     * @param array $data = []
+     * @param array   $data     = []
      */
     public function __construct(
-        Context $context, 
-        ModuleManager $moduleManager, 
-        Layout $layout, 
-        WPUrl $wpUrl, 
-        WPDirectoryList $wpDirectoryList, 
+        Context $context,
+        ModuleManager $moduleManager,
+        Layout $layout,
+        WPUrl $wpUrl,
+        WPDirectoryList $wpDirectoryList,
         array $data = []
-    )
-    {
+    ) {
         $this->moduleManager = $moduleManager;
         $this->layout = $layout;
         $this->wpUrl = $wpUrl;
@@ -68,13 +67,13 @@ class HeadAdditional extends AbstractBlock
         $html = [];
         $layoutHandles = $this->layout->getUpdate()->getHandles();
 
-        if (in_array('wordpress_post_view_default', $layoutHandles)) {    
+        if (in_array('wordpress_post_view_default', $layoutHandles)) {
             $cssFiles = [
                 'wp-block-library-css' => 'wp-includes/css/dist/block-library/style.min.css',
                 'wp-block-library-theme-css' => 'wp-includes/css/dist/block-library/theme.min.css',
             ];
 
-            foreach($cssFiles as $cssTypeId => $cssFile) {
+            foreach ($cssFiles as $cssTypeId => $cssFile) {
                 if (is_file($baseWpPath . '/' . $cssFile)) {
                     $html[] = sprintf('<link rel="stylesheet" id="%s" href="%s"  type="text/css" media="all"/>', $cssTypeId, $siteUrl . $cssFile);
                 }

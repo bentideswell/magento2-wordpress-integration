@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
@@ -71,8 +71,8 @@ class NavMenu extends AbstractWidget
     /**
      * Build and return a single level of tree html and recurse to render sub items
      *
-     * @param int $level Menu level (0-index)
-     * @param FishPig\WordPress\Model\Menu\Item[] $menuTreeObjects Collection of menu items
+     * @param  int                                 $level           Menu level (0-index)
+     * @param  FishPig\WordPress\Model\Menu\Item[] $menuTreeObjects Collection of menu items
      * @return string
      */
     protected function _getTreeHtmlLevel($level, $menuTreeObjects)
@@ -82,7 +82,7 @@ class NavMenu extends AbstractWidget
         $html = '';
 
         if ($menuTreeObjects && count($menuTreeObjects) > 0) {
-            foreach($menuTreeObjects as $current) {
+            foreach ($menuTreeObjects as $current) {
                 $classes = [
                     'menu-item',
                     'menu-item-' . $current->getId(),

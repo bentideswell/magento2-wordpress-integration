@@ -2,7 +2,7 @@
 /**
  * The Template for displaying all single posts
  */
-
+// phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
 get_header(); ?>
 	<div id="primary" class="site-content">
 		<div id="content" role="main">

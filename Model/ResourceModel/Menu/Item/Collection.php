@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel\Menu\Item;
 
@@ -26,7 +26,6 @@ class Collection extends PostCollection
 
     /**
      * Initialise the object
-     *
      */
     public function _construct()
     {
@@ -38,7 +37,6 @@ class Collection extends PostCollection
     /**
      * Ensures that only posts and not pages are returned
      * WP stores posts and pages in the same DB table
-     *
      */
     protected function _initSelect()
     {
@@ -53,7 +51,7 @@ class Collection extends PostCollection
      * Filter the collection by parent ID
      * Set 0 as $parentId to return root menu items
      *
-     * @param int $parentId = 0
+     * @param  int $parentId = 0
      * @return $this
      */
     public function addParentItemIdFilter($parentId = 0)

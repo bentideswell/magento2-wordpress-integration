@@ -57,7 +57,7 @@ abstract class AbstractComment extends Post
      * Get the comment content
      * Filter out certain HTML tags
      *
-     * @param \FishPig\WordPress\Model\Post\Comment $comment
+     * @param  \FishPig\WordPress\Model\Post\Comment $comment
      * @return string
      */
     public function getCommentContent(Comment $comment)

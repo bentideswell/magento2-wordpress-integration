@@ -27,8 +27,7 @@ class ResultPlugin
 
     /**
      * @param AssetInjectorFactory $assetInjectorFactory
-     * @param ResponseHttp $response
-     *
+     * @param ResponseHttp         $response
      */
     public function __construct(AssetInjectorFactory $assetInjectorFactory, ResponseHttp $response)
     {
@@ -41,12 +40,12 @@ class ResultPlugin
      *
      * @param  \Magento\Framework\Controller\ResultInterface $subject
      * @param  \Magento\Framework\Controller\ResultInterface $result
-     * @param  \Magento\Framework\App\Response\Http $respnse
+     * @param  \Magento\Framework\App\Response\Http          $respnse
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function afterRenderResult(
-        ResultInterface $subject, 
-        ResultInterface $result, 
+        ResultInterface $subject,
+        ResultInterface $result,
         ResponseInterface $response = null
     ) {
         // If Magento 2.1.9 or lower, $response won't be passed so load it separately
@@ -71,7 +70,7 @@ class ResultPlugin
     }
 
     /**
-     * @param string $html
+     * @param  string $html
      * @return string
      */
     public function transformHtml($html)

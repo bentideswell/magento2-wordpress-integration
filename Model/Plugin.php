@@ -23,10 +23,10 @@ class Plugin
 
     /**
      * Install a plugin
-     * 
-     * @param string $target
-     * @param string $source
-     * @param bool $enable
+     *
+     * @param  string $target
+     * @param  string $source
+     * @param  bool   $enable
      * @return bool
      */
     public function install($target, $source, $enable = false)
@@ -59,7 +59,7 @@ class Plugin
     /**
      * Enable a plugin
      *
-     * @param string $plugin
+     * @param  string $plugin
      * @return bool
      */
     public function enable($plugin)
@@ -72,17 +72,16 @@ class Plugin
             if ($plugins = $this->optionManager->getOption('active_plugins')) {
                 $db->update(
                     $this->resourceConnection->getTable('wordpress_option'),
-                    array('option_value' => serialize(array_merge(unserialize($plugins), array($plugin)))),
+                    ['option_value' => serialize(array_merge(unserialize($plugins), [$plugin]))],
                     $db->quoteInto('option_name=?', 'active_plugins')
                 );
-            }
-            else {
+            } else {
                 $db->insert(
                     $this->resourceConnection->getTable('wordpress_option'),
-                    array(
+                    [
                         'option_name' => 'active_plugins',
-                        'option_value' => serialize(array($plugin))
-                    )
+                        'option_value' => serialize([$plugin])
+                    ]
                 );
             }
 
@@ -95,13 +94,13 @@ class Plugin
     /**
      * Determine whether a WordPress plugin is enabled in the WP admin
      *
-     * @param string $name
-     * @param bool $format
+     * @param  string $name
+     * @param  bool   $format
      * @return bool
      */
     public function isEnabled($name)
     {
-        $plugins = array();
+        $plugins = [];
 
         if ($plugins = $this->optionManager->getOption('active_plugins')) {
             $plugins = unserialize($plugins);
@@ -114,7 +113,7 @@ class Plugin
         }
 
         if ($plugins) {
-            foreach($plugins as $a => $b) {
+            foreach ($plugins as $a => $b) {
                 if (strpos($a . '-' . $b, $name) !== false) {
                     return true;
                 }
@@ -127,8 +126,8 @@ class Plugin
     /**
      * Retrieve a plugin option
      *
-     * @param string $plugin
-     * @param string $key = null
+     * @param  string $plugin
+     * @param  string $key    = null
      * @return mixed
      */
     public function getOption($plugin, $key = null)

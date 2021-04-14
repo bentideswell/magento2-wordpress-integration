@@ -5,20 +5,18 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php if ($this->getMenu()): ?>
-	<?php $tree = [$this->getMenu()->getMenuTreeArray()] ?>
-	<?php if (count($tree) > 0): ?>
-		<div class="block block-blog block-blog-nav-menu">
-			<?php if ($title = $this->getTitle()): ?>
-				<div class="block-title">
-					<strong><?php echo $this->escapeHtml($title) ?></strong>
-				</div>
-			<?php endif; ?>
-			<div class="block-content">
-				<ul id="wp-page-list">
-	<?php echo $this->getTreeHtml(); ?>
-				</ul>
-			</div>
-		</div>
-	<?php endif; ?>
+<?php if ($block->getMenu()): ?>
+    <?php $tree = [$block->getMenu()->getMenuTreeArray()] ?>
+    <?php if (count($tree) > 0): ?>
+        <div class="block block-blog block-blog-nav-menu">
+            <?php if ($title = $block->getTitle()): ?>
+                <div class="block-title">
+                    <strong><?= $block->escapeHtml(__($title)) ?></strong>
+                </div>
+            <?php endif; ?>
+            <div class="block-content">
+                <ul id="wp-page-list"><?= $block->getTreeHtml() ?></ul>
+            </div>
+        </div>
+    <?php endif; ?>
 <?php endif; ?>

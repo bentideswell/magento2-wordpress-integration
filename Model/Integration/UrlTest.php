@@ -11,12 +11,12 @@ use FishPig\WordPress\Model\Integration\IntegrationException;
 class UrlTest
 {
     /**
-     * @var 
+     * @var
      */
     protected $theme;
 
     /**
-     * @var 
+     * @var
      */
     protected $url;
 
@@ -30,7 +30,7 @@ class UrlTest
     }
 
     /**
-     * @return 
+     * @return
      */
     public function runTest()
     {
@@ -54,8 +54,7 @@ class UrlTest
                     sprintf('Your home URL (%s) is incorrect and should match your Magento URL. Change to. %s', $homeUrl, $magentoUrl)
                 );
             }
-        }
-        else {
+        } else {
             if (strpos($homeUrl, $magentoUrl) !== 0) {
                 IntegrationException::throwException(
                     sprintf('Your home URL (%s) is invalid as it does not start with the Magento base URL (%s).', $homeUrl, $magentoUrl)

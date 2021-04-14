@@ -9,7 +9,8 @@ use Magento\Store\Model\StoreManagerInterface;
 use FishPig\WordPress\Model\Integration\IntegrationException;
 
 class WPConfig
-{   
+{
+   
     /**
      * @var DirectoryList
      */
@@ -52,7 +53,7 @@ class WPConfig
 
             $wpConfig = file_get_contents($configFile);
 
-            # Cleanup comments
+            // Cleanup comments
             $wpConfig = str_replace("\n", "\n\n", $wpConfig);
             $wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
             $wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
@@ -64,17 +65,15 @@ class WPConfig
 
             $this->data[$storeId] = array_combine($matches[1], $matches[3]);
 
-            if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {            
+            if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {
                 $temp = array_combine($matches[1], $matches[2]);
 
-                foreach($temp as $k => $v) {
+                foreach ($temp as $k => $v) {
                     if ($v === 'true') {
                         $this->data[$storeId][$k] = true;
-                    }
-                    else if ($v === 'false') {
+                    } elseif ($v === 'false') {
                         $this->data[$storeId][$k] = false;
-                    }
-                    else {
+                    } else {
                         $this->data[$storeId][$k] = $v;
                     }
                 }
@@ -82,8 +81,7 @@ class WPConfig
 
             if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
                 $this->data[$storeId]['DB_TABLE_PREFIX'] = $match[2];
-            }
-            else {
+            } else {
                 $this->data[$storeId]['DB_TABLE_PREFIX'] = 'wp_';
             }
         }

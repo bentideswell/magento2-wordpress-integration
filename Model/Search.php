@@ -19,7 +19,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
     /**
      * Get the search term
      *
-     * @return  string
+     * @return string
      */
     public function getSearchTerm()
     {
@@ -33,7 +33,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
     /**
      * Get the name of the search
      *
-     * @return  string
+     * @return string
      */
     public function getName()
     {
@@ -51,7 +51,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * @return  string
+     * @return string
      */
     public function getUrl()
     {
@@ -72,7 +72,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
                 if (is_array($value)) {
                     foreach ($values as $v) {
                         $extra[] = $key . '[]=' . $v;
-                    }   
+                    }
                 } else {
                     $extra[] = $key . '=' . $value;
                 }

@@ -14,21 +14,21 @@ interface ViewableInterface
     /**
      * Get the item's name (for a post, this is the post title)
      *
-     * @return  string
+     * @return string
      */
     public function getName();
 
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getUrl();
 
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getContent();
 
@@ -42,35 +42,35 @@ interface ViewableInterface
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getPageTitle();
 
     /**
      *
      *
-     * @return  string
-     */    
+     * @return string
+     */
     public function getMetaDescription();
 
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getMetaKeywords();
 
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getRobots();
 
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getCanonicalUrl();
 }

@@ -23,7 +23,7 @@ abstract class AbstractWrapper extends AbstractBlock
     /**
      *
      *
-     */    
+     */
     protected function _prepareLayout()
     {
         if ($this->getEntity()) {
@@ -49,7 +49,7 @@ abstract class AbstractWrapper extends AbstractBlock
      */
     public function getPostCollection()
     {
-        if (!$this->hasPostCollection()  && ($collection = $this->_getPostCollection()) !== false) {
+        if (!$this->hasPostCollection() && ($collection = $this->_getPostCollection()) !== false) {
             $collection->addIsViewableFilter()->addOrder('post_date', 'desc');
 
             $this->setPostCollection($collection);

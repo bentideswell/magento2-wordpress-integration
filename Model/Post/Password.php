@@ -31,7 +31,7 @@ class Password
      */
     public function doesPasswordMatch($pass) : bool
     {
-        $hasher = new PasswordHash( 8, true );
+        $hasher = new PasswordHash(8, true);
 
         return $hasher->CheckPassword($pass, $this->getPassword());
     }

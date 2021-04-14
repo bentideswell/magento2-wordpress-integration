@@ -36,14 +36,13 @@ abstract class AbstractCollection extends AbstractDbCollection
      */
     public function __construct(
         EntityFactoryInterface $entityFactory,
-               LoggerInterface $logger,
-    FetchStrategyInterface $fetchStrategy,
-          ManagerInterface $eventManager,
-                             WPContext $wpContext,
-          AdapterInterface $connection  = null,
-                AbstractDb $resource    = null
-    )
-    {
+        LoggerInterface $logger,
+        FetchStrategyInterface $fetchStrategy,
+        ManagerInterface $eventManager,
+        WPContext $wpContext,
+        AdapterInterface $connection = null,
+        AbstractDb $resource = null
+    ) {
         $this->wpContext       = $wpContext;
         $this->optionManager   = $wpContext->getOptionManager();
         $this->postTypeManager = $wpContext->getPostTypeManager();
@@ -64,14 +63,13 @@ abstract class AbstractCollection extends AbstractDbCollection
      */
     public function resetOrderBy()
     {
-        $this->_orders = array();
+        $this->_orders = [];
 
         return $this;
     }
 
     /**
      * Force the collection to be empty
-     *
      */
     public function forceEmpty()
     {

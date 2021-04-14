@@ -39,12 +39,11 @@ class Date extends AbstractHelper
         /**
          * This allows you to translate month names rather than whole date strings
          * eg. "March","Mars"
-         *
          */
         $len = strlen($format);
         $out = '';
 
-        for( $i = 0; $i < $len; $i++) {    
+        for ($i = 0; $i < $len; $i++) {
             $out .= __(date($format[$i], strtotime($date)));
         }
 
@@ -53,7 +52,6 @@ class Date extends AbstractHelper
 
     /**
      * Formats a Wordpress date string
-     *
      */
     public function formatTime($time, $format = null)
     {
@@ -67,15 +65,15 @@ class Date extends AbstractHelper
     /**
      * Split a date by spaces and translate
      *
-     * @param string $date
-     * @param string $splitter = ' '
+     * @param  string $date
+     * @param  string $splitter = ' '
      * @return string
      */
     public function translateDate($date, $splitter = ' ')
     {
         $dates = explode($splitter, $date);
 
-        foreach($dates as $it => $part) {
+        foreach ($dates as $it => $part) {
             $dates[$it] = __($part);
         }
 
@@ -84,7 +82,6 @@ class Date extends AbstractHelper
 
     /**
      * Return the default date formatting
-     *
      */
     public function getDefaultDateFormat()
     {
@@ -97,7 +94,6 @@ class Date extends AbstractHelper
 
     /**
      * Return the default time formatting
-     *
      */
     public function getDefaultTimeFormat()
     {

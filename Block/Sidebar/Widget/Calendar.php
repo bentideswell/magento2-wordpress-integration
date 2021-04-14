@@ -41,7 +41,7 @@ class Calendar extends AbstractWidget
 
         $itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 
-        foreach($days as $day) {
+        foreach ($days as $day) {
             $itemsByDay[ltrim($day, '0')] = sprintf('<a href="%s">%s</a>', $this->url->getUrl($this->getYear() . '/' . $this->getMonth() . '/' . $day), $day);
         }
 
@@ -49,22 +49,21 @@ class Calendar extends AbstractWidget
 
         // Pad start of array
         $firstDayOfMonth = date('N', strtotime($this->getYear() . '-' . $this->getMonth() . '-01'));
-        $itemsByDay = array_pad($itemsByDay, -(count($itemsByDay)+($firstDayOfMonth-1)) , null);
+        $itemsByDay = array_pad($itemsByDay, -(count($itemsByDay)+($firstDayOfMonth-1)), null);
 
         // Pad end of array
         $lastDayOfMonth = date('t', strtotime($this->getYear() . '-' . $this->getMonth() . '-01'));
         $endOfMonthPadding = 7 - date('N', strtotime($this->getYear() . '-' . $this->getMonth() . '-' . $lastDayOfMonth));
-        $itemsByDay = array_pad($itemsByDay, count($itemsByDay)+$endOfMonthPadding , null);
+        $itemsByDay = array_pad($itemsByDay, count($itemsByDay)+$endOfMonthPadding, null);
 
-        $items = array();
+        $items = [];
 
-        while(count($itemsByDay) > 0) {
+        while (count($itemsByDay) > 0) {
             if (count($itemsByDay) >= 7) {
                 $items[] = array_splice($itemsByDay, 0, 7, null);
-            }
-            else {
+            } else {
                 $items[] = $itemsByDay;
-                $itemsByDay = array();
+                $itemsByDay = [];
             }
         }
 
@@ -73,7 +72,6 @@ class Calendar extends AbstractWidget
 
     /**
      * Set the posts collection
-     *
      */
     protected function _beforeToHtml()
     {
@@ -126,7 +124,7 @@ class Calendar extends AbstractWidget
         $posts = $this->factory->create('Model\ResourceModel\Post\Collection')
             ->addIsViewableFilter()
             ->setOrderByPostDate('desc')
-            ->addFieldToFilter('post_date', array('lteq' => $this->getYear() . '-' . $this->getMonth() . '-01 00:00:00'))
+            ->addFieldToFilter('post_date', ['lteq' => $this->getYear() . '-' . $this->getMonth() . '-01 00:00:00'])
             ->setPageSize(1)
             ->setCurPage(1)
             ->load();
@@ -143,7 +141,7 @@ class Calendar extends AbstractWidget
         $posts = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')
             ->addIsViewableFilter()
             ->setOrderByPostDate('asc')
-            ->addFieldToFilter('post_date', array('gteq' => $dateString))
+            ->addFieldToFilter('post_date', ['gteq' => $dateString])
             ->setPageSize(1)
             ->setCurPage(1)
             ->load();

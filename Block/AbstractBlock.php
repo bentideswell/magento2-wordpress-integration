@@ -4,16 +4,10 @@
  */
 namespace FishPig\WordPress\Block;
 
-use Magento\Framework\View\Element\Template;
-
-/** Constructor */
-use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Model\Context as WPContext;
-
-abstract class AbstractBlock extends Template
+abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 {
     /**
-     * @var 
+     * @var
      */
     protected $wpContext;
 
@@ -45,10 +39,13 @@ abstract class AbstractBlock extends Template
     /**
      * @param Context $context
      * @param App
-     * @param array $data
+     * @param array   $data
      */
-    public function __construct(Context $context, WPContext $wpContext, array $data = [])
-    {
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Model\Context $wpContext,
+        array $data = []
+    ) {
         $this->wpContext = $wpContext;
         $this->optionManager = $wpContext->getOptionManager();
         $this->shortcodeManager = $wpContext->getShortcodeManager();
@@ -63,7 +60,7 @@ abstract class AbstractBlock extends Template
      * Parse and render a shortcode
      *
      * @param  string $shortcode
-     * @param  mixed  $object = null
+     * @param  mixed  $object    = null
      * @return string
      */
     public function renderShortcode($shortcode, $object = null)
@@ -91,14 +88,12 @@ abstract class AbstractBlock extends Template
 
     /**
      * Catch and log any excep§tions to var/log/wordpress.log
-     *
      */
     public function toHtml()
     {
         try {
             return parent::toHtml();
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->wpContext->getLogger()->error($e);
 
             throw $e;

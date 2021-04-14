@@ -1,7 +1,7 @@
 <?php
 /**
  *
- */    
+ */
 namespace FishPig\WordPress\Model;
 
 use Magento\Framework\Module\Manager as ModuleManager;
@@ -13,12 +13,12 @@ use FishPig\WordPress\Model\Network;
 class TaxonomyManager
 {
     /**
-     * @var 
+     * @var
      */
     protected $moduleManager;
 
     /**
-     * @var 
+     * @var
      */
     protected $storeManager;
 
@@ -48,13 +48,12 @@ class TaxonomyManager
      * @return void
      */
     public function __construct(
-    ModuleManager $moduleManager, 
-    StoreManagerInterface $storeManager, 
-    TaxonomyFactory $taxonomyFactory, 
-    OptionManager $optionManager,
-    Network $network
-    )
-    {
+        ModuleManager $moduleManager,
+        StoreManagerInterface $storeManager,
+        TaxonomyFactory $taxonomyFactory,
+        OptionManager $optionManager,
+        Network $network
+    ) {
         $this->moduleManager   = $moduleManager;
         $this->storeManager    = $storeManager;
         $this->taxonomyFactory = $taxonomyFactory;
@@ -78,22 +77,21 @@ class TaxonomyManager
         }
 
         if ($taxonomyData = $this->getTaxonomyDataFromAddon()) {
-            foreach($taxonomyData as $taxonomy) {
+            foreach ($taxonomyData as $taxonomy) {
                 $this->registerTaxonomy(
-                  $this->taxonomyFactory->create()->addData($taxonomy)
+                    $this->taxonomyFactory->create()->addData($taxonomy)
                 );
             }
-        }
-        else {
-            $bases = array(
+        } else {
+            $bases = [
                 'category' => $this->optionManager->getOption('category_base') ? $this->optionManager->getOption('category_base') : 'category',
                 'post_tag' => $this->optionManager->getOption('tag_base')      ? $this->optionManager->getOption('tag_base')      : 'tag',
-            );
+            ];
 
             $blogPrefix = $this->network->getBlogId() === 1;
 
             if ($blogPrefix) {
-                foreach($bases as $baseType => $base) {
+                foreach ($bases as $baseType => $base) {
                     if ($blogPrefix && $base && strpos($base, '/blog') === 0) {
                         $bases[$baseType] = substr($base, strlen('/blog'));
                     }
@@ -101,40 +99,44 @@ class TaxonomyManager
             }
 
             $this->registerTaxonomy(
-                $this->taxonomyFactory->create()->addData([
+                $this->taxonomyFactory->create()->addData(
+                    [
                     'type' => 'category',
                     'taxonomy_type' => 'category',
-                    'labels' => array(
+                    'labels' => [
                         'name' => 'Categories',
                         'singular_name' => 'Category',
-                    ),
+                    ],
                     'public' => true,
                     'hierarchical' => true,
-                    'rewrite' => array(
+                    'rewrite' => [
                         'hierarchical' => true,
                         'slug' => $bases['category'],
                         'with_front' => (int)($bases['category'] === 'category'),
-                    ),
+                    ],
                     '_builtin' => true,
-                ])
+                    ]
+                )
             );
 
             $this->registerTaxonomy(
-                $this->taxonomyFactory->create()->addData([
+                $this->taxonomyFactory->create()->addData(
+                    [
                     'type' => 'post_tag',
                     'taxonomy_type' => 'post_tag',
-                    'labels' => array(
+                    'labels' => [
                         'name' => 'Tags',
                         'singular_name' => 'Tag',
-                    ),
+                    ],
                     'public' => true,
                     'hierarchical' => false,
-                    'rewrite' => array(
+                    'rewrite' => [
                         'slug' => $bases['post_tag'],
                         'with_front' => (int)($bases['post_tag'] === 'tag'),
-                    ),
+                    ],
                     '_builtin' => true,
-                ])
+                    ]
+                )
             );
         }
 
@@ -170,8 +172,7 @@ class TaxonomyManager
         if ($taxonomies = $this->getTaxonomies()) {
             if ($taxonomy === null) {
                 return $taxonomies;
-            }
-            else if (isset($taxonomies[$taxonomy])) {
+            } elseif (isset($taxonomies[$taxonomy])) {
                 return $taxonomies[$taxonomy];
             }
         }

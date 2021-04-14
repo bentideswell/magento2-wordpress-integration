@@ -56,24 +56,23 @@ class Post extends AbstractBlock implements IdentityInterface
     /**
      * Set the post as the current post in all child blocks
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return $this
      */
     protected function _prepareChildBlocks($rootBlock)
-    {    
+    {
         if (is_string($rootBlock)) {
             $rootBlock = $this->getChildBlock($rootBlock);
         }
 
         if ($rootBlock) {
-            foreach($rootBlock->getChildNames() as $name) {
+            foreach ($rootBlock->getChildNames() as $name) {
                 if ($block = $rootBlock->getChildBlock($name)) {
                     $block->setPost($this->getPost());
 
                     $this->_prepareChildBlocks($block);
-                }
-                else if ($containerBlockNames = $this->getLayout()->getChildNames($name)) {
-                    foreach($containerBlockNames as $containerBlockName) {
+                } elseif ($containerBlockNames = $this->getLayout()->getChildNames($name)) {
+                    foreach ($containerBlockNames as $containerBlockName) {
                         if ($block = $this->getLayout()->getBlock($containerBlockName)) {
                             $block->setPost($this->getPost());
 
@@ -113,15 +112,15 @@ class Post extends AbstractBlock implements IdentityInterface
      */
     public function getPasswordProtectHtml($post = null)
     {
-	    if (is_null($post)) {
-			$post = $this->getPost();
-		}
+        if (is_null($post)) {
+            $post = $this->getPost();
+        }
 
-		return $this->getLayout()
-			->createBlock(self::class)
-			->setTemplate('FishPig_WordPress::post/protected.phtml')
-			->setEntityType('post')
-			->setPost($post)
-			->toHtml(); 
+        return $this->getLayout()
+            ->createBlock(self::class)
+            ->setTemplate('FishPig_WordPress::post/protected.phtml')
+            ->setEntityType('post')
+            ->setPost($post)
+            ->toHtml();
     }
 }

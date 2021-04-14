@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
@@ -24,26 +24,25 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
     /**
      * Custom load SQL to combine required tables
      *
-     * @param string $field
-     * @param string|int $value
+     * @param string                   $field
+     * @param string|int               $value
      * @param Mage_Core_Model_Abstract $object
      */
     protected function _getLoadSelect($field, $value, $object)
     {
         $select = $this->getConnection()->select()
-            ->from(array('main_table' => $this->getMainTable()));
+            ->from(['main_table' => $this->getMainTable()]);
 
         if (strpos($field, '.') !== false) {
             $select->where($field . '=?', $value);
-        }
-        else {
+        } else {
             $select->where("main_table.{$field}=?", $value);
         }
 
         $select->join(
-            array('taxonomy' => $this->getTable('wordpress_term_taxonomy')),
+            ['taxonomy' => $this->getTable('wordpress_term_taxonomy')],
             '`main_table`.`term_id` = `taxonomy`.`term_id`',
-            array('term_taxonomy_id', 'taxonomy', 'description', 'count', 'parent')
+            ['term_taxonomy_id', 'taxonomy', 'description', 'count', 'parent']
         );
 
         if ($object->getTaxonomy()) {
@@ -68,8 +67,7 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
             self::$_tableHasTermOrder = $this->getConnection()
                 ->fetchOne('SHOW COLUMNS FROM ' . $this->getMainTable() . ' WHERE Field = \'term_order\'')
                 !== false;
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             self::$_tableHasTermOrder = false;
         }
 
@@ -80,25 +78,25 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
      * Get all child ID's for a parent
      * This includes recursive levels
      *
-     * @param int $parentId
+     * @param  int $parentId
      * @return array
      */
     public function getChildIds($parentId)
     {
         $select = $this->getConnection()
             ->select()
-                ->from($this->getTable('wordpress_term_taxonomy'), 'term_id')
-                ->where('parent=?', $parentId)
-                ->where('count>?', 0);
+            ->from($this->getTable('wordpress_term_taxonomy'), 'term_id')
+            ->where('parent=?', $parentId)
+            ->where('count>?', 0);
 
         if ($termIds = $this->getConnection()->fetchCol($select)) {
-            foreach($termIds as $key => $termId) {
+            foreach ($termIds as $key => $termId) {
                 $termIds = array_merge($termIds, $this->getChildIds($termId));
             }
 
-            return array_merge(array($parentId), $termIds);
+            return array_merge([$parentId], $termIds);
         }
 
-        return array($parentId);
+        return [$parentId];
     }
 }

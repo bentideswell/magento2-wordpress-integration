@@ -34,7 +34,7 @@ class Image extends AbstractAttachmentModel
      * Retrieve the medium image URL
      *
      * @return string
-     */    
+     */
     public function getMediumImage()
     {
         return $this->_getImagePath('medium');
@@ -78,7 +78,7 @@ class Image extends AbstractAttachmentModel
     public function getAvailableImage()
     {
         if ($sizes = $this->getSizes()) {
-            foreach($sizes as $type => $data) {
+            foreach ($sizes as $type => $data) {
                 return $this->_getImagePath($type);
             }
         }
@@ -89,7 +89,7 @@ class Image extends AbstractAttachmentModel
     /**
      * Retrieve the an image URL by type
      *
-     * @param string $type = 'thumbnail'
+     * @param  string $type = 'thumbnail'
      * @return string
      */
     public function getImageByType($type = 'thumbnail')
@@ -100,7 +100,7 @@ class Image extends AbstractAttachmentModel
     /**
      * Retrieve the an image URL by type
      *
-     * @param string $type = 'thumbnail'
+     * @param  string $type = 'thumbnail'
      * @return string
      */
     protected function _getImagePath($type = null)
@@ -109,8 +109,7 @@ class Image extends AbstractAttachmentModel
 
         if ($type == null || $type == 'full') {
             $filename = basename($this->getFile());
-        }
-        else {
+        } else {
             $sizes = $this->getSizes();
 
             if (isset($sizes[$type]['file'])) {
@@ -257,7 +256,7 @@ class Image extends AbstractAttachmentModel
 
         return \Magento\Framework\App\ObjectManager::getInstance()
             ->get('FishPig\WordPress\Model\ImageResizerFactory')
-                ->create()
-                    ->setImage($this->getLocalFile());
+            ->create()
+            ->setImage($this->getLocalFile());
     }
 }

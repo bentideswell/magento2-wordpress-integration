@@ -43,7 +43,7 @@ class Pager extends PostListPager
      */
     public function getAvailableLimit()
     {
-        return array($this->getPagerLimit() => $this->getPagerLimit());
+        return [$this->getPagerLimit() => $this->getPagerLimit()];
     }
 
     /**
@@ -61,7 +61,7 @@ class Pager extends PostListPager
      *
      * @return string
      */
-    public function getPagerUrl($params=array())
+    public function getPagerUrl($params = [])
     {
         if (isset($params['page']) && $params['page'] != 1) {
             return rtrim($this->getPost()->getUrl(), '/') . '/' . sprintf('comment-page-%d', $params['page']) . '#comments';
@@ -78,16 +78,16 @@ class Pager extends PostListPager
     public function getCurrentPage()
     {
         if (!$this->hasCurrentPage()) {
-            $results = array();
+            $results = [];
 
-#            if (preg_match("/comment-page-([0-9]{1,})$/", $this->_urlBuilder->getCurrentUrl(), $results)) {
-#                if (isset($results[1])) {
-#                    $this->setCurrentPage($results[1]);
-#                }
-#            }
-#            else {
+            // if (preg_match("/comment-page-([0-9]{1,})$/", $this->_urlBuilder->getCurrentUrl(), $results)) {
+            // if (isset($results[1])) {
+            // $this->setCurrentPage($results[1]);
+            // }
+            // }
+            // else {
                 $this->setCurrentPage(1);
-#            }
+            // }
         }
 
         return $this->getData('current_page');

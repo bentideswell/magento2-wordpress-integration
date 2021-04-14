@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
@@ -47,7 +47,8 @@ abstract class AbstractResource extends AbstractDb
      */
     public function getTable($tableName)
     {
-        return $this->resourceConnection->getTable($tableName);;
+        return $this->resourceConnection->getTable($tableName);
+        ;
     }
 
     /**

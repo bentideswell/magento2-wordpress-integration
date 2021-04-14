@@ -17,7 +17,7 @@ if (!function_exists('__')) {
             $argc = $argc[0];
         }
 
-        if (isset($GLOBALS['phrase_as_string'])) {
+        if (isset($GLOBALS['phrase_as_string'])) { // phpcs:ignore
             return (string)new \Magento\Framework\Phrase($text, $argc);
         }
 

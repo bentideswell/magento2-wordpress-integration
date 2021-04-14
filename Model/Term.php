@@ -31,11 +31,11 @@ class Term extends AbstractModel implements ViewableInterface
     /**
      *
      *
-     * @return 
+     * @return
      */
     public function _construct()
     {
-    $this->_init('FishPig\WordPress\Model\ResourceModel\Term');
+        $this->_init('FishPig\WordPress\Model\ResourceModel\Term');
     }
 
     /**
@@ -120,7 +120,7 @@ class Term extends AbstractModel implements ViewableInterface
      * Loads the posts belonging to this category
      *
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
-     */    
+     */
     public function getPostCollection()
     {
         return parent::getPostCollection()
@@ -142,7 +142,7 @@ class Term extends AbstractModel implements ViewableInterface
      * Retrieve the parent ID
      *
      * @return int|false
-     */    
+     */
     public function getParentId()
     {
         return $this->_getData('parent') ? $this->_getData('parent') : false;
@@ -214,7 +214,7 @@ class Term extends AbstractModel implements ViewableInterface
     /**
      * Get the meta value using ACF if it's installed
      *
-     * @param string $key
+     * @param  string $key
      * @return mixed
      */
     public function getMetaValue($key)

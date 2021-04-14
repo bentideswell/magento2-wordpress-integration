@@ -11,7 +11,7 @@ class Preview extends View
     /**
      * Load and return a Post model
      *
-     * @return \FishPig\WordPress\Model\Post|false 
+     * @return \FishPig\WordPress\Model\Post|false
      */
     protected function _getEntity()
     {
@@ -24,7 +24,7 @@ class Preview extends View
         }
 
         return $post;
-        return ($revision = $post->getLatestRevision()) ? $revision : $post;
+        //        return ($revision = $post->getLatestRevision()) ? $revision : $post;
     }
 
     /**

@@ -16,7 +16,7 @@ class Shortcode extends AbstractBlock
     protected function _toHtml()
     {
         if (!$this->_beforeToHtml()) {
-          return '';
+            return '';
         }
 
         if (!($shortcode = $this->getShortcode())) {

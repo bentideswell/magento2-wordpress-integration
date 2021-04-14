@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
@@ -16,9 +16,9 @@ class Categories extends AbstractWidget
     public function getCategories()
     {
         $collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
-                ->addTaxonomyFilter($this->getTaxonomy())
-                ->addParentIdFilter($this->getParentId())
-                ->addHasObjectsFilter();
+            ->addTaxonomyFilter($this->getTaxonomy())
+            ->addParentIdFilter($this->getParentId())
+            ->addHasObjectsFilter();
 
         $collection->getSelect()
             ->reset('order')
@@ -49,7 +49,7 @@ class Categories extends AbstractWidget
     /**
      * Determine whether the category is the current category
      *
-     * @param FishPig\WordPress\Model_Category $category
+     * @param  FishPig\WordPress\Model_Category $category
      * @return bool
      */
     public function isCurrentCategory($category)
@@ -87,7 +87,6 @@ class Categories extends AbstractWidget
 
     /**
      * Set the posts collection
-     *
      */
     protected function _beforeToHtml()
     {

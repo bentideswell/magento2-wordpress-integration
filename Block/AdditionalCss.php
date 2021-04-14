@@ -22,7 +22,7 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
 
     /**
      * @param Context $context
-     * @param Theme $theme
+     * @param Theme   $theme
      */
     public function __construct(Context $context, Theme $theme, PostFactory $postFactory)
     {
@@ -42,7 +42,7 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
         }
 
         return '';
-    } 
+    }
 
     /**
      * @return string|false
@@ -80,5 +80,5 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
     public function canIncludeCss()
     {
         return true;
-    } 
+    }
 }

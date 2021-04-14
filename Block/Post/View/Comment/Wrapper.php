@@ -21,7 +21,7 @@ class Wrapper extends AbstractComment
 
         if ($this->getCommentCount() > 0 && ($commentsBlock = $this->getChildBlock('comment_list')) !== false) {
             $commentsBlock->setComments($this->getComments());
-        }    
+        }
 
         if ($this->getCommentCount() > 0 && ($pagerBlock = $this->getChildBlock('pager')) !== false) {
             $pagerBlock->setPost($this->getPost());

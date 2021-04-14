@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model;
 
@@ -12,7 +12,10 @@ use Magento\Framework\Registry;
 use FishPig\WordPress\Model\Context as WPContext;
 use Magento\Framework\Model\ResourceModel\AbstractResource;
 use Magento\Framework\Data\Collection\AbstractDb;
-/** End of Constructor Args */
+
+/**
+ * End of Constructor Args
+ */
 
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
@@ -47,7 +50,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     protected $dateHelper;
 
     /**
-     * @var PostTypeManager     
+     * @var PostTypeManager
      */
     protected $postTypeManager;
 
@@ -60,14 +63,13 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
      *
      */
     public function __construct(
-        Context $context, 
-        Registry $registry, 
+        Context $context,
+        Registry $registry,
         WPContext $wpContext,
-        AbstractResource $resource = null, 
-        AbstractDb $resourceCollection = null, 
+        AbstractResource $resource = null,
+        AbstractDb $resourceCollection = null,
         array $data = []
-    )
-    {
+    ) {
         $this->wpContext = $wpContext;
         $this->url = $wpContext->getUrl();
         $this->optionManager = $wpContext->getOptionManager();
@@ -154,7 +156,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getBlogName()
     {
@@ -162,7 +164,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getBlogDescription()
     {
@@ -170,7 +172,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getPostCollection()
     {
@@ -178,7 +180,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     }
 
     /**
-     * @return 
+     * @return
      */
     public function applyPageConfigData($pageConfig)
     {

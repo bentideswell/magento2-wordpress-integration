@@ -39,9 +39,9 @@ class Index extends \Magento\Framework\App\Action\Action
     }
     
     /**
-     * @param string $url
-     * @param $httpCode = 302
-     * @return 
+     * @param  string $url
+     * @param  $httpCode = 302
+     * @return
      */
     private function redirectTo($url, $httpCode = 302)
     {

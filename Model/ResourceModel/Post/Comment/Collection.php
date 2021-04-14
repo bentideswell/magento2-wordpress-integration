@@ -43,14 +43,14 @@ class Collection extends AbstractCollection
     /**
      * Order the comments by date
      *
-     * @param string $dir = null
+     * @param  string $dir = null
      * @return $this
      */
     public function addOrderByDate($dir = null)
     {
         if (is_null($dir)) {
             $dir = $this->optionManager->getOption('comment_order');
-            $dir = in_array($dir, array('asc', 'desc')) ? $dir : 'asc';
+            $dir = in_array($dir, ['asc', 'desc']) ? $dir : 'asc';
         }
 
         $this->getSelect()->order('main_table.comment_date ' . $dir);
@@ -61,7 +61,7 @@ class Collection extends AbstractCollection
     /**
      * Add parent comment filter
      *
-     * @param int $parentId = 0
+     * @param  int $parentId = 0
      * @return $this
      */
     public function addParentCommentFilter($parentId = 0)
@@ -94,7 +94,7 @@ class Collection extends AbstractCollection
     /**
      * Filter the collection by a user's ID
      *
-     * @param int $userId
+     * @param  int $userId
      * @return $this
      */
     public function addUserIdFilter($userId)
@@ -105,7 +105,7 @@ class Collection extends AbstractCollection
     /**
      * Filter the collection by the comment_author_email column
      *
-     * @param string $email
+     * @param  string $email
      * @return $this
      */
     public function addCommentAuthorEmailFilter($email)
@@ -129,7 +129,7 @@ class Collection extends AbstractCollection
     protected function _afterLoad()
     {
         if ($this->post) {
-            foreach($this->getItems() as $comment) {
+            foreach ($this->getItems() as $comment) {
                 $comment->setPost($this->post);
             }
         }

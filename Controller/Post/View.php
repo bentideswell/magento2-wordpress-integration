@@ -12,7 +12,7 @@ class View extends Action
     /**
      * Load and return a Post model
      *
-     * @return \FishPig\WordPress\Model\Post|false 
+     * @return \FishPig\WordPress\Model\Post|false
      */
     protected function _getEntity()
     {
@@ -44,8 +44,7 @@ class View extends Action
             if ($entity->isFrontPage()) {
                 if ((int)$this->getRequest()->getParam('is_front') === 0) {
                     return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($this->url->getHomeUrl());
-                }
-                else if (strpos($this->_url->getCurrentUrl(), 'is_front/1') !== false) {
+                } elseif (strpos($this->_url->getCurrentUrl(), 'is_front/1') !== false) {
                     $realUrl = $entity->getUrl();
 
                     if (strpos($realUrl, 'is_front/1') === false) {
@@ -54,7 +53,7 @@ class View extends Action
                 }
 
                 // Request is static homepage (page) with a preview set (maybe visual editor)
-                foreach(['p', 'page_id', 'preview_id'] as $paramKey) {
+                foreach (['p', 'page_id', 'preview_id'] as $paramKey) {
                     if ($previewId = (int)$this->getRequest()->getParam($paramKey)) {
                         $previewPost = $this->factory->create('Post')->load($previewId);
 
@@ -65,9 +64,9 @@ class View extends Action
 
                             return $this->resultFactory
                                 ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-                                    ->setModule('wordpress')
-                                    ->setController('post')
-                                    ->forward('preview');
+                                ->setModule('wordpress')
+                                ->setController('post')
+                                ->forward('preview');
                         }
                     }
                 }
@@ -93,9 +92,8 @@ class View extends Action
         $unapproved = (int)$this->getRequest()->getParam('unapproved');
         
         if ($unapproved > 0 || ($commentId > 0 && $commentStatus === 0)) {
-            $this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));            
-        }
-        else if ($commentId > 0) {
+            $this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));
+        } elseif ($commentId > 0) {
             $this->messageManager->addSuccess(__('Your comment has been posted.'));
         }
 
@@ -119,7 +117,7 @@ class View extends Action
         $postType = $this->getEntityObject()->getTypeInstance();
 
         if ($crumbObjects = $postType->getBreadcrumbStructure($this->getEntityObject())) {
-            foreach($crumbObjects as $crumbType => $crumbObject) {
+            foreach ($crumbObjects as $crumbType => $crumbObject) {
                 $crumbs[$crumbType] = [
                     'label' => (string)__($crumbObject->getName()),
                     'title' => (string)__($crumbObject->getName()),
@@ -150,8 +148,7 @@ class View extends Action
         if ($postType == 'revision' && $post->getParentPost()) {
             $postType = $post->getParentPost()->getPostType();
             $template = $post->getParentPost()->getMetaValue('_wp_page_template');
-        }
-        else {
+        } else {
             $template = $post->getMetaValue('_wp_page_template');
         }
 

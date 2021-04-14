@@ -22,7 +22,7 @@ class NetworkTest
 
     /**
      *
-     * @param Network $network
+     * @param Network  $network
      * @param WPConfig $wpConfig
      */
     public function __construct(Network $network, WPConfig $wpConfig)
@@ -49,9 +49,11 @@ class NetworkTest
             return $this;
         }
 
-        IntegrationException::throwException(sprintf(
-            'The WordPress Network is active. You must install the FishPig_WordPress_Multisite add-on module. This can be found at %s',
-            'https://fishpig.co.uk/magento/wordpress-integration/multisite/'
-        ));
+        IntegrationException::throwException(
+            sprintf(
+                'The WordPress Network is active. You must install the FishPig_WordPress_Multisite add-on module. This can be found at %s',
+                'https://fishpig.co.uk/magento/wordpress-integration/multisite/'
+            )
+        );
     }
 }

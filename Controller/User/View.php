@@ -1,13 +1,14 @@
 <?php
 /**
  *
-*/
+ */
 namespace FishPig\WordPress\Controller\User;
 
 use FishPig\WordPress\Controller\Action;
 
 class View extends Action
-{  
+{
+  
     /**
      * @return
      */
@@ -28,8 +29,9 @@ class View extends Action
      */
     protected function _getBreadcrumbs()
     {
-        return array_merge( 
-            parent::_getBreadcrumbs(), [
+        return array_merge(
+            parent::_getBreadcrumbs(),
+            [
                 'archives' => [
                     'label' => __($this->_getEntity()->getName()),
                     'title' => __($this->_getEntity()->getName())

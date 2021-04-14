@@ -17,7 +17,7 @@ class Post extends AbstractItemProvider
         $collection   = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')->addIsViewableFilter();
         $items = [];
 
-        foreach($collection as $post) {
+        foreach ($collection as $post) {
             $relativePostUrl = ltrim(str_replace($storeBaseUrl, '', $post->getUrl()), '/');
 
             if (!$relativePostUrl) {
@@ -34,20 +34,24 @@ class Post extends AbstractItemProvider
             $postImages = [];
 
             if ($image = $post->getImage()) {
-                $postImages = new \Magento\Framework\DataObject([
+                $postImages = new \Magento\Framework\DataObject(
+                    [
                     'collection' => [new \Magento\Framework\DataObject(['url' => $image->getFullSizeImage()])],
                     'title' => $post->getName(),
                     'thumbnail' => $image->getAvailableImage(),
-                ]);
+                    ]
+                );
             }
 
-            $items[] = $this->itemFactory->create([
+            $items[] = $this->itemFactory->create(
+                [
                 'url' => $relativePostUrl,
                 'updatedAt' => $post->getPostModifiedDate('Y-m-d'),
                 'images' => $postImages,
                 'priority' => 0.5,
                 'changeFrequency' => 'monthly',
-            ]);
+                ]
+            );
         }
 
         return $items;
@@ -56,7 +60,7 @@ class Post extends AbstractItemProvider
     /**
      * Determine whether the post as noindex in it's robots tag
      *
-     * @param PostModel $post
+     * @param  PostModel $post
      * @return bool
      */
     private function isPostNoIndex(PostModel $post)

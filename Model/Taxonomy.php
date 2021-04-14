@@ -1,15 +1,18 @@
 <?php
 /**
  *
- */    
+ */
 namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Model\AbstractModel;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 use FishPig\WordPress\Model\PostTypeManager;
 
-class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface*/
-{    
+class Taxonomy extends AbstractResourcelessModel/**
+ * implements ViewableInterface
+*/
+{
+    
     /**
      * @const string
      */
@@ -23,7 +26,7 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
     /**
      * Get the URI's that apply to $uri
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return array|false
      */
     public function getUris($uri = '')
@@ -48,11 +51,11 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
 
         $select = $connection->select()
             ->from(
-                array('term' => $resource->getTable('wordpress_term')), 
-                array('id' => 'term_id', 'url_key' => 'slug')
+                ['term' => $resource->getTable('wordpress_term')],
+                ['id' => 'term_id', 'url_key' => 'slug']
             )
             ->join(
-                array('tax' => $resource->getTable('wordpress_term_taxonomy')),
+                ['tax' => $resource->getTable('wordpress_term_taxonomy')],
                 $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
                 null
             )
@@ -107,15 +110,15 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
 
         $select = $connection->select()
             ->from(
-                array('term' => $resource->getTable('wordpress_term')), 
-                array(
-                    'id' => 'term_id', 
+                ['term' => $resource->getTable('wordpress_term')],
+                [
+                    'id' => 'term_id',
                     'url_key' => 'slug',
-//                  'url_key' => new \Zend_Db_Expr("IF(parent=0,TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug)), slug)")
-                )
+                //                  'url_key' => new \Zend_Db_Expr("IF(parent=0,TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug)), slug)")
+                ]
             )
             ->join(
-                array('tax' => $resource->getTable('wordpress_term_taxonomy')),
+                ['tax' => $resource->getTable('wordpress_term_taxonomy')],
                 $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
                 'parent'
             );
@@ -123,11 +126,10 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
         if ($results = $connection->fetchAll($select)) {
             if ((int)$this->getData('rewrite/hierarchical') === 1) {
                 $this->setAllUris(PostType::generateRoutesFromArray($results, $this->getSlug()));
-            }
-            else {
+            } else {
                 $routes = [];
 
-                foreach($results as $result) {
+                foreach ($results as $result) {
                     $routes[$result['id']] = ltrim($this->getSlug() . '/' . $result['url_key'], '/');
                 }
 
@@ -141,7 +143,7 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
     /**
      * Retrieve the URI for $term
      *
-     * @param \FishPig\WordPress\Model\Term $term
+     * @param  \FishPig\WordPress\Model\Term $term
      * @return false|string
      */
     public function getUriById($id, $includePrefix = true)
@@ -164,7 +166,7 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
     /**
      * Determine whether the taxonomy uses a hierarchy in it's link
      *
-     * @return  bool
+     * @return bool
      */
     public function isHierarchical()
     {
@@ -190,13 +192,13 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
     /**
      * Change the 'slug' value
      *
-     * @param string $slug
+     * @param  string $slug
      * @return $this
      */
     public function setSlug($slug)
     {
         if (!isset($this->_data['rewrite'])) {
-            $this->_data['rewrite'] = array();
+            $this->_data['rewrite'] = [];
         }
 
         $this->_data['rewrite']['slug'] = $slug;
@@ -217,7 +219,7 @@ class Taxonomy extends AbstractResourcelessModel/** implements ViewableInterface
     /**
      * Get a collection of terms that belong this taxonomy and $post
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
     public function getPostTermsCollection(\FishPig\WordPress\Model\Post $post)

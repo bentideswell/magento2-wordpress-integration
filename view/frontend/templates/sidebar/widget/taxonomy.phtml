@@ -5,20 +5,20 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $terms = $this->getTerms() ?>
+<?php $terms = $block->getTerms() ?>
 <?php if (count($terms) > 0): ?>
-	<div class="block block-blog block-blog-taxonomy">
-		<?php if ($title = $this->getTitle()): ?>
-			<div class="block-title">
-				<strong><?php echo __($title) ?></strong>
-			</div>
-		<?php endif; ?>
-		<div class="block-content">
-			<ul class="level0" id="wp-term-list">
-				<?php foreach($terms as $term): ?>
-					<?php echo $this->drawChildItem($term) ?>
-				<?php endforeach; ?>
-			</ul>
-		</div>
-	</div>
+    <div class="block block-blog block-blog-taxonomy">
+        <?php if ($title = $block->getTitle()): ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($title)) ?></strong>
+            </div>
+        <?php endif; ?>
+        <div class="block-content">
+            <ul class="level0" id="wp-term-list">
+                <?php foreach ($terms as $term): ?>
+                    <?= $block->drawChildItem($term) ?>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
 <?php endif; ?>

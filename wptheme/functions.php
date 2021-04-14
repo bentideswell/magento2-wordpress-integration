@@ -7,6 +7,7 @@
  * This file will not be deleted or overwritten and is automatically included at the end of this file
  *
  */
+// phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
 class FishPig_Theme
 {
 	/*

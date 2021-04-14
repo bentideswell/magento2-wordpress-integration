@@ -116,11 +116,9 @@ class Post extends AbstractMeta implements ViewableInterface
                         $this->getParentPost()->getTypeInstance()
                     );
                 }
-            }
-            else if ($typeInstance = $this->postTypeManager->getPostType($this->getPostType())) {
+            } elseif ($typeInstance = $this->postTypeManager->getPostType($this->getPostType())) {
                 $this->setTypeInstance($typeInstance);
-            }
-            else {
+            } else {
                 $this->setTypeInstance($this->postTypeManager->getPostType('post'));
             }
         }
@@ -137,20 +135,19 @@ class Post extends AbstractMeta implements ViewableInterface
     {
         parent::_afterLoad();
 
-        $this->getResource()->preparePosts(array($this));
+        $this->getResource()->preparePosts([$this]);
 
         return $this;
     }
 
     /**
      * @return string
-     */    
+     */
     public function getGuid()
     {
         if ($this->getPostType() === 'page') {
             return $this->url->getUrl() . '?page_id=' . $this->getId();
-        }
-        else if ($this->getPostType() === 'post') {
+        } elseif ($this->getPostType() === 'post') {
             return $this->url->getUrl() . '?p=' . $this->getId();
         }
 
@@ -176,15 +173,14 @@ class Post extends AbstractMeta implements ViewableInterface
         }
 
         if ((int)$maxWords > 1) {
-            $excerpt = trim(strip_tags(str_replace(array("\n", '  ', '  '), ' ', $this->_getData('post_content'))));
+            $excerpt = trim(strip_tags(str_replace(["\n", '  ', '  '], ' ', $this->_getData('post_content'))));
             $excerpt = preg_replace('/\[[\/]{0,1}[^\]]{1,}\]/', '', $excerpt);
             $excerpt = preg_replace('/[\s]{1,}/', " ", $excerpt);
             $excerpt = explode(' ', $excerpt);
 
             if (count($excerpt) > $maxWords) {
                 $excerpt = rtrim(implode(' ', array_slice($excerpt, 0, $maxWords)), "!@£$%^&*()_-+=[{]};:'\",<.>/? ") . '...';
-            }
-            else {
+            } else {
                 $excerpt = implode(' ', $excerpt);
             }
 
@@ -196,7 +192,6 @@ class Post extends AbstractMeta implements ViewableInterface
 
     /**
      * @deprecated use self::getExcerpt($maxWords)
-     *
      */
     public function getPostExcerpt($maxWords = 0)
     {
@@ -227,8 +222,7 @@ class Post extends AbstractMeta implements ViewableInterface
             if (preg_match('/<!--more (.*)-->/', $content, $matches)) {
                 $anchor = $matches[1];
                 $split = $matches[0];
-            }
-            else {
+            } else {
                 $split = '<!--more-->';
                 $anchor = $this->_getTeaserAnchor();
             }
@@ -262,7 +256,7 @@ class Post extends AbstractMeta implements ViewableInterface
      * Get the parent term
      * This is the term with the taxonomy as $taxonomy with the lowest term_id
      *
-     * @param string $taxonomy
+     * @param  string $taxonomy
      * @return \FishPig\WordPress\Model\Term
      */
     public function getParentTerm($taxonomy)
@@ -278,15 +272,15 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      * Get a collection of terms by the taxonomy
      *
-     * @param string $taxonomy
+     * @param  string $taxonomy
      * @return \FishPig\WordPress\Model\ResourceModel\Term\Collection
      */
     public function getTermCollection($taxonomy)
     {
         return $this->factory->create('FishPig\WordPress\Model\Term')
-          ->getCollection()
-              ->addTaxonomyFilter($taxonomy)
-              ->addPostIdFilter($this->getId());
+            ->getCollection()
+            ->addTaxonomyFilter($taxonomy)
+            ->addPostIdFilter($this->getId());
     }
 
     /**
@@ -297,10 +291,10 @@ class Post extends AbstractMeta implements ViewableInterface
         $key = 'term_collection_as_string_' . $taxonomy;
 
         if (!$this->hasData($key)) {
-            $string = array();
+            $string = [];
             $terms = $this->getTermCollection($taxonomy);
 
-            foreach($terms as $term) {
+            foreach ($terms as $term) {
                 $string[] = sprintf('<a href="%s">%s</a>', $term->getUrl(), $term->getName());
             }
 
@@ -308,16 +302,14 @@ class Post extends AbstractMeta implements ViewableInterface
 
             if ($itemCount === 0) {
                 $this->setData($key, false);
-            }
-            else if ($itemCount === 1) {
+            } elseif ($itemCount === 1) {
                 $this->setData($key, $string[0]);
-            }
-            else {
+            } else {
                 $lastItem = array_pop($string);
 
                 $this->setData($key, implode($joiner, $string) . $lastJoiner . $lastItem);
             }
-        }    
+        }
 
         return $this->_getData($key);
     }
@@ -335,7 +327,7 @@ class Post extends AbstractMeta implements ViewableInterface
             if ($collection = $this->getCollection()) {
                 $collection->addIsViewableFilter()
                     ->addPostTypeFilter($this->getPostType())
-                    ->addPostDateFilter(array('lt' => $this->_getData('post_date')))
+                    ->addPostDateFilter(['lt' => $this->_getData('post_date')])
                     ->setPageSize(1)
                     ->setCurPage(1)
                     ->setOrderByPostDate()
@@ -363,7 +355,7 @@ class Post extends AbstractMeta implements ViewableInterface
             $collection = $this->getCollection()
                 ->addIsViewableFilter()
                 ->addPostTypeFilter($this->getPostType())
-                ->addPostDateFilter(array('gt' => $this->_getData('post_date')))
+                ->addPostDateFilter(['gt' => $this->_getData('post_date')])
                 ->setPageSize(1)
                 ->setCurPage(1)
                 ->setOrderByPostDate('asc')
@@ -454,7 +446,7 @@ class Post extends AbstractMeta implements ViewableInterface
 
     /**
      * Returns a collection of images for this post
-     * 
+     *
      * @return \FishPig\WordPress\Model\ResourceModel\Image\Collection
      *
      * NB. This function has not been thoroughly tested
@@ -486,9 +478,9 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      * Get the featured image
      *
-     * @return \FishPig\WordPress\Model\Image
+     * @return     \FishPig\WordPress\Model\Image
      * @deprecated 1.0.0.0
-     * @replace self::getImage()
+     * @replace    self::getImage()
      */
     public function getFeaturedImage()
     {
@@ -612,7 +604,7 @@ class Post extends AbstractMeta implements ViewableInterface
 
         return \Magento\Framework\App\ObjectManager::getInstance()
             ->get(\FishPig\WordPress\Model\Post\Password::class)
-                ->doesPasswordMatch($this->getPostPassword());
+            ->doesPasswordMatch($this->getPostPassword());
     }
 
     /**
@@ -620,7 +612,7 @@ class Post extends AbstractMeta implements ViewableInterface
      * This only works if the post collection has been loaded with addStickyPostsToCollection
      *
      * @return bool
-     */    
+     */
     public function isSticky()
     {
         return $this->_getData('is_sticky');
@@ -648,13 +640,13 @@ class Post extends AbstractMeta implements ViewableInterface
 
             if ($this->isFrontPage()) {
                 $this->setUrl($this->url->getUrl());
-            }
-            else if ($this->hasPermalink()) {
-                $this->setUrl($this->url->getUrl(
-                    $this->_urlEncode($this->_getData('permalink'))
-                ));
-            }
-            else if ($this->getTypeInstance() && $this->getTypeInstance()->isHierarchical()) {
+            } elseif ($this->hasPermalink()) {
+                $this->setUrl(
+                    $this->url->getUrl(
+                        $this->_urlEncode($this->_getData('permalink'))
+                    )
+                );
+            } elseif ($this->getTypeInstance() && $this->getTypeInstance()->isHierarchical()) {
                 if ($uris = $this->getTypeInstance()->getAllRoutes()) {
                     if (isset($uris[$this->getId()])) {
                         $this->setUrl($this->url->getUrl($uris[$this->getId()] . '/'));
@@ -669,7 +661,7 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      * Encode the URL, ignoring '/' character
      *
-     * @param string $url
+     * @param  string $url
      * @return string
      */
     protected function _urlEncode($url)
@@ -677,7 +669,7 @@ class Post extends AbstractMeta implements ViewableInterface
         if (strpos($url, '/') !== false) {
             $parts = explode('/', $url);
 
-            foreach($parts as $key => $value) {
+            foreach ($parts as $key => $value) {
                 $parts[$key] = urlencode($value);
             }
 
@@ -760,7 +752,7 @@ class Post extends AbstractMeta implements ViewableInterface
     public function getParentPage()
     {
         return $this->isType('page') ? $this->getParentPost() : false;
-    }    
+    }
 
     /**
      *
@@ -789,7 +781,7 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getMetaTableObjectField()
     {
@@ -854,9 +846,9 @@ class Post extends AbstractMeta implements ViewableInterface
      *
      * @return FishPig\WordPress\Model\Post
      */
-     public function getLatestRevision()
-     {
-         if (!$this->hasLatestRevision()) {
+    public function getLatestRevision()
+    {
+        if (!$this->hasLatestRevision()) {
             $revision = $this->getCollection()
                 ->addFieldToFilter('post_parent', $this->getId())
                 ->addPostTypeFilter('revision')
@@ -865,10 +857,10 @@ class Post extends AbstractMeta implements ViewableInterface
                 ->getFirstItem();
 
             $this->setLatestRevision($revision->getId() ? $revision : false);
-         }
+        }
 
-         return $this->_getData('latest_revision');
-     }
+        return $this->_getData('latest_revision');
+    }
 
     /**
      * Return cache identities
@@ -887,7 +879,7 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function setAsGlobal()
     {
-        $GLOBALS['post'] = json_decode(json_encode(array('ID' => $this->getId())));
+        $GLOBALS['post'] = json_decode(json_encode(['ID' => $this->getId()]));
 
         return $this;
     }
@@ -906,8 +898,7 @@ class Post extends AbstractMeta implements ViewableInterface
 
         if ($this->isFrontPage()) {
             $pageConfig->addBodyClass('wordpress-frontpage');
-        }
-        else if ($this->isPageForPosts()) {
+        } elseif ($this->isPageForPosts()) {
             $pageConfig->addBodyClass('wordpress-post-list');
         }
 

@@ -17,9 +17,9 @@ class CustomHtml extends AbstractWidget
     }
 
     /**
-    * Render html output
-    *
-    * @return string
+     * Render html output
+     *
+     * @return string
      */
     protected function _beforeToHtml()
     {

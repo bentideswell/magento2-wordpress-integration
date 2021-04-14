@@ -21,13 +21,11 @@ class Addon extends \Magento\Config\Block\System\Config\Form\Field
         try {
             $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
                 ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Version');
-        }
-        catch (\ReflectionException $e) {
+        } catch (\ReflectionException $e) {
             try {
                 $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
                     ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Addon');
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 return '';
             }
         }

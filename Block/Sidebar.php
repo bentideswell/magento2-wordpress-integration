@@ -4,10 +4,14 @@
  */
 namespace FishPig\WordPress\Block;
 
-/** Parent */
+/**
+ * Parent
+*/
 use Magento\Framework\View\Element\Template;
 
-/** Constructor Args*/
+/**
+ * Constructor Args
+*/
 use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\WidgetManager;
 use FishPig\WordPress\Model\OptionManager;
@@ -15,7 +19,8 @@ use FishPig\WordPress\Model\Plugin;
 use Magento\Framework\Registry;
 
 class Sidebar extends Template
-{    
+{
+    
     /**
      *
      */
@@ -36,23 +41,22 @@ class Sidebar extends Template
      *
      * @param Context $context
      * @param App
-     * @param array $data
+     * @param array   $data
      */
     public function __construct(
-               Context $context,
-       WidgetManager $widgetManager,
-       OptionManager $optionManager,
-              Plugin $plugin,
-            Registry $registry,
-                 array $data = []
-    )
-    {
+        Context $context,
+        WidgetManager $widgetManager,
+        OptionManager $optionManager,
+        Plugin $plugin,
+        Registry $registry,
+        array $data = []
+    ) {
         $this->widgetManager = $widgetManager;
         $this->optionManager = $optionManager;
         $this->plugin        = $plugin;
         $this->registry      = $registry;
 
-    parent::__construct($context, $data);
+        parent::__construct($context, $data);
     }
 
     /**
@@ -63,7 +67,7 @@ class Sidebar extends Template
     protected function _beforeToHtml()
     {
         if ($widgets = $this->getWidgetsArray()) {
-            foreach($widgets as $widgetType) {
+            foreach ($widgets as $widgetType) {
                 if ($block = $this->widgetManager->getWidget($widgetType)) {
                     $this->setChild('wordpress_widget_' . $widgetType, $block);
                 }
@@ -157,17 +161,17 @@ class Sidebar extends Template
                 }
             }
 
-            # Single post by type
+            // Single post by type
             if ($widgetArea = $this->_getArrayValue($settings, 'post_type_single/' . $post->getPostType() . '/' . $this->getWidgetArea())) {
                 return $widgetArea;
             }
 
-            # Single post by category
+            // Single post by category
             if ($categoryIdResults = $post->getResource()->getParentTermsByPostId($post->getId(), $taxonomy = 'category')) {
                 $categoryIdResults = array_pop($categoryIdResults);
 
                 if (isset($categoryIdResults['category_ids'])) {
-                    foreach(explode(',', $categoryIdResults['category_ids']) as $categoryId) {
+                    foreach (explode(',', $categoryIdResults['category_ids']) as $categoryId) {
                         if ($widgetArea = $this->_getArrayValue($settings, 'category_single/' . $categoryId . '/' . $this->getWidgetArea())) {
                             return $widgetArea;
                         }
@@ -175,37 +179,44 @@ class Sidebar extends Template
                 }
             }
         }
-        else if ($postType = $this->registry->registry('wordpress_post_type')) {
+        
+        if ($postType = $this->registry->registry('wordpress_post_type')) {
             if (isset($settings['post_type_archive'][$postType->getPostType()][$this->getWidgetArea()])) {
                 return $settings['post_type_archive'][$postType->getPostType()][$this->getWidgetArea()];
             }
         }
-        else if ($term = $this->registry->registry('wordpress_term')) {
+        
+        if ($term = $this->registry->registry('wordpress_term')) {
             if ($widgetArea = $this->_getArrayValue($settings, $term->getTaxonomy() . '_archive/' . $term->getId() . '/' . $this->getWidgetArea())) {
                 return $widgetArea;
             }
         }
-        else if (in_array('wordpress_homepage', $handles)) {
+        
+        if (in_array('wordpress_homepage', $handles)) {
             if ($widgetArea = $this->_getArrayValue($settings, 'blog/' . $this->getWidgetArea())) {
                 return $widgetArea;
-            }    
+            }
         }
-        else if ($author = $this->registry->registry('wordpress_author')) {
+        
+        if ($author = $this->registry->registry('wordpress_author')) {
             if ($widgetArea = $this->_getArrayValue($settings, 'authors/' . $author->getId() . '/' . $this->getWidgetArea())) {
                 return $widgetArea;
             }
         }
-        else if (in_array('wordpress_search_index', $handles)) {
+        
+        if (in_array('wordpress_search_index', $handles)) {
             if ($widgetArea = $this->_getArrayValue($settings, 'search/' . $this->getWidgetArea())) {
                 return $widgetArea;
             }
         }
-        else if (in_array('wordpress_archive_view', $handles)) {
+        
+        if (in_array('wordpress_archive_view', $handles)) {
             if ($widgetArea = $this->_getArrayValue($settings, 'date/' . $this->getWidgetArea())) {
                 return $widgetArea;
             }
         }
-        else if (in_array('wordpress_post_tag_view', $handles)) {
+        
+        if (in_array('wordpress_post_tag_view', $handles)) {
             if ($widgetArea = $this->_getArrayValue($settings, 'tags/' . $this->getWidgetArea())) {
                 return $widgetArea;
             }
@@ -217,15 +228,15 @@ class Sidebar extends Template
     /**
      * Retrieve a deep value from a multideimensional array
      *
-     * @param array $arr
-     * @param string $key
+     * @param  array  $arr
+     * @param  string $key
      * @return string|null
      */
     protected function _getArrayValue($arr, $key)
     {
         $keys = explode('/', trim($key, '/'));
 
-        foreach($keys as $key) {
+        foreach ($keys as $key) {
             if (!isset($arr[$key])) {
                 return null;
             }

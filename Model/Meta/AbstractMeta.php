@@ -52,7 +52,7 @@ abstract class AbstractMeta extends AbstractModel
     /**
      * Retrieve a meta value
      *
-     * @param string $key
+     * @param  string $key
      * @return false|string
      */
     public function getMetaValue($key)
@@ -62,7 +62,7 @@ abstract class AbstractMeta extends AbstractModel
         }
 
         return $this->meta[$key];
-    }    
+    }
 
     /**
      * Get an array of all of the meta values associated with this post
@@ -87,7 +87,7 @@ abstract class AbstractMeta extends AbstractModel
     /**
      * Changes the wp_ to the correct table prefix
      *
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     protected function _getRealMetaKey($key)

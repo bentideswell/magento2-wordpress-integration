@@ -76,14 +76,14 @@ class Collection extends AbstractMetaCollection
 
         if (!$this->getFlag('skip_permalink_generation')) {
             if ($sql = $this->getResource()->getPermalinkSqlColumn()) {
-                $this->getSelect()->columns(array('permalink' => $sql));
+                $this->getSelect()->columns(['permalink' => $sql]);
             }
         }
 
         if (!$this->hasPostTypeFilter()) {
             if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
                 if ($postTypes = $this->postTypeManager->getPostTypes()) {
-                    $supportedTypes = array();
+                    $supportedTypes = [];
 
                     foreach ($postTypes as $postType) {
                         if ($postType->isTaxonomySupported($this->getFlag('source')->getTaxonomy())) {
@@ -98,14 +98,14 @@ class Collection extends AbstractMetaCollection
 
         if (count($this->postTypes) === 1) {
             if ($this->postTypes[0] === '*') {
-                $this->postTypes = array();
+                $this->postTypes = [];
             }
         }
 
         if (count($this->postTypes) === 0) {
-            $this->addFieldToFilter('post_type', array('in' => array_keys($this->postTypeManager->getPostTypes())));
+            $this->addFieldToFilter('post_type', ['in' => array_keys($this->postTypeManager->getPostTypes())]);
         } else {
-            $this->addFieldToFilter('post_type', array('in' => $this->postTypes));
+            $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
         }
 
         return $this;
@@ -131,18 +131,18 @@ class Collection extends AbstractMetaCollection
      * If you change the param $operator to AND, only posts that are in a category specified in
      * $categoryIds and $postIds will be returned
      *
-     * @param mixed $postIds
-     * @param mixed $categoryIds
+     * @param mixed  $postIds
+     * @param mixed  $categoryIds
      * @param string $operator
      */
     public function addCategoryAndPostIdFilter($postIds, $categoryIds, $operator = 'OR')
     {
         if (!is_array($postIds)) {
-            $postIds = array($postIds);
+            $postIds = [$postIds];
         }
 
         if (!is_array($categoryIds)) {
-            $categoryIds = array($categoryIds);
+            $categoryIds = [$categoryIds];
         }
 
         if (count($categoryIds) > 0) {
@@ -168,7 +168,7 @@ class Collection extends AbstractMetaCollection
     /**
      * Filter the collection by a category ID
      *
-     * @param int $categoryId
+     * @param  int $categoryId
      * @return $this
      */
     public function addCategoryIdFilter($categoryId)
@@ -179,7 +179,7 @@ class Collection extends AbstractMetaCollection
     /**
      * Filter the collection by a tag ID
      *
-     * @param int $categoryId
+     * @param  int $categoryId
      * @return $this
      */
     public function addTagIdFilter($tagId)
@@ -237,7 +237,7 @@ class Collection extends AbstractMetaCollection
     /**
      * Filter the collection so that only sticky posts are returned
      *
-     * @param bool $flag = true
+     * @param  bool $flag = true
      * @return $this
      */
     public function addIsStickyPostFilter($flag = true)
@@ -256,7 +256,7 @@ class Collection extends AbstractMetaCollection
     /**
      * Add a post type filter to the collection
      *
-     * @param string|array $postTypes
+     * @param  string|array $postTypes
      * @return $this
      */
     public function addPostTypeFilter($postTypes)
@@ -282,7 +282,6 @@ class Collection extends AbstractMetaCollection
 
     /**
      * Adds a published filter to collection
-     *
      */
     public function addIsPublishedFilter()
     {
@@ -314,7 +313,7 @@ class Collection extends AbstractMetaCollection
     {
         $op = is_array($status) ? 'in' : 'eq';
 
-        return $this->addFieldToFilter('post_status', array($op => $status));
+        return $this->addFieldToFilter('post_status', [$op => $status]);
     }
 
     /**
@@ -324,7 +323,7 @@ class Collection extends AbstractMetaCollection
      */
     public function setOrderByPostDate($dir = 'desc')
     {
-        $this->_orders = array();
+        $this->_orders = [];
 
         return $this->setOrder('post_date', $dir);
     }
@@ -337,7 +336,7 @@ class Collection extends AbstractMetaCollection
     public function addPostDateFilter($dateStr)
     {
         if (!is_array($dateStr) && strpos($dateStr, '%') !== false) {
-            $this->addFieldToFilter('post_date', array('like' => $dateStr));
+            $this->addFieldToFilter('post_date', ['like' => $dateStr]);
         } else {
             $this->addFieldToFilter('post_date', $dateStr);
         }
@@ -358,8 +357,8 @@ class Collection extends AbstractMetaCollection
     /**
      * Filters the collection by an array of words on the array of fields
      *
-     * @param array $words - words to search for
-     * @param array $fields - fields to search
+     * @param array  $words    - words to search for
+     * @param array  $fields   - fields to search
      * @param string $operator
      */
     public function addSearchStringFilter(array $words, array $fields)
@@ -372,7 +371,7 @@ class Collection extends AbstractMetaCollection
 
             // Ensure main query only contains correct posts
             foreach ($words as $word => $wordWeight) {
-                $conditions = array();
+                $conditions = [];
 
                 foreach ($fields as $field => $fieldWeight) {
                     $conditions[] = $db->quoteInto('`main_table`.`' . $field . '` LIKE ?', '%' . $this->_escapeSearchString($word) . '%');
@@ -383,16 +382,17 @@ class Collection extends AbstractMetaCollection
 
             if (count($words) > 1) {
                 // Add full word into words array with higher weight
-                $words = array(implode(' ', array_keys($words)) => 5) + $words;
+                $words = [implode(' ', array_keys($words)) => 5] + $words;
             }
 
             // Calculate weight
-            $weightSql = array();
+            $weightSql = [];
 
             foreach ($words as $word => $wordWeight) {
                 foreach ($fields as $field => $fieldWeight) {
                     $weightSql[] = $db->quoteInto(
-                        'IF (`main_table`.`' . $field . '` LIKE ?, ' . ($wordWeight + $fieldWeight) . ', 0)', '%' . $this->_escapeSearchString($word) . '%'
+                        'IF (`main_table`.`' . $field . '` LIKE ?, ' . ($wordWeight + $fieldWeight) . ', 0)',
+                        '%' . $this->_escapeSearchString($word) . '%'
                     );
                 }
             }
@@ -400,7 +400,7 @@ class Collection extends AbstractMetaCollection
             $expression = new \Zend_Db_Expr('(' . implode(' + ', $weightSql) . ')');
 
             // Add Weight column to query
-            $this->getSelect()->columns(array('weight' => $expression));
+            $this->getSelect()->columns(['weight' => $expression]);
 
             // Reset order then add order by weight
             $this->getSelect()->reset('order')->order('weight DESC');
@@ -418,7 +418,7 @@ class Collection extends AbstractMetaCollection
     /**
      * Fix search issue when searching for: "%FF%FE"
      *
-     * @param string
+     * @param  string
      * @return string
      */
     protected function _escapeSearchString($s)
@@ -430,7 +430,7 @@ class Collection extends AbstractMetaCollection
      * Filters the collection by a term ID and type
      *
      * @param int|array $termId
-     * @param string $type
+     * @param string    $type
      */
     public function addTermIdFilter($termId, $type)
     {
@@ -449,7 +449,7 @@ class Collection extends AbstractMetaCollection
      * Filters the collection by a term and type
      *
      * @param int|array $termId
-     * @param string $type
+     * @param string    $type
      */
     public function addTermFilter($term, $type, $field = 'slug')
     {
@@ -477,9 +477,9 @@ class Collection extends AbstractMetaCollection
             $tableTermRel     = $this->getTable('wordpress_term_relationship');
             $tableTerms = $this->getTable('wordpress_term');
 
-            $this->getSelect()->join(array('rel_' . $type => $tableTermRel), "`rel_{$type}`.`object_id`=`main_table`.`ID`", '')
-                ->join(array('tax_' . $type => $tableTax), "`tax_{$type}`.`term_taxonomy_id`=`rel_{$type}`.`term_taxonomy_id` AND `tax_{$type}`.`taxonomy`='{$type}'", '')
-                ->join(array('terms_' . $type => $tableTerms), "`terms_{$type}`.`term_id` = `tax_{$type}`.`term_id`", '')
+            $this->getSelect()->join(['rel_' . $type => $tableTermRel], "`rel_{$type}`.`object_id`=`main_table`.`ID`", '')
+                ->join(['tax_' . $type => $tableTax], "`tax_{$type}`.`term_taxonomy_id`=`rel_{$type}`.`term_taxonomy_id` AND `tax_{$type}`.`taxonomy`='{$type}'", '')
+                ->join(['terms_' . $type => $tableTerms], "`terms_{$type}`.`term_id` = `tax_{$type}`.`term_id`", '')
                 ->distinct();
 
             $this->_termTablesJoined[$type] = true;
@@ -527,7 +527,7 @@ class Collection extends AbstractMetaCollection
     /**
      * Order the collection by the menu order field
      *
-     * @param string $dir
+     * @param  string $dir
      * @return
      */
     public function setOrderByMenuOrder($dir = 'asc')

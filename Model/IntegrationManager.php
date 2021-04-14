@@ -57,13 +57,12 @@ class IntegrationManager
 
             if ($this->isModuleEnabledForScope()) {
                 try {
-                    foreach($this->integrationTests as $integrationTest) {
+                    foreach ($this->integrationTests as $integrationTest) {
                         $integrationTest->runTest();
                     }
 
                     $this->exception[$storeId] = true;
-                }
-                catch (Exception $e) {
+                } catch (Exception $e) {
                     $this->exception[$storeId] = $e;
                     $this->logger->error($e);
                 }

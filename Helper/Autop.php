@@ -15,7 +15,7 @@ class Autop extends AbstractHelper
      * Finally go through each shortcode again to check if another shortcode
      * has handled it and if so add it to the assetInjectionShortcodes array
      *
-     * @param $string
+     * @param  $string
      * @return string
      */
     public function autop($string)
@@ -24,22 +24,27 @@ class Autop extends AbstractHelper
     }
 
     /**
-     * @return 
+     * @return
      */
     public function addParagraphTagsToString($string)
     {
-        if (strpos((string)$string, '<!-- wp:' ) !== false) {
+        if (strpos((string)$string, '<!-- wp:') !== false) {
             return $string;
         }
 
-        if ($this->_getFunctionFromWordPress('wpautop', 'wp-includes' . DIRECTORY_SEPARATOR . 'formatting.php', array(
+        if ($this->_getFunctionFromWordPress(
+            'wpautop',
+            'wp-includes' . DIRECTORY_SEPARATOR . 'formatting.php',
+            [
             'wpautop',
             'wp_replace_in_html_tags',
             '_autop_newline_preservation_helper',
             'wp_html_split',
             'get_html_split_regex',
             'shortcode_unautop',
-        ))) {
+            ]
+        )
+        ) {
             $string = fp_wpautop($string);
 
             $string = fp_shortcode_unautop($string);
@@ -52,9 +57,9 @@ class Autop extends AbstractHelper
     }
 
     /**
-     * @return 
+     * @return
      */
-    protected function _getFunctionFromWordPress($function, $file, $depends = array())
+    protected function _getFunctionFromWordPress($function, $file, $depends = [])
     {
         $newFunction = 'fp_' . $function;
 
@@ -72,15 +77,14 @@ class Autop extends AbstractHelper
         $code    = preg_replace('/\/\*\*.*\*\//Us', '', file_get_contents($targetFile));
         $depends = array_flip($depends);
 
-        foreach($depends as $key => $value) {
+        foreach ($depends as $key => $value) {
             $depends[$key] = '';
         }
 
-        foreach($depends as $function => $ignore) {
+        foreach ($depends as $function => $ignore) {
             if (preg_match('/(function ' . $function . '\(.*)function/sU', $code, $matches)) {
                 $depends[$function] = $matches[1];
-            }
-            else {
+            } else {
                 return false;
             }
         }

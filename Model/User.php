@@ -60,7 +60,7 @@ class User extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * @param string $email
+     * @param  string $email
      * @return $this
      */
     public function loadByEmail($email)
@@ -110,7 +110,7 @@ class User extends AbstractMeta implements ViewableInterface
     public function getRole()
     {
         if ($roles = $this->getMetaValue($this->getTablePrefix() . 'capabilities')) {
-            foreach(unserialize($roles) as $role => $junk) {
+            foreach (unserialize($roles) as $role => $junk) {
                 return $role;
             }
         }
@@ -121,12 +121,12 @@ class User extends AbstractMeta implements ViewableInterface
     /**
      * Set the user's role
      *
-     * @param string $role
+     * @param  string $role
      * @return $this
      */
     public function setRole($role)
     {
-        $this->setMetaValue($this->getTablePrefix() . 'capabilities', serialize(array($role => '1')));
+        $this->setMetaValue($this->getTablePrefix() . 'capabilities', serialize([$role => '1']));
 
         return $this;
     }
@@ -178,7 +178,7 @@ class User extends AbstractMeta implements ViewableInterface
      */
     public function getGravatarUrl($size = 50)
     {
-        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getUserEmail()))) . "?d=" . urlencode( $this->_getDefaultGravatarImage() ) . "&s=" . $size;
+        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getUserEmail()))) . "?d=" . urlencode($this->_getDefaultGravatarImage()) . "&s=" . $size;
     }
 
     /**

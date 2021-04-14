@@ -29,7 +29,7 @@ class AssetInjector
      *
      * @var bool
      */
-    static protected $status = false;
+    protected static $status = false;
 
     /**
      * Module version. This is used for generating md5 hashes.
@@ -52,9 +52,9 @@ class AssetInjector
      * @return
      */
     public function __construct(
-        IntegrationManager $integrationManager, 
-        StoreManagerInterface $storeManager, 
-        DirectoryList $directoryList, 
+        IntegrationManager $integrationManager,
+        StoreManagerInterface $storeManager,
+        DirectoryList $directoryList,
         ModuleListInterface $moduleList,
         WPDirectoryList $wpDirectoryList,
         ShortcodeManager $shortcode,
@@ -76,7 +76,7 @@ class AssetInjector
      *
      * @return bool
      */
-    static public function isAbspathDefined()
+    public static function isAbspathDefined()
     {
         return defined('ABSPATH');
     }
@@ -107,8 +107,8 @@ class AssetInjector
             
             // Strip all Magento JS and inject WordPress JS
             return str_replace(
-                '</body>', 
-                "\n\n" . $content . "\n\n" . '</body>', 
+                '</body>',
+                "\n\n" . $content . "\n\n" . '</body>',
                 preg_replace('/<script[^>]*>.*<\/script>/Uis', '', $bodyHtml)
             );
         }
@@ -170,7 +170,11 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                         $this->getFPJS(),
                         $this->processRequireJsConfig($requireJsPaths, $requireContextToken),
                         $this->processRequireGroupsIntoJsString(
-                            $requireGroups, $requireContextToken, $depsString, $depsTokenString, $pathsString
+                            $requireGroups,
+                            $requireContextToken,
+                            $depsString,
+                            $depsTokenString,
+                            $pathsString
                         )
                     );
     
@@ -218,7 +222,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Loop through shortcodes and retrieve assets and inline code
      *
-     * @param array $shortcodes
+     * @param  array $shortcodes
      * @return array
      */
     protected function getAssetsFromShortcodes(array $shortcodes, &$bodyHtml)
@@ -227,14 +231,14 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         $inline = [];
         
         // Get assets from plugins
-        foreach($shortcodes as $class => $shortcodeInstance) {
+        foreach ($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'getRequiredAssets') && ($buffer = $shortcodeInstance->getRequiredAssets($bodyHtml))) {
                 $assets = array_merge($assets, $buffer);
             }
         }
 
         // Get inline JS/CSS
-        foreach($shortcodes as $class => $shortcodeInstance) {
+        foreach ($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'getInlineJs') && ($buffer = $shortcodeInstance->getInlineJs())) {
                 $inline = array_merge($inline, $buffer);
             }
@@ -245,7 +249,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
         // Remove any JS/CSS that is in $inline from $assets to prevent duplication
         if (count($inline) > 0) {
-            foreach($inline as $asset) {
+            foreach ($inline as $asset) {
                 if (($key = array_search($asset, $assets)) !== false) {
                     unset($assets[$key]);
                 }
@@ -258,12 +262,12 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Determine whether the current request is from a visual editor (page builder)
      *
-     * @param array $shortcodes
+     * @param  array $shortcodes
      * @return bool
      */
     protected function isVisualEditorMode(array $shortcodes)
     {
-        foreach($shortcodes as $class => $shortcodeInstance) {
+        foreach ($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'isVisualEditorMode') && ($buffer = $shortcodeInstance->isVisualEditorMode())) {
                 return true;
             }
@@ -275,9 +279,9 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Find meta links, add them to $bodyHtml and remove them from $content
      *
-     * @param array $shortcodes
-     * @param string $bodyHtml
-     * @param string $content
+     * @param  array  $shortcodes
+     * @param  string $bodyHtml
+     * @param  string $content
      * @return void
      */
     protected function processMetaLinks(array $shortcodes, &$bodyHtml, &$content)
@@ -285,7 +289,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         $metaLinks = [];
 
         // Get Head Meta and Link tags
-        foreach($shortcodes as $class => $shortcodeInstance) {
+        foreach ($shortcodes as $class => $shortcodeInstance) {
             if (method_exists($shortcodeInstance, 'getMetaAndLinkTags') && ($buffer = $shortcodeInstance->getMetaAndLinkTags($bodyHtml))) {
                 $metaLinks = array_merge($metaLinks, $buffer);
             }
@@ -293,7 +297,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
         // Extract <link tags from content
         if (preg_match_all('/<link[^>]+>/', $content, $linkMatches)) {
-            foreach($linkMatches[0] as $linkMatch) {
+            foreach ($linkMatches[0] as $linkMatch) {
                 if (preg_match('/' . $this->_getIeCondRegex($linkMatch) . '/', $content, $matches)) {
                     $linkMatch = $matches[0];
                 }
@@ -314,7 +318,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Extract script tags from $content and remove them from $content
      *
-     * @param string $content
+     * @param  string $content
      * @return array
      */
     protected function extractScriptsFromContent(&$content)
@@ -324,9 +328,9 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         $regexes = [$this->_getIeCondRegex($scriptRegex, false), $scriptRegex];
 
         // Extract all JS from $content
-        foreach($regexes as $regex) {
+        foreach ($regexes as $regex) {
             if (preg_match_all('/' . $regex . '/sUi', $content, $matches)) {
-                foreach($matches[0] as $v) {
+                foreach ($matches[0] as $v) {
                     $content = str_replace($v, '', $content);
                     $scripts[] = $v;
                 }
@@ -340,7 +344,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
      *
      */
     public function extractMagentoDepsFromArray(&$scripts, &$magentoDeps, &$requirePaths)
-    {   
+    {
         $wpSiteUrl = $this->wpUrl->getSiteUrl();
         $wpBasePath = $this->wpDirectoryList->getBasePath();
         
@@ -372,7 +376,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 'paths' => [
                     '/wp-includes/js/backbone.min.js',
                     '/wp-includes/js/backbone.js',
-                    
+
                 ],
                 'map' => true
             ]*/
@@ -405,8 +409,8 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
             }
         }
 
-        foreach($scripts as $key => $script) {
-            foreach($availableInMagento as $moduleName => $moduleData) {
+        foreach ($scripts as $key => $script) {
+            foreach ($availableInMagento as $moduleName => $moduleData) {
                 foreach ($moduleData['paths'] as $modulePath) {
                     if (strpos($script, $modulePath) !== false) {
                         $magentoDeps[$moduleName] = !empty($moduleData['token']) ? $moduleData['token'] : 'undefined';
@@ -430,7 +434,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         // @todo - move this to it's own method
         $unshift = [];
 
-        foreach($scripts as $key => $script) {
+        foreach ($scripts as $key => $script) {
             if (isset($scripts[$key])) {
                 // Move reCaptcha script to start
                 if (strpos($script, 'www.google.com/recaptcha/') !== false) {
@@ -445,7 +449,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $unshift = array_reverse($unshift);
             }
             
-            foreach($unshift as $script) {
+            foreach ($unshift as $script) {
                 array_unshift($scripts, $script);
             }
         }
@@ -456,32 +460,29 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      *
      *
-     * @param array $scripts
+     * @param  array $scripts
      * @return array
      */
     protected function extractStaticScriptsFromArray(&$scripts)
     {
         $scriptsStatic = [];
         
-        foreach($scripts as $skey => $script) {
+        foreach ($scripts as $skey => $script) {
             if (preg_match('/type=(["\']{1})(.*)\\1/U', $script, $match)) {
                 if (in_array($match[2], ['text/template', 'text/x-template'])) {
                     $scriptsStatic[] = $scripts[$skey];
 
                     unset($scripts[$skey]);
-                }
-                else if ($match[2] !== 'text/javascript') {
+                } elseif ($match[2] !== 'text/javascript') {
                     $scriptsStatic[] = $scripts[$skey];
 
                     unset($scripts[$skey]);
                 }
-            }
-            else if (preg_match('/<script[^>]+async/U', $script, $match)) {
+            } elseif (preg_match('/<script[^>]+async/U', $script, $match)) {
                 $scriptsStatic[] = $scripts[$skey];
 
                 unset($scripts[$skey]);
-            }
-            else if (preg_match('/<script([^>]*)>(.*)<\/script>/Us', $script, $match)) {
+            } elseif (preg_match('/<script([^>]*)>(.*)<\/script>/Us', $script, $match)) {
                 // Script tags with no SRC but data attributes
                 if (trim($match[2]) === '') {
                     if (strpos($match[1], ' src=') === false && strpos($match[1], ' data-') !== false) {
@@ -503,7 +504,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
      */
     protected function processScriptArrayUrls(&$scripts)
     {
-        foreach($scripts as $skey => $script) {
+        foreach ($scripts as $skey => $script) {
             if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
                 $originalScriptUrl = $matches[1];
                 
@@ -513,7 +514,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 if (strpos($originalScriptUrl, '../') !== false) {
                     $urlParts = explode('/', $originalScriptUrl);
 
-                    while(($key = array_search('..', $urlParts)) !== false) {
+                    while (($key = array_search('..', $urlParts)) !== false) {
                         if (!isset($urlParts[$key-1])) {
                             break;
                         }
@@ -528,7 +529,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $migratedScriptUrl = $this->_migrateJsAndReturnUrl($realPathUrl);
 
                 if (strpos($migratedScriptUrl, 'feefo') !== false) {
-                    // No .js                    
+                    // No .js
                     if (strpos($migratedScriptUrl, '.js') === false) {
                         // No query string so lets add one to stop Magento adding .js
                         if (strpos($migratedScriptUrl, '?') === false) {
@@ -544,16 +545,15 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $scripts[$skey] = $this->_fixDomReady($script);
             }
         }
-
     }
     
     /**
-     * @param array $scripts
+     * @param  array $scripts
      * @return void
      */
     protected function processScriptArrayInlineScripts(array &$scripts)
     {
-        foreach($scripts as $skey => $script) {
+        foreach ($scripts as $skey => $script) {
             if (!preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
                 if ($this->canMigrateInlineScriptToExternal($script)) {
                     $inlineJsExternalFile = $this->getBaseJsPath() . 'inex-' . md5($script) . '.js';
@@ -572,12 +572,11 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                     $inlineJsExternalUrl = $this->getBaseJsUrl() . basename($inlineJsExternalFile);
 
                     $scripts[$skey] = $script = '<script type="text/javascript" src="' . $inlineJsExternalUrl . '"></script>';
-                }
-                else if (preg_match('/(<script[^>]*>)(.*)(<\/script>)/Us', trim($script), $match)) {
+                } elseif (preg_match('/(<script[^>]*>)(.*)(<\/script>)/Us', trim($script), $match)) {
                     // Remove comments from inner JS
-#                    $match[2] = trim(preg_replace('/\/\*.*\*\//Us', '', $match[2]));
+                    // $match[2] = trim(preg_replace('/\/\*.*\*\//Us', '', $match[2]));
                     
-#                    $scripts[$skey] = $script = sprintf("%sFPJS.eval(function(){%s});%s", $match[1], $match[2], $match[3]);
+                    // $scripts[$skey] = $script = sprintf("%sFPJS.eval(function(){%s});%s", $match[1], $match[2], $match[3]);
                 }
             }
         }
@@ -586,8 +585,8 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     }
     
     /**
-     * @param array $scripts
-     * @param array $requireJsPaths
+     * @param  array $scripts
+     * @param  array $requireJsPaths
      * @return array
      */
     protected function processRequireGroupsFromScriptsArray(array $scripts)
@@ -597,7 +596,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
         $changeToCoreVersion = $this->getRequireJsMap();
         
-        foreach($scripts as $skey => $script) {
+        foreach ($scripts as $skey => $script) {
             if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
                 $originalScriptUrl = $matches[1];
 
@@ -613,17 +612,14 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                     }
                     
                     $requireGroups[] = $requireJsAlias;
-                }
-                else {
+                } else {
                     if (isset($requireGroups[count($requireGroups)-1]) && is_array($requireGroups[count($requireGroups)-1])) {
                         $requireGroups[count($requireGroups)-1][] = $requireJsAlias;
-                    }
-                    else {
+                    } else {
                         $requireGroups[] = [$requireJsAlias];
                     }
                 }
-            }
-            else {
+            } else {
                 $requireGroups[] =  $script;
             }
         }
@@ -635,8 +631,8 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
      * The first require call uses require and not $requireContextToken so that we can skip
      * downloading files already downloaded by require
      *
-     * @param array $requireGroups
-     * @param string $requireContextTokn
+     * @param  array  $requireGroups
+     * @param  string $requireContextTokn
      * @return string
      */
     protected function processRequireGroupsIntoJsString($requireGroups, $requireContextToken, $magentoDepsString, $magentoDepsTokens, $pathsString)
@@ -655,11 +651,11 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
 
 
-        foreach($requireGroups as $skey => $requireGroup) {
+        foreach ($requireGroups as $skey => $requireGroup) {
             $tabs = str_repeat("    ", $level);
 
             if (is_array($requireGroup) || strpos($requireGroup, '<script') === false) {
-                // Set specific for this grou                
+                // Set specific for this grou
                 $requireTokenForGroup = array_intersect($this->getRequireJsMap(), (array)$requireGroup) ? 'require' : $requireContextToken;
 
                 $requireJsTemplate = str_replace(
@@ -669,8 +665,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 );
 
                 $level++;
-            }
-            else {
+            } else {
                 $requireJsTemplate = str_replace($randomTag, $this->_stripScriptTags($requireGroup) . "\n" . $randomTag . "\n", $requireJsTemplate);
             }
         }
@@ -682,16 +677,16 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     }
         
     /**
-     * @param array $requireJsPaths
-     * @param string $requireContextToken
+     * @param  array  $requireJsPaths
+     * @param  string $requireContextToken
      * @return string
      */
     protected function processRequireJsConfig($requireJsPaths, $requireContextToken)
-    {   
+    {
         $requireJsConfig = "var " . $requireContextToken . "=requirejs.config({\n  \"baseUrl\": require.toUrl(''),\n  \"context\": \"" . $requireContextToken . "\",\n  \"paths\": {\n    ";
 
         // Loop through paths, remove .js and set
-        foreach($requireJsPaths as $alias => $path) {
+        foreach ($requireJsPaths as $alias => $path) {
             if (substr($path, -3) === '.js') {
                 $path = substr($path, 0, -3);
             }
@@ -720,7 +715,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
     /**
      *
-     * @param string $url
+     * @param  string $url
      * @return string
      */
     protected function _getRequireJsAlias($url)
@@ -735,7 +730,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
         if ($requireJsAlias && strlen($requireJsAlias) > 5) {
             return $requireJsAlias;
-        }                    
+        }
 
         return $this->_hashString($url);
     }
@@ -743,7 +738,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
      *
-     * @param string $externalScriptUrlFull
+     * @param  string $externalScriptUrlFull
      * @return string
      */
     protected function _migrateJsAndReturnUrl($externalScriptUrlFull, $fixAmd = true)
@@ -782,7 +777,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         }
         
         // Path to new script file
-        $newScriptPath = $this->getBaseJsPath();        
+        $newScriptPath = $this->getBaseJsPath();
 
         if ($this->debug) {
             $newScriptPath .= str_replace('/', '-', substr($relativeScriptFile, 0, -3)) . '-';
@@ -849,7 +844,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Given a URL, check for define.AMD and if found, rewrite file and disable this functionality
      *
-     * @param string $externalScriptUrlFull
+     * @param  string $externalScriptUrlFull
      * @return string
      */
     protected function _getMergedJsUrl(array $externalScriptUrlFulls, $prefix = '')
@@ -863,7 +858,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         $scriptContents = [];
         $localScriptFiles = [];
 
-        foreach($externalScriptUrlFulls as $externalScriptUrlFull) {
+        foreach ($externalScriptUrlFulls as $externalScriptUrlFull) {
             $externalScriptUrl = $this->_cleanQueryString($externalScriptUrlFull);
 
             if ($this->_isMigratedUrl($externalScriptUrl)) {
@@ -881,8 +876,8 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         $newScriptUrl = $this->getBaseJsUrl() . basename($newScriptFile);
 
         if ($this->debug) {
-            $scriptContent = '/**' . PHP_EOL . '  ' . implode(PHP_EOL . '  ', $externalScriptUrlFulls) . PHP_EOL . 
-                PHP_EOL . '  ' . implode(PHP_EOL . '  ' , $localScriptFiles) . PHP_EOL . '*/' . PHP_EOL . PHP_EOL . $scriptContent;
+            $scriptContent = '/**' . PHP_EOL . '  ' . implode(PHP_EOL . '  ', $externalScriptUrlFulls) . PHP_EOL .
+                PHP_EOL . '  ' . implode(PHP_EOL . '  ', $localScriptFiles) . PHP_EOL . '*/' . PHP_EOL . PHP_EOL . $scriptContent;
         }
         
         if (!is_dir(dirname($newScriptFile))) {
@@ -923,7 +918,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Determine whether the URL is a WordPress URL
      *
-     * @param string $url
+     * @param  string $url
      * @return bool
      */
     protected function _isWordPressUrl($url)
@@ -947,7 +942,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return string
      */
     protected function _fixNoProtocolUrl($url)
@@ -964,7 +959,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Determine whether the URL is a JS URL from WordPress that has been migrated into Magento
      *
-     * @param string $url
+     * @param  string $url
      * @return bool
      */
     protected function _isMigratedUrl($url)
@@ -975,7 +970,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Clean the query string from the url
      *
-     * @param string $url
+     * @param  string $url
      * @return string
      */
     protected function _cleanQueryString($url)
@@ -984,7 +979,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     }
 
     /**
-     * @param string $s
+     * @param  string $s
      * @return string
      */
     protected function _stripScriptTags($s)
@@ -1015,7 +1010,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     /**
      * Merge JS files where possible
      *
-     * @param array $scripts
+     * @param  array $scripts
      * @return array
      */
     protected function _mergeGroups($scripts)
@@ -1024,7 +1019,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         $wpSiteUrl = $this->wpUrl->getSiteurl();
 
         // Create $buffer for merged groups
-        foreach($scripts as $skey => $script) {
+        foreach ($scripts as $skey => $script) {
             if (!preg_match('/<script[^>]+src=[\'"]{1}(.*)[\'"]{1}/U', $script, $smatch)) {
                 // Inline script so ignore
                 $groups[] = $script;
@@ -1042,18 +1037,15 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
             
             if (strpos(basename($realUrl), 'inex-') === 0) {
                 $urlBaseKey = 'inex';
-            }
-            else {
+            } else {
                 $urlBasePart = str_replace($wpSiteUrl, '', $this->_fixNoProtocolUrl($realUrl));
                 
                 if (strpos($urlBasePart, '/wp-includes/') === 0) {
                     $urlBaseKey = 'wp-includes';
-                }
-                else if (strpos($urlBasePart, '/wp-content/plugins/') === 0) {
+                } elseif (strpos($urlBasePart, '/wp-content/plugins/') === 0) {
                     $urlBaseKey = substr($urlBasePart, strlen('/wp-content/plugins/'));
                     $urlBaseKey = substr($urlBaseKey, 0, strpos($urlBaseKey, '/'));
-                }
-                else {
+                } else {
                     $groups[] = $script;
                     continue;
                 }
@@ -1066,31 +1058,27 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                     'key' => $urlBaseKey,
                     'items' => [$skey => $smatch[1]],
                 ];
-            }
-            else {
-                $groups[$lastGroupIt]['items'][$skey] = $smatch[1];  
+            } else {
+                $groups[$lastGroupIt]['items'][$skey] = $smatch[1];
             }
         }
 
-        foreach($groups as $group) {
+        foreach ($groups as $group) {
             if (!is_array($group) || count($group['items']) === 0) {
                 continue;
-            }
-            else {
+            } else {
                 $prev = 0;
                 $keysAreConsecutive = true;
                 $itemKeys = array_keys($group['items']);
                 
-                foreach($itemKeys as $i) {
+                foreach ($itemKeys as $i) {
                     $i = (int)$i;
                     if (!$prev) {
                         $prev = $i;
-                    }
-                    else if ($i !== $prev+1) {
+                    } elseif ($i !== $prev+1) {
                         $keysAreConsecutive = false;
                         break;
-                    }
-                    else {
+                    } else {
                         $prev = $i;
                     }
                 }
@@ -1101,7 +1089,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
                 $firstKey = array_shift($itemKeys);
 
-                foreach($group['items'] as $skey => $itemUrl) {
+                foreach ($group['items'] as $skey => $itemUrl) {
                     $scripts[$skey] = '';
                 }
 
@@ -1109,17 +1097,17 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
             }
         }
 
-        foreach($scripts as $skey => $script) {
+        foreach ($scripts as $skey => $script) {
             if (trim($script) === '') {
                 unset($scripts[$skey]);
             }
         }
 
         return array_values($scripts);
-    } 
+    }
 
     /**
-     * @param string $url
+     * @param  string $url
      * @return bool|string
      */
     protected function _getMigratedRealUrl($url)
@@ -1185,7 +1173,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
     }
     
     /**
-     * @param string $script
+     * @param  string $script
      * @return bool
      */
     protected function canMigrateInlineScriptToExternal(&$script)

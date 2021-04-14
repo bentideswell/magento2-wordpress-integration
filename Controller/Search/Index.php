@@ -18,7 +18,7 @@ class Index extends Action
     protected $searchFactory;
 
     /**
-     * @param Context $context
+     * @param Context     $context
      * @param PageFactory $resultPageFactory
      */
     public function __construct(Context $context, SearchFactory $searchFactory, WpUrl $wpUrl)
@@ -30,7 +30,7 @@ class Index extends Action
     }
 
     /**
-     * @return 
+     * @return
      */
     public function execute()
     {

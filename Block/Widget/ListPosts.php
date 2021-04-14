@@ -26,8 +26,8 @@ class ListPosts extends Template implements BlockInterface
      *
      */
     public function __construct(
-        Context $context, 
-        CollectionFactory $collectionFactory, 
+        Context $context,
+        CollectionFactory $collectionFactory,
         IntegrationManager $integrationManager,
         array $data = []
     ) {
@@ -73,8 +73,7 @@ class ListPosts extends Template implements BlockInterface
             }
             
             return '';
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }

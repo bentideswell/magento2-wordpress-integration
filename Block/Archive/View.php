@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Archive;
 
@@ -57,8 +57,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 
         if ($this->getArchive()) {
             $postCollection->addArchiveDateFilter($this->getArchiveId(), $this->getArchive()->getIsDaily());
-        }
-        else {
+        } else {
             $postCollection->forceEmpty();
         }
 
@@ -68,8 +67,8 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     /**
      * Split a date by spaces and translate
      *
-     * @param string $date
-     * @param string $splitter = ' '
+     * @param  string $date
+     * @param  string $splitter = ' '
      * @return string
      */
     public function translateDate($date, $splitter = ' ')

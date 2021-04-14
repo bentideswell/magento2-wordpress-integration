@@ -63,7 +63,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getResourceConnection()
     {
@@ -71,7 +71,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getOptionManager()
     {
@@ -79,7 +79,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getShortcodeManager()
     {
@@ -87,7 +87,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getTaxonomyManager()
     {
@@ -95,7 +95,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getPostTypeManager()
     {
@@ -103,7 +103,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getUrl()
     {
@@ -111,7 +111,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getFactory()
     {
@@ -119,7 +119,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getDateHelper()
     {
@@ -127,7 +127,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getRegistry()
     {
@@ -135,7 +135,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getLayout()
     {
@@ -143,7 +143,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getCustomerSession()
     {
@@ -151,7 +151,7 @@ class Context
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getRequest()
     {
@@ -171,7 +171,7 @@ class Context
      */
     public function getLogger()
     {
-    return $this->logger;
+        return $this->logger;
     }
 
     /**

@@ -13,14 +13,14 @@ use Magento\Store\Model\ScopeInterface;
 class Pager extends MagentoPager
 {
     /**
-     * @param Context $context
+     * @param Context       $context
      * @param OptionManager $optionManager
-     * @param WPUrl $wpUrl
-     * @param array $data
+     * @param WPUrl         $wpUrl
+     * @param array         $data
      */
     public function __construct(
-        Context $context, 
-        OptionManager $optionManager, 
+        Context $context,
+        OptionManager $optionManager,
         WPUrl $wpUrl,
         array $data = []
     ) {
@@ -58,7 +58,7 @@ class Pager extends MagentoPager
      *
      * @return string
      */
-    public function getPagerUrl($params = array())
+    public function getPagerUrl($params = [])
     {
         $pageVarName = $this->getPageVarName();
 

@@ -1,8 +1,8 @@
 <?php
 /**
- * @package  FishPig_WordPress
- * @author   Ben Tideswell (ben@fishpig.co.uk)
- * @url      https://fishpig.co.uk/magento/wordpress-integration/
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.co.uk)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
 use \Magento\Framework\Component\ComponentRegistrar;
 
@@ -22,6 +22,6 @@ if (!function_exists('__')) {
     }
 
     if ($canIncludeFpFunctions) {
-        require __DIR__ . '/functions.php';
+        include __DIR__ . '/functions.php';
     }
 }

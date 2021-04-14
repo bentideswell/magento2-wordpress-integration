@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
@@ -49,9 +49,9 @@ class MediaImage extends AbstractWidget
     /**
      * @return string
      */
-    public function getLinkTarget()    
+    public function getLinkTarget()
     {
-        foreach(['link_target', 'linktarget'] as $key) {
+        foreach (['link_target', 'linktarget'] as $key) {
             if ($value = $this->getData($key)) {
                 return $value;
             }
@@ -67,7 +67,7 @@ class MediaImage extends AbstractWidget
     /**
      * @return string
      */
-    public function getCaption()    
+    public function getCaption()
     {
         return $this->getData('caption');
     }

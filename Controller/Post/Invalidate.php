@@ -17,28 +17,24 @@ class Invalidate extends Action
     /**
      *
      * @var Factory
-     *
      */
     protected $factory;
 
     /**
      *
      * @var OptionManager
-     *
      */
     protected $optionManager;
 
     /**
      *
      * @var CacheInterface
-     *
      */
     protected $cacheManager;
 
     /**
      *
      * @var ManagerInterface
-     *
      */
     protected $eventManager;
 
@@ -47,7 +43,7 @@ class Invalidate extends Action
      *
      *
      */
-    public function __construct(Context $context,OptionManager $optionManager, Factory $factory, CacheInterface $cacheManager)
+    public function __construct(Context $context, OptionManager $optionManager, Factory $factory, CacheInterface $cacheManager)
     {
         $this->optionManager = $optionManager;
         $this->factory       = $factory;
@@ -65,16 +61,16 @@ class Invalidate extends Action
     public function execute()
     {
         $this->getResponse()->appendBody(
-            json_encode([
+            json_encode(
+                [
                 'result' => $this->invalidateCache() ? 'success' : 'failure'
-            ])
+                ]
+            )
         );
     }
 
     /**
-     *
      * Attempt to invalidate cache entry
-     *
      */
     protected function invalidateCache()
     {
@@ -99,9 +95,7 @@ class Invalidate extends Action
     }
 
     /**
-     *
      * Validate given nonce
-     *
      */
     protected function verifyNonce($nonce, $action)
     {

@@ -1,15 +1,14 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Homepage;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
     /**
-     *
      * @return
      */
     public function getEntity()
@@ -17,8 +16,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
         if (!$this->hasEntity()) {
             if ($homepage = $this->registry->registry('wordpress_homepage')) {
                 $this->setData('entity', $homepage->getBlogPage() ? $homepage->getBlogPage() : $homepage);
-            }
-            else {
+            } else {
                 $this->setData('entity', false);
             }
         }
@@ -59,7 +57,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     /**
      * Generates and returns the collection of posts
      *
-     * @return 
+     * @return
      */
     protected function _getPostCollection()
     {

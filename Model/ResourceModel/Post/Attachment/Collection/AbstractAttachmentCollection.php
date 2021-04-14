@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection;
 
@@ -14,8 +14,8 @@ abstract class AbstractAttachmentCollection extends Collection
     /**
      * Load an attachment
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool $printQuery
+     * @param  bool $logQuery
      * @return $this
      */
     public function load($printQuery = false, $logQuery = false)
@@ -30,7 +30,7 @@ abstract class AbstractAttachmentCollection extends Collection
     /**
      * Set the parent ID
      *
-     * @param int $parentId = 0
+     * @param  int $parentId = 0
      * @return $this
      */
     public function setParent($parentId = 0)
@@ -49,7 +49,7 @@ abstract class AbstractAttachmentCollection extends Collection
     {
         parent::_afterLoad();
 
-        foreach($this->_items as $item) {
+        foreach ($this->_items as $item) {
             $item->loadSerializedData();
         }
 

@@ -24,7 +24,7 @@ class ImageResizer
     protected $imageFactory;
 
     /**
-     * @var 
+     * @var
      */
     protected $adapter;
 
@@ -49,16 +49,16 @@ class ImageResizer
     }
 
     /**
-     * @param string|Image $image
+     * @param  string|Image $image
      * @return $this
      */
     public function setImage($image)
-    {  
+    {
         $this->args = [];
 
         if (is_object($image)) {
             $image = $image->getLocalFile();
-        }  
+        }
 
         if (!$image) {
             throw new \Exception('Cannot create ' . __CLASS__ . ' as no image is set.');
@@ -74,8 +74,8 @@ class ImageResizer
     }
 
     /**
-     * @param int|null $width
-     * @param int|null $height
+     * @param  int|null $width
+     * @param  int|null $height
      * @return string
      */
     public function resize($width = null, $height = null)
@@ -122,7 +122,7 @@ class ImageResizer
     /**
      * Get/set keepAspectRatio
      *
-     * @param bool $value
+     * @param  bool $value
      * @return bool
      */
     public function keepAspectRatio($value)
@@ -137,7 +137,7 @@ class ImageResizer
     /**
      * Get/set keepFrame
      *
-     * @param bool $value
+     * @param  bool $value
      * @return bool
      */
     public function keepFrame($value)
@@ -152,7 +152,7 @@ class ImageResizer
     /**
      * Get/set keepTransparency
      *
-     * @param bool $value
+     * @param  bool $value
      * @return bool
      */
     public function keepTransparency($value)
@@ -167,7 +167,7 @@ class ImageResizer
     /**
      * Get/set constrainOnly
      *
-     * @param bool $value
+     * @param  bool $value
      * @return bool
      */
     public function constrainOnly($value)
@@ -182,7 +182,7 @@ class ImageResizer
     /**
      * Get/set backgroundColor
      *
-     * @param null|array $value
+     * @param  null|array $value
      * @return array|null
      */
     public function backgroundColor($value)

@@ -21,7 +21,7 @@ class NoRouteHandler implements \Magento\Framework\App\Router\NoRouteHandlerInte
     protected $optionManager;
 
     /**
-     * @param Response $response
+     * @param Response      $response
      * @param OptionManager $optionManager
      */
     public function __construct(Response $response, OptionManager $optionManager)
@@ -31,7 +31,7 @@ class NoRouteHandler implements \Magento\Framework\App\Router\NoRouteHandlerInte
     }
 
     /**
-     * @param RequestInterface $request
+     * @param  RequestInterface $request
      * @return bool
      */
     public function process(RequestInterface $request)

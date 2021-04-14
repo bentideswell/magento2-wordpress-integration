@@ -8,7 +8,8 @@ use FishPig\WordPress\Model\ResourceConnection;
 use Magento\Store\Model\StoreManagerInterface;
 
 class OptionManager
-{   
+{
+   
     /**
      * @var array
      */
@@ -56,8 +57,7 @@ class OptionManager
                     ->where('option_name = ?', $key);
     
                 $this->data[$storeId][$key] = $connection->fetchOne($select);
-            }
-            else {
+            } else {
                 $this->data[$storeId][$key] = false;
             }
         }
@@ -101,8 +101,7 @@ class OptionManager
             if (isset($this->data[$storeId][$key])) {
                 unset($this->data[$storeId][$key]);
             }
-        }
-        else {
+        } else {
             $connection->insert($table, ['option_name' => $key, 'option_value' => $value]);
         }
 

@@ -74,8 +74,7 @@ class Theme
         Logger $logger,
         ModuleReader $moduleReader,
         array $themeSourceModules = []
-    )
-    {
+    ) {
         $this->optionManager = $optionManager;
         $this->scopeConfig = $scopeConfig;
         $this->storeManager = $storeManager;
@@ -90,7 +89,7 @@ class Theme
      * @return
      */
     public function validate()
-    {        
+    {
         try {
             if (!$this->wpDirectoryList->isValidBasePath()) {
                 IntegrationException::throwException('Empty or invalid WordPress path.');
@@ -111,7 +110,7 @@ class Theme
             // Now let's find some source directories
             $sourceDirs = [];
 
-            foreach($this->themeSourceModules as $sourceModule => $sourcePrimaryFile) {
+            foreach ($this->themeSourceModules as $sourceModule => $sourcePrimaryFile) {
                 $moduleDir = $this->moduleReader->getDir($sourceModule);
 
                 if ($moduleDir && is_dir($moduleDir . '/wptheme')) {
@@ -136,7 +135,7 @@ class Theme
                 }
             }
 
-            foreach($sourceDirs as $sourceDir => $sourcePrimaryFilename) {
+            foreach ($sourceDirs as $sourceDir => $sourcePrimaryFilename) {
                 $sourcePrimaryFile = $sourceDir . '/' . $sourcePrimaryFilename;
                 $targetPrimaryFile = $targetDir . '/' . $sourcePrimaryFilename;
 
@@ -144,7 +143,7 @@ class Theme
                     // Get source files. Loop through and copy to WordPress
                     $sourceFiles = scandir($sourceDir);
 
-                    foreach($sourceFiles as $sourceFilename) {
+                    foreach ($sourceFiles as $sourceFilename) {
                         if (trim($sourceFilename, '.') === '') {
                             continue;
                         }
@@ -170,9 +169,9 @@ class Theme
                         $targetData = file_exists($targetFile) ? file_get_contents($targetFile) : '';
 
                         if ($sourceData !== $targetData) {
-                          if (!$this->isFileWriteable($targetFile)) {
-                              IntegrationException::throwException('Unable to install/upgrade the FishPig WordPress theme due to permissions. The file that triggered the error is ' . $targetFile);
-                          }
+                            if (!$this->isFileWriteable($targetFile)) {
+                                IntegrationException::throwException('Unable to install/upgrade the FishPig WordPress theme due to permissions. The file that triggered the error is ' . $targetFile);
+                            }
 
                             file_put_contents($targetFile, $sourceData);
                         }
@@ -185,8 +184,7 @@ class Theme
                     'The FishPig WordPress theme is installed but is not active. Please login to the WordPress Admin and enable it.'
                 );
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($this->state->getAreaCode() === 'adminhtml') {
                 throw $e;
             }
@@ -237,8 +235,8 @@ class Theme
     public function isThemeIntegrated()
     {
         return (int)$this->scopeConfig->getValue(
-            'wordpress/setup/theme_integration', 
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE, 
+            'wordpress/setup/theme_integration',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             (int)$this->storeManager->getStore()->getId()
         ) === 1;
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * 
+ *
  */
 namespace FishPig\WordPress\Model;
 
@@ -30,7 +30,7 @@ class Url
     protected $network;
 
     /**
-     * @var 
+     * @var
      */
     protected $storeManager;
 
@@ -59,8 +59,7 @@ class Url
         StoreManagerInterface $storeManager,
         PostFactory $postFactory,
         ScopeConfigInterface $scopeConfig
-    )
-    {
+    ) {
         $this->optionManager = $optionManager;
         $this->wpConfig = $wpConfig;
         $this->network = $network;
@@ -101,7 +100,8 @@ class Url
                 if (preg_match('/(.*)' . $store->getCode() . '[\/]*$/', $magentoUrl, $matches)) {
                     $magentoUrl = $matches[1];
                 }
-            }*/
+            }
+*/
 
             if ($this->ignoreStoreCode()) {
                 $storeCode = $this->storeManager->getStore()->getCode();
@@ -123,8 +123,8 @@ class Url
     public function ignoreStoreCode()
     {
         return (int)$this->scopeConfig->getValue(
-            'wordpress/setup/ignore_store_code', 
-            ScopeInterface::SCOPE_STORE, 
+            'wordpress/setup/ignore_store_code',
+            ScopeInterface::SCOPE_STORE,
             (int)$this->storeManager->getStore()->getId()
         ) === 1;
     }
@@ -140,7 +140,7 @@ class Url
     /**
      * Generate a WordPress frontend URL
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return string
      */
     public function getUrl($uri = '')
@@ -157,7 +157,7 @@ class Url
     /**
      * Generate a WordPress frontend URL with the Front var in it
      *
-     * @param string $uri = ''
+     * @param  string $uri = ''
      * @return string
      */
     public function getUrlWithFront($uri = '')
@@ -208,7 +208,7 @@ class Url
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getBaseFileUploadUrl()
     {
@@ -216,7 +216,7 @@ class Url
     }
 
     /**
-     * @return 
+     * @return
      */
     public function getWpContentUrl()
     {
@@ -237,14 +237,13 @@ class Url
         $url = $this->optionManager->getOption('fileupload_url');
 
         if (!$url) {
-            foreach(array('upload_url_path', 'upload_path') as $config) {
+            foreach (['upload_url_path', 'upload_path'] as $config) {
                 if ($value = $this->optionManager->getOption($config)) {
                     if (strpos($value, 'http') === false) {
                         if (substr($value, 0, 1) !== '/') {
                             $url = $this->getSiteurl() . $value;
                         }
-                    }
-                    else {
+                    } else {
                         $url = $value;
                     }
 

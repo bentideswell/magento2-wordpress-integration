@@ -5,62 +5,62 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $items = $this->getDateItems() ?>
+<?php $items = $block->getDateItems() ?>
 <?php if ($items): ?>
-	<div class="block block-blog block-blog-archives">
-		<?php if ($title = $this->getTitle()): ?>
-			<div class="block-title">
-				<strong><?php echo __($title) ?></strong>
-			</div>
-		<?php endif; ?>
-		<div class="block-content">
-			<div id="calendar_wrap">
-				<table id="wp-calendar">
-					<thead>
-						<tr>
-							<th scope="col"><?php echo __('M') ?></th>
-							<th scope="col"><?php echo __('T') ?></th>
-							<th scope="col"><?php echo __('W') ?></th>
-							<th scope="col"><?php echo __('T') ?></th>
-							<th scope="col"><?php echo __('F') ?></th>
-							<th scope="col"><?php echo __('S') ?></th>
-							<th scope="col"><?php echo __('S') ?></th>
-						</tr>
-					</thead>
-					<tfoot>
-						<tr>
-							<?php if ($this->hasPreviousUrl()): ?>
-								<td colspan="3" class="a-left">
-									<a href="<?php echo $this->getPreviousUrl() ?>">&laquo; <?php echo $this->getPreviousText() ?></a>
-								</td>
-							<?php else: ?>
-								<td colspan="3" class="pad">&nbsp;</td>
-							<?php endif; ?>
-							<td class="pad">&nbsp;</td>
-							<?php if ($this->hasNextUrl()): ?>
-								<td colspan="3" class="a-right">
-									<a href="<?php echo $this->getNextUrl() ?>"><?php echo $this->getNextText() ?> &raquo;</a>
-								</td>
-							<?php else: ?>
-								<td colspan="3" class="pad">&nbsp;</td>
-							<?php endif; ?>
-						</tr>
-					</tfoot>
-					<tbody>
-						<?php foreach($items as $it => $row): ?>
-							<tr>
-								<?php foreach($row as $html): ?>
-									<?php if (is_null($html)): ?>
-										<td class="pad">&nbsp;</td>
-									<?php else: ?>
-										<td><?php echo $html ?></td>
-									<?php endif; ?>
-								<?php endforeach; ?>
-							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+    <div class="block block-blog block-blog-archives">
+        <?php if ($title = $block->getTitle()): ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($title)) ?></strong>
+            </div>
+        <?php endif; ?>
+        <div class="block-content">
+            <div id="calendar_wrap">
+                <table id="wp-calendar">
+                    <thead>
+                        <tr>
+                            <th scope="col"><?= $block->escapeHtml(__('M')) ?></th>
+                            <th scope="col"><?= $block->escapeHtml(__('T')) ?></th>
+                            <th scope="col"><?= $block->escapeHtml(__('W')) ?></th>
+                            <th scope="col"><?= $block->escapeHtml(__('T')) ?></th>
+                            <th scope="col"><?= $block->escapeHtml(__('F')) ?></th>
+                            <th scope="col"><?= $block->escapeHtml(__('S')) ?></th>
+                            <th scope="col"><?= $block->escapeHtml(__('S')) ?></th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <?php if ($block->hasPreviousUrl()): ?>
+                                <td colspan="3" class="a-left">
+                                    <a href="<?= $block->escapeUrl($block->getPreviousUrl()) ?>">&laquo; <?= $block->escapeHtml($block->getPreviousText()) ?></a>
+                                </td>
+                            <?php else: ?>
+                                <td colspan="3" class="pad">&nbsp;</td>
+                            <?php endif; ?>
+                            <td class="pad">&nbsp;</td>
+                            <?php if ($block->hasNextUrl()): ?>
+                                <td colspan="3" class="a-right">
+                                    <a href="<?= $block->escapeUrl($block->getNextUrl()) ?>"><?= $block->escapeHtml($block->getNextText()) ?> &raquo;</a>
+                                </td>
+                            <?php else: ?>
+                                <td colspan="3" class="pad">&nbsp;</td>
+                            <?php endif; ?>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        <?php foreach ($items as $it => $row): ?>
+                            <tr>
+                                <?php foreach ($row as $html): ?>
+                                    <?php if (is_null($html)): ?>
+                                        <td class="pad">&nbsp;</td>
+                                    <?php else: ?>
+                                        <td><?= $html ?></td>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>

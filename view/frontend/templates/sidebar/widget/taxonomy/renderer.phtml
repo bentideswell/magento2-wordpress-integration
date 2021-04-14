@@ -4,20 +4,21 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+$blockLevel = (int)$block->getLevel();
 ?>
-<li class="level<?php echo $this->getLevel() ?> item<?php if ($this->isCurrentTerm($this->getTerm())): ?> active<?php endif; ?>">
-	<a  class="level<?php echo $this->getLevel() ?>" href="<?php echo $this->getTerm()->getUrl() ?>" title="<?php echo $this->__($this->escapeHtml($this->getTerm()->getName())) ?>">
-		<?php echo $this->__($this->escapeHtml($this->getTerm()->getName())) ?>
-	</a>
-	<?php if ($this->canShowCount()): ?> (<?php echo $this->getTerm()->getItemCount() ?>)<?php endif; ?>
-	<?php if ($this->isHierarchical()): ?>
-		<?php $children = $this->getTerm()->getChildrenTerms()->load() ?>
-		<?php if (count($children) > 0): ?>
-			<ul class="level<?php echo $this->getLevel() + 1?>">
-				<?php foreach($children as $child): ?>
-					<?php echo $this->drawChildItem($child, $this->getLevel() + 1) ?>
-				<?php endforeach; ?>
-			</ul>
-		<?php endif; ?>
-	<?php endif; ?>
+<li class="level<?= $blockLevel ?> item<?php if ($block->isCurrentTerm($block->getTerm())): ?> active<?php endif; ?>">
+    <a  class="level<?= $blockLevel ?>" href="<?= $block->escapeUrl($block->getTerm()->getUrl()) ?>" title="<?= $$block->escapeHtml(__($block->getTerm()->getName())) ?>">
+        <?= $block->escapeHtml(__($block->getTerm()->getName())) ?>
+    </a>
+    <?php if ($block->canShowCount()): ?> (<?= $block->getTerm()->getItemCount() ?>)<?php endif; ?>
+    <?php if ($block->isHierarchical()): ?>
+        <?php $children = $block->getTerm()->getChildrenTerms()->load() ?>
+        <?php if (count($children) > 0): ?>
+            <ul class="level<?= $blockLevel + 1 ?>">
+                <?php foreach ($children as $child): ?>
+                    <?= $block->drawChildItem($child, $blockLevel + 1) ?>
+                <?php endforeach; ?>
+            </ul>
+        <?php endif; ?>
+    <?php endif; ?>
 </li>

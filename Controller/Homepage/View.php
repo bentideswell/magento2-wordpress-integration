@@ -10,7 +10,8 @@ use FishPig\WordPress\Model\Post;
 use Magento\Framework\Controller\ResultFactory;
 
 class View extends Action
-{    
+{
+    
     /**
      * @return Homepage
      */
@@ -27,10 +28,10 @@ class View extends Action
         if ($previewPostId = (int)$this->getRequest()->getParam('elementor-preview')) {
             return $this->resultFactory
                 ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-                    ->setModule('wordpress')
-                    ->setController('post')
-                    ->setParams(['id' => $previewPostId])
-                    ->forward('view');
+                ->setModule('wordpress')
+                ->setController('post')
+                ->setParams(['id' => $previewPostId])
+                ->forward('view');
         }
         
         return false;
@@ -58,8 +59,7 @@ class View extends Action
                 'label' => __($this->_getEntity()->getName()),
                 'title' => __($this->_getEntity()->getName())
             ];
-        }
-        else {
+        } else {
             unset($crumbs['blog']['link']);
         }
 
@@ -68,7 +68,6 @@ class View extends Action
 
     /**
      * Set the 'wordpress_front_page' handle if this is the front page
-     *
      *
      * @return array
      */
@@ -89,7 +88,7 @@ class View extends Action
                         $handles[] = 'wordpress_post_view_' . $templateName;
                         $handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
                     }
-                } 
+                }
             }
         }
 

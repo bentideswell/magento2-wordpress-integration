@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\Post;
 
@@ -47,7 +47,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
             $this->setPost(false);
 
             $posts = $this->getPostCollection()
-                ->addPostTypeFilter(array('post', 'page'))
+                ->addPostTypeFilter(['post', 'page'])
                 ->addFieldToFilter('ID', $this->getData('comment_post_ID'))
                 ->setPageSize(1)
                 ->load();
@@ -104,7 +104,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
      * Get the comment GUID
      *
      * @return string
-     */    
+     */
     public function getGuid()
     {
         return $this->getPost() ? $this->url->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId()) : '';
@@ -154,7 +154,8 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
                 if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
                     $it = 0;
 
-                    foreach($post->getComments() as $comment) { ++$it;
+                    foreach ($post->getComments() as $comment) {
+                        ++$it;
                         if ($this->getId() == $comment->getId()) {
                             $position = $it;
                             break;
@@ -162,8 +163,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
                     }
 
                     $this->setCommentPageId(ceil($position / $commentsPerPage));
-                }
-                else {
+                } else {
                     $this->setCommentPageId(1);
                 }
             }
@@ -197,12 +197,12 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
 
             if ($config->getOption('show_avatars')) {
                 if ($this->getCommentAuthorEmail()) {
-                    $params = array(
+                    $params = [
                         'r' => $config->getOption('avatar_rating'),
                         's' => (int)$size,
                         'd' => $config->getOption('avatar_default'),
                         'v' => 45345
-                    );
+                    ];
 
                     $baseUrl = self::GRAVATAR_BASE_URL_SECURE;
 
@@ -221,9 +221,9 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
     /**
      * Deprecated. Use self::getAvatarUrl($size)
      *
-     * @param int $size
+     * @param  int $size
      * @return string
-     */    
+     */
     public function getGravatarUrl($size = 50)
     {
         return $this->getAvatarUrl($size);
@@ -252,9 +252,17 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
     }
 
     /**
+     * @return string
+     */
+    public function getPostTitle() : string
+    {
+        return $this->getPost() ? $this->getPost()->getPostTitle() : '';
+    }
+    
+    /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getMetaTableAlias()
     {
@@ -264,7 +272,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
     /**
      *
      *
-     * @return  string
+     * @return string
      */
     public function getMetaTableObjectField()
     {

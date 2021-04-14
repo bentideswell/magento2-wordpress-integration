@@ -1,7 +1,7 @@
 <?php
 /**
  *
- */    
+ */
 namespace FishPig\WordPress\Model;
 
 use Magento\Framework\Module\Manager as ModuleManager;
@@ -13,12 +13,12 @@ use FishPig\WordPress\Model\OptionManager;
 class PostTypeManager
 {
     /**
-     * @var 
+     * @var
      */
     protected $moduleManager;
 
     /**
-     * @var 
+     * @var
      */
     protected $storeManager;
 
@@ -38,12 +38,11 @@ class PostTypeManager
      *
      */
     public function __construct(
-    ModuleManager $moduleManager, 
-    StoreManagerInterface $storeManager, 
-    PostTypeFactory $postTypeFactory, 
-    OptionManager $optionManager
-    )
-    {
+        ModuleManager $moduleManager,
+        StoreManagerInterface $storeManager,
+        PostTypeFactory $postTypeFactory,
+        OptionManager $optionManager
+    ) {
         $this->moduleManager   = $moduleManager;
         $this->storeManager    = $storeManager;
         $this->postTypeFactory = $postTypeFactory;
@@ -66,30 +65,33 @@ class PostTypeManager
         }
 
         if ($postTypeData = $this->getPostTypeDataFromAddon()) {
-            foreach($postTypeData as $postType) {
+            foreach ($postTypeData as $postType) {
                 $this->registerPostType(
                     $this->postTypeFactory->create()->addData($postType)
                 );
             }
-        }
-        else {
+        } else {
             $this->registerPostType(
-                $this->postTypeFactory->create()->addData([
+                $this->postTypeFactory->create()->addData(
+                    [
                     'post_type'  => 'post',
                     'rewrite'    => ['slug' => $this->optionManager->getOption('permalink_structure')],
                     'taxonomies' => ['category', 'post_tag'],
                     '_builtin'   => true,
-                ])
+                    ]
+                )
             );
 
             $this->registerPostType(
-                $this->postTypeFactory->create()->addData([
+                $this->postTypeFactory->create()->addData(
+                    [
                     'post_type'    => 'page',
                     'rewrite'      => ['slug' => '%postname%/'],
                     'hierarchical' => true,
                     'taxonomies'   => [],
                     '_builtin'     => true,
-                ])
+                    ]
+                )
             );
         }
 
@@ -119,8 +121,7 @@ class PostTypeManager
         if ($types = $this->getPostTypes()) {
             if ($type === null) {
                 return $types;
-            }
-            else if (isset($types[$type])) {
+            } elseif (isset($types[$type])) {
                 return $types[$type];
             }
         }

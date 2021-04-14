@@ -13,12 +13,12 @@ class ActionListPlugin
      * So this fixes that and allows module names like FishPig_WordPress_PostTypeTaxonomy to setup Controllers
      * In the above example, FishPig is the vendor name and WordPress_PostTypeTaxonomy is the module name
      *
-     * @param ActionList $subject
-     * @param Closure $callback
-     * @param string $module
-     * @param string $area
-     * @param string $namespace
-     * @param string $action
+     * @param  ActionList $subject
+     * @param  Closure    $callback
+     * @param  string     $module
+     * @param  string     $area
+     * @param  string     $namespace
+     * @param  string     $action
      * @return string|null
      */
     public function aroundGet(ActionList $subject, $callback, $module, $area, $namespace, $action)
@@ -28,7 +28,7 @@ class ActionListPlugin
         }
 
         return str_replace('FishPig_', 'FishPig\\', $module)
-             . '\\Controller' 
+             . '\\Controller'
              . ($area ? '\\' . $area : $area)
              . '\\' . ucwords($namespace)
              . '\\' . ucwords($action);

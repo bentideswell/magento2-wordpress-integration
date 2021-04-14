@@ -93,17 +93,16 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     {
         $structure = $this->getPermalinkStructure();
         $parts = preg_split("/(\/|-)/", $structure, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $structure = array();
+        $structure = [];
 
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             if ($result = preg_split("/(%[a-zA-Z0-9_]{1,}%)/", $part, -1, PREG_SPLIT_DELIM_CAPTURE)) {
                 $results = array_filter(array_unique($result));
 
-                foreach($results as $result) {
+                foreach ($results as $result) {
                     array_push($structure, $result);
                 }
-            }
-            else {
+            } else {
                 $structure[] = $part;
             }
         }
@@ -145,7 +144,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      * Get the archive slug for the post type
      *
      * @return string
-     */    
+     */
     public function getSlug()
     {
         $slug = $this->getData('rewrite/slug');
@@ -177,8 +176,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
 
         if (((string)$slug = $this->getHasArchive()) !== '1') {
             // Do nothing yet
-        }
-        else if ($slug = $this->getSlug()) {
+        } elseif ($slug = $this->getSlug()) {
             if (strpos($slug, '%') !== false) {
                 $slug = trim(substr($slug, 0, strpos($slug, '%')), '%/');
             }
@@ -204,7 +202,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     /**
      * Determine whether $taxonomy is supported by the post type
      *
-     * @param string $taxonomy
+     * @param  string $taxonomy
      * @return bool
      */
     public function isTaxonomySupported($taxonomy)
@@ -217,13 +215,13 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      *
      * @return string
      */
-    public function getAnySupportedTaxonomy($prioritise = array())
+    public function getAnySupportedTaxonomy($prioritise = [])
     {
         if (!is_array($prioritise)) {
-            $prioritise = array($prioritise);
+            $prioritise = [$prioritise];
         }
 
-        foreach($prioritise as $type) {
+        foreach ($prioritise as $type) {
             if ($this->isTaxonomySupported($type)) {
                 return $this->taxonomyManager->getTaxonomy($type);
             }
@@ -260,7 +258,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      * Get the hierarchical post name for a post
      * This is the same as %postname% but with all of the parent post names included
      *
-     * @param int $id
+     * @param  int $id
      * @return string|false
      */
     public function getHierarchicalPostName($id)
@@ -310,11 +308,14 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
         }
 
         $select = $db->select()
-            ->from(['term' => $resource->getTable('wordpress_post')], [
+            ->from(
+                ['term' => $resource->getTable('wordpress_post')],
+                [
                 'id'      => 'ID',
-                'url_key' =>  'post_name', 
+                'url_key' =>  'post_name',
                 'parent'  => 'post_parent'
-            ])
+                ]
+            )
             ->where('post_type=?', $this->getPostType())
             ->where('post_status=?', 'publish');
 
@@ -349,7 +350,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
 
     /**
      * @return string
-     */    
+     */
     public function getPluralName()
     {
         return $this->getData('labels/name');
@@ -375,24 +376,22 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
         $tokens  = explode('/', trim($this->getSlug(), '/'));
         $objects = [];
 
-        foreach($tokens as $token) {
+        foreach ($tokens as $token) {
             if ($token === $this->getPostType() || ($this->getArchiveSlug() && trim($this->getArchiveSlug(), '/') === $token)) {
                 if (!$this->isDefault() && $this->hasArchive()) {
                     $objects['post_type'] = $this;
                 }
-            }
-            else if (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
+            } elseif (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
                 if ($taxonomy = $this->taxonomyManager->getTaxonomy(substr($token, 1, -1))) {
                     if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
                         $objects[$taxonomy->getTaxonomyType()] = $term;
                     }
                 }
-            }
-            else if (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
+            } elseif (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
                 $parent = $this->factory->create('Post')->setPostType('page')->load($token, 'post_name');
 
                 if ($parent->getId()) {
-                $objects['parent_post_' . $parent->getId()] = $parent;
+                    $objects['parent_post_' . $parent->getId()] = $parent;
                 }
             }
         }
@@ -401,8 +400,8 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
             $parent = $post;
             $buffer = [];
 
-            while(($parent = $parent->getParentPost()) !== false) {
-            $buffer['parent_post_' . $parent->getId()] = $parent;
+            while (($parent = $parent->getParentPost()) !== false) {
+                $buffer['parent_post_' . $parent->getId()] = $parent;
             }
 
             $objects = $objects + array_reverse($buffer);
@@ -435,21 +434,20 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     /**
      * Generate an array of URI's based on $results
      *
-     * @param array $results
+     * @param  array $results
      * @return array
      */
     public static function generateRoutesFromArray($results, $prefix = '')
     {
-        $objects = array();
-        $byParent = array();
+        $objects = [];
+        $byParent = [];
 
-        foreach($results as $key => $result) {
+        foreach ($results as $key => $result) {
             if (!$result['parent']) {
                 $objects[$result['id']] = $result;
-            }
-            else {
+            } else {
                 if (!isset($byParent[$result['parent']])) {
-                    $byParent[$result['parent']] = array();
+                    $byParent[$result['parent']] = [];
                 }
 
                 $byParent[$result['parent']][$result['id']] = $result;
@@ -460,9 +458,9 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
             return false;
         }
 
-        $routes = array();
+        $routes = [];
 
-        foreach($objects as $objectId => $object) {
+        foreach ($objects as $objectId => $object) {
             if (($children = self::createArrayTree($objectId, $byParent)) !== false) {
                 $objects[$objectId]['children'] = $children;
             }
@@ -476,24 +474,24 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     /**
      * Create a lookup table from an array tree
      *
-     * @param array $node
-     * @param string $idField
-     * @param string $field
-     * @param string $prefix = ''
+     * @param  array  $node
+     * @param  string $idField
+     * @param  string $field
+     * @param  string $prefix  = ''
      * @return array
      */
     protected static function createLookupTable(&$node, $prefix = '')
     {
         if (!isset($node['id'])) {
-            return array();
+            return [];
         }
 
-        $urls = array(
+        $urls = [
             $node['id'] => ltrim($prefix . '/' . urldecode($node['url_key']), '/')
-        );
+        ];
 
         if (isset($node['children'])) {
-            foreach($node['children'] as $childId => $child) {
+            foreach ($node['children'] as $childId => $child) {
                 $urls += self::createLookupTable($child, $urls[$node['id']]);
             }
         }
@@ -505,9 +503,9 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      * Create an array tree. This is used for creating static URL lookup tables
      * for categories and pages
      *
-     * @param int $id
-     * @param array $pool
-     * @param string $field = 'parent'
+     * @param  int    $id
+     * @param  array  $pool
+     * @param  string $field = 'parent'
      * @return false|array
      */
     protected static function createArrayTree($id, &$pool)
@@ -517,7 +515,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
 
             unset($pool[$id]);
 
-            foreach($children as $childId => $child) {
+            foreach ($children as $childId => $child) {
                 unset($children[$childId]['parent']);
                 if (($result = self::createArrayTree($childId, $pool)) !== false) {
                     $children[$childId]['children'] = $result;

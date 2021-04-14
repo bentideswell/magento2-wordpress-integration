@@ -5,30 +5,30 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $items = $this->getFeedItems() ?>
+<?php $items = $block->getFeedItems() ?>
 <?php if (count($items) > 0): ?>
-	<div class="block block-blog block-rss">
-		<?php if ($title = $this->getTitle()): ?>
-			<div class="block-title">
-				<strong><span><?php echo $this->__($title) ?></span></strong>
-			</div>
-		<?php endif; ?>
-		<div class="block-content">
-			<ul id="<?php echo $this->getListId() ?>">
-			<?php foreach($items as $item): ?>
-				<li class="item">
-					<a href="<?php echo $item->getLink() ?>" title="<?php echo $this->htmlEscape($item->getTitle()) ?>">
-						<?php echo $this->htmlEscape($item->getTitle()) ?>
-					</a>
-					<?php if ($this->getShowDate()): ?>
-						<div class="rss-date"><?php echo $this->helper('wordpress')->formatDate($item->getData('pubDate')) ?></div>
-					<?php endif; ?>
-					<?php if ($this->getShowSummary()): ?>
-						<div class="rss-description"><?php echo $this->__('%s [...]', $item->getDescription()) ?></div>
-					<?php endif; ?>
-				</li>
-			<?php endforeach; ?>
-			</ul>
-		</div>
-	</div>
+    <div class="block block-blog block-rss">
+        <?php if ($title = $block->getTitle()): ?>
+            <div class="block-title">
+                <strong><span><?= $block->escapeHtml(__($title)) ?></span></strong>
+            </div>
+        <?php endif; ?>
+        <div class="block-content">
+            <ul id="<?= $block->getListId() ?>">
+            <?php foreach ($items as $item): ?>
+                <li class="item">
+                    <a href="<?= $block->escapeUrl($item->getLink()) ?>" title="<?= $block->htmlEscape($item->getTitle()) ?>">
+                        <?= $block->htmlEscape($item->getTitle()) ?>
+                    </a>
+                    <?php if ($block->getShowDate()): ?>
+                        <div class="rss-date"><?= $block->escapeHtml($block->helper('wordpress')->formatDate($item->getData('pubDate'))) ?></div>
+                    <?php endif; ?>
+                    <?php if ($block->getShowSummary()): ?>
+                        <div class="rss-description"><?= $block->escapeHtml(__('%s [...]', $item->getDescription())) ?></div>
+                    <?php endif; ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
 <?php endif; ?>

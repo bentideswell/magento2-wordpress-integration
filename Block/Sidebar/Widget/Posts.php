@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
@@ -17,7 +17,6 @@ class Posts extends AbstractWidget
 
     /**
      * Set the posts collection
-     *
      */
     protected function _beforeToHtml()
     {
@@ -33,7 +32,7 @@ class Posts extends AbstractWidget
     /**
      * Control the number of posts displayed
      *
-     * @param int $count
+     * @param  int $count
      * @return $this
      */
     public function setPostCount($count)
@@ -69,10 +68,10 @@ class Posts extends AbstractWidget
     {
         if (is_null($this->collection)) {
             $collection = $this->factory->create('Model\ResourceModel\Post\Collection')
-                    ->setOrderByPostDate()
-                    ->addIsViewableFilter()
-                    ->setPageSize($this->getNumber())
-                    ->setCurPage(1);
+                ->setOrderByPostDate()
+                ->addIsViewableFilter()
+                ->setPageSize($this->getNumber())
+                ->setCurPage(1);
 
             if ($categoryId = $this->getCategoryId()) {
                 if (strpos($categoryId, ',') !== false) {
@@ -92,8 +91,7 @@ class Posts extends AbstractWidget
 
             if ($postTypes = $this->getPostType()) {
                 $collection->addPostTypeFilter(explode(',', $postTypes));
-            }
-            else {
+            } else {
                 $collection->addPostTypeFilter('post');
             }
 
@@ -171,7 +169,6 @@ class Posts extends AbstractWidget
 
     /**
      * Added to support 'Category Posts Widget' WP plugin
-     *
      */
     public function canDisplayCommentCount()
     {
@@ -235,15 +232,14 @@ class Posts extends AbstractWidget
     /**
      * Retrieve a string indicating the number of comments
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return string
      */
     public function getCommentCountString(\FishPig\WordPress\Model\Post $post)
     {
         if ($post->getCommentCount() == 0) {
             return __('No Comments');
-        }
-        else if ($post->getCommentCount() > 1) {
+        } elseif ($post->getCommentCount() > 1) {
             return __('%s Comments', $post->getCommentCount());
         }
 

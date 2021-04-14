@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model;
 
@@ -44,17 +44,17 @@ class Network
 
     /**
      * @return false
-     */    
+     */
     public function getBlogTableValue($key)
-    {        
+    {
         return false;
     }
 
     /**
      * @return false
-     */    
+     */
     public function getSitePath()
-    {        
+    {
         return false;
     }
 

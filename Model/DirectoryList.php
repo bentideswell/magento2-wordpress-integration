@@ -11,7 +11,8 @@ use Exception;
 use Magento\Store\Model\ScopeInterface;
 
 class DirectoryList
-{   
+{
+   
     /**
      * @var ScopeConfigInterface
      */
@@ -60,8 +61,7 @@ class DirectoryList
             if (substr($path, 0, 1) !== '/') {
                 if (is_dir(BP . '/pub/' . $path)) {
                     $path = BP . '/pub/' . $path;
-                }
-                else if (is_dir(BP . '/' . $path)) {
+                } elseif (is_dir(BP . '/' . $path)) {
                     $path = BP . '/' . $path;
                 }
             }
@@ -74,7 +74,7 @@ class DirectoryList
         }
 
         return $this->basePath[$storeId];
-    }    
+    }
 
     /**
      * @return bool
@@ -86,7 +86,7 @@ class DirectoryList
 
     /**
      * @return string
-     */    
+     */
     public function getContentDir()
     {
         if (!($contentDir = $this->wpConfig->getData('WP_CONTENT_DIR'))) {
@@ -98,7 +98,7 @@ class DirectoryList
     
     /**
      * @return string
-     */    
+     */
     public function getPluginDir()
     {
         return $this->getContentDir() . '/plugins';
@@ -106,7 +106,7 @@ class DirectoryList
 
     /**
      * @return string
-     */    
+     */
     public function getThemeDir()
     {
         return $this->getContentDir() . '/themes';
@@ -125,7 +125,7 @@ class DirectoryList
      */
     /**
      * @return string
-     */    
+     */
     public function getWpContentDir()
     {
         return $this->getContentDir();

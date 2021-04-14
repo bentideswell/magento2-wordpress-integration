@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
@@ -20,7 +20,7 @@ class Comments extends AbstractWidget
                 ->addCommentApprovedFilter()
                 ->addOrderByDate('desc');
 
-            $comments->getSelect()->limit($this->getNumber() ? $this->getNumber() : 5 );
+            $comments->getSelect()->limit($this->getNumber() ? $this->getNumber() : 5);
 
             $this->setComments($comments);
         }

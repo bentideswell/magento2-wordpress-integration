@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model;
 
@@ -52,9 +52,9 @@ class Menu extends Term
     public function getMenuTreeArray()
     {
         if ($tree = $this->getMenuTreeObjects()) {
-            $menu = array();
+            $menu = [];
 
-            foreach($tree as $node) {
+            foreach ($tree as $node) {
                 $menu[] = $this->_getMenuTreeArray($node);
             }
 
@@ -69,7 +69,7 @@ class Menu extends Term
      */
     protected function _getMenuTreeArray($node)
     {
-        $data = array(
+        $data = [
             'id' => 'wp-' . $node->getId(),
             'label' => $node->getLabel(),
             'url' => $node->getUrl(),
@@ -77,14 +77,14 @@ class Menu extends Term
             'title' => $node->getTitle(),
             'description' => $node->getDescription(),
             'target' => $node->getTarget(),
-        );
+        ];
 
         $children = $node->getChildrenItems();
 
         if (count($children) > 0) {
-            $data['children'] = array();
+            $data['children'] = [];
 
-            foreach($children as $child) {
+            foreach ($children as $child) {
                 $data['children'][] = $this->_getMenuTreeArray($child);
             }
         }
@@ -106,7 +106,7 @@ class Menu extends Term
         $items = $this->getMenuItems();
 
         if (count($items) > 0) {
-            foreach($items as $item) {
+            foreach ($items as $item) {
                 $this->_menuCache[] = $this->_getMenuTreeObjects($item);
             }
         }
@@ -122,7 +122,7 @@ class Menu extends Term
         $children = $item->getChildrenItems();
 
         if (count($children) > 0) {
-            foreach($children as $child) {
+            foreach ($children as $child) {
                 $this->_getMenuTreeObjects($child);
             }
         }
@@ -156,7 +156,7 @@ class Menu extends Term
      * Retrieve the object resource model
      *
      * @return FishPig_Wordpress_Model_Resource_Post_Collection
-     */    
+     */
     protected function _getObjectResourceModel()
     {
         return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection')->addParentItemIdFilter(0);

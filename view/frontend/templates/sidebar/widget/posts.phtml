@@ -5,22 +5,22 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php $posts = $this->getPosts() ?>
+<?php $posts = $block->getPosts() ?>
 <?php if (count($posts) > 0): ?>
-	<div class="block block-blog block-recent-posts">
-		<?php if ($title = $this->getTitle()): ?>
-			<div class="block-title">
-				<strong><?php echo __($title) ?></strong>
-			</div>
-		<?php endif; ?>
-		<div class="block-content">
-			<ul id="<?php echo $this->getListId() ?>">
-			<?php foreach($posts as $post): ?>
-				<li class="item">
-					<a href="<?php echo $post->getUrl() ?>" title="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"><?php echo $this->escapeHtml($post->getPostTitle()) ?></a>
-				</li>
-			<?php endforeach; ?>
-			</ul>
-		</div>
-	</div>
+    <div class="block block-blog block-recent-posts">
+        <?php if ($title = $block->getTitle()): ?>
+            <div class="block-title">
+                <strong><?= $block->escapeHtml(__($title)) ?></strong>
+            </div>
+        <?php endif; ?>
+        <div class="block-content">
+            <ul id="<?= $block->getListId() ?>">
+            <?php foreach ($posts as $post): ?>
+                <li class="item">
+                    <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getPostTitle()) ?>"><?= $block->escapeHtml($post->getPostTitle()) ?></a>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
 <?php endif; ?>

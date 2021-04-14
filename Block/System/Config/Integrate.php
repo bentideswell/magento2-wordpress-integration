@@ -100,8 +100,7 @@ class Integrate extends Template
         WPConfig $wpConfig,
         ScopeConfigInterface $scopeConfig,
         array $data = []
-    )
-    {
+    ) {
         $this->integrationManager = $integrationManager;
         $this->url = $url;
         $this->storeManager = $storeManager;
@@ -146,15 +145,14 @@ class Integrate extends Template
 
             if ($this->integrationManager->runTests() === true) {
                 $this->success = sprintf(
-                    'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.', 
-                    $this->url->getHomeUrl(), 
+                    'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.',
+                    $this->url->getHomeUrl(),
                     $this->url->getHomeUrl()
                 );
             }
 
             $this->emulator->stopEnvironmentEmulation();
-        } 
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->emulator->stopEnvironmentEmulation();
             $this->exception = $e;
         }
@@ -169,8 +167,7 @@ class Integrate extends Template
 
         if ($exception = $this->exception) {
             $messages[] = $this->_getMessage($exception->getMessage(), 'error');
-        }
-        else if ($this->success) {
+        } elseif ($this->success) {
             $messages[] = $this->_getMessage($this->success);
 
             if ($msg = $this->_getYoastSeoMessage()) {
@@ -199,8 +196,7 @@ class Integrate extends Template
             
             if (is_file($configFile)) {
                 $configMsg = 'The <strong>wp-config.php</strong> file has been loaded from <span style="color:#109910;" title="' . $configFile . '">' . $relConfigFile . '</span>';
-            }
-            else {
+            } else {
                 $configMsg = 'The <strong>wp-config.php</strong> file can not be found at <span style="color:#df4343;" title="' . $configFile . '">' . $relConfigFile . '</span>';
             }
         }
@@ -231,13 +227,13 @@ class Integrate extends Template
         if (!$yoastPluginEnabled && !$yoastModuleEnabled) {
             return $this->_getMessage(
                 sprintf(
-                    'For the best SEO results, you should install the free <a href="%s" target="_blank">Yoast SEO WordPress plugin</a> and the free <a href="%s" target="_blank">Yoast SEO Magento extension</a>.', 
+                    'For the best SEO results, you should install the free <a href="%s" target="_blank">Yoast SEO WordPress plugin</a> and the free <a href="%s" target="_blank">Yoast SEO Magento extension</a>.',
                     self::YOAST_SEO_PLUGIN_URL,
                     self::YOAST_SEO_MODULE_URL
                 ),
                 'notice'
             );
-        } 
+        }
 
         if (!$yoastPluginEnabled) {
             return $this->_getMessage(
@@ -249,7 +245,7 @@ class Integrate extends Template
         if (!$yoastModuleEnabled) {
             return $this->_getMessage(
                 sprintf(
-                    'You have installed the Yoast SEO plugin in WordPress. To complete the SEO integration, install the free <a href="%s" target="_blank">Yoast SEO Magento extension</a>.', 
+                    'You have installed the Yoast SEO plugin in WordPress. To complete the SEO integration, install the free <a href="%s" target="_blank">Yoast SEO Magento extension</a>.',
                     self::YOAST_SEO_MODULE_URL
                 ),
                 'notice'

@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel\Image;
 
@@ -14,15 +14,15 @@ class Collection extends AbstractAttachmentCollection
     {
         parent::_construct();
 
-    $this->_init('FishPig\WordPress\Model\Image', 'FishPig\WordPress\Model\ResourceModel\Image');
+        $this->_init('FishPig\WordPress\Model\Image', 'FishPig\WordPress\Model\ResourceModel\Image');
     }
 
     /**
      * Load an image
      * Ensure that only images are returned
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool $printQuery
+     * @param  bool $logQuery
      * @return $this
      */
     public function load($printQuery = false, $logQuery = false)

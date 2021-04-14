@@ -10,9 +10,9 @@ use \Exception;
 class IntegrationException extends Exception
 {
     /**
-     * @return 
+     * @return
      */
-    static public function throwException($message)
+    public static function throwException($message)
     {
         $class = get_called_class();
 

@@ -11,8 +11,8 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use FishPig\WordPress\Helper\Core as CoreHelper;
 use FishPig\WordPress\Model\Network;
 
-abstract class AbstractItemProvider/** implements ItemProviderInterface*/
-{    
+abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProviderInterface
+{
     /**
      * @var \FishPig\WordPress\Model\Factory
      */
@@ -39,8 +39,7 @@ abstract class AbstractItemProvider/** implements ItemProviderInterface*/
         ScopeConfigInterface $scopeConfig,
         CoreHelper $coreHelper,
         Network $network
-    )
-    {
+    ) {
         $this->emulation = $emulation;
         $this->factory = $factory;
         $this->storeManager = $storeManager;
@@ -65,11 +64,13 @@ abstract class AbstractItemProvider/** implements ItemProviderInterface*/
             $isNetworkAndHaveCoreHelper = $this->network->isEnabled() && ($coreHelper = $this->coreHelper->getHelper());
 
             if ($isNetworkAndHaveCoreHelper) {
-                $coreHelper->simulatedCallback(function($blogId) {
-                    if ((int)$blogId !== (int)get_current_blog_id()) {
-                        switch_to_blog($blogId);
-                    }
-                    }, [$this->network->getBlogId()]
+                $coreHelper->simulatedCallback(
+                    function ($blogId) {
+                        if ((int)$blogId !== (int)get_current_blog_id()) {
+                            switch_to_blog($blogId);
+                        }
+                    },
+                    [$this->network->getBlogId()]
                 );
             }
 
@@ -80,16 +81,17 @@ abstract class AbstractItemProvider/** implements ItemProviderInterface*/
             $this->emulation->stopEnvironmentEmulation();
 
             if ($isNetworkAndHaveCoreHelper) {
-                $coreHelper->simulatedCallback(function() {
-                    if (function_exists('restore_current_blog')) {
-                        restore_current_blog();
+                $coreHelper->simulatedCallback(
+                    function () {
+                        if (function_exists('restore_current_blog')) {
+                            restore_current_blog();
+                        }
                     }
-                });
+                );
             }
 
             return $items;
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->emulation->stopEnvironmentEmulation();
 
             throw $e;
@@ -97,7 +99,7 @@ abstract class AbstractItemProvider/** implements ItemProviderInterface*/
     }
 
     /**
-     * @param int $storeId
+     * @param  int $storeId
      * @return bool
      */
     protected function isEnabledForStore($storeId)

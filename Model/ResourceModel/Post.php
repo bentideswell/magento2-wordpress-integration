@@ -1,8 +1,8 @@
 <?php
 /**
- * @category    FishPig
- * @package     FishPig_WordPress
- * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @category FishPig
+ * @package  FishPig_WordPress
+ * @author   Ben Tideswell <help@fishpig.co.uk>
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
@@ -20,7 +20,7 @@ class Post extends AbstractMeta
     protected $postTypeManager;
 
     /**
-     * @var 
+     * @var
      */
     protected $taxonomyManager;
 
@@ -35,11 +35,10 @@ class Post extends AbstractMeta
      * @return
      */
     public function __construct(
-       Context $context,
-     WPContext $wpContext,
-               $connectionName = null
-    )
-    {
+        Context $context,
+        WPContext $wpContext,
+        $connectionName = null
+    ) {
         $this->postTypeManager = $wpContext->getPostTypeManager();
         $this->taxonomyManager = $wpContext->getTaxonomyManager();
 
@@ -59,24 +58,24 @@ class Post extends AbstractMeta
     /**
      * Custom load SQL
      *
-     * @param string $field - field to match $value to
-     * @param string|int $value - $value to load record based on
+     * @param string                   $field  - field to match $value to
+     * @param string|int               $value  - $value to load record based on
      * @param Mage_Core_Model_Abstract $object - object we're trying to load to
      */
     protected function _getLoadSelect($field, $value, $object)
     {
         $select = $this->getConnection()->select()
-            ->from(array('e' => $this->getMainTable()))
+            ->from(['e' => $this->getMainTable()])
             ->where("e.{$field}=?", $value)
             ->limit(1);
 
         $postType = $object->getPostType();
 
-        if (!in_array($postType, array('*', ''))) {
+        if (!in_array($postType, ['*', ''])) {
             $select->where('e.post_type ' . (is_array($postType) ? 'IN' : '=') . ' (?)', $postType);
         }
 
-        $select->columns(array('permalink' => $this->getPermalinkSqlColumn()));
+        $select->columns(['permalink' => $this->getPermalinkSqlColumn()]);
 
         return $select;
     }
@@ -93,14 +92,13 @@ class Post extends AbstractMeta
 
         $matchedTokens = $matches[0];
 
-        foreach($matchedTokens as $mtoken) {
+        foreach ($matchedTokens as $mtoken) {
             if ($mtoken === '%postnames%') {
                 $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
-            }
-            else if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
-                $termData = $this->getParentTermsByPostId(array($postId), $taxonomy->getTaxonomyType(), false);
+            } elseif ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
+                $termData = $this->getParentTermsByPostId([$postId], $taxonomy->getTaxonomyType(), false);
 
-                foreach($termData as $key => $term) {
+                foreach ($termData as $key => $term) {
                     if ((int)$term['object_id'] === (int)$postId) {
                         $slug = str_replace($mtoken, $taxonomy->getUriById($term['term_id'], false), $slug);
 
@@ -116,12 +114,12 @@ class Post extends AbstractMeta
     /**
      * Prepare a collection/array of posts
      *
-     * @param mixed $posts
+     * @param  mixed $posts
      * @return $this
      */
     public function preparePosts($posts)
     {
-        foreach($posts as $post) {
+        foreach ($posts as $post) {
             $post->setData(
                 'permalink',
                 $this->completePostSlug($post->getData('permalink'), $post->getId(), $post->getTypeInstance())
@@ -134,38 +132,40 @@ class Post extends AbstractMeta
     /**
      * Get the category IDs that are related to the postIds
      *
-     * @param array $postIds
-     * @param bool $getAllIds = true
+     * @param  array $postIds
+     * @param  bool  $getAllIds = true
      * @return array|false
      */
     public function getParentTermsByPostId($postId, $taxonomy = 'category')
     {
         $select = $this->getConnection()->select()
             ->distinct()
-            ->from(array('_relationship' => $this->getTable('wordpress_term_relationship')), 'object_id')
+            ->from(['_relationship' => $this->getTable('wordpress_term_relationship')], 'object_id')
             ->where('object_id = (?)', $postId)
             ->order('_term.term_id ASC');
 
         $select->join(
-            array('_taxonomy' => $this->getTable('wordpress_term_taxonomy')),
+            ['_taxonomy' => $this->getTable('wordpress_term_taxonomy')],
             $this->getConnection()->quoteInto("_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?", $taxonomy),
             '*'
         );
 
         $select->join(
-            array('_term' => $this->getTable('wordpress_term')), 
-            "`_term`.`term_id` = `_taxonomy`.`term_id`", 
+            ['_term' => $this->getTable('wordpress_term')],
+            "`_term`.`term_id` = `_taxonomy`.`term_id`",
             'name'
         );
 
         $this->addPrimaryCategoryToSelect($select, $postId);
 
         $select->reset('columns')
-            ->columns(array(
-                $taxonomy . '_id' => '_term.term_id', 
+            ->columns(
+                [
+                $taxonomy . '_id' => '_term.term_id',
                 'term_id' => '_term.term_id',
                 'object_id'
-            ))->limit(1);
+                ]
+            )->limit(1);
 
         return $this->getConnection()->fetchAll($select);
     }
@@ -181,30 +181,29 @@ class Post extends AbstractMeta
      * @return string
      */
     public function getPermalinkSqlColumn()
-    {    
+    {
         $postTypes  = $this->postTypeManager->getPostTypes();
-        $sqlColumns = array();
+        $sqlColumns = [];
         $fields     = $this->getPermalinkSqlFields();
 
-        foreach($postTypes as $postType) {    
+        foreach ($postTypes as $postType) {
             $tokens = $postType->getExplodedPermalinkStructure();
-            $sqlFields = array();
+            $sqlFields = [];
 
-            foreach($tokens as $token) {
+            foreach ($tokens as $token) {
                 if (substr($token, 0, 1) === '%' && isset($fields[trim($token, '%')])) {
                     $sqlFields[] = $fields[trim($token, '%')];
-                }
-                else {
+                } else {
                     $sqlFields[] = "'" . $token . "'";
                 }
-            }    
+            }
 
             if (count($sqlFields) > 0) {
                 $sqlColumns[$postType->getPostType()] = ' WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
             }
         }
 
-        return count($sqlColumns) > 0 
+        return count($sqlColumns) > 0
             ? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
             : false;
     }
@@ -213,8 +212,8 @@ class Post extends AbstractMeta
      * Get permalinks by the URI
      * Given a $uri, this will retrieve all permalinks that *could* match
      *
-     * @param string $uri = ''
-     * @param array $postTypes = null
+     * @param  string $uri       = ''
+     * @param  array  $postTypes = null
      * @return false|array
      */
     public function getPermalinksByUri($uri = '')
@@ -228,7 +227,7 @@ class Post extends AbstractMeta
             if ($postTypes = $this->postTypeManager->getPostTypes()) {
                 $fields = $this->getPermalinkSqlFields();
     
-                foreach($postTypes as $postType) {
+                foreach ($postTypes as $postType) {
                     if (!($tokens = $postType->getExplodedPermalinkStructure())) {
                         continue;
                     }
@@ -239,10 +238,10 @@ class Post extends AbstractMeta
                         $uri = rtrim($uri, '/') . '/';
                     }
     
-                    $filters = array();
+                    $filters = [];
                     $lastToken = $tokens[count($tokens)-1];
     
-                    # Allow for trailing static strings (eg. .html)
+                    // Allow for trailing static strings (eg. .html)
                     if (substr($lastToken, 0, 1) !== '%') {
                         if (substr($uri, -strlen($lastToken)) !== $lastToken) {
                             continue;
@@ -254,18 +253,18 @@ class Post extends AbstractMeta
                     }
     
                     try {
-                        for($i = 0; $i <= 1; $i++) {
+                        for ($i = 0; $i <= 1; $i++) {
                             if ($i === 1) {
                                 $uri = implode('/', array_reverse(explode('/', $uri)));
                                 $tokens = array_reverse($tokens);
                             }
     
-                            foreach($tokens as $key => $token) {
+                            foreach ($tokens as $key => $token) {
                                 if (substr($token, 0, 1) === '%') {
                                     if (!isset($fields[trim($token, '%')])) {
                                         if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($token, '%'))) {
-                                            $endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/' 
-                                                && isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%' 
+                                            $endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/'
+                                                && isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%'
                                                 && !isset($tokens[$key+3]);
     
                                             if ($endsWithPostname) {
@@ -280,19 +279,15 @@ class Post extends AbstractMeta
                                     if (isset($tokens[$key+1]) && substr($tokens[$key+1], 0, 1) !== '%') {
                                         $filters[trim($token, '%')] = substr($uri, 0, strpos($uri, $tokens[$key+1]));
                                         $uri = substr($uri, strpos($uri, $tokens[$key+1]));
-                                    }
-                                    else if (!isset($tokens[$key+1])) {
+                                    } elseif (!isset($tokens[$key+1])) {
                                         $filters[trim($token, '%')] = $uri;
                                         $uri = '';
-                                    }
-                                    else {
+                                    } else {
                                         throw new \Exception('Ignore me #1');
                                     }
-                                }
-                                else if (substr($uri, 0, strlen($token)) === $token) {
+                                } elseif (substr($uri, 0, strlen($token)) === $token) {
                                     $uri = substr($uri, strlen($token));
-                                }
-                                else {
+                                } else {
                                     throw new \Exception('Ignore me #2');
                                 }
     
@@ -301,17 +296,16 @@ class Post extends AbstractMeta
                         }
     
                         if ($buffer = $this->getPermalinks($filters, $postType)) {
-                            foreach($buffer as $routeId => $route) {
+                            foreach ($buffer as $routeId => $route) {
                                 if (rtrim($route, '/') === $originalUri) {
                                     $permalinks[$routeId] = $route;
                                     throw new \Exception('Break');
-                                }    
+                                }
                             }
     
-    #                        $permalinks += $buffer;
+                            // $permalinks += $buffer;
                         }
-                    }
-                    catch (\Exception $e) {
+                    } catch (\Exception $e) {
                         if ($e->getMessage() === 'Break') {
                             break;
                         }
@@ -331,28 +325,28 @@ class Post extends AbstractMeta
      * Get an array of post ID's and permalinks
      * $filters is applied but if empty, all permalinks are returned
      *
-     * @param array $filters = array()
+     * @param  array $filters = array()
      * @return array|false
      */
-    public function getPermalinks(array $filters = array(), $postType)
+    public function getPermalinks(array $filters = [], $postType)
     {
         $tokens = $postType->getExplodedPermalinkStructure();
         $fields = $this->getPermalinkSqlFields();
 
         $select = $this->getConnection()
             ->select()
-            ->from(array('main_table' => $this->getMainTable()), array('id' => 'ID', 'permalink' => $this->getPermalinkSqlColumn()))
+            ->from(['main_table' => $this->getMainTable()], ['id' => 'ID', 'permalink' => $this->getPermalinkSqlColumn()])
             ->where('post_type = ?', $postType->getPostType())
-            ->where('post_status IN (?)', array('publish', 'protected', 'private'));
+            ->where('post_status IN (?)', ['publish', 'protected', 'private']);
 
-        foreach($filters as $field => $value) {
+        foreach ($filters as $field => $value) {
             if (isset($fields[$field])) {
                 $select->where($fields[$field] . ' = ?', urlencode($value));
             }
         }
 
         if ($routes = $this->getConnection()->fetchPairs($select)) {
-            foreach($routes as $id => $permalink) {
+            foreach ($routes as $id => $permalink) {
                 $routes[$id] = urldecode($this->completePostSlug($permalink, $id, $postType));
             }
 
@@ -369,23 +363,23 @@ class Post extends AbstractMeta
      */
     public function getPermalinkSqlFields()
     {
-        return array(
+        return [
             'year' => 'SUBSTRING(post_date_gmt, 1, 4)',
             'monthnum' => 'SUBSTRING(post_date_gmt, 6, 2)',
             'day' => 'SUBSTRING(post_date_gmt, 9, 2)',
             'hour' => 'SUBSTRING(post_date_gmt, 12, 2)',
             'minute' => 'SUBSTRING(post_date_gmt, 15, 2)',
             'second' => 'SUBSTRING(post_date_gmt, 18, 2)',
-            'post_id' => 'ID', 
+            'post_id' => 'ID',
             'postname' => 'post_name',
             'author' => 'post_author',
-        );
+        ];
     }
 
     /**
      * Determine whether the given post has any children posts
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return bool
      */
     public function hasChildrenPosts(\FishPig\WordPress\Model\Post $post)
@@ -401,10 +395,10 @@ class Post extends AbstractMeta
         return $this->getConnection()->fetchOne($select) !== false;
     }
 
-/**
+    /**
      * Retrieve a collection of post comments
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection
      */
     public function getPostComments(\FishPig\Wordpress\Model\Post $post)
@@ -419,7 +413,7 @@ class Post extends AbstractMeta
     /**
      * Retrieve the featured image for the post
      *
-     * @param \FishPig\WordPress\Model\Post $post
+     * @param  \FishPig\WordPress\Model\Post $post
      * @return \FishPig\WordPress\Model\Image $image
      */
     public function getFeaturedImage(\FishPig\WordPress\Model\Post $post)
@@ -448,8 +442,8 @@ class Post extends AbstractMeta
 
         $collection->getSelect()
             ->distinct()
-            ->setPart('columns', array())
-            ->columns(array('posts_on_day' => 'SUBSTR(main_table.post_date, 9, 2)'));
+            ->setPart('columns', [])
+            ->columns(['posts_on_day' => 'SUBSTR(main_table.post_date, 9, 2)']);
 
         return $this->getConnection()->fetchCol($collection->getSelect());
     }
