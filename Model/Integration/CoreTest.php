@@ -7,8 +7,10 @@ namespace FishPig\WordPress\Model\Integration;
 use FishPig\WordPress\Helper\Core as CoreHelper;
 use FishPig\WordPress\Model\DirectoryList as WPDirectoryList;
 use Magento\Framework\App\State;
+use Magento\Framework\App\ObjectManager;
 use FishPig\WordPress\Model\Integration\IntegrationException;
 use Exception;
+use FishPig\WordPress\Helper\Core;
 
 class CoreTest
 {
@@ -30,9 +32,8 @@ class CoreTest
     /**
      *
      */
-    public function __construct(CoreHelper $coreHelper, WPDirectoryList $wpDirectoryList, State $state)
+    public function __construct(WPDirectoryList $wpDirectoryList, State $state)
     {
-        $this->coreHelper      = $coreHelper;
         $this->wpDirectoryList = $wpDirectoryList;
         $this->state           = $state;
     }
@@ -42,7 +43,7 @@ class CoreTest
      */
     public function runTest()
     {
-        if (!$this->coreHelper->getHelper()) {
+        if (!ObjectManager::getInstance()->get(Core::class)->hasHelper()) {
             return $this;
         }
 
