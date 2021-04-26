@@ -8,6 +8,7 @@
 <form id="respond" method="post" action="<?= $block->escapeUrl($block->getCommentFormAction()) ?>">
     <input type="hidden" name="comment_post_ID" value="<?= (int)$block->getPostId() ?>"/>
     <input type="hidden" name="comment_parent" id="comment_parent" value="<?= (int)$block->getRequest()->getParam('replytocom', 0) ?>"/>
+    <input type="hidden" name="redirect_to" value="<?= $block->escapeUrl($block->getRedirectToUrl()) ?>"/>
     <fieldset class="fieldset">
         <legend class="legend"><?= __('Leave a Reply') ?></legend>
         <?php if ($block->customerMustLogin()): ?>    

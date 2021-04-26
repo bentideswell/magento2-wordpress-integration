@@ -47,6 +47,14 @@ class Form extends AbstractBlock
     }
 
     /**
+     * @return string
+     */
+    public function getRedirectToUrl()
+    {
+       return $this->_urlBuilder->getUrl('wordpress/post_comment/submit', ['post_id' => $this->getPost()->getId()]);
+    }
+
+    /**
      * Retrieve the link used to log the user in
      * If redirect to dashboard after login is disabled, the user will be redirected back to the blog post
      *

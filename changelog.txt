@@ -1,3 +1,6 @@
+26/04/2021 - 2.0.19.1
+- Improved comment messages
+
 14/04/2021 - 2.0.18.0
 - Code formatting cleanup and added escapeHtml and escapeUrl where required.
 
