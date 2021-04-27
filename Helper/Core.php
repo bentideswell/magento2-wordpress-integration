@@ -61,8 +61,7 @@ class Core extends \Magento\Framework\App\Helper\AbstractHelper
             $this->helper = false;
             
             if ($this->hasHelper()) {
-                $this->helper = \Magento\Framework\App\ObjectManager::getInstance()
-                    ->get($this->helperClassName);
+                $this->helper = \Magento\Framework\App\ObjectManager::getInstance()->get($this->helperClassName);
             }
         }
 

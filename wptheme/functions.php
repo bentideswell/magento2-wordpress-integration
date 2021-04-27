@@ -47,6 +47,7 @@ class FishPig_Theme
 		add_filter('wp_calculate_image_srcset',  array($this, 'onWpCalculateImageSrcset'));
         add_filter('wp_fatal_error_handler_enabled', '__return_false' );
         add_filter('post_type_link',             array($this, 'onFilterPostTypeLink'), 10, 4);
+        add_filter('comment_post_redirect',      array($this, 'onCommentPostRedirect'));
 
 		if ($this->isMagento2()) {
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
@@ -547,6 +548,27 @@ class FishPig_Theme
         }
         
         return $postLink;
+    }
+    
+    /**
+     *
+     */
+    public function onCommentPostRedirect($location)
+    {
+        if (($hashPosition = strpos($location, '#')) !== false) {
+            $hash = substr($location, $hashPosition+1);
+            $location = substr($location, 0, $hashPosition);
+            
+            $location = add_query_arg(
+                [
+                    '_hash' => $hash
+                ],
+                $location
+            );
+        }
+    
+    
+        return $location;
     }
 }
 

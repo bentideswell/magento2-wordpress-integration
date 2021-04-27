@@ -1,3 +1,6 @@
+27/04/2021 - 2.0.19.2
+- Updated WordPress FishPig theme.
+
 26/04/2021 - 2.0.19.1
 - Improved comment messages
 
