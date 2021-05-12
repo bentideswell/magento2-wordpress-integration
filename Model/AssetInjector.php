@@ -120,7 +120,7 @@ class AssetInjector
         $this->processMetaLinks($shortcodes, $bodyHtml, $content);
 
         $scripts = $this->extractScriptsFromContent($content);
-        
+
         if (count($scripts) > 0) {
             // Setup dependency strings
             $magentoDeps = [];
@@ -136,6 +136,9 @@ class AssetInjector
 
             if ($this->useNewMigrationMethod) {
                 $this->processScriptArrayUrls($scripts);
+                
+                $preloadScripts = $this->extractScriptsToLoadBefore($scripts);
+                
                 $this->processScriptArrayInlineScripts($scripts);
 
                 $scripts = $this->canMergeGroups() ? $this->_mergeGroups($scripts) : $scripts;
@@ -144,12 +147,17 @@ class AssetInjector
                 $scripts = trim(preg_replace('/[ ]{1,}/', ' ', str_replace("\t", ' ', $scripts)));
 
                 $content = trim($content);
+
+                if ($preloadScripts) {
+                    $content .= implode("\n", $preloadScripts) . "\n";
+                }
+                
                 $content .= "<script type=\"text/javascript\">
 " . $pathsString . "
 
 require([" . $depsString . "], function(" . $depsTokenString .") {
     $(document).ready(function() {
-        $('body').append('<div id=\"fishpig-wp\">' + " . json_encode(['scripts' => $scripts]) . ".scripts + '</div>');  
+        $('body').append('<div id=\"fishpig-wp\">' + " . json_encode(['scripts' => $scripts]) . ".scripts + '</div>');
     });
 });
 </script>";
@@ -528,6 +536,10 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
 
                 $migratedScriptUrl = $this->_migrateJsAndReturnUrl($realPathUrl);
 
+                if (strpos($migratedScriptUrl, '&#')) {
+                    $migratedScriptUrl = html_entity_decode($migratedScriptUrl);
+                }
+
                 if (strpos($migratedScriptUrl, 'feefo') !== false) {
                     // No .js
                     if (strpos($migratedScriptUrl, '.js') === false) {
@@ -545,6 +557,31 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $scripts[$skey] = $this->_fixDomReady($script);
             }
         }
+    }
+    
+    /**
+     * Remove scripts that can be loaded as a normal script tag 
+     * An example is Google Maps as this cannot be loaded after dom load
+     *
+     * @param  array &$scripts
+     * @return array|false
+     */
+    protected function extractScriptsToLoadBefore(array &$scripts)
+    {
+        $preloads = [];
+
+        foreach ($scripts as $skey => $script) {
+            if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
+                $originalScriptUrl = $matches[1];
+                
+                if (strpos($originalScriptUrl, '//maps.google.com/maps/api/js?') !== false) {
+                    $preloads[] = $script;
+                    unset($scripts[$skey]);
+                }
+            }
+        }
+        
+        return $preloads ?? false;
     }
     
     /**

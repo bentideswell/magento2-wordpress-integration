@@ -1,3 +1,7 @@
+12/05/2021 - 2.0.19.3
+- Fixed issue when using Google Maps via a WordPress plugin.
+- Removed version from etc/module.xml
+
 27/04/2021 - 2.0.19.2
 - Updated WordPress FishPig theme.
 
