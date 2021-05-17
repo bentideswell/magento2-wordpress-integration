@@ -11,7 +11,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 use FishPig\WordPress\Helper\Core as CoreHelper;
 use FishPig\WordPress\Model\Network;
 
-abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProviderInterface
+abstract class AbstractItemProvider implements ItemProviderInterface
 {
     /**
      * @var \FishPig\WordPress\Model\Factory
