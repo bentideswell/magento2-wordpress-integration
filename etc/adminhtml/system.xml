@@ -6,7 +6,7 @@
         </tab>
         <section id="wordpress" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>WordPress</label>
+            <label>WordPress Integration</label>
             <tab>fishpig</tab>
             <resource>FishPig_WordPress::config_wordpress</resource>
             <group id="setup" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">

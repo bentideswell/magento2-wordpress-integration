@@ -1,3 +1,6 @@
+28/05/2021 - 2.0.20.3
+- Updated module version source from etc/module.xml to composer.json.
+
 28/05/2021 - 2.0.20.2
 - Modified AssetInjector to not migrate webpack runtime files.
 

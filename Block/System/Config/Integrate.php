@@ -14,7 +14,6 @@ use Magento\Store\Model\App\Emulation;
 use Magento\Framework\Module\Manager as ModuleManager;
 use FishPig\WordPress\Model\Plugin;
 use FishPig\WordPress\Model\WPConfig;
-use Magento\Framework\Module\ResourceInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
@@ -60,10 +59,6 @@ class Integrate extends Template
      */
     protected $moduleManager;
 
-    /**
-     * @var \Magento\Framework\Module\ResourceInterface
-     */
-    protected $resourceInterface;
 
     /**
      * @var
@@ -96,9 +91,9 @@ class Integrate extends Template
         Emulation $emulator,
         ModuleManager $moduleManager,
         Plugin $plugin,
-        ResourceInterface $resourceInterface,
         WPConfig $wpConfig,
         ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Module\Dir\Reader $moduleDirReader,
         array $data = []
     ) {
         $this->integrationManager = $integrationManager;
@@ -107,9 +102,9 @@ class Integrate extends Template
         $this->emulator = $emulator;
         $this->moduleManager = $moduleManager;
         $this->plugin = $plugin;
-        $this->resourceInterface = $resourceInterface;
         $this->wpConfig = $wpConfig;
         $this->scopeConfig = $scopeConfig;
+        $this->moduleDirReader = $moduleDirReader;
         
         parent::__construct($context, $data);
 
@@ -187,7 +182,7 @@ class Integrate extends Template
      */
     protected function _getExtraHtml()
     {
-        $moduleVersion = $this->resourceInterface->getDbVersion('FishPig_WordPress');
+        $moduleVersion = $this->getModuleVersion('FishPig_WordPress');
 
         $configMsg = 'Unable to find <span style="color:#df4343;">wp-config.php</span> using the Path provided. You can modify the Path below.';
             
@@ -205,7 +200,7 @@ class Integrate extends Template
         <script>
             require(['jquery'], function($){
                 $(document).ready(function() {
-                    document.getElementById('wordpress_setup-head').innerHTML = 'Magento WordPress Integration - v" . $moduleVersion . "';
+                    document.getElementById('wordpress_setup-head').innerHTML = 'WordPress Integration - " . $moduleVersion . "';
                     
                     var configMsg = document.createElement('p');
                     configMsg.innerHTML = '" . $configMsg . "';
@@ -267,5 +262,27 @@ class Integrate extends Template
     protected function _prepareLayout()
     {
         return parent::_prepareLayout();
+    }
+    
+    /**
+     * Get the module's version from it's composer.json file
+     *
+     * @param  string $module
+     * @return string|false
+     */
+    private function getModuleVersion($module)
+    {
+        $moduleComposerJsonFile = $this->moduleDirReader->getModuleDir('', $module) . '/composer.json';
+        
+        if (!is_file($moduleComposerJsonFile)) {
+            return false;
+        }
+        
+        $moduleComposerJsonData = json_decode(
+            file_get_contents($moduleComposerJsonFile),
+            true
+        );
+        
+        return !empty($moduleComposerJsonData['version']) ? $moduleComposerJsonData['version'] : false;
     }
 }
