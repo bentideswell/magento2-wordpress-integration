@@ -59,7 +59,8 @@ class AssetInjector
         WPDirectoryList $wpDirectoryList,
         ShortcodeManager $shortcode,
         WordPressURL $wpUrl,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        \FishPig\WordPress\Model\Plugin $plugin
     ) {
         $this->integrationManager = $integrationManager;
         $this->storeManager = $storeManager;
@@ -69,6 +70,7 @@ class AssetInjector
         $this->shortcodeManager = $shortcode;
         $this->wpUrl = $wpUrl;
         $this->scopeConfig = $scopeConfig;
+        $this->plugin = $plugin;
     }
 
     /**
@@ -151,7 +153,7 @@ class AssetInjector
                 if ($preloadScripts) {
                     $content .= implode("\n", $preloadScripts) . "\n";
                 }
-                
+
                 $content .= "<script type=\"text/javascript\">
 " . $pathsString . "
 
@@ -512,6 +514,7 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
      */
     protected function processScriptArrayUrls(&$scripts)
     {
+
         foreach ($scripts as $skey => $script) {
             if (preg_match('/<script[^>]{1,}src=[\'"]{1}(.*)[\'"]{1}/U', $script, $matches)) {
                 $originalScriptUrl = $matches[1];
@@ -557,6 +560,8 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $scripts[$skey] = $this->_fixDomReady($script);
             }
         }
+        
+#                print_r($scripts);exit;
     }
     
     /**
@@ -575,6 +580,10 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $originalScriptUrl = $matches[1];
                 
                 if (strpos($originalScriptUrl, '//maps.google.com/maps/api/js?') !== false) {
+                    $preloads[] = $script;
+                    unset($scripts[$skey]);
+                } elseif (strpos($originalScriptUrl, 'webpack.runtime') !== false
+                    || strpos($originalScriptUrl, 'webpack-pro.runtime') !== false) {
                     $preloads[] = $script;
                     unset($scripts[$skey]);
                 }
@@ -786,6 +795,14 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         }
         
         $externalScriptUrlFull = $this->_fixNoProtocolUrl($externalScriptUrlFull);
+
+        if (strpos($externalScriptUrlFull, '/plugins/elementor/') !== false
+            || strpos($externalScriptUrlFull, '/plugins/elementor-pro/') !== false) {
+            if (strpos($externalScriptUrlFull, 'webpack') !== false
+                && strpos($externalScriptUrlFull, 'runtime') !== false) {
+                return $externalScriptUrlFull;
+            }
+        }
 
         // Check that the script is a local file
         if (!$this->_isWordPressUrl($externalScriptUrlFull)) {
