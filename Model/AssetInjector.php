@@ -803,6 +803,11 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 return $externalScriptUrlFull;
             }
         }
+        
+        if (strpos($externalScriptUrlFull, '/plugins/cornerstone/') !== false
+            && strpos($externalScriptUrlFull, '/site/cs.') !== false) {
+                return $externalScriptUrlFull;
+        }
 
         // Check that the script is a local file
         if (!$this->_isWordPressUrl($externalScriptUrlFull)) {
