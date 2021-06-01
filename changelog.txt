@@ -1,3 +1,6 @@
+01/06/2021 - 2.0.20.5
+- Updated FishPig WordPress theme.
+
 01/06/2021 - 2.0.20.4
 - Added fix for JS in Cornerstone page builder.
 
