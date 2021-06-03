@@ -17,7 +17,7 @@ class View extends Action
     protected function _getEntity()
     {
         $post = $this->factory->create('Post')->load(
-            (int)$this->getRequest()->getParam('id')
+            $this->getEntityId()
         );
 
         if (!$post->getId()) {
@@ -27,6 +27,14 @@ class View extends Action
         return $post;
     }
 
+    /**
+     * @return int
+     */
+    public function getEntityId(): int
+    {
+        return (int)$this->getRequest()->getParam('id');
+    }
+    
     /**
      * @return bool
      */
@@ -144,12 +152,14 @@ class View extends Action
         }
 
         $postType = $post->getPostType();
-
+        $template = $post->getMetaValue('_wp_page_template');
+        
         if ($postType == 'revision' && $post->getParentPost()) {
             $postType = $post->getParentPost()->getPostType();
-            $template = $post->getParentPost()->getMetaValue('_wp_page_template');
-        } else {
-            $template = $post->getMetaValue('_wp_page_template');
+            
+            if (!$template) {
+                $template = $post->getParentPost()->getMetaValue('_wp_page_template');
+            }
         }
 
         $layoutHandles = ['wordpress_post_view_default'];

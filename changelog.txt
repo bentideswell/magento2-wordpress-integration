@@ -1,3 +1,6 @@
+03/06/2021 - 2.0.20.6
+- Added getEntityId to Controller/Post/View
+
 01/06/2021 - 2.0.20.5
 - Updated FishPig WordPress theme.
 
