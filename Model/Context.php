@@ -42,7 +42,8 @@ class Context
         StoreManagerInterface $storeManager,
         Logger $logger,
         DirectoryList $directoryList,
-        CoreHelper $coreHelper
+        CoreHelper $coreHelper,
+        \FishPig\WordPress\Model\CacheInvalidator $cacheInvalidator
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->optionManager = $optionManager;
@@ -60,6 +61,7 @@ class Context
         $this->logger = $logger;
         $this->directoryList = $directoryList;
         $this->coreHelper = $coreHelper;
+        $this->cacheInvalidator = $cacheInvalidator;
     }
 
     /**
@@ -188,5 +190,13 @@ class Context
     public function getCoreHelper()
     {
         return $this->coreHelper;
+    }
+    
+    /**
+     * @return CacheInvalidator
+     */
+    public function getCacheInvalidator()
+    {
+        return $this->cacheInvalidator;
     }
 }

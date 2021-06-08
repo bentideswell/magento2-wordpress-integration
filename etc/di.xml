@@ -76,17 +76,12 @@
 			</argument>
 		</arguments>
 	</type>
-	<!-- Custom 404 Page -->
-	<!--
-  <type name="Magento\Framework\App\Router\NoRouteHandlerList">
-    <arguments>
-      <argument name="handlerClassesList" xsi:type="array">
-        <item name="FishPig_WordPress" xsi:type="array">
-          <item name="class" xsi:type="string">FishPig\WordPress\App\Router\NoRouteHandler</item>
-          <item name="sortOrder" xsi:type="string">70</item>
-        </item>
-      </argument>
-    </arguments>
-  </type>
-  -->
+    <type name="FishPig\WordPress\Model\CacheInvalidator">
+        <arguments>
+            <argument name="factories" xsi:type="array">
+                <item name="wordpress_post" xsi:type="object">FishPig\WordPress\Model\PostFactory</item>
+                <!--<item name="wordpress_term" xsi:type="object">FishPig\WordPress\Model\TermFactory</item>-->
+            </argument>
+        </arguments>
+    </type>
 </config>

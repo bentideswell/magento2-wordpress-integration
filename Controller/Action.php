@@ -85,6 +85,8 @@ abstract class Action extends ParentAction
         if ($forward = $this->_getForward()) {
             return $forward;
         }
+
+        $this->wpContext->getCacheInvalidator()->invalidateAction($this);
         
         $this->initCoreHelper();
 

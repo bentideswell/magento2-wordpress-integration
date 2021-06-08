@@ -286,11 +286,35 @@ class FishPig_Theme
 	
 		$nonce_tick = ceil(time() / ( 86400 / 2 ));
 	
-		$action = 'invalidate_' . $post_id;
+		$action = 'invalidate_wordpress_post_' . $post_id;
 	
 		$nonce = substr( hash_hmac( 'sha256', $nonce_tick . '|fishpig|' . $action, $salt ), -12, 10 );
-	
-		wp_remote_get(home_url('/wordpress/post/invalidate?id=' . $post_id . '&nonce=' . $nonce . '&time' . time()));
+
+		$invalidationUrl = add_query_arg([
+                '_fp_invalidate' => $nonce,
+                '_time' => time(),
+            ], 
+            get_permalink($post_id)
+		);
+		
+		// Send the HTTP request
+		if (function_exists('curl_init')) {
+    		$ch = curl_init($invalidationUrl);
+
+            curl_setopt_array($ch, [
+                CURLOPT_URL => $invalidationUrl,
+                CURLOPT_HEADER => false,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
+            ]);
+            
+            echo curl_exec($ch);
+            curl_close($ch);
+            exit;
+        } else {
+            wp_remote_get($invalidationUrl);
+        }
 	}
 
 	/**

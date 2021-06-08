@@ -88,7 +88,7 @@ class Router implements RouterInterface
         if (!$this->theme->isThemeIntegrated()) {
             return false;
         }
-
+        
         $this->request  = $request;
         $fullRequestUri = $this->getPathInfo($request);
         $blogRoute      = $this->url->getBlogRoute();
