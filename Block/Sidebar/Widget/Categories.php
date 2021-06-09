@@ -17,12 +17,13 @@ class Categories extends AbstractWidget
     {
         $collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
             ->addTaxonomyFilter($this->getTaxonomy())
-            ->addParentIdFilter($this->getParentId())
-            ->addHasObjectsFilter();
+            ->addParentIdFilter($this->getParentId());
+            
+        if (!$this->canShowEmpty()) {
+            $collection->addHasObjectsFilter();
+        }
 
-        $collection->getSelect()
-            ->reset('order')
-            ->order('name ASC');
+        $collection->getSelect()->reset('order')->order('name ASC');
 
         return $collection;
     }
@@ -95,5 +96,13 @@ class Categories extends AbstractWidget
         }
 
         return parent::_beforeToHtml();
+    }
+    
+    /**
+     * @return bool
+     */
+    public function canShowEmpty(): bool
+    {
+        return true;
     }
 }

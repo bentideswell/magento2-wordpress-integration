@@ -1,5 +1,6 @@
-09/06/2021 - 2.0.20.8
+09/06/2021 - 2.0.20.9
 - Updated FishPig WP theme to include better cache invalidation.
+- Changed categories widget template to allowing showing of empty categories
 
 03/06/2021 - 2.0.20.6
 - Added getEntityId to Controller/Post/View

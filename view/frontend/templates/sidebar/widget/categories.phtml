@@ -5,6 +5,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
+<?php $showEmpty = $block->canShowEmpty() ?>
 <?php $categories = $block->getCategories() ?>
 <?php if (count($categories) > 0): ?>
     <div class="block block-blog block-blog-categories">
@@ -43,7 +44,7 @@
                                 <?php if (count($children) > 0): ?>
                                     <ul class="level1">
                                         <?php foreach ($children as $child): ?>
-                                            <?php if ($child->getPostCount() > 0): ?>
+                                            <?php if ($showEmpty || $child->getPostCount() > 0): ?>
                                             <li class="level1 item<?php if ($block->isCurrentCategory($child)): ?> active<?php endif; ?>">&raquo; <a href="<?= $child->getUrl() ?>" title="<?= $child->getName() ?>" class="level1"><?= $block->escapeHtml($child->getName()) ?></a><?php if ($block->getCount()): ?> (<?= $block->escapeHtml($child->getPostCount()) ?>)<?php endif; ?>
                                             </li>
                                             <?php endif; ?>
