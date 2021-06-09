@@ -296,7 +296,7 @@ class FishPig_Theme
             ], 
             get_permalink($post_id)
 		);
-		
+
 		// Send the HTTP request
 		if (function_exists('curl_init')) {
     		$ch = curl_init($invalidationUrl);
@@ -307,11 +307,11 @@ class FishPig_Theme
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
+                CURLOPT_CONNECTTIMEOUT => 10
             ]);
             
-            echo curl_exec($ch);
+            curl_exec($ch);
             curl_close($ch);
-            exit;
         } else {
             wp_remote_get($invalidationUrl);
         }
