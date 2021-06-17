@@ -1,3 +1,6 @@
+17/06/2021 - 2.0.20.10
+- Modified AssetInjector to preload polyfills before executing WP JS dump
+
 09/06/2021 - 2.0.20.9
 - Updated FishPig WP theme to include better cache invalidation.
 - Changed categories widget template to allowing showing of empty categories

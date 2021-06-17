@@ -151,7 +151,13 @@ class AssetInjector
                 $content = trim($content);
 
                 if ($preloadScripts) {
-                    $content .= implode("\n", $preloadScripts) . "\n";
+                    if (($firstScriptPos = strpos($bodyHtml, '<script')) !== false) {
+                        $bodyHtml = substr($bodyHtml, 0, $firstScriptPos)
+                        . "\n" . implode("\n", $preloadScripts) . "\n" . substr($bodyHtml, $firstScriptPos);
+                        
+                    } else {
+                        $content .= implode("\n", $preloadScripts) . "\n";
+                    }
                 }
 
                 $content .= "<script type=\"text/javascript\">
@@ -586,10 +592,16 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                     || strpos($originalScriptUrl, 'webpack-pro.runtime') !== false) {
                     $preloads[] = $script;
                     unset($scripts[$skey]);
+                } elseif (strpos($originalScriptUrl, 'polyfill') !== false) {
+                    $preloads[] = $script;
+                    unset($scripts[$skey]);
+                } elseif (strpos($script, 'polyfill') !== false) {
+                    $preloads[] = $script;
+                    unset($scripts[$skey]);
                 }
             }
         }
-        
+
         return $preloads ?? false;
     }
     
@@ -806,6 +818,10 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         
         if (strpos($externalScriptUrlFull, '/plugins/cornerstone/') !== false
             && strpos($externalScriptUrlFull, '/site/cs.') !== false) {
+                return $externalScriptUrlFull;
+        }
+
+        if (strpos($externalScriptUrlFull, '/wp-polyfill.') !== false) {
                 return $externalScriptUrlFull;
         }
 
