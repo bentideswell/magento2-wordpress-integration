@@ -566,8 +566,6 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $scripts[$skey] = $this->_fixDomReady($script);
             }
         }
-        
-#                print_r($scripts);exit;
     }
     
     /**
@@ -586,6 +584,9 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $originalScriptUrl = $matches[1];
                 
                 if (strpos($originalScriptUrl, '//maps.google.com/maps/api/js?') !== false) {
+                    $preloads[] = $script;
+                    unset($scripts[$skey]);
+                } elseif (strpos($originalScriptUrl, 'google.com/recaptcha/') !== false) {
                     $preloads[] = $script;
                     unset($scripts[$skey]);
                 } elseif (strpos($originalScriptUrl, 'webpack.runtime') !== false

@@ -1,3 +1,6 @@
+23/06/2021 - 2.0.20.11
+- Removed Google reCaptcha JS script from bundled JS.
+
 17/06/2021 - 2.0.20.10
 - Modified AssetInjector to preload polyfills before executing WP JS dump
 
