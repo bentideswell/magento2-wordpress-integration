@@ -10,3 +10,4 @@
 <!--WP-HEAD--><?php wp_head() ?><!--/WP-HEAD-->
 </head>
 <body <?php body_class() ?>>
+    <!--WP-BODY-->
