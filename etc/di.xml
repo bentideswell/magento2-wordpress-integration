@@ -84,4 +84,11 @@
             </argument>
         </arguments>
     </type>
+	<type name="Magento\Framework\Console\CommandList">
+		<arguments>
+			<argument name="commands" xsi:type="array">
+				<item name="fishpig-wordpress-debug" xsi:type="object">FishPig\WordPress\Console\Command\DebugCommand</item>
+			</argument>
+		</arguments>
+	</type>
 </config>

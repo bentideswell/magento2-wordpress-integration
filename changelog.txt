@@ -1,3 +1,6 @@
+03/07/2021 - 2.0.20.14
+- Updated FishPig WordPress theme
+
 30/06/2021 - 2.0.20.12
 - Updated FishPig WordPress theme
 

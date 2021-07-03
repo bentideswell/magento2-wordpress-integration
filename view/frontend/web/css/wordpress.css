@@ -45,3 +45,13 @@ ol.comment-list  { list-style: none; padding: 0; margin: 0; }
 /* Post List Grid */
 .post-list.grid {}
 .post-list.grid li { display: inline-block; width: 48%; vertical-align: top; margin-right: 1%; }
+
+body.template-full-width main.page-main,
+body.elementor-template-full-width main.page-main {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: inherit;
+    padding-left: 0;
+    padding-right: 0;
+}

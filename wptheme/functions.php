@@ -324,14 +324,18 @@ class FishPig_Theme
 	 */
 	public function onFilterPreviewPostLink($previewLink, $post)
 	{
-    	if ($pageForPostsUrl = $this->getPageForPostsUrl()) {
-        	$queryString = substr($previewLink, strpos($previewLink, '?'));
-            $previewLink = $pageForPostsUrl . $queryString;
+        $postPermalink = get_the_permalink($post);
+
+        if ($postPermalink && strpos($previewLink, $postPermalink) !== 0) {
+        	if ($pageForPostsUrl = $this->getPageForPostsUrl()) {   	
+            	$queryString = substr($previewLink, strpos($previewLink, '?'));
+                $previewLink = $pageForPostsUrl . $queryString;
+            }
     	}
 
 		return $previewLink . '&fishpig=' . time();
 	}
-	
+
     /**
      *
      */
