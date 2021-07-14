@@ -347,6 +347,10 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
         foreach ($regexes as $regex) {
             if (preg_match_all('/' . $regex . '/sUi', $content, $matches)) {
                 foreach ($matches[0] as $v) {
+                    if (preg_match('/<script[^>]+type="application\/ld\+json"/', $v)) {
+                        continue;
+                    }
+
                     $content = str_replace($v, '', $content);
                     $scripts[] = $v;
                 }

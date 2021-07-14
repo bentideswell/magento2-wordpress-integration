@@ -1,3 +1,7 @@
+14/07/2021 - 2.0.20.15
+- Improved AssetInjector to extract JSON LD and add directly to HTML rather
+than using JS to merge into DOM.
+
 03/07/2021 - 2.0.20.14
 - Updated FishPig WordPress theme
 
