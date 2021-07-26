@@ -1,3 +1,6 @@
+26/07/2021 - 2.0.20.16
+- Modified XML sitemap so that some methods are public and plugins can be added to them.
+
 14/07/2021 - 2.0.20.15
 - Improved AssetInjector to extract JSON LD and add directly to HTML rather
 than using JS to merge into DOM.

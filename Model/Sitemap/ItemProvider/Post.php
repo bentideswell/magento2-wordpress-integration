@@ -31,23 +31,11 @@ class Post extends AbstractItemProvider
                 continue;
             }
 
-            $postImages = [];
-
-            if ($image = $post->getImage()) {
-                $postImages = new \Magento\Framework\DataObject(
-                    [
-                    'collection' => [new \Magento\Framework\DataObject(['url' => $image->getFullSizeImage()])],
-                    'title' => $post->getName(),
-                    'thumbnail' => $image->getAvailableImage(),
-                    ]
-                );
-            }
-
             $items[] = $this->itemFactory->create(
                 [
                 'url' => $relativePostUrl,
                 'updatedAt' => $post->getPostModifiedDate('Y-m-d'),
-                'images' => $postImages,
+                'images' => $this->getPostImages($post),
                 'priority' => 0.5,
                 'changeFrequency' => 'monthly',
                 ]
@@ -58,12 +46,35 @@ class Post extends AbstractItemProvider
     }
     
     /**
+     * Get the post imaages as an array
+     *
+     * @param  PostModel $post
+     * @return array
+     */
+    public function getPostImages(PostModel $post) : array
+    {
+        $postImages = [];
+        
+        if ($image = $post->getImage()) {
+            $postImages = new \Magento\Framework\DataObject(
+                [
+                'collection' => [new \Magento\Framework\DataObject(['url' => $image->getFullSizeImage()])],
+                'title' => $post->getName(),
+                'thumbnail' => $image->getAvailableImage(),
+                ]
+            );
+        }
+        
+        return $postImages;
+    }
+
+    /**
      * Determine whether the post as noindex in it's robots tag
      *
      * @param  PostModel $post
      * @return bool
      */
-    private function isPostNoIndex(PostModel $post)
+    public function isPostNoIndex(PostModel $post): bool
     {
         $robots = strtoupper($post->getRobots());
         
