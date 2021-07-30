@@ -1,3 +1,6 @@
+30/07/2021 - 2.0.20.17
+- Added integration test for modules with conflicting frontNames (eg. Magefan_Blog).
+
 26/07/2021 - 2.0.20.16
 - Modified XML sitemap so that some methods are public and plugins can be added to them.
 
