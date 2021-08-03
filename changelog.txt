@@ -1,3 +1,6 @@
+03/08/2021 - 2.0.20.18
+- Added changes to start supporting WPML.
+
 30/07/2021 - 2.0.20.17
 - Added integration test for modules with conflicting frontNames (eg. Magefan_Blog).
 

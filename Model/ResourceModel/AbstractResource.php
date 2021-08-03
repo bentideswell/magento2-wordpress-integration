@@ -58,4 +58,22 @@ abstract class AbstractResource extends AbstractDb
     {
         return $this->resourceConnection->getTablePrefix();
     }
+    
+    /**
+     *
+     */
+    protected function _getLoadSelect($field, $value, $object)
+    {
+        return $this->filterLoadSelect(
+            parent::_getLoadSelect($field, $value, $object)
+        );
+    }
+    
+    /**
+     *
+     */
+    public function filterLoadSelect($select)
+    {
+        return $select;
+    }
 }

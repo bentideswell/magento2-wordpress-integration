@@ -8,11 +8,8 @@ use FishPig\WordPress\Model\AbstractModel;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 use FishPig\WordPress\Model\PostTypeManager;
 
-class Taxonomy extends AbstractResourcelessModel/**
- * implements ViewableInterface
-*/
+class Taxonomy extends AbstractResourcelessModel
 {
-    
     /**
      * @const string
      */
@@ -108,22 +105,7 @@ class Taxonomy extends AbstractResourcelessModel/**
         $resource   = $this->wpContext->resourceConnection;
         $connection = $resource->getConnection();
 
-        $select = $connection->select()
-            ->from(
-                ['term' => $resource->getTable('wordpress_term')],
-                [
-                    'id' => 'term_id',
-                    'url_key' => 'slug',
-                //                  'url_key' => new \Zend_Db_Expr("IF(parent=0,TRIM(LEADING '/' FROM CONCAT('" . rtrim($this->getSlug(), '/') . "/', slug)), slug)")
-                ]
-            )
-            ->join(
-                ['tax' => $resource->getTable('wordpress_term_taxonomy')],
-                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
-                'parent'
-            );
-
-        if ($results = $connection->fetchAll($select)) {
+        if ($results = $connection->fetchAll($this->getSelectForGetAllUris())) {
             if ((int)$this->getData('rewrite/hierarchical') === 1) {
                 $this->setAllUris(PostType::generateRoutesFromArray($results, $this->getSlug()));
             } else {
@@ -138,6 +120,31 @@ class Taxonomy extends AbstractResourcelessModel/**
         }
 
         return $this->_getData('all_uris');
+    }
+
+    /**
+     *
+     */
+    public function getSelectForGetAllUris()
+    {
+        $resource   = $this->wpContext->resourceConnection;
+        $connection = $resource->getConnection();
+
+        $select = $connection->select()
+            ->from(
+                ['term' => $resource->getTable('wordpress_term')],
+                [
+                    'id' => 'term_id',
+                    'url_key' => 'slug',
+                ]
+            )
+            ->join(
+                ['tax' => $resource->getTable('wordpress_term_taxonomy')],
+                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
+                'parent'
+            );
+            
+        return $select;
     }
 
     /**

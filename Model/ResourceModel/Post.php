@@ -77,7 +77,7 @@ class Post extends AbstractMeta
 
         $select->columns(['permalink' => $this->getPermalinkSqlColumn()]);
 
-        return $select;
+        return $this->filterLoadSelect($select);
     }
 
     /**
@@ -330,6 +330,7 @@ class Post extends AbstractMeta
      */
     public function getPermalinks(array $filters = [], $postType)
     {
+
         $tokens = $postType->getExplodedPermalinkStructure();
         $fields = $this->getPermalinkSqlFields();
 

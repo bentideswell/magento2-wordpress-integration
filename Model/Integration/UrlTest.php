@@ -32,9 +32,9 @@ class UrlTest
             return $this;
         }
 
-        $magentoUrl = $this->url->getMagentoUrl();
-        $homeUrl = $this->url->getHomeUrl();
-        $siteUrl = $this->url->getSiteUrl();
+        $magentoUrl = $this->getMagentoUrl();
+        $homeUrl = $this->getHomeUrl();
+        $siteUrl = $this->getSiteUrl();
 
         if ($homeUrl === $siteUrl) {
             IntegrationException::throwException(
@@ -108,8 +108,32 @@ class UrlTest
     /**
      * @return bool
      */
-    private function isRoot(): bool
+    public function isRoot(): bool
     {
         return $this->url->isRoot();
+    }
+    
+    /**
+     * @return string
+     */
+    public function getHomeUrl(): string
+    {
+        return $this->url->getHomeUrl();
+    }
+
+    /**
+     * @return string
+     */
+    public function getSiteUrl(): string
+    {
+        return $this->url->getSiteUrl();
+    }
+
+    /**
+     * @return string
+     */
+    public function getMagentoUrl(): string
+    {
+        return $this->url->getMagentoUrl();
     }
 }

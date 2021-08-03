@@ -18,13 +18,35 @@ class Archive extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
         $this->_init('wordpress_post', 'ID');
     }
 
-    public function getDatesForWidget()
+    /**
+     * @return \Magento\Framework\DB\Select
+     */
+    public function getDatesForWidgetSelect()
     {
         return $this->getConnection()
-            ->fetchAll(
-                "SELECT COUNT(ID) AS post_count, CONCAT(SUBSTRING(post_date, 1, 4), '/', SUBSTRING(post_date, 6, 2)) as archive_date 
-                    FROM `" . $this->getMainTable() . "` AS `main_table` WHERE (`main_table`.`post_type`='post') AND (`main_table`.`post_status` ='publish') 
-                    GROUP BY archive_date ORDER BY archive_date DESC"
-            );
+            ->select()
+                ->from(
+                    ['main_table' => $this->getMainTable()],
+                    [
+                        'post_count' => new \Zend_Db_Expr('COUNT(ID)'),
+                        'archive_date' => new \Zend_Db_Expr("CONCAT(SUBSTRING(post_date, 1, 4), '/', SUBSTRING(post_date, 6, 2))")
+                    ]
+                )->where(
+                    'main_table.post_type=?', 'post'
+                )->where(
+                    'post_status = ?', 'publish'
+                )->group(
+                    'archive_date'
+                )->order(
+                    'archive_date DESC'
+                );
+    }
+    
+    /**
+     * @return array
+     */
+    public function getDatesForWidget()
+    {
+        return $this->getConnection()->fetchAll($this->getDatesForWidgetSelect());
     }
 }

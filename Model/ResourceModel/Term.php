@@ -30,18 +30,19 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
      */
     protected function _getLoadSelect($field, $value, $object)
     {
-        $select = $this->getConnection()->select()
-            ->from(['main_table' => $this->getMainTable()]);
+        $select = parent::_getLoadSelect($field, $value, $object);
+
+        $select->reset('where');
 
         if (strpos($field, '.') !== false) {
             $select->where($field . '=?', $value);
         } else {
-            $select->where("main_table.{$field}=?", $value);
+            $select->where("wp_terms.{$field}=?", $value);
         }
 
         $select->join(
             ['taxonomy' => $this->getTable('wordpress_term_taxonomy')],
-            '`main_table`.`term_id` = `taxonomy`.`term_id`',
+            '`wp_terms`.`term_id` = `taxonomy`.`term_id`',
             ['term_taxonomy_id', 'taxonomy', 'description', 'count', 'parent']
         );
 
