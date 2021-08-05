@@ -25,6 +25,11 @@ abstract class AbstractResource extends AbstractDb
     /**
      *
      */
+    protected $tableAlias = 'main_table';
+
+    /**
+     *
+     */
     public function __construct(Context $context, WPContext $wpContext, $connectionName = null)
     {
         $this->wpContext = $wpContext;
@@ -65,8 +70,15 @@ abstract class AbstractResource extends AbstractDb
     protected function _getLoadSelect($field, $value, $object)
     {
         return $this->filterLoadSelect(
-            parent::_getLoadSelect($field, $value, $object)
-        );
+            $this->getConnection()
+                ->select()
+                    ->from(
+                        [$this->tableAlias => $this->getMainTable()]
+                    )->where(
+                        $this->getConnection()->quoteIdentifier(sprintf('%s.%s', $this->tableAlias, $field)) . '=?',
+                         $value
+                    )
+            );
     }
     
     /**

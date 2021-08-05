@@ -37,12 +37,12 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
         if (strpos($field, '.') !== false) {
             $select->where($field . '=?', $value);
         } else {
-            $select->where("wp_terms.{$field}=?", $value);
+            $select->where("main_table.{$field}=?", $value);
         }
 
         $select->join(
             ['taxonomy' => $this->getTable('wordpress_term_taxonomy')],
-            '`wp_terms`.`term_id` = `taxonomy`.`term_id`',
+            '`main_table`.`term_id` = `taxonomy`.`term_id`',
             ['term_taxonomy_id', 'taxonomy', 'description', 'count', 'parent']
         );
 

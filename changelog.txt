@@ -1,3 +1,6 @@
+05/08/2021 - 2.0.20.19
+- Fixed issue with Terms SQL query to load model.
+
 03/08/2021 - 2.0.20.18
 - Added changes to start supporting WPML.
 
