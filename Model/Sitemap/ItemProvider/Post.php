@@ -33,11 +33,11 @@ class Post extends AbstractItemProvider
 
             $items[] = $this->itemFactory->create(
                 [
-                'url' => $relativePostUrl,
-                'updatedAt' => $post->getPostModifiedDate('Y-m-d'),
-                'images' => $this->getPostImages($post),
-                'priority' => 0.5,
-                'changeFrequency' => 'monthly',
+                    'url' => $relativePostUrl,
+                    'updatedAt' => $post->getPostModifiedDate('Y-m-d'),
+                    'images' => $this->getPostImages($post),
+                    'priority' => 0.5,
+                    'changeFrequency' => 'monthly',
                 ]
             );
         }
@@ -51,21 +51,19 @@ class Post extends AbstractItemProvider
      * @param  PostModel $post
      * @return array
      */
-    public function getPostImages(PostModel $post) : array
+    public function getPostImages(PostModel $post): ?\Magento\Framework\DataObject
     {
-        $postImages = [];
-        
         if ($image = $post->getImage()) {
-            $postImages = new \Magento\Framework\DataObject(
+            return new \Magento\Framework\DataObject(
                 [
-                'collection' => [new \Magento\Framework\DataObject(['url' => $image->getFullSizeImage()])],
-                'title' => $post->getName(),
-                'thumbnail' => $image->getAvailableImage(),
+                    'collection' => [new \Magento\Framework\DataObject(['url' => $image->getFullSizeImage()])],
+                    'title' => $post->getName(),
+                    'thumbnail' => $image->getAvailableImage(),
                 ]
             );
         }
         
-        return $postImages;
+        return null;
     }
 
     /**

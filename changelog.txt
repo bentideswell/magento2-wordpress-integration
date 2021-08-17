@@ -1,3 +1,6 @@
+17/08/2021 - 2.0.20.20
+- Fixed return type for getPostImages in XML sitemap generation.
+
 05/08/2021 - 2.0.20.19
 - Fixed issue with Terms SQL query to load model.
 
