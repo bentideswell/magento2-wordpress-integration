@@ -1,0 +1,13 @@
+<?php
+/**
+ *
+ */
+?>
+<?php if ($msgs = $block->getMessages()): ?>
+    <div class="messages">
+        <?php foreach ($msgs as $msg): ?>
+            <div class="message message-<?= $msg['type'] ?> <?= $msg['type'] ?>"><div><?= $msg['msg'] ?></div></div>
+        <?php endforeach; ?>
+    </div>
+    <?= $block->getAfterMessagesHtml() ?>
+<?php endif; ?>

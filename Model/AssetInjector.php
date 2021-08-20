@@ -111,7 +111,18 @@ class AssetInjector
             return str_replace(
                 '</body>',
                 "\n\n" . $content . "\n\n" . '</body>',
-                preg_replace('/<script[^>]*>.*<\/script>/Uis', '', $bodyHtml)
+                preg_replace_callback('/<script[^>]*>.*<\/script>/Uis', function($matches) {
+                    if (preg_match('/<script[^>]+type=[\'"]{1}([^\'"]+)/', $matches[0], $typeMatch)) {
+                        if ($typeMatch[1] !== 'text/javascript') {
+                            if (in_array($typeMatch[1], ['text/x-magento-init'])) {
+                                return '';
+                            }
+                            return $matches[0];
+                        }
+                    }
+
+                    return '';
+                }, $bodyHtml)
             );
         }
 

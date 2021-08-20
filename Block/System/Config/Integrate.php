@@ -5,7 +5,6 @@
  */
 namespace FishPig\WordPress\Block\System\Config;
 
-use Magento\Backend\Block\Template;
 use Magento\Backend\Block\Template\Context;
 use FishPig\WordPress\Model\IntegrationManager;
 use FishPig\WordPress\Model\Url;
@@ -17,7 +16,7 @@ use FishPig\WordPress\Model\WPConfig;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-class Integrate extends Template
+class Integrate extends \Magento\Backend\Block\Template
 {
     /**
      * @const string
@@ -58,7 +57,6 @@ class Integrate extends Template
      * @var \Magento\Framework\Module\Manager
      */
     protected $moduleManager;
-
 
     /**
      * @var
@@ -107,13 +105,7 @@ class Integrate extends Template
         $this->moduleDirReader = $moduleDirReader;
         
         parent::__construct($context, $data);
-
-        if ($this->_request->getParam('section') !== 'wordpress') {
-            return;
-        }
-
-        $this->success = false;
-
+    
         try {
             $storeId = 0;
 
@@ -139,48 +131,63 @@ class Integrate extends Template
             $this->wpConfigFilePath = $this->wpConfig->getConfigFilePath();
 
             if ($this->integrationManager->runTests() === true) {
-                $this->success = sprintf(
-                    'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.',
-                    $this->url->getHomeUrl(),
-                    $this->url->getHomeUrl()
+                $this->addMessage(
+                    sprintf(
+                        'WordPress Integration is active. View your blog at <a href="%s" target="_blank">%s</a>.',
+                        $this->url->getHomeUrl(),
+                        $this->url->getHomeUrl()
+                    ),
+                    'success'
                 );
             }
 
+            $this->validateYoastSeo();
+            
             $this->emulator->stopEnvironmentEmulation();
         } catch (\Exception $e) {
             $this->emulator->stopEnvironmentEmulation();
-            $this->exception = $e;
+            $this->addMessage($e->getMessage(), 'error');
         }
     }
 
+    protected function _beforeToHtml()
+    {
+        $this->setTemplate('FishPig_WordPress::integrate.phtml');
+        
+        return parent::_beforeToHtml();
+    }
+    
     /**
      * @return string
      */
     protected function _toHtml()
     {
-        $messages = [];
-
-        if ($exception = $this->exception) {
-            $messages[] = $this->_getMessage($exception->getMessage(), 'error');
-        } elseif ($this->success) {
-            $messages[] = $this->_getMessage($this->success);
-
-            if ($msg = $this->_getYoastSeoMessage()) {
-                $messages[] = $msg;
-            }
+        if ($this->_request->getParam('section') !== 'wordpress') {
+            return;
         }
-
-        if ($messages) {
-            return '<div class="messages">' . implode("\n", $messages) . '</div>'. $this->_getExtraHtml();
-        }
-
-        return '';
+        
+        return parent::_toHtml();
     }
 
+    private function addMessage($msg, $type)
+    {
+        $this->messages[] = [
+            'type' => $type,
+            'msg' => $msg
+        ];
+        
+        return $this;
+    }
+    
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+    
     /**
      * @return string
      */
-    protected function _getExtraHtml()
+    public function getAfterMessagesHtml()
     {
         $moduleVersion = $this->getModuleVersion('FishPig_WordPress');
 
@@ -200,7 +207,7 @@ class Integrate extends Template
         <script>
             require(['jquery'], function($){
                 $(document).ready(function() {
-                    document.getElementById('wordpress_setup-head').innerHTML = 'WordPress Integration - " . $moduleVersion . "';
+                    document.getElementById('wordpress_setup-head').innerHTML = 'FishPig WordPress Integration - " . $moduleVersion . "';
                     
                     var configMsg = document.createElement('p');
                     configMsg.innerHTML = '" . $configMsg . "';
@@ -214,13 +221,13 @@ class Integrate extends Template
     /**
      * @return string
      */
-    protected function _getYoastSeoMessage()
+    protected function validateYoastSeo()
     {
         $yoastPluginEnabled = $this->plugin->isEnabled('wordpress-seo/wp-seo.php');
         $yoastModuleEnabled = $this->moduleManager->isEnabled('FishPig_WordPress_Yoast');
 
         if (!$yoastPluginEnabled && !$yoastModuleEnabled) {
-            return $this->_getMessage(
+            $this->addMessage(
                 sprintf(
                     'For the best SEO results, you should install the free <a href="%s" target="_blank">Yoast SEO WordPress plugin</a> and the free <a href="%s" target="_blank">Yoast SEO Magento extension</a>.',
                     self::YOAST_SEO_PLUGIN_URL,
@@ -228,17 +235,13 @@ class Integrate extends Template
                 ),
                 'notice'
             );
-        }
-
-        if (!$yoastPluginEnabled) {
-            return $this->_getMessage(
+        } elseif (!$yoastPluginEnabled) {
+            $this->addMessage(
                 sprintf('For the best SEO results, you should install the free <a href="%s" target="_blank">Yoast SEO WordPress plugin</a>.', 'https://wordpress.org/plugins/wordpress-seo/'),
                 'notice'
             );
-        }
-
-        if (!$yoastModuleEnabled) {
-            return $this->_getMessage(
+        } elseif (!$yoastModuleEnabled) {
+            $this->addMessage(
                 sprintf(
                     'You have installed the Yoast SEO plugin in WordPress. To complete the SEO integration, install the free <a href="%s" target="_blank">Yoast SEO Magento extension</a>.',
                     self::YOAST_SEO_MODULE_URL
@@ -248,22 +251,6 @@ class Integrate extends Template
         }
     }
 
-    /**
-     * @return string
-     */
-    protected function _getMessage($msg, $type = 'success')
-    {
-        return sprintf('<div class="message message-%s %s"><div>%s</div></div>', $type, $type, $msg);
-    }
-
-    /**
-     * @return $this
-     */
-    protected function _prepareLayout()
-    {
-        return parent::_prepareLayout();
-    }
-    
     /**
      * Get the module's version from it's composer.json file
      *
