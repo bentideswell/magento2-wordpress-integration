@@ -1,3 +1,6 @@
+24/08/2021 - 2.0.20.22
+- Fixed undeclared variable Integrate block.
+
 20/08/2021 - 2.0.20.21
 - Improved installed add-on list in module config.
 

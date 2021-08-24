@@ -81,6 +81,11 @@ class Integrate extends \Magento\Backend\Block\Template
     /**
      *
      */
+    protected $messages = [];
+
+    /**
+     *
+     */
     public function __construct(
         Context $context,
         IntegrationManager $integrationManager,
@@ -150,6 +155,9 @@ class Integrate extends \Magento\Backend\Block\Template
         }
     }
 
+    /**
+     *
+     */
     protected function _beforeToHtml()
     {
         $this->setTemplate('FishPig_WordPress::integrate.phtml');
@@ -169,6 +177,9 @@ class Integrate extends \Magento\Backend\Block\Template
         return parent::_toHtml();
     }
 
+    /**
+     *
+     */
     private function addMessage($msg, $type)
     {
         $this->messages[] = [
@@ -178,7 +189,10 @@ class Integrate extends \Magento\Backend\Block\Template
         
         return $this;
     }
-    
+
+    /**
+     *
+     */
     public function getMessages()
     {
         return $this->messages;
