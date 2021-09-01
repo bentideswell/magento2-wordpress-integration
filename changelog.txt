@@ -1,3 +1,6 @@
+01/09/2021 - 2.0.21.0
+- Added etc/wordpress_core.xml to allow for defining global variables via XML.
+
 24/08/2021 - 2.0.20.22
 - Fixed undeclared variable Integrate block.
 

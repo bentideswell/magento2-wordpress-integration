@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="urn:magento:module:Magento_Catalog:etc/product_types_base.xsd" />
+
+    <xs:element name="config">
+        <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+                <xs:element name="group" type="wpCoreGroupDeclaration" minOccurs="0" maxOccurs="unbounded" />
+            </xs:choice>
+        </xs:complexType>
+        <xs:unique name="uniqueGroupName">
+            <xs:selector xpath="group" />
+            <xs:field xpath="@id" />
+        </xs:unique>
+    </xs:element>
+    <xs:complexType name="wpCoreGroupDeclaration">
+        <xs:all minOccurs="0">
+            <xs:element name="depends" type="wpCoreGroupDependsDeclaration" minOccurs="0" />
+            <xs:element name="globalVariables" type="wpCoreGlobalVariablesDeclaration" minOccurs="0" />
+        </xs:all>
+        <xs:attribute name="id" type="xs:string" use="required" />
+    </xs:complexType>
+    <xs:complexType name="wpCoreGlobalVariablesDeclaration">
+        <xs:sequence>
+            <xs:element name="var" type="wpCoreGlobalVariablesVarDeclaration" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="wpCoreGlobalVariablesVarDeclaration">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="wpCoreGroupDependsDeclaration">
+        <xs:all minOccurs="0">
+            <xs:element name="plugin" minOccurs="0">
+                <xs:unique name="uniquePluginFileName">
+                    <xs:selector xpath="plugin" />
+                    <xs:field xpath="@file" />
+                </xs:unique>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+</xs:schema>

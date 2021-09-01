@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:noNamespaceSchemaLocation="wordpress_core.xsd">
+    <group id="core">
+        <globalVariables>
+            <var name="post"/>
+        </globalVariables>
+    </group>
+    <group id="revslider">
+        <depends>
+            <plugin file="revslider/revslider.php"/>
+        </depends>
+        <globalVariables>
+            <var name="revSliderVersion"/>
+            <var name="rs_wmpl"/>
+            <var name="rs_slider_serial"/>
+            <var name="rs_ids_collection"/>
+            <var name="rs_material_icons_css"/>
+            <var name="rs_material_icons_css_parsed"/>
+            <var name="revslider_fonts"/>
+            <var name="rs_double_jquery_script"/>
+        </globalVariables>
+    </group>
+    <group id="prismatic">
+        <depends>
+            <plugin file="prismatic/prismatic.php"/>
+        </depends>
+        <globalVariables>
+            <var name="prismatic_options_general"/>
+            <var name="prismatic_options_prism"/>
+            <var name="prismatic_options_highlight"/>
+        </globalVariables>
+    </group>
+    <group id="copy-delete-posts">
+        <depends>
+            <plugin file="copy-delete-posts/copy-delete-posts.php"/>
+        </depends>
+        <globalVariables>
+            <var name="cdp_plug_url"/>
+        </globalVariables>
+    </group>
+    <group id="accelerated-mobile-pages">
+        <depends>
+            <!-- The spelling mistake here (moblie) is from the plugin devs, not me! -->
+            <plugin file="accelerated-mobile-pages/accelerated-moblie-pages.php"/>
+        </depends>
+        <globalVariables>
+            <var name="fontComponent"/>
+            <var name="scriptComponent"/>
+            <var name="loadComponent"/>
+            <var name="redux_builder_amp"/>
+            <var name="moduleTemplate"/>
+            <var name="layoutTemplate"/>
+            <var name="savedlayoutTemplate"/>
+            <var name="containerCommonSettings"/>
+            <var name="post_type"/>
+            <var name="ampforwpTemplate"/>
+            <var name="ampLoopData"/>
+            <var name="counterOffset"/>
+            <var name="amp_q"/>
+            <var name="amp_icons_css"/>
+            <var name="supportComponent"/>
+        </globalVariables>
+    </group>
+</config>
