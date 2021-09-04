@@ -1,3 +1,6 @@
+04/09/2021 - 2.0.21.1
+- Fixed issue with XML sitemap generation when using Multisite (Warning: Invalid argument supplied for foreach()).
+
 01/09/2021 - 2.0.21.0
 - Added etc/wordpress_core.xml to allow for defining global variables via XML.
 

@@ -88,7 +88,7 @@ class UrlTest
             return;
         }
 
-        if ($modules = $this->routeConfig->getModulesByFrontName($blogRoute)) {   
+        if ($modules = $this->routeConfig->getModulesByFrontName($blogRoute, 'frontend')) {   
             if (count($modules) === 1) {
                 $module = array_shift($modules);
 
