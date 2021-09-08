@@ -29,6 +29,10 @@
                     <comment>If Yes, Blog URL is displayed without Magento store code.</comment>
                 </field>
             </group>
+            <group id="autologin" sortOrder="1" showInDefault="1">
+                <label>WP Admin Auto Login</label>
+                <comment>Test</comment>
+            </group>
             <group id="xmlsitemap" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>XML Sitemap</label>
                 <comment>Links from your integrated WordPress blog will be automatically added to your Magento XML sitemap.</comment>
@@ -41,6 +45,14 @@
                 <label>Add-On Modules</label>
 				<field id="FishPig_WordPress_ACF" showInDefault="1">
 					<label>Advanced Custom Fields</label>
+					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+				</field>
+				<field id="FishPig_WordPress_AutoLogin" showInDefault="1">
+					<label>Auto Login</label>
+					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+				</field>
+				<field id="FishPig_WordPress_IntegratedSearch" showInDefault="1">
+					<label>Integrated Search</label>
 					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
 				</field>
 				<field id="FishPig_WordPress_Multisite" showInDefault="1">

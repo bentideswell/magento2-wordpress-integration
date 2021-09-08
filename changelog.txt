@@ -1,3 +1,6 @@
+08/09/2021 - 2.0.22.0
+- Added support for 1 Click WP Admin login (https://fishpig.co.uk/magento/wordpress-integration/1-click-wp-admin-login/)
+
 04/09/2021 - 2.0.21.1
 - Fixed issue with XML sitemap generation when using Multisite (Warning: Invalid argument supplied for foreach()).
 

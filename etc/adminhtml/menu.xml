@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
 	<menu>
-		<add id="FishPig_WordPress::config_wordpress" title="WordPress" module="FishPig_WordPress" sortOrder="30" resource="FishPig_WordPress::config_wordpress" action="adminhtml/system_config/edit/section/wordpress" />
+		<add id="FishPig_WordPress::wordpress" title="WordPress" module="FishPig_WordPress" sortOrder="30" resource="FishPig_WordPress::wp"/>
+		<add id="FishPig_WordPress::config" parent="FishPig_WordPress::wordpress" title="Configuration" module="FishPig_WordPress" sortOrder="10" resource="FishPig_WordPress::wp" action="adminhtml/system_config/edit/section/wordpress"/>
+		<add id="FishPig_WordPress::autologin" parent="FishPig_WordPress::wordpress" title="WordPress Admin →" module="FishPig_WordPress" sortOrder="20" resource="FishPig_WordPress::wp" action="wordpress/autologin"/>
 	</menu>
 </config>
