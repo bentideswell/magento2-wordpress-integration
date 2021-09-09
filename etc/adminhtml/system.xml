@@ -31,7 +31,19 @@
             </group>
             <group id="autologin" sortOrder="1" showInDefault="1">
                 <label>WP Admin Auto Login</label>
-                <comment>Test</comment>
+                <comment>Login to your WordPress Admin with a single click, right from the Magento Admin.</comment>
+				<field id="FishPig_WordPress_AutoLogin" showInDefault="1">
+					<label>Status</label>
+					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+				</field>
+            </group>
+            <group id="contentblocks" sortOrder="1" showInDefault="1">
+                <label>Content Blocks</label>
+                <comment><![CDATA[<p>Create CMS Blocks in WordPress using the WordPress editor and plugins and use them anywhere you want in Magento.</p><p>Select WP content blocks from any CMS/Static block drop down or use the shortcode anywhere:</p><p>[wp_block id="1234"]</p>]]></comment>
+				<field id="FishPig_WordPress_ContentBlocks" showInDefault="1">
+					<label>Status</label>
+					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+				</field>
             </group>
             <group id="xmlsitemap" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>XML Sitemap</label>
@@ -45,10 +57,6 @@
                 <label>Add-On Modules</label>
 				<field id="FishPig_WordPress_ACF" showInDefault="1">
 					<label>Advanced Custom Fields</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-				<field id="FishPig_WordPress_AutoLogin" showInDefault="1">
-					<label>Auto Login</label>
 					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
 				</field>
 				<field id="FishPig_WordPress_IntegratedSearch" showInDefault="1">
@@ -85,6 +93,10 @@
 				</field>
 				<field id="FishPig_NoBots" showInDefault="1">
 					<label>Security Suite</label>
+					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+				</field>
+				<field id="FishPig_WordPress_ContentBlocks" showInDefault="1">
+					<label>Static Blocks</label>
 					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
 				</field>
 				<field id="FishPig_WordPress_WPML" showInDefault="1">

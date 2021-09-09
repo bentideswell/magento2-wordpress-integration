@@ -1,3 +1,8 @@
+09/09/2021 - 2.0.23.0
+- Added support for the Content Blocks add-on module (https://fishpig.co.uk/magento/wordpress-integration/content-blocks/)
+- Improved add-on list in configuration to make it clearer what's installed and what isn't
+- WordPress FishPig theme update.
+
 08/09/2021 - 2.0.22.0
 - Added support for 1 Click WP Admin login (https://fishpig.co.uk/magento/wordpress-integration/1-click-wp-admin-login/)
 

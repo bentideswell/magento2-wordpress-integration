@@ -41,12 +41,14 @@ class PostTypeManager
         ModuleManager $moduleManager,
         StoreManagerInterface $storeManager,
         PostTypeFactory $postTypeFactory,
-        OptionManager $optionManager
+        OptionManager $optionManager,
+        \Magento\Framework\Event\ManagerInterface $eventManager
     ) {
         $this->moduleManager   = $moduleManager;
         $this->storeManager    = $storeManager;
         $this->postTypeFactory = $postTypeFactory;
         $this->optionManager   = $optionManager;
+        $this->eventManager = $eventManager;
 
         $this->load();
     }
@@ -74,10 +76,11 @@ class PostTypeManager
             $this->registerPostType(
                 $this->postTypeFactory->create()->addData(
                     [
-                    'post_type'  => 'post',
-                    'rewrite'    => ['slug' => $this->optionManager->getOption('permalink_structure')],
-                    'taxonomies' => ['category', 'post_tag'],
-                    '_builtin'   => true,
+                        'post_type' => 'post',
+                        'rewrite' => ['slug' => $this->optionManager->getOption('permalink_structure')],
+                        'taxonomies' => ['category', 'post_tag'],
+                        '_builtin' => true,
+                        'public' => true,
                     ]
                 )
             );
@@ -85,14 +88,31 @@ class PostTypeManager
             $this->registerPostType(
                 $this->postTypeFactory->create()->addData(
                     [
-                    'post_type'    => 'page',
-                    'rewrite'      => ['slug' => '%postname%/'],
-                    'hierarchical' => true,
-                    'taxonomies'   => [],
-                    '_builtin'     => true,
+                        'post_type' => 'page',
+                        'rewrite' => ['slug' => '%postname%/'],
+                        'hierarchical'  => true,
+                        'taxonomies' => [],
+                        '_builtin' => true,
+                        'public' => true,
                     ]
                 )
             );
+
+            $transport = new \Magento\Framework\DataObject();
+
+            $this->eventManager->dispatch('wordpress_get_post_types', ['transport' => $transport]);
+            
+            if ($postTypes = $transport->getPostTypes()) {
+                foreach ($postTypes as $postTypeData) {
+                    if (is_array($postTypeData)) {
+                        $this->registerPostType(
+                            $this->postTypeFactory->create()->addData($postTypeData)
+                        );
+                    } elseif ($postTypeData instanceof PostType) {
+                        $this->registerPostType($postTypeData);
+                    }
+                }
+            }
         }
 
         return $this;

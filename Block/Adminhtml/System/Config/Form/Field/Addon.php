@@ -16,15 +16,22 @@ class Addon extends \Magento\Config\Block\System\Config\Form\Field
      */
     protected function _getElementHtml(AbstractElement $element)
     {
-        $addonModule = trim(str_replace('wordpress_addon_FishPig_', '', $element->getId()));
+        $target = '_FishPig_';
+        $moduleId = $element->getId();
+        
+        if (($pos = strpos($moduleId, $target)) !== false) {
+            $moduleId = substr($moduleId, $pos + strlen($target));
+        }
+
+        $moduleCode = strpos($moduleId, 'WordPress') !== false ? substr($moduleId, strlen('WordPress_')) : $moduleId;
 
         try {
             $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
-                ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Version');
+                ->create('FishPig\\' . $moduleId . '\Block\Adminhtml\System\Config\Form\Field\Version');
         } catch (\ReflectionException $e) {
             try {
                 $configBlock = \Magento\Framework\App\ObjectManager::getInstance()
-                    ->create('FishPig\\' . $addonModule . '\Block\Adminhtml\System\Config\Form\Field\Addon');
+                    ->create('FishPig\\' . $moduleId . '\Block\Adminhtml\System\Config\Form\Field\Addon');
             } catch (\Exception $e) {
                 return '';
             }

@@ -14,18 +14,32 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
     const INSTALL_URL_BASE = 'https://fishpig.co.uk/';
     
     /**
-     *
-     *
      * @param  AbstractElement $element
      * @return string
      */
     protected function _getElementHtml(AbstractElement $element)
     {
-        $addonModule = trim(str_replace('wordpress_addon_FishPig_', '', $element->getId()));
-
-        return '<span style="display:inline-block;border:1px solid #ccc;background:#f6f6f6;line-height:1em;padding:10px;font-size:13px;color:#04260d;width:80%;margin-bottom:2px;"><a href="' . $this->getInstallUrl($addonModule) . '" target="_blank">View Module</a></span>';
+        return '<span style="display:inline-block;border:1px solid #ccc;background:#f6f6f6;line-height:1em;padding:10px;font-size:13px;color:#04260d;width:80%;margin-bottom:2px;">' . $this->getInnerHtml($element) . '</span>';
     }
 
+    /**
+     * @param  AbstractElement $element
+     * @return string
+     */
+    protected function getInnerHtml(AbstractElement $element)
+    {
+        $target = '_FishPig_';
+        $moduleId = $element->getId();
+
+        if (($pos = strpos($moduleId, $target)) !== false) {
+            $moduleId = substr($moduleId, $pos + strlen($target));
+        }
+
+        $moduleCode = strpos($moduleId, 'WordPress') !== false ? substr($moduleId, strlen('WordPress_')) : $moduleId;
+                
+        return '<strong style="color:red;">NOT INSTALLED</strong> - &nbsp;<a href="' . $this->getInstallUrl($moduleId) . '" target="_blank">View Module</a>';
+    }
+    
     /**
      * @param  AbstractElement $element
      * @return string
@@ -73,6 +87,8 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
             return self::INSTALL_URL_BASE . 'magento/extensions/block-robots-stop-spam/';
         } elseif ($addonModule === 'WordPress_AutoLogin') {
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/1-click-wp-admin-login/';
+        } elseif ($addonModule === 'WordPress_ContentBlocks') {
+            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/content-blocks/';
         }
 
         return '#';

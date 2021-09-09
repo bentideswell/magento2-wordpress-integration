@@ -193,4 +193,18 @@ class View extends Action
 
         return array_merge(parent::getLayoutHandles(), $layoutHandles);
     }
+    
+    /**
+     *
+     */
+    protected function _afterExecute()
+    {
+        if ($post = $this->getEntityObject()) {
+            if ($post->isContentBlock()) {
+                $this->getPage()->getConfig()->setRobots('NOINDEX,NOFOLLOW');
+            }
+        }
+
+        return $this;
+    }
 }

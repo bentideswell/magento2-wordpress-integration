@@ -14,11 +14,8 @@ class Post extends AbstractMeta implements ViewableInterface
      * @const string
      */
     const ENTITY = 'wordpress_post';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_post';
+    const POST_TYPE_CONTENT_BLOCK = 'fp_content_block';
 
     /**
      * Event data
@@ -903,5 +900,13 @@ class Post extends AbstractMeta implements ViewableInterface
         }
 
         return $this;
+    }
+    
+    /**
+     *
+     */
+    public function isContentBlock(): bool
+    {
+        return $this->getPostType() === self::POST_TYPE_CONTENT_BLOCK;
     }
 }

@@ -18,6 +18,10 @@ class Post extends AbstractItemProvider
         $items = [];
 
         foreach ($collection as $post) {
+            if ($post->isContentBlock()) {
+                continue;
+            }
+
             $relativePostUrl = ltrim(str_replace($storeBaseUrl, '', $post->getUrl()), '/');
 
             if (!$relativePostUrl) {
@@ -44,7 +48,7 @@ class Post extends AbstractItemProvider
 
         return $items;
     }
-    
+
     /**
      * Get the post imaages as an array
      *
@@ -62,7 +66,7 @@ class Post extends AbstractItemProvider
                 ]
             );
         }
-        
+
         return null;
     }
 
@@ -75,7 +79,7 @@ class Post extends AbstractItemProvider
     public function isPostNoIndex(PostModel $post): bool
     {
         $robots = strtoupper($post->getRobots());
-        
+
         return strpos($robots, 'NOINDEX') !== false;
     }
 }

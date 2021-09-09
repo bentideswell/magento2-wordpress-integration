@@ -53,6 +53,7 @@ class FishPig_Theme
 			add_action('save_post', array($this, 'invalidateMagento2FPC'));
 			
 			$this->initRelatedProducts();
+			$this->initContentBlocks();
 		}
 		
 		$this->cleanOldFiles();
@@ -64,9 +65,7 @@ class FishPig_Theme
         }
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	static public function getInstance()
@@ -78,9 +77,7 @@ class FishPig_Theme
 		return self::$instance;
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	protected function setupDataFromMagento()
@@ -92,9 +89,7 @@ class FishPig_Theme
 		}
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function getMagentoData($key = null, $default = null)
@@ -106,9 +101,7 @@ class FishPig_Theme
 		return isset($this->data[$key]) ? $this->data[$key] : $default;
 	}
 	
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onActionAfterSetupTheme()
@@ -136,9 +129,7 @@ class FishPig_Theme
 		remove_filter('the_content', 'wptexturize');
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onActionWpLoaded()
@@ -150,9 +141,7 @@ class FishPig_Theme
 		}
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onFilterThemeTemplates($page_templates, $wp_theme, $post)
@@ -167,9 +156,7 @@ class FishPig_Theme
 		) + $page_templates;
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onActionWidgetsInit()
@@ -213,9 +200,7 @@ class FishPig_Theme
         remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'));
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onActionInit()
@@ -223,9 +208,7 @@ class FishPig_Theme
 		add_rewrite_rule('^wordpress/post/preview/?$', 'index.php', 'top');
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function onFilterRedirectCanonical($redirect_url)
@@ -233,9 +216,7 @@ class FishPig_Theme
 		return is_404() ? false : $redirect_url;
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function preRenderPostContent($post_id)
@@ -264,9 +245,7 @@ class FishPig_Theme
         catch (Exception $e) {}
 	}
 	
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function invalidateMagento2FPC($post_id)
@@ -408,9 +387,7 @@ class FishPig_Theme
         return $headers;
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	public function includeLocalPhpFile()
@@ -424,9 +401,7 @@ class FishPig_Theme
 		return $this;
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	protected function cleanOldFiles()
@@ -442,9 +417,7 @@ class FishPig_Theme
 		}
 	}
 
-	/*
-	 *
-	 *
+	/**
 	 *
 	 */
 	protected function initRelatedProducts()
@@ -458,9 +431,18 @@ class FishPig_Theme
 		}
 	}
 
-	/*
+	/**
 	 *
-	 *
+	 */
+	protected function initContentBlocks()
+	{
+		// Related Products
+		if (is_file(__DIR__ . DIRECTORY_SEPARATOR . 'content-blocks.php')) {
+			include(__DIR__ . DIRECTORY_SEPARATOR . 'content-blocks.php');	
+		}
+	}
+
+	/**
 	 *
 	 */
 	public function onActionAddMetaBoxesRelatedProducts()

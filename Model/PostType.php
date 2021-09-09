@@ -536,4 +536,12 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     {
         return $this->factory->create('PostTypeManager')->getPostType($modelId);
     }
+    
+    /**
+     * @return bool
+     */
+    public function isPublic()
+    {
+        return (int)$this->_getData('public') === 1;
+    }
 }

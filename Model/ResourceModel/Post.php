@@ -228,6 +228,10 @@ class Post extends AbstractMeta
                 $fields = $this->getPermalinkSqlFields();
     
                 foreach ($postTypes as $postType) {
+                    if (!$postType->isPublic()) {
+                        continue;   
+                    }
+                    
                     if (!($tokens = $postType->getExplodedPermalinkStructure())) {
                         continue;
                     }

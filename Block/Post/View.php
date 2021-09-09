@@ -13,8 +13,10 @@ class View extends Post
      */
     protected function _prepareLayout()
     {
-        if ($this->getPost()) {
-            $this->getPost()->applyPageConfigData($this->pageConfig);
+        if ($post = $this->getPost()) {
+            if (!$post->isContentBlock()) {
+                $post->applyPageConfigData($this->pageConfig);
+            }
         }
 
         return parent::_prepareLayout();
