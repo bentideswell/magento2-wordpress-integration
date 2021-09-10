@@ -1,3 +1,6 @@
+10/09/2021 - 2.0.23.1
+- Improved system.xml and config area.
+
 09/09/2021 - 2.0.23.0
 - Added support for the Content Blocks add-on module (https://fishpig.co.uk/magento/wordpress-integration/content-blocks/)
 - Improved add-on list in configuration to make it clearer what's installed and what isn't

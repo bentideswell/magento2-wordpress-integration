@@ -11,3 +11,18 @@
     </div>
     <?= $block->getAfterMessagesHtml() ?>
 <?php endif; ?>
+
+<?php return ?>
+<script type="text/javascript">
+    require(['jquery'], function($){
+        $(document).ready(function() {
+            var elems=document.querySelectorAll('.hide-parent');
+            
+            if (elems.length > 0) {
+                [].forEach.call(elems, function(e) {
+                   e.parentNode.remove(); 
+                });
+            }
+        });
+    });
+</script>

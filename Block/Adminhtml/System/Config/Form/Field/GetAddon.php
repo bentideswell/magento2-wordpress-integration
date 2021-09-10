@@ -37,7 +37,7 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
 
         $moduleCode = strpos($moduleId, 'WordPress') !== false ? substr($moduleId, strlen('WordPress_')) : $moduleId;
                 
-        return '<strong style="color:red;">NOT INSTALLED</strong> - &nbsp;<a href="' . $this->getInstallUrl($moduleId) . '" target="_blank">View Module</a>';
+        return '<strong style="color:#91781a;">NOT INSTALLED</strong> - &nbsp;<a href="' . $this->getInstallUrl($moduleId) . '" target="_blank">View Module</a>';
     }
     
     /**

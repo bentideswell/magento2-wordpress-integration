@@ -224,6 +224,7 @@ class Integrate extends \Magento\Backend\Block\Template
                     document.getElementById('wordpress_setup-head').innerHTML = 'FishPig WordPress Integration - " . $moduleVersion . "';
                     
                     var configMsg = document.createElement('p');
+                    configMsg.classList.add('wp-config-msg');
                     configMsg.innerHTML = '" . $configMsg . "';
                     document.getElementById('wordpress_setup-head').parentNode.appendChild(configMsg);
                 });
