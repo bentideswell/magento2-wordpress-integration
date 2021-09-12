@@ -53,7 +53,7 @@ class ShortcodeManager
         }
 
         // Apply Magento block/template filters
-        $input = $this->filterProvider->getBlockFilter()->filter($input);
+        $input = $this->applyBlockFilter($input);
 
         if ($shortcodes = $this->getShortcodes()) {
             foreach ($shortcodes as $shortcode) {
@@ -69,7 +69,17 @@ class ShortcodeManager
 
     /**
      *
-     *
+     */
+    public function applyBlockFilter($input)
+    {
+        if (strpos($input, '{{') !== false) {
+            $input = $this->filterProvider->getBlockFilter()->filter($input);
+        }
+        
+        return $input;
+    }
+
+    /**
      *
      */
     public function getShortcodes()
@@ -78,8 +88,6 @@ class ShortcodeManager
     }
 
     /**
-     *
-     *
      *
      */
     public function getShortcodesThatRequireAssets()
