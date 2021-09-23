@@ -1,3 +1,6 @@
+23/09/2021 - 2.0.23.3
+- Update for FishPig WordPress theme that disables Gutenberg widget block editor.
+
 12/09/2021 - 2.0.23.2
 - Separated block filter into it's own method (to allow plugins) in ShortcodeManager
 
