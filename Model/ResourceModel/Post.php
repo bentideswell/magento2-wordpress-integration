@@ -77,7 +77,7 @@ class Post extends AbstractMeta
 
         $select->columns(['permalink' => $this->getPermalinkSqlColumn()]);
 
-        return $this->filterLoadSelect($select);
+        return $this->filterLoadSelect($select, $object);
     }
 
     /**

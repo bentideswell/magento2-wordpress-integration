@@ -77,14 +77,15 @@ abstract class AbstractResource extends AbstractDb
                     )->where(
                         $this->getConnection()->quoteIdentifier(sprintf('%s.%s', $this->tableAlias, $field)) . '=?',
                          $value
-                    )
-            );
+                    ),
+            $object
+        );
     }
     
     /**
      *
      */
-    public function filterLoadSelect($select)
+    public function filterLoadSelect($select, $object = null)
     {
         return $select;
     }

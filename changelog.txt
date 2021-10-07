@@ -1,3 +1,6 @@
+09/10/2021 - 2.0.23.5
+- Added update to improve WPML compatibility.
+
 23/09/2021 - 2.0.23.3
 - Update for FishPig WordPress theme that disables Gutenberg widget block editor.
 
