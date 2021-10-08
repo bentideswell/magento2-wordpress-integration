@@ -92,15 +92,16 @@ class ResourceConnection
 
         $db = $this->connection[$storeId] = $this->connectionFactory->create(
             [
-            'host' => $this->wpConfig->getDbHost(),
-            'dbname' => $this->wpConfig->getDbName(),
-            'username' => $this->wpConfig->getDbUser(),
-            'password' => $this->wpConfig->getDbPassword(),
-            'active' => '1',
+                'host' => $this->wpConfig->getDbHost(),
+                'dbname' => $this->wpConfig->getDbName(),
+                'username' => $this->wpConfig->getDbUser(),
+                'password' => $this->wpConfig->getDbPassword(),
+                'active' => '1',
+                'charset' => $this->wpConfig->getDbCharset()
             ]
         );
 
-        $this->connection[$storeId]->query('SET NAMES UTF8');
+        $this->connection[$storeId]->query($db->quoteInto('SET NAMES ?', $this->wpConfig->getDbCharset()));
 
         if ($networkTables = $this->network->getNetworkTables()) {
             $this->applyMapping($networkTables);

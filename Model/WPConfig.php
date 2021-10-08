@@ -162,4 +162,12 @@ class WPConfig
     {
         return $this->getData('DB_PASSWORD');
     }
+    
+    /**
+     * @return string
+     */
+    public function getDbCharset()
+    {
+        return $this->getData('DB_CHARSET') ?? 'utf8mb4';
+    }
 }
