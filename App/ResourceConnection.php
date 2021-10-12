@@ -87,6 +87,16 @@ class ResourceConnection
             return $this->getTablePrefix() . $table;
         }
         
-        
+        return $this->getTablePrefix() . $table;        
+    }
+
+    /**
+     * @return string
+     */
+    private function getTablePrefix(): string
+    {
+        $storeId = (int)$this->storeManager->getStore()->getId();
+
+        return isset($this->tablePrefix[$storeId]) ? $this->tablePrefix[$storeId] : '';
     }
 }

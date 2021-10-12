@@ -8,16 +8,20 @@
 				<item name="externalMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ExternalModeTest</item>
 				<item name="apiMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ApiModeTest</item>
 				<item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>				
+				<item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
+				<item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
 				<!--
 				<item name="network" xsi:type="object">FishPig\WordPress\Model\Integration\NetworkTest</item>
-				<item name="url" xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
-
-				<item name="permalink" xsi:type="object">FishPig\WordPress\Model\Integration\PermalinkTest</item>
 				<item name="core" xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
 				-->
 			</argument>
 		</arguments>
 	</type>
+    <!--
+    /**
+     * Database
+     */
+    -->
     <type name="FishPig\WordPress\App\ResourceConnection\ConfigRetriever">
 		<arguments>
 			<argument name="objects" xsi:type="array">
@@ -26,7 +30,12 @@
 			</argument>
 		</arguments>
     </type>
-    <type name="FishPig\WordPress\App\Integration\ThemeResolver">
+    <!--
+    /**
+     * Theme
+     */
+    -->
+    <type name="FishPig\WordPress\App\Integration\Theme\Resolver">
 		<arguments>
 			<argument name="objects" xsi:type="array">
 				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Theme</item>
@@ -34,6 +43,75 @@
 			</argument>
 		</arguments>
     </type>
+    <type name="FishPig\WordPress\App\Integration\Theme\FileCollector">
+		<arguments>
+			<argument name="modules" xsi:type="array">
+				<item name="FishPig_WordPress" xsi:type="string">FishPig_WordPress</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * URLs
+     */
+    -->
+    <type name="FishPig\WordPress\App\Url\SiteUrlResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Url\SiteUrl</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Url\SiteUrl</item>
+			</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\App\Url\HomeUrlResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Url\HomeUrl</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Url\HomeUrl</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Options
+     */
+    -->
+    <type name="FishPig\WordPress\App\Option\ValueResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Option</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Option</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * CLI
+     */
+    -->
+	<type name="Magento\Framework\Console\CommandList">
+		<arguments>
+			<argument name="commands" xsi:type="array">
+				<item name="fishpig-wordpress-build-theme" xsi:type="object">FishPig\WordPress\Console\Command\BuildThemePackageCommand</item>
+				<item name="fishpig-wordpress-debug" xsi:type="object">FishPig\WordPress\Console\Command\DebugCommand</item>
+				
+			</argument>
+		</arguments>
+	</type>
+
+	<type name="FishPig\WordPress\Model\Logger\Handler">
+		<arguments>
+			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+		</arguments>
+	</type>
+	<type name="FishPig\WordPress\Model\Logger">
+		<arguments>
+			<argument name="name" xsi:type="string">FishPig_WordPress</argument>
+			<argument name="handlers"  xsi:type="array">
+				<item name="system" xsi:type="object">FishPig\WordPress\Model\Logger\Handler</item>
+			</argument>
+		</arguments>
+	</type>
 
     <!--
     /**
@@ -62,18 +140,6 @@
 		</arguments>
 	</type>
 	<!-- Integration Manager -->
-	<type name="FishPig\WordPress\Model\IntegrationManager">
-		<arguments>
-			<argument name="integrationTests" xsi:type="array">
-				<item name="path"  xsi:type="object">FishPig\WordPress\Model\Integration\PathTest</item>
-				<item name="network"  xsi:type="object">FishPig\WordPress\Model\Integration\NetworkTest</item>
-				<item name="url"   xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
-				<item name="theme" xsi:type="object">FishPig\WordPress\Model\Integration\ThemeTest</item>
-				<item name="permalink" xsi:type="object">FishPig\WordPress\Model\Integration\PermalinkTest</item>
-				<item name="core"  xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
-			</argument>
-		</arguments>
-	</type>
 	<!-- Widgets -->
 	<type name="FishPig\WordPress\Model\WidgetManager">
 		<arguments>
@@ -94,28 +160,7 @@
 			</argument>
 		</arguments>
 	</type>
-	<!-- Theme Source Modules -->
-	<type name="FishPig\WordPress\Model\Theme">
-		<arguments>
-			<argument name="themeSourceModules" xsi:type="array">
-				<item name="FishPig_WordPress" xsi:type="string">style.css</item>
-			</argument>
-		</arguments>
-	</type>
 	<!-- WordPress logger - var/log/wordpress.log -->
-	<type name="FishPig\WordPress\Model\Logger\Handler">
-		<arguments>
-			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-		</arguments>
-	</type>
-	<type name="FishPig\WordPress\Model\Logger">
-		<arguments>
-			<argument name="name" xsi:type="string">FishPig_WordPress</argument>
-			<argument name="handlers"  xsi:type="array">
-				<item name="system" xsi:type="object">FishPig\WordPress\Model\Logger\Handler</item>
-			</argument>
-		</arguments>
-	</type>
     <type name="FishPig\WordPress\Model\CacheInvalidator">
         <arguments>
             <argument name="factories" xsi:type="array">
@@ -124,13 +169,6 @@
             </argument>
         </arguments>
     </type>
-	<type name="Magento\Framework\Console\CommandList">
-		<arguments>
-			<argument name="commands" xsi:type="array">
-				<item name="fishpig-wordpress-debug" xsi:type="object">FishPig\WordPress\Console\Command\DebugCommand</item>
-			</argument>
-		</arguments>
-	</type>
 	<!-- etc/wordpress_core.xml -->
     <virtualType name="WordPressCoreConfigReader" type="Magento\Framework\Config\Reader\Filesystem">
         <arguments>

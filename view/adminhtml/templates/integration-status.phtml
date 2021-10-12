@@ -1,0 +1,19 @@
+<?php
+/**
+ *
+ */
+?>
+<?php if ($msgs = $block->getMessages()): ?>
+    <div class="messages">
+        <?php foreach ($msgs as $msg): ?>
+            <div class="message message-<?= $block->escapeHtmlAttr($msg['type']) ?> <?= $block->escapeHtmlAttr($msg['type']) ?>"><div><?= $block->escapeHtml($msg['msg'], ['a']) ?></div></div>
+        <?php endforeach; ?>
+    </div>
+<?php endif; ?>
+<script type="text/javascript">
+require(['jquery'], function($){
+    $(document).ready(function() {
+        document.getElementById('wordpress_setup-head').innerHTML = '<?= $block->escapeHtml($block->getPageTitle()) ?>';
+    });
+});
+</script>

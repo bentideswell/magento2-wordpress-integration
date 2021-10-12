@@ -1,71 +1,21 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
-namespace FishPig\WordPress\Model;
+declare(strict_types=1);
 
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\Network;
-use FishPig\WordPress\Model\WPConfig;
-use FishPig\WordPress\Model\PostFactory;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Store\Model\ScopeInterface;
+namespace FishPig\WordPress\Model;
 
 class Url
 {
     /**
-     * @var OptionManager
-     */
-    protected $optionManger;
-
-    /**
-     * @var WPConfig
-     */
-    protected $wpConfig;
-
-    /**
-     * @var Network
-     */
-    protected $network;
-
-    /**
-     * @var
-     */
-    protected $storeManager;
-
-    /**
      *
      */
-    protected $postFactory;
-
-    /**
-     * @var string
-     */
-    protected $magentoUrl = [];
-
-    /**
-     * @var array
-     */
-    protected $front = [];
-
-    /**
-     *
-     */
-    public function __construct(
-        OptionManager $optionManager,
-        Network $network,
-        WPConfig $wpConfig,
-        StoreManagerInterface $storeManager,
-        PostFactory $postFactory,
-        ScopeConfigInterface $scopeConfig
-    ) {
-        $this->optionManager = $optionManager;
-        $this->wpConfig = $wpConfig;
-        $this->network = $network;
-        $this->storeManager = $storeManager;
-        $this->postFactory = $postFactory;
-        $this->scopeConfig = $scopeConfig;
+    public function __construct(\FishPig\WordPress\App\Url $url)
+    {
+        $this->url = $url;
     }
 
     /**
@@ -75,58 +25,7 @@ class Url
      */
     public function getMagentoUrl()
     {
-        $store = $this->storeManager->getStore();
-        $storeId = (int)$store->getId();
-
-        if (!isset($this->magentoUrl[$storeId])) {
-            // Determine whether Magento uses secure or unsecure URL on frontend
-            $useSecure = $this->scopeConfig->isSetFlag(
-                'web/secure/use_in_frontend',
-                ScopeInterface::SCOPE_STORE,
-                (int)$this->storeManager->getStore()->getId()
-            );
-
-            $magentoUrl = rtrim(
-                str_ireplace(
-                    'index.php',
-                    '',
-                    $store->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_LINK, $useSecure)
-                ),
-                '/'
-            );
-
-            /**
-            if ($store->isUseStoreInUrl()) {
-                if (preg_match('/(.*)' . $store->getCode() . '[\/]*$/', $magentoUrl, $matches)) {
-                    $magentoUrl = $matches[1];
-                }
-            }
-*/
-
-            if ($this->ignoreStoreCode()) {
-                $storeCode = $this->storeManager->getStore()->getCode();
-
-                if (substr($magentoUrl, -strlen($storeCode)) === $storeCode) {
-                    $magentoUrl = substr($magentoUrl, 0, -strlen($storeCode)-1);
-                }
-            }
-
-            $this->magentoUrl[$storeId] = rtrim($magentoUrl, '/');
-        }
-
-        return $this->magentoUrl[$storeId];
-    }
-
-    /**
-     * @return bool
-     */
-    public function ignoreStoreCode()
-    {
-        return (int)$this->scopeConfig->getValue(
-            'wordpress/setup/ignore_store_code',
-            ScopeInterface::SCOPE_STORE,
-            (int)$this->storeManager->getStore()->getId()
-        ) === 1;
+        return $this->url->getMagentoUrl();
     }
 
     /**
@@ -134,7 +33,7 @@ class Url
      */
     public function getBlogRoute()
     {
-        return trim(substr($this->getHomeUrl(), strlen($this->getMagentoUrl())), '/');
+        return $this->url->getBlogRoute();
     }
 
     /**
@@ -145,13 +44,7 @@ class Url
      */
     public function getUrl($uri = '')
     {
-        $url = $this->getHomeUrl()    . '/' . $uri;
-
-        if (!$this->hasTrailingSlash()) {
-            $url = rtrim($url, '/');
-        }
-
-        return $url;
+        return $this->url->getHomeUrl($uri);
     }
 
     /**
@@ -162,37 +55,15 @@ class Url
      */
     public function getUrlWithFront($uri = '')
     {
-        if ($front = $this->getFront()) {
-            $uri = ltrim($front . '/' . $uri, '/');
-        }
-
-        return $this->getUrl($uri);
-    }
-
-    /**
-     * Determine whether to use a trailing slash on URLs
-     *
-     * @return bool
-     */
-    public function hasTrailingSlash()
-    {
-        if ($permalinkStructure = $this->optionManager->getOption('permalink_structure')) {
-            return substr($permalinkStructure, -1) === '/';
-        }
-
-        return false;
+        return $this->url->getUrlWithFront($uri);
     }
 
     /**
      * @return string
      */
-    public function getSiteurl($extra = '')
+    public function getSiteurl($uri = '')
     {
-        if (!($siteUrl = $this->wpConfig->getData('WP_SITEURL'))) {
-            $siteUrl = $this->optionManager->getOption('siteurl');
-        }
-
-        return rtrim(rtrim($siteUrl, '/') . '/' . ltrim($extra, '/'), '/');
+        return $this->url->getSiteUrl($uri);
     }
 
     /**
@@ -200,19 +71,7 @@ class Url
      */
     public function getHomeUrl()
     {
-        if (!($home = $this->wpConfig->getData('WP_HOME'))) {
-            $home = $this->optionManager->getOption('home');
-        }
-
-        return rtrim($home, '/');
-    }
-
-    /**
-     * @return
-     */
-    public function getBaseFileUploadUrl()
-    {
-        return rtrim($this->getWpContentUrl(), '/') . '/uploads/';
+        return $this->url->getHomeUrl();
     }
 
     /**
@@ -220,11 +79,7 @@ class Url
      */
     public function getWpContentUrl()
     {
-        if (!($contentUrl = $this->wpConfig->getData('WP_CONTENT_URL'))) {
-            $contentUrl = $this->getSiteUrl() . '/wp-content/';
-        }
-
-        return $contentUrl;
+        return $this->url->getWpContentUrl();
     }
 
     /**
@@ -234,6 +89,9 @@ class Url
      */
     public function getFileUploadUrl()
     {
+        echo __METHOD__ . '<br/>' . PHP_EOL;
+        echo 'Move this to Image model';
+        exit;
         $url = $this->optionManager->getOption('fileupload_url');
 
         if (!$url) {
@@ -252,7 +110,7 @@ class Url
             }
 
             if (!$url) {
-                $url = $this->getBaseFileUploadUrl();
+                $url = rtrim($this->getWpContentUrl(), '/') . '/uploads/';
             }
         }
 
@@ -264,15 +122,7 @@ class Url
      */
     public function isRoot()
     {
-        return false;
-    }
-
-    /**
-     * @return int
-     */
-    protected function getStoreId()
-    {
-        return (int)$this->storeManager->getStore()->getId();
+        return $this->url->isRoot();
     }
 
     /**
@@ -280,20 +130,6 @@ class Url
      */
     public function getFront()
     {
-        $storeId = $this->getStoreId();
-
-        if (!isset($this->front[$storeId])) {
-            $this->front[$storeId] = '';
-
-            if ($this->isRoot()) {
-                $postPermalink = $this->postFactory->create()->setPostType('post')->getTypeInstance()->getPermalinkStructure();
-
-                if (substr($postPermalink, 0, 1) !== '%') {
-                    $this->front[$storeId] = trim(substr($postPermalink, 0, strpos($postPermalink, '%')), '/');
-                }
-            }
-        }
-
-        return $this->front[$storeId];
+        return $this->url->getFront();
     }
 }

@@ -36,8 +36,11 @@ class DirectoryList
     /**
      *
      */
-    public function __construct(StoreManagerInterface $storeManager, ScopeConfigInterface $scopeConfig, WPConfig $wpConfig)
-    {
+    public function __construct(
+        StoreManagerInterface $storeManager, 
+        ScopeConfigInterface $scopeConfig, 
+        WPConfig $wpConfig
+    ) {
         $this->scopeConfig  = $scopeConfig;
         $this->storeManager = $storeManager;
         $this->wpConfig     = $wpConfig;

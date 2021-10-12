@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\ResourceConnection;
 
-class ConfigRetriever extends \FishPig\WordPress\App\Integration\Mode\ObjectFactory
+class ConfigRetriever extends \FishPig\WordPress\App\Integration\Mode\ObjectResolver
 {
     /**
      * @return array

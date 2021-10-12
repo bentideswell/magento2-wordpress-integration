@@ -5,7 +5,7 @@
 namespace FishPig\WordPress\Controller;
 
 use Magento\Framework\App\RouterInterface;
-use Magento\Framework\App\ActionFactory;
+
 use FishPig\WordPress\Model\IntegrationManager;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
@@ -60,19 +60,18 @@ class Router implements RouterInterface
      *
      */
     public function __construct(
-        ActionFactory $actionFactory,
-        IntegrationManager $integrationManager,
-        Url $url,
+        \Magento\Framework\App\ActionFactory $actionFactory,
+        \FishPig\WordPress\App\Integration\Tests $integrationTests,
+        \FishPig\WorDPress\App\Url $url,
         Factory $factory,
-        EventManager $eventManager,
-        Theme $theme
+        EventManager $eventManager
     ) {
         $this->actionFactory = $actionFactory;
-        $this->integrationManager = $integrationManager;
+        $this->integrationTests = $integrationTests;
         $this->url = $url;
         $this->factory = $factory;
         $this->eventManager = $eventManager;
-        $this->theme = $theme;
+
     }
 
     /**
@@ -80,7 +79,8 @@ class Router implements RouterInterface
      */
     public function match(RequestInterface $request)
     {
-        if ($this->integrationManager->runTests() === false) {
+        echo __LINE__;exit;
+        if ($this->integrationTests->runTests() === false) {
             return false;
         }
 

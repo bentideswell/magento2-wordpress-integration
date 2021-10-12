@@ -26,7 +26,7 @@ class Config implements \FishPig\WordPress\Api\Data\App\ResourceConnection\Confi
      */
     public function getDatabaseConfig(): array
     {
-        if ($config = (array)$this->scopeConfig->getValue('wordpress/mode_external/db')) {
+        if ($config = (array)$this->scopeConfig->getValue('wordpress/mode_external_db')) {
             if (!empty($config['password'])) {
                 $config['password'] = $this->encryptor->decrypt($config['password']);
             }

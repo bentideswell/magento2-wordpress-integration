@@ -1,37 +1,21 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
-namespace FishPig\WordPress\Model;
+declare(strict_types=1);
 
-use FishPig\WordPress\Model\ResourceConnection;
-use Magento\Store\Model\StoreManagerInterface;
+namespace FishPig\WordPress\Model;
 
 class OptionManager
 {
-   
     /**
-     * @var array
+     * @param \FishPig\WordPress\App\Option $option
      */
-    protected $data = [];
-
-    /**
-     * @var StoreManagerInterface
-     */
-    protected $storeManager;
-
-    /**
-     * @var ResourceConnection
-     */
-    protected $resourceConnection;
-
-    /**
-     *
-     */
-    public function __construct(ResourceConnection $resourceConnection, StoreManagerInterface $storeManager)
+    public function __construct(\FishPig\WordPress\App\Option $option)
     {
-        $this->resourceConnection = $resourceConnection;
-        $this->storeManager       = $storeManager;
+        $this->option = $option;
     }
 
     /**
@@ -42,27 +26,7 @@ class OptionManager
      */
     public function getOption($key)
     {
-        $storeId = $this->getStoreId();
-
-        if (!isset($this->data[$storeId])) {
-            $this->data[$storeId] = [];
-        }
-
-        if (!isset($this->data[$storeId][$key])) {
-            $resource   = $this->resourceConnection;
-
-            if ($connection = $resource->getConnection()) {
-                $select = $connection->select()
-                    ->from($resource->getTable('wordpress_option'), 'option_value')
-                    ->where('option_name = ?', $key);
-    
-                $this->data[$storeId][$key] = $connection->fetchOne($select);
-            } else {
-                $this->data[$storeId][$key] = false;
-            }
-        }
-
-        return $this->data[$storeId][$key];
+        return $this->option->get($key);
     }
 
     /**
@@ -70,15 +34,7 @@ class OptionManager
      */
     public function optionExists($key)
     {
-        $resource   = $this->resourceConnection;
-        $connection = $resource->getConnection();
-
-        $select = $connection->select()
-            ->from($resource->getTable('wordpress_option'), 'option_value')
-            ->where('option_name = ?', $key)
-            ->limit(1);
-
-        return $connection->fetchOne($select) !== false;
+        return $this->option->exists($key);
     }
 
     /**
@@ -86,47 +42,15 @@ class OptionManager
      */
     public function setOption($key, $value)
     {
-        $storeId    = $this->getStoreId();
-        $resource   = $this->resourceConnection;
-        $connection = $resource->getConnection();
-        $table      = $resource->getTable('wordpress_option');
-
-        if ($this->optionExists($key)) {
-            $connection->update(
-                $table,
-                ['option_value' => $value],
-                $connection->quoteInto('option_name = ?', $key)
-            );
-
-            if (isset($this->data[$storeId][$key])) {
-                unset($this->data[$storeId][$key]);
-            }
-        } else {
-            $connection->insert($table, ['option_name' => $key, 'option_value' => $value]);
-        }
-
-        return $this;
+        return $this->option->set($key, $value);
     }
 
     /**
-     * Get a site option.
-     * This is implemented in Multisite
-     *
      * @param  string $key
      * @return mixed
      */
     public function getSiteOption($key)
     {
         return false;
-    }
-
-    /**
-     * Get the store ID
-     *
-     * @return int
-     */
-    protected function getStoreId()
-    {
-        return (int)$this->storeManager->getStore()->getId();
     }
 }

@@ -8,12 +8,10 @@
 			<mode_subdirectory>
     			<path>wp</path>
 			</mode_subdirectory>
-			<mode_external>
-    			<db>
-        			<table_prefix>wp_</table_prefix>
-        			<charset>utf8</charset>
-    			</db>
-			</mode_external>
+			<mode_external_db>
+    			<table_prefix>wp_</table_prefix>
+    			<charset>utf8</charset>
+			</mode_external_db>
 		</wordpress>
 	</default>
 </config>

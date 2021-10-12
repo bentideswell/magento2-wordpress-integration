@@ -27,7 +27,8 @@ class Context
      *
      */
     public function __construct(
-        ResourceConnection $resourceConnection,
+//        ResourceConnection $resourceConnection,
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
         OptionManager $optionManager,
         ShortcodeManager $shortcodeManager,
         PostTypeManager $postTypeManager,

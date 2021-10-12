@@ -32,28 +32,28 @@
                         <comment>This data can be found in your wp-config.php file, which will be in the root of your WordPress installation.</comment>
                         <field id="host" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Hostname</label>
-                            <config_path>wordpress/mode_external/db/host</config_path>
+                            <config_path>wordpress/mode_external_db/host</config_path>
                         </field>
                         <field id="dbname" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Name</label>
-                            <config_path>wordpress/mode_external/db/dbname</config_path>
+                            <config_path>wordpress/mode_external_db/dbname</config_path>
                         </field>
                         <field id="username" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Username</label>
-                            <config_path>wordpress/mode_external/db/username</config_path>
+                            <config_path>wordpress/mode_external_db/username</config_path>
                         </field>
                         <field id="password" translate="label comment" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                             <label>Password</label>
                             <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
-                            <config_path>wordpress/mode_external/db/password</config_path>
+                            <config_path>wordpress/mode_external_db/password</config_path>
                         </field>
                         <field id="charset" translate="label comment" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>Charset</label>
-                            <config_path>wordpress/mode_external/db/charset</config_path>
+                            <config_path>wordpress/mode_external_db/charset</config_path>
                         </field>
                         <field id="table_prefix" translate="label comment" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>Table Prefix</label>
-                            <config_path>wordpress/mode_external/db/table_prefix</config_path>
+                            <config_path>wordpress/mode_external_db/table_prefix</config_path>
                         </field>
                     </group>
                 </group>
