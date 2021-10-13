@@ -14,7 +14,7 @@ use Magento\Framework\View\Element\Template;
 */
 use Magento\Framework\View\Element\Template\Context as Context;
 use FishPig\WordPress\Model\WidgetManager;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 use FishPig\WordPress\Model\Plugin;
 use Magento\Framework\Registry;
 

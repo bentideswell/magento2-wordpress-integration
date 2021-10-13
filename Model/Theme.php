@@ -5,7 +5,7 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\State;

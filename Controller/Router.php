@@ -79,15 +79,15 @@ class Router implements RouterInterface
      */
     public function match(RequestInterface $request)
     {
-        echo __LINE__;exit;
+
         if ($this->integrationTests->runTests() === false) {
             return false;
         }
 
         // If theme not integrated, don't display blog
-        if (!$this->theme->isThemeIntegrated()) {
-            return false;
-        }
+//        if (!$this->theme->isThemeIntegrated()) {
+//            return false;
+//        }
         
         $this->request  = $request;
         $fullRequestUri = $this->getPathInfo($request);

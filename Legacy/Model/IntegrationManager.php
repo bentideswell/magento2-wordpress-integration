@@ -2,7 +2,7 @@
 /**
  *
  */
-namespace FishPig\WordPress\Model;
+namespace FishPig\WordPress\Legacy\Model;
 
 class IntegrationManager
 {

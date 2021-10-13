@@ -6,8 +6,8 @@
 namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Model\Network;
-use FishPig\WordPress\Model\ResourceConnection;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\ResourceConnection;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 
 class Plugin
 {

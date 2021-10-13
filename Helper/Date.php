@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Helper;
 
 use Magento\Framework\App\Helper\AbstractHelper;
 use Magento\Framework\App\Helper\Context;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 
 class Date extends AbstractHelper
 {

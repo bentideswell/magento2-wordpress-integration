@@ -5,3 +5,5 @@ System.xml
 - Remove Theme Integration and control this via homeURL!==siteURL
 - Replace Ignore Store Code with 'Replace Home URL'
 - Remove XML sitemap option. If using xML sitemap, items will be added automatically
+- Change Theme/Resolver to Theme with resolvers for each dep
+- Move Integration/Theme to Theme

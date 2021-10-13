@@ -28,11 +28,7 @@ class ExternalModeTest implements \FishPig\WordPress\Api\Data\App\Integration\Te
     public function runTest(): void
     {
         if ($this->appMode->isExternalMode()) {
-            if (!$this->resourceConnection->isConnected()) {
-                throw new IntegrationTestException(
-                    $this->resourceConnection->getConnectionError()
-                );
-            }
+            $this->resourceConnection->isConnected();
         }
     }
 }

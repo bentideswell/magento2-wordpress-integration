@@ -53,7 +53,6 @@ abstract class AbstractResource extends AbstractDb
     public function getTable($tableName)
     {
         return $this->resourceConnection->getTable($tableName);
-        ;
     }
 
     /**

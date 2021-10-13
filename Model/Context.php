@@ -4,8 +4,7 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\ResourceConnection;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\ResourceConnection;
 use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\PostTypeManager\Proxy as PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager\Proxy as TaxonomyManager;
@@ -29,7 +28,7 @@ class Context
     public function __construct(
 //        ResourceConnection $resourceConnection,
         \FishPig\WordPress\App\ResourceConnection $resourceConnection,
-        OptionManager $optionManager,
+        \FishPig\WordPress\Legacy\Model\OptionManager $optionManager,
         ShortcodeManager $shortcodeManager,
         PostTypeManager $postTypeManager,
         TaxonomyManager $taxonomyManager,

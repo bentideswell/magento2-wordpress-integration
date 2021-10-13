@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Model;
+namespace FishPig\WordPress\Legacy\Model;
 
 class OptionManager
 {

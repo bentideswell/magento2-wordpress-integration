@@ -17,26 +17,36 @@ class ThemeTest implements \FishPig\WordPress\Api\Data\App\Integration\TestInter
      * @param \FishPig\WordPress\App\ThemeResolver $themeResolver
      */
     public function __construct(
-        \FishPig\WordPress\App\Integration\Theme\Resolver $themeResolver
+        \FishPig\WordPress\App\Theme $theme,
+        \Magento\Backend\Model\Url $url
     ) {
-        $this->themeResolver = $themeResolver;
+        $this->theme = $theme;
+        $this->url = $url;
     }
-    
+
     /**
      * @return void
      */
     public function runTest(): void
     {
-        $theme = $this->themeResolver->getObject();
-
-        if (!$theme->getRemoteHash()) {
-            throw new IntegrationFatalException('The FishPig theme is not installed in WordPress. Run bin/magento fishpig:wordpress:build-theme');
-        }
-        
-        if ($theme->getLocalHash() !== $theme->getRemoteHash()) {
-            throw new IntegrationRecoverableException(
-                'The WordPress FishPig theme has an update available. Run bin/magento fishpig:wordpress:build-theme'
+        if (php_sapi_name() === 'cli') {
+            $errorMsg = sprintf(
+                'Run \'%s\' in the CLI to generate the theme and then install it in WordPress.',
+                'bin/magento fishpig:wordpress:build-theme'
             );
+        } else {
+            $errorMsg = sprintf(
+                '<a href="%s">Click here to download the theme</a> and then install it in WordPress.',
+                $this->url->getUrl('wordpress/theme/build')
+            );
+        }
+
+        if (!$this->theme->isInstalled()) {
+            throw new IntegrationFatalException('The FishPig theme is not installed in WordPress. ' . $errorMsg);
+        }
+
+        if (!$this->theme->isLatestVersion()) {
+            throw new IntegrationRecoverableException('The WordPress FishPig theme has an update available. ' . $errorMsg);
         }
     }
 }

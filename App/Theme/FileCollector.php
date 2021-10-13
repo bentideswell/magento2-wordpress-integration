@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Theme;
+namespace FishPig\WordPress\App\Theme;
 
 class FileCollector
 {

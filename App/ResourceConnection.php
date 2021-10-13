@@ -21,6 +21,14 @@ class ResourceConnection
     private $tablePrefix = [];
 
     /**
+     * @var []
+     */
+    private $legacyTableMap = [
+        'wordpress_post' => 'posts',
+        'wordpress_post_meta' => 'postmeta',
+    ];
+
+    /**
      * @param  \FishPig\WordPress\App\Integration\Mode $appMode
      * @param  \FishPig\WordPress\App\Config $config
      * @param  \Magento\Framework\App\ResourceConnection\ConnectionFactory $connectionFactory
@@ -31,17 +39,20 @@ class ResourceConnection
         \FishPig\WordPress\App\Config $config,
         \FishPig\WordPress\App\ResourceConnection\ConfigRetriever $connectionConfigRetriever,
         \Magento\Framework\App\ResourceConnection\ConnectionFactory $connectionFactory,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \FishPig\WordPress\App\Cache $cache
     ) {
         $this->appMode = $appMode;
-        $this->config = $config;
-        $this->connectionConfigRetriever = $connectionConfigRetriever;
-        $this->connectionFactory = $connectionFactory;
-        $this->storeManager = $storeManager;
 
         if ($this->appMode->isApiMode()) {
             throw new \Exception('Cannot use the ResourceConnection in API mode.');
         }
+
+        $this->config = $config;
+        $this->connectionConfigRetriever = $connectionConfigRetriever;
+        $this->connectionFactory = $connectionFactory;
+        $this->storeManager = $storeManager;
+        $this->cache = $cache;
     }
 
     /**
@@ -51,38 +62,60 @@ class ResourceConnection
     {
         return $this->getConnection()->isConnected();
     }
-    
+
     /**
      * @return false|\Magento\Framework\App\ResourceConnection\Connection
      */
     public function getConnection()
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
-        
+
         if (!isset($this->connection[$storeId])) {
             $this->connection[$storeId] = false;
-            
+
             $config = $this->connectionConfigRetriever->getConfig();
-            
+
             $this->tablePrefix[$storeId] = $config['table_prefix'];
             $db = $this->connection[$storeId] = $this->connectionFactory->create($config);
-            
-            // Set the correct charset
-            $this->connection[$storeId]->query(
-                $this->connection[$storeId]->quoteInto('SET NAMES ?', $config['charset'])
+
+            $db->query(
+                $db->quoteInto('SET NAMES ?', $config['charset'])
             );
+
+            $tablesExistCacheKey = md5(implode(':', $config));
+
+            if ((int)$this->cache->load($tablesExistCacheKey) !== 1) {
+                $targetTable = $config['table_prefix'] . 'posts';
+                $tableExists = false !== $db->fetchOne(
+                    $db->select()
+                        ->from('information_schema.tables', 'TABLE_NAME')
+                        ->where('table_schema = ?', $config['dbname'])
+                        ->where('table_name  = ?', $targetTable)
+                        ->limit(1)
+                );
+   
+                if (!$tableExists) {
+                    throw new \Exception("Database connected but table '$targetTable' does not exist.");
+                }
+
+                $this->cache->save('1', $tablesExistCacheKey, [], 14400 /* 4 hours */);
+            }
         }
 
         return $this->connection[$storeId];
     }
-    
+
     /**
      * @param  string $table
      * @param  bool $canBeUsedInNetwork = true
      * @return string
      */
-    public function getTableName($table, $canBeUsedInNetwork = true): string
+    public function getTable($table, $canBeUsedInNetwork = true): string
     {
+        if (isset($this->legacyTableMap[$table])) {
+            $table = $this->legacyTableMap[$table];
+        }
+
         if (!$canBeUsedInNetwork) {
             return $this->getTablePrefix() . $table;
         }

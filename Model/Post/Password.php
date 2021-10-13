@@ -4,7 +4,7 @@
  */
 namespace FishPig\WordPress\Model\Post;
 
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 
 class Password
 {

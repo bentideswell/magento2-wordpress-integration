@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Theme;
+namespace FishPig\WordPress\App\Theme;
 
 class LocalHashGenerator
 {
@@ -19,7 +19,7 @@ class LocalHashGenerator
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Integration\Theme\FileCollector $themeFileCollector
+        \FishPig\WordPress\App\Theme\FileCollector $themeFileCollector
     ) {
         $this->themeFileCollector = $themeFileCollector;
     }

@@ -7,7 +7,7 @@ namespace FishPig\WordPress\Model;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Store\Model\StoreManagerInterface;
 use FishPig\WordPress\Model\TaxonomyFactory;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 use FishPig\WordPress\Model\Network;
 
 class TaxonomyManager

@@ -35,15 +35,15 @@
      * Theme
      */
     -->
-    <type name="FishPig\WordPress\App\Integration\Theme\Resolver">
+    <type name="FishPig\WordPress\App\Theme\RemoteHashRetrieverResolver">
 		<arguments>
 			<argument name="objects" xsi:type="array">
-				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Theme</item>
-				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Theme</item>
+				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Theme\RemoteHashRetriever</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Theme\RemoteHashRetriever</item>
 			</argument>
 		</arguments>
     </type>
-    <type name="FishPig\WordPress\App\Integration\Theme\FileCollector">
+    <type name="FishPig\WordPress\App\Theme\FileCollector">
 		<arguments>
 			<argument name="modules" xsi:type="array">
 				<item name="FishPig_WordPress" xsi:type="string">FishPig_WordPress</item>
@@ -112,10 +112,18 @@
 			</argument>
 		</arguments>
 	</type>
-
     <!--
     /**
      * Legacy
+     */
+    -->
+    <virtualType name="FishPig\WordPress\Model\ResourceConnection" type="FishPig\WordPress\Legacy\Model\ResourceConnection"/>
+    <virtualType name="FishPig\WordPress\Model\OptionManager" type="FishPig\WordPress\Legacy\Model\OptionManager"/>
+    <virtualType name="FishPig\WordPress\Model\IntegrationManager" type="FishPig\WordPress\Legacy\Model\IntegrationManager"/>
+    
+    <!--
+    /**
+     * Review and Remove
      */
     -->
 	<!-- Setup dynamic router -->

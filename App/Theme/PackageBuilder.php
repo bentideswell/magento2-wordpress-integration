@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Theme;
+namespace FishPig\WordPress\App\Theme;
 
 use \Magento\Framework\App\Filesystem\DirectoryList;
 
@@ -21,8 +21,8 @@ class PackageBuilder
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Integration\Theme\LocalHashGenerator $localHashGenerator,
-        \FishPig\WordPress\App\Integration\Theme\FileCollector $fileCollector,
+        \FishPig\WordPress\App\Theme\LocalHashGenerator $localHashGenerator,
+        \FishPig\WordPress\App\Theme\FileCollector $fileCollector,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList
     ) {
         $this->localHashGenerator = $localHashGenerator;
@@ -43,7 +43,8 @@ class PackageBuilder
      */
     private function build(): string
     {
-        $file = $this->directoryList->getPath(DirectoryList::MEDIA) . '/fishpig-wp-theme-' . $this->localHashGenerator->getHash() . '.zip';
+        $file = $this->directoryList->getPath(DirectoryList::MEDIA)
+            . '/fishpig-wp-theme-' . substr($this->localHashGenerator->getHash(), 0, 12) . '.zip';
 
         if (is_file($file)) {
             return $file;

@@ -18,7 +18,7 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Integration\Theme\PackageBuilder $packageBuilder,
+        \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
         string $name = null
     ) {
         $this->packageBuilder = $packageBuilder;

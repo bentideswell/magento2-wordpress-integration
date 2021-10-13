@@ -9,7 +9,7 @@ namespace FishPig\WordPress\Controller\Post;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use FishPig\WordPress\Model\Factory;
-use FishPig\WordPress\Model\OptionManager;
+use FishPig\WordPress\Legacy\Model\OptionManager;
 use Magento\Framework\App\CacheInterface;
 
 class Invalidate extends Action

@@ -36,7 +36,7 @@ class Option
 
             $value = $db->fetchOne(
                 $db->select()
-                    ->from($this->resourceConnection->getTableName('options'), 'option_value')
+                    ->from($this->resourceConnection->getTable('options'), 'option_value')
                     ->where('option_name=?', $key)
                     ->limit(1)
             );
