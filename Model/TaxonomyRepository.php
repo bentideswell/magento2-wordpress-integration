@@ -31,7 +31,23 @@ class TaxonomyRepository
     }
     
     /**
-     *
+     * @param  string $taxonomy 
+     * @return bool
+     */
+    public function exists(string $taxonomy): bool
+    {
+        try {
+            $this->get($taxonomy);
+            
+            return true;
+        } catch (NoSuchEntityException $e) {
+            return false;            
+        }
+    }
+    
+    /**
+     * @param  string $taxonomy 
+     * @return mixed
      */
     public function get(string $taxonomy = null)
     {

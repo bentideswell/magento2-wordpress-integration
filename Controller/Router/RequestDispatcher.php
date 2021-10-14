@@ -19,7 +19,7 @@ class RequestDispatcher
      */
     public function __construct(
         \Magento\Framework\App\ActionFactory $actionFactory,
-        \FishPig\WordPress\App\Url\Router $routerUrlHelper
+        \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper
     ) {
         $this->actionFactory = $actionFactory;
         $this->routerUrlHelper = $routerUrlHelper;

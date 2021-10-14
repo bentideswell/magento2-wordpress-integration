@@ -20,6 +20,8 @@
         <arguments>
             <argument name="routers" xsi:type="array">
                 <item name="homepage" xsi:type="object" sortOrder="10">FishPig\WordPress\Controller\Router\HomepageRouter</item>
+                <item name="simple" xsi:type="object" sortOrder="20">FishPig\WordPress\Controller\Router\SimpleRouter</item>
+                <item name="post" xsi:type="object" sortOrder="30">FishPig\WordPress\Controller\Router\PostRouter</item>
             </argument>
         </arguments>
     </type>

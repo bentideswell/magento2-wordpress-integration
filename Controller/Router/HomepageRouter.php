@@ -15,7 +15,7 @@ class HomepageRouter implements \Magento\Framework\App\RouterInterface
      */
     public function __construct(
         \FishPig\WordPress\Controller\Router\RequestDispatcher $requestDispatcher,
-        \FishPig\WordPress\App\Url\Router $routerUrlHelper,
+        \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper,
         \FishPig\WordPress\Model\FrontPage $frontPage
     ) {
         $this->requestDispatcher = $requestDispatcher;

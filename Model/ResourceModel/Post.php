@@ -37,10 +37,10 @@ class Post extends AbstractMeta
     public function __construct(
         Context $context,
         WPContext $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
         $connectionName = null
     ) {
-        $this->postTypeManager = $wpContext->getPostTypeManager();
-        $this->taxonomyManager = $wpContext->getTaxonomyManager();
+        $this->permalinkResource = $permalinkResource;
 
         parent::__construct($context, $wpContext, $connectionName);
     }
@@ -75,41 +75,12 @@ class Post extends AbstractMeta
             $select->where('e.post_type ' . (is_array($postType) ? 'IN' : '=') . ' (?)', $postType);
         }
 
-        $select->columns(['permalink' => $this->getPermalinkSqlColumn()]);
+        $select->columns(['permalink' => $this->permalinkResource->getPermalinkSqlColumn()]);
 
         return $this->filterLoadSelect($select, $object);
     }
 
-    /**
-     *
-     *
-     */
-    public function completePostSlug($slug, $postId, $postType)
-    {
-        if (!preg_match_all('/(\%[a-z0-9_-]{1,}\%)/U', $slug, $matches)) {
-            return $slug;
-        }
 
-        $matchedTokens = $matches[0];
-
-        foreach ($matchedTokens as $mtoken) {
-            if ($mtoken === '%postnames%') {
-                $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
-            } elseif ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
-                $termData = $this->getParentTermsByPostId([$postId], $taxonomy->getTaxonomyType(), false);
-
-                foreach ($termData as $key => $term) {
-                    if ((int)$term['object_id'] === (int)$postId) {
-                        $slug = str_replace($mtoken, $taxonomy->getUriById($term['term_id'], false), $slug);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-        return urldecode($slug);
-    }
 
     /**
      * Prepare a collection/array of posts
@@ -122,7 +93,11 @@ class Post extends AbstractMeta
         foreach ($posts as $post) {
             $post->setData(
                 'permalink',
-                $this->completePostSlug($post->getData('permalink'), $post->getId(), $post->getTypeInstance())
+                $this->permalinkResource->completePostSlug(
+                    $post->getData('permalink'), 
+                    $post->getId(), 
+                    $post->getTypeInstance()
+                )
             );
         }
 
@@ -175,211 +150,8 @@ class Post extends AbstractMeta
         return $this;
     }
 
-    /**
-     * Get the permalink SQL as a SQL string
-     *
-     * @return string
-     */
-    public function getPermalinkSqlColumn()
-    {
-        $postTypes  = $this->postTypeManager->getPostTypes();
-        $sqlColumns = [];
-        $fields     = $this->getPermalinkSqlFields();
 
-        foreach ($postTypes as $postType) {
-            $tokens = $postType->getExplodedPermalinkStructure();
-            $sqlFields = [];
 
-            foreach ($tokens as $token) {
-                if (substr($token, 0, 1) === '%' && isset($fields[trim($token, '%')])) {
-                    $sqlFields[] = $fields[trim($token, '%')];
-                } else {
-                    $sqlFields[] = "'" . $token . "'";
-                }
-            }
-
-            if (count($sqlFields) > 0) {
-                $sqlColumns[$postType->getPostType()] = ' WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
-            }
-        }
-
-        return count($sqlColumns) > 0
-            ? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
-            : false;
-    }
-
-    /**
-     * Get permalinks by the URI
-     * Given a $uri, this will retrieve all permalinks that *could* match
-     *
-     * @param  string $uri       = ''
-     * @param  array  $postTypes = null
-     * @return false|array
-     */
-    public function getPermalinksByUri($uri = '')
-    {
-        if (!isset($this->uriPermalinksMapCache[$uri])) {
-            $this->uriPermalinksMapCache[$uri] = false;
-
-            $originalUri = $uri;
-            $permalinks  = [];
-    
-            if ($postTypes = $this->postTypeManager->getPostTypes()) {
-                $fields = $this->getPermalinkSqlFields();
-    
-                foreach ($postTypes as $postType) {
-                    if (!$postType->isPublic()) {
-                        continue;   
-                    }
-                    
-                    if (!($tokens = $postType->getExplodedPermalinkStructure())) {
-                        continue;
-                    }
-    
-                    $uri = $originalUri;
-    
-                    if ($postType->permalinkHasTrainingSlash()) {
-                        $uri = rtrim($uri, '/') . '/';
-                    }
-    
-                    $filters = [];
-                    $lastToken = $tokens[count($tokens)-1];
-    
-                    // Allow for trailing static strings (eg. .html)
-                    if (substr($lastToken, 0, 1) !== '%') {
-                        if (substr($uri, -strlen($lastToken)) !== $lastToken) {
-                            continue;
-                        }
-    
-                        $uri = substr($uri, 0, -strlen($lastToken));
-    
-                        array_pop($tokens);
-                    }
-    
-                    try {
-                        for ($i = 0; $i <= 1; $i++) {
-                            if ($i === 1) {
-                                $uri = implode('/', array_reverse(explode('/', $uri)));
-                                $tokens = array_reverse($tokens);
-                            }
-    
-                            foreach ($tokens as $key => $token) {
-                                if (substr($token, 0, 1) === '%') {
-                                    if (!isset($fields[trim($token, '%')])) {
-                                        if ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($token, '%'))) {
-                                            $endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/'
-                                                && isset($tokens[$key+2]) && $tokens[$key+2] === '%postname%'
-                                                && !isset($tokens[$key+3]);
-    
-                                            if ($endsWithPostname) {
-                                                $uri = rtrim(substr($uri, strrpos(rtrim($uri, '/'), '/')), '/');
-                                                continue;
-                                            }
-                                        }
-    
-                                        break;
-                                    }
-    
-                                    if (isset($tokens[$key+1]) && substr($tokens[$key+1], 0, 1) !== '%') {
-                                        $filters[trim($token, '%')] = substr($uri, 0, strpos($uri, $tokens[$key+1]));
-                                        $uri = substr($uri, strpos($uri, $tokens[$key+1]));
-                                    } elseif (!isset($tokens[$key+1])) {
-                                        $filters[trim($token, '%')] = $uri;
-                                        $uri = '';
-                                    } else {
-                                        throw new \Exception('Ignore me #1');
-                                    }
-                                } elseif (substr($uri, 0, strlen($token)) === $token) {
-                                    $uri = substr($uri, strlen($token));
-                                } else {
-                                    throw new \Exception('Ignore me #2');
-                                }
-    
-                                unset($tokens[$key]);
-                            }
-                        }
-    
-                        if ($buffer = $this->getPermalinks($filters, $postType)) {
-                            foreach ($buffer as $routeId => $route) {
-                                if (rtrim($route, '/') === $originalUri) {
-                                    $permalinks[$routeId] = $route;
-                                    throw new \Exception('Break');
-                                }
-                            }
-    
-                            // $permalinks += $buffer;
-                        }
-                    } catch (\Exception $e) {
-                        if ($e->getMessage() === 'Break') {
-                            break;
-                        }
-    
-                        // Exception thrown to escape nested loops
-                    }
-                }
-            }
-
-            $this->uriPermalinksMapCache[$uri] = count($permalinks) > 0 ? $permalinks : false;
-        }
-
-        return $this->uriPermalinksMapCache[$uri];
-    }
-
-    /**
-     * Get an array of post ID's and permalinks
-     * $filters is applied but if empty, all permalinks are returned
-     *
-     * @param  array $filters = array()
-     * @return array|false
-     */
-    public function getPermalinks(array $filters = [], $postType)
-    {
-
-        $tokens = $postType->getExplodedPermalinkStructure();
-        $fields = $this->getPermalinkSqlFields();
-
-        $select = $this->getConnection()
-            ->select()
-            ->from(['main_table' => $this->getMainTable()], ['id' => 'ID', 'permalink' => $this->getPermalinkSqlColumn()])
-            ->where('post_type = ?', $postType->getPostType())
-            ->where('post_status IN (?)', ['publish', 'protected', 'private']);
-
-        foreach ($filters as $field => $value) {
-            if (isset($fields[$field])) {
-                $select->where($fields[$field] . ' = ?', urlencode($value));
-            }
-        }
-
-        if ($routes = $this->getConnection()->fetchPairs($select)) {
-            foreach ($routes as $id => $permalink) {
-                $routes[$id] = urldecode($this->completePostSlug($permalink, $id, $postType));
-            }
-
-            return $routes;
-        }
-
-        return false;
-    }
-
-    /**
-     * Get the SQL data for the permalink
-     *
-     * @return array
-     */
-    public function getPermalinkSqlFields()
-    {
-        return [
-            'year' => 'SUBSTRING(post_date_gmt, 1, 4)',
-            'monthnum' => 'SUBSTRING(post_date_gmt, 6, 2)',
-            'day' => 'SUBSTRING(post_date_gmt, 9, 2)',
-            'hour' => 'SUBSTRING(post_date_gmt, 12, 2)',
-            'minute' => 'SUBSTRING(post_date_gmt, 15, 2)',
-            'second' => 'SUBSTRING(post_date_gmt, 18, 2)',
-            'post_id' => 'ID',
-            'postname' => 'post_name',
-            'author' => 'post_author',
-        ];
-    }
 
     /**
      * Determine whether the given post has any children posts
