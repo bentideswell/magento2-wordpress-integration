@@ -1,89 +1,60 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller;
 
-use Magento\Framework\App\RouterInterface;
+use \Magento\Framework\App\RequestInterface;
 
-use FishPig\WordPress\Model\IntegrationManager;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\Factory;
-use FishPig\WordPress\Model\Theme;
-use Magento\Framework\Event\Manager as EventManager;
-use Magento\Framework\App\RequestInterface;
-use FishPig\WordPress\Model\Integration\IntegrationException;
-
-class Router implements RouterInterface
+class Router implements \Magento\Framework\App\RouterInterface
 {
     /**
-     * @var ActionFactory
+     * @var []
      */
-    protected $actionFactory;
+    private $routers = [];
 
-    /**
-     * @var IntegrationManager
-     */
-    protected $integrationManager;
-
-    /**
-     * @var Url
-     */
-    protected $url;
-
-    /**
-     * @var
-     */
-    protected $callbacks = [];
-
-    /**
-     * @var
-     */
-    protected $routes = [];
-
-    /**
-     * @var
-     */
-    protected $postResourceFactory;
-
-    /**
-     * @var EventManager
-     */
-    protected $eventManager;
-
-    /**
-     * @var Theme
-     */
-    protected $theme;
-    
     /**
      *
      */
     public function __construct(
-        \Magento\Framework\App\ActionFactory $actionFactory,
         \FishPig\WordPress\App\Integration\Tests $integrationTests,
-        \FishPig\WorDPress\App\Url $url,
-        Factory $factory,
-        EventManager $eventManager
+        \FishPig\WordPress\App\Url\Router $routerUrlHelper,
+        array $routers = []
     ) {
-        $this->actionFactory = $actionFactory;
         $this->integrationTests = $integrationTests;
-        $this->url = $url;
-        $this->factory = $factory;
-        $this->eventManager = $eventManager;
-
+        $this->routerUrlHelper = $routerUrlHelper;
+        $this->routers = $routers;
     }
 
     /**
      * @param RequestInterface $request
      */
-    public function match(RequestInterface $request)
+    public function match(\Magento\Framework\App\RequestInterface $request)
     {
-
         if ($this->integrationTests->runTests() === false) {
             return false;
         }
 
+        if (!$this->routerUrlHelper->isRequestServiceable($request)) {
+            echo __LINE__;exit;
+            return false;
+        }
+
+        foreach ($this->routers as $router) {
+            if (!($router instanceof \Magento\Framework\App\RouterInterface)) {
+                continue;
+            }
+
+            if (($result = $router->match($request)) !== false) {
+                return $result;
+            }
+        }
+                    echo __LINE__;exit;
+        return false;
         // If theme not integrated, don't display blog
 //        if (!$this->theme->isThemeIntegrated()) {
 //            return false;
@@ -131,139 +102,6 @@ class Router implements RouterInterface
         }
 
         return $this->actionFactory->create(\Magento\Framework\App\Action\Forward::class);
-    }
-
-    /**
-     * Execute callbacks and match generated routes against $uri
-     *
-     * @param  string $uri = ''
-     * @return false|array
-     */
-    protected function _matchRoute($uri = '')
-    {
-        $encodedUri = strtolower(str_replace('----slash----', '/', urlencode(str_replace('/', '----slash----', $uri))));
-
-        foreach ($this->callbacks as $callback) {
-            $this->routes = [];
-
-            if (call_user_func($callback, $uri, $this) !== false) {
-                foreach ($this->routes as $route => $data) {
-                    $match = false;
-
-                    if (substr($route, 0, 1) !== '/') {
-                        $match = $route === $encodedUri || $route === $uri;
-                    } elseif (preg_match($route, $uri, $matches)) {
-                        $match = true;
-
-                        if (isset($data['pattern_keys']) && is_array($data['pattern_keys'])) {
-                            array_shift($matches);
-
-                            if (!isset($data['params'])) {
-                                $data['params'] = [];
-                            }
-
-                            foreach ($matches as $match) {
-                                if (($pkey = array_shift($data['pattern_keys'])) !== null) {
-                                    $data['params'][$pkey] = $match;
-                                }
-                            }
-                        }
-                    }
-
-                    if ($match) {
-                        if (isset($data['params']['__redirect_to'])) {
-                            header('Location: ' . $data['params']['__redirect_to']);
-                            exit;
-                        }
-
-                        return $data;
-                    }
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Add a generated route and it's details
-     *
-     * @param  array|string $pattern
-     * @param  string       $path
-     * @param  array|null   $params  = array()
-     * @return $this
-     */
-    public function addRoute($pattern, $path, $params = [])
-    {
-        if (is_array($pattern)) {
-            $keys = $pattern[key($pattern)];
-            $pattern = key($pattern);
-        } else {
-            $keys = [];
-        }
-
-        $path = array_combine(['module', 'controller', 'action'], explode('/', $path));
-
-        if ($path['module'] === '*') {
-            $path['module'] = 'wordpress';
-        }
-
-        $this->routes[$pattern] = [
-            'path' => $path,
-            'params' => $params,
-            'pattern_keys' => $keys,
-        ];
-
-        return $this;
-    }
-
-    /**
-     * Add a callback method to generate new routes
-     *
-     * @param array
-     */
-    public function addRouteCallback(array $callback)
-    {
-        $this->callbacks[] = $callback;
-
-        return $this;
-    }
-
-    /**
-     * Get route data for different homepage URLs
-     *
-     * @param  string $uri = ''
-     * @return $this
-     */
-    protected function _getHomepageRoutes($uri = '')
-    {
-        $homepage = $this->factory->get(\FishPig\WordPress\Model\Homepage::class);
-
-        if (!$uri) {
-            $keys = ['page_id', 'post_id', 'p'];
-
-            foreach ($keys as $key) {
-                if ($postId = (int)$this->request->getParam($key)) {
-                    break;
-                }
-            }
-
-            if ($postId) {
-                $paramKeys = strtolower(implode('-', array_keys($this->request->getParams())));
-
-                if (strpos($paramKeys, 'preview') !== false || strpos($paramKeys, 'vc_editable') !== false) {
-                    return $this->addRoute('', '*/post/view', ['id' => $postId]);
-                }
-            }
-        }
-
-        if ($frontPageId = $homepage->getFrontPageId()) {
-            $this->addRoute('', '*/post/view', ['id' => $frontPageId, 'is_front' => 1]);
-        } else {
-            $this->addRoute('', '*/homepage/view');
-        }
-
-        return $this;
     }
 
     /**
@@ -363,119 +201,5 @@ class Router implements RouterInterface
         }
 
         return $this;
-    }
-
-    /**
-     *
-     * @return $this
-     */
-    public function addExtraRoutesToQueue()
-    {
-        return $this;
-    }
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getPathInfo(RequestInterface $request)
-    {
-        $pathInfo = strtolower(trim($request->getOriginalPathInfo(), '/'));
-
-        if ($magentoUrlPath = parse_url($this->url->getMagentoUrl(), PHP_URL_PATH)) {
-            $magentoUrlPath = ltrim($magentoUrlPath, '/');
-
-            if (strpos($pathInfo, $magentoUrlPath) === 0) {
-                $pathInfo = ltrim(substr($pathInfo, strlen($magentoUrlPath)), '/');
-            }
-        }
-
-        return $pathInfo;
-    }
-
-    /**
-     *
-     *
-     * @return
-     */
-    public function getUrlAlias(RequestInterface $request)
-    {
-        $pathInfo = $this->getPathInfo($request);
-        $blogRoute = $this->url->getBlogRoute();
-
-        if ($blogRoute && strpos($pathInfo, $blogRoute) !== 0) {
-            return false;
-        }
-
-        if (trim(substr($pathInfo, strlen($blogRoute)), '/') === '') {
-            return $pathInfo;
-        }
-
-        $pathInfo = explode('/', $pathInfo);
-
-        // Clean off pager
-        if (($key = array_search('page', $pathInfo)) !== false) {
-            if (isset($pathInfo[($key+1)]) && preg_match("/[0-9]{1,}/", $pathInfo[($key+1)])) {
-                $request->setParam('page', $pathInfo[($key+1)]);
-                unset($pathInfo[($key+1)]);
-                unset($pathInfo[$key]);
-
-                $pathInfo = array_values($pathInfo);
-            }
-        }
-
-        /**
-        // Clean off feed and trackback variable
-        if (($key = array_search('feed', $pathInfo)) !== false) {
-            unset($pathInfo[$key]);
-
-            if (isset($pathInfo[$key+1])) {
-                unset($pathInfo[$key+1]);
-            }
-
-            $request->setParam('feed', 'rss2');
-            $request->setParam('feed_type', 'rss2');
-        }
-        */
-
-        // Remove comments pager variable
-        foreach ($pathInfo as $i => $part) {
-            $results = [];
-            if (preg_match("/" . sprintf('^comment-page-%s$', '([0-9]{1,})') . "/", $part, $results)) {
-                if (isset($results[1])) {
-                    unset($pathInfo[$i]);
-                }
-            }
-        }
-
-        if (count($pathInfo) == 1 && preg_match("/^[0-9]{1,8}$/", $pathInfo[0])) {
-            $request->setParam('p', $pathInfo[0]);
-
-            array_shift($pathInfo);
-        }
-
-        $uri = urldecode(implode('/', $pathInfo));
-
-        return $uri;
-    }
-
-    /**
-     * Retrieve the blog URI
-     * This is the whole URI after blog route
-     *
-     * @return string
-     */
-    public function getRouterRequestUri(RequestInterface $request)
-    {
-        if (($alias = $this->getUrlAlias($request)) !== false) {
-            if ($blogRoute = $this->url->getBlogRoute()) {
-                return strpos($alias . '/', $blogRoute .'/') === 0 ? ltrim(substr($alias, strlen($blogRoute)), '/') : false;
-            }
-
-            return $alias;
-        }
-
-        return false;
     }
 }

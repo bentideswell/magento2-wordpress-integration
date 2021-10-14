@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Block\Post\PostList;
 
 use Magento\Theme\Block\Html\Pager as MagentoPager;
 use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Legacy\Model\OptionManager;
+use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\Url as WPUrl;
 use Magento\Store\Model\ScopeInterface;
 

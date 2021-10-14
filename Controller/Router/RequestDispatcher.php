@@ -1,0 +1,76 @@
+<?php
+/**
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
+ */
+declare(strict_types=1);
+
+namespace FishPig\WordPress\Controller\Router;
+
+use Magento\Framework\App\RequestInterface;
+use \Magento\Framework\App\ActionInterface;
+
+class RequestDispatcher
+{
+    /**
+     * @param \Magento\Framework\App\ActionFactory $actionFactory,
+     * @param \FishPig\WordPress\App\Url\Router $routerUrlHelper
+     */
+    public function __construct(
+        \Magento\Framework\App\ActionFactory $actionFactory,
+        \FishPig\WordPress\App\Url\Router $routerUrlHelper
+    ) {
+        $this->actionFactory = $actionFactory;
+        $this->routerUrlHelper = $routerUrlHelper;
+    }
+
+    /**
+     * @param  RequestInterface $request
+     * @param  string $route
+     * @param  array $params = []
+     * @return ActionInterface
+     */
+    public function dispatch(RequestInterface $request, string $route, array $params = []): ActionInterface
+    {
+        $routeParts = $this->parseRoute($route);
+
+        $request->setModuleName(
+            $routeParts['module']
+        )->setControllerName(
+            $routeParts['controller']
+        )->setActionName(
+            $routeParts['action']
+        )->setAlias(
+            \Magento\Framework\Url::REWRITE_REQUEST_PATH_ALIAS,
+            $this->routerUrlHelper->getUrlAlias($request)
+        );
+
+        if ($params) {
+            $request->setParams($params);
+        }
+
+        return $this->actionFactory->create(
+            \Magento\Framework\App\Action\Forward::class
+        );
+    }
+
+    /**
+     * @param string $route
+     * @return []
+     */
+    private function parseRoute(string $route): array
+    {
+        $routeParts = explode('/', $route);
+
+        if (count($routeParts) !== 3) {
+            throw new \Exception('Invalid route (' . $route . ') supplied to router.');
+        }
+
+        return [
+            'module' => $routeParts[0] === '*' ? 'wordpress' : $routeParts[0],
+            'controller' => $routeParts[1],
+            'action' => $routeParts[2]
+        ];
+    }
+}

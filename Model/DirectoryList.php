@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use FishPig\WordPress\Model\WPConfig\Proxy as WPConfig;
+use FishPig\WordPress\Model\WPConfig;
 use Exception;
 use Magento\Store\Model\ScopeInterface;
 
@@ -38,12 +38,10 @@ class DirectoryList
      */
     public function __construct(
         StoreManagerInterface $storeManager, 
-        ScopeConfigInterface $scopeConfig, 
-        WPConfig $wpConfig
+        ScopeConfigInterface $scopeConfig
     ) {
         $this->scopeConfig  = $scopeConfig;
         $this->storeManager = $storeManager;
-        $this->wpConfig     = $wpConfig;
     }
 
     /**

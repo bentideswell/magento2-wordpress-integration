@@ -1,46 +1,53 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\AbstractModel;
+use Magento\Framework\DataObject\IdentityInterface;
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-class Term extends AbstractModel implements ViewableInterface
+class Term extends AbstractViewableEntityModel
 {
-    /**
-     *
-     */
-    const ENTITY = 'wordpress_term';
-
     /**
      * @const string
      */
+    const ENTITY = 'wordpress_term';
     const CACHE_TAG = 'wordpress_term';
 
     /**
-     * Event data
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_term';
     protected $_eventObject = 'term';
 
-    /**
-     *
-     *
-     * @return
-     */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Term');
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->taxonomyRepository = $taxonomyRepository;
+        parent::__construct($context, $registry, $url, $option, $resource, $resourceCollection);
     }
 
     /**
      *
-     *
+     */
+    public function _construct()
+    {
+        $this->_init(\FishPig\WordPress\Model\ResourceModel\Term::class);
+    }
+
+    /**
      * @return string
      */
     public function getName()
@@ -49,8 +56,6 @@ class Term extends AbstractModel implements ViewableInterface
     }
 
     /**
-     *
-     *
      * @return string
      */
     public function getContent()
@@ -59,13 +64,11 @@ class Term extends AbstractModel implements ViewableInterface
     }
 
     /**
-     * Get the taxonomy object for this term
-     *
-     * @return \FishPig\WordPress\Model\Term\Taxonomy
+     * @return \FishPig\WordPress\Model\Taxonomy
      */
-    public function getTaxonomyInstance()
+    public function getTaxonomyInstance(): \FishPig\WordPress\Model\Taxonomy
     {
-        return $this->getTaxonomy() ? $this->taxonomyManager->getTaxonomy($this->getTaxonomy()) : false;
+        return $this->taxonomyRepository->get($this->getTaxonomy());
     }
 
     /**

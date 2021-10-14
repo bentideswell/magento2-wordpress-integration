@@ -175,4 +175,13 @@ class Url
     {
         return $this->getSiteUrl('wp-content/');
     }
+    
+    /**
+     * @param  $uri = ''
+     * @return string
+     */
+    public function getUrl($uri = ''): string
+    {
+        return $this->getHomeUrl($uri);
+    }
 }

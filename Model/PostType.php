@@ -6,12 +6,12 @@ namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Model\AbstractResourcelessModel;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-use FishPig\WordPress\Legacy\Model\ResourceConnection;
+use FishPig\WordPress\Model\ResourceConnection;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Factory;
 
-class PostType extends AbstractResourcelessModel implements ViewableInterface
+class PostType extends \Magento\Framework\DataObject /*implements ViewableInterface*/
 {
     /**
      *

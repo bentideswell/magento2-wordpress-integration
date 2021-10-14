@@ -58,13 +58,6 @@ interface ViewableInterface
      *
      * @return string
      */
-    public function getMetaKeywords();
-
-    /**
-     *
-     *
-     * @return string
-     */
     public function getRobots();
 
     /**

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    /**
+     * Router
+     */
+    -->
     <type name="Magento\Framework\App\RouterList">
         <arguments>
             <argument name="routerList" xsi:type="array">
@@ -8,6 +13,13 @@
                     <item name="disable" xsi:type="boolean">false</item>
                     <item name="sortOrder" xsi:type="string">99</item>
                 </item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\Router">
+        <arguments>
+            <argument name="routers" xsi:type="array">
+                <item name="homepage" xsi:type="object" sortOrder="10">FishPig\WordPress\Controller\Router\HomepageRouter</item>
             </argument>
         </arguments>
     </type>

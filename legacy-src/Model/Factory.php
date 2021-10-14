@@ -1,11 +1,12 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
-namespace FishPig\WordPress\Model;
+declare(strict_types=1);
 
-use PostFactory\Proxy as PostFactory;
-use PostTypeFactory\Proxy as PostTypeFactory;
+namespace FishPig\WordPress\Model;
 
 class Factory
 {
@@ -17,7 +18,7 @@ class Factory
     /**
      *
      */
-    public function __construct(array $factories)
+    public function __construct(array $factories = [])
     {
         foreach ($factories as $factory) {
             $this->factories[get_class($factory)] = $factory;
@@ -32,6 +33,7 @@ class Factory
      */
     public function create($type, array $args = [])
     {
+        echo __LINE__;exit;
         if ($className = $this->getClassNameFromType($type)) {
             return $this->getObjectManager()->create($className, $args);
         }

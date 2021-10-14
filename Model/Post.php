@@ -1,14 +1,14 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\Meta\AbstractMeta;
-
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-class Post extends AbstractMeta implements ViewableInterface
+class Post extends AbstractViewableEntityModel
 {
     /**
      * @const string
@@ -18,19 +18,36 @@ class Post extends AbstractMeta implements ViewableInterface
     const POST_TYPE_CONTENT_BLOCK = 'fp_content_block';
 
     /**
-     * Event data
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post';
     protected $_eventObject = 'post';
 
     /**
+     * @var PostType
+     */
+    private $typeInstance = null;
+
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->postTypeRepository = $postTypeRepository;
+        parent::__construct($context, $registry, $url, $option, $resource, $resourceCollection);
+    }
+
+    /**
      *
      */
     public function _construct()
     {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Post');
+        $this->_init(\FishPig\WordPress\Model\ResourceModel\Post::class);
 
         return parent::_construct();
     }
@@ -70,17 +87,9 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      * @return string
      */
-    public function getMetaKeywords()
+    public function getRobots(): string
     {
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getRobots()
-    {
-        return (int)$this->optionManager->getOption('blog_public') === 0
+        return (int)$this->option->getOption('blog_public') === 0
             ? 'noindex,nofollow'
             : 'index,follow';
     }
@@ -113,10 +122,10 @@ class Post extends AbstractMeta implements ViewableInterface
                         $this->getParentPost()->getTypeInstance()
                     );
                 }
-            } elseif ($typeInstance = $this->postTypeManager->getPostType($this->getPostType())) {
+            } elseif ($typeInstance = $this->postTypeRepository->get($this->getPostType())) {
                 $this->setTypeInstance($typeInstance);
             } else {
-                $this->setTypeInstance($this->postTypeManager->getPostType('post'));
+                $this->setTypeInstance($this->postTypeRepository->get('post'));
             }
         }
 

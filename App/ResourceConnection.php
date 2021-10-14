@@ -26,6 +26,8 @@ class ResourceConnection
     private $legacyTableMap = [
         'wordpress_post' => 'posts',
         'wordpress_post_meta' => 'postmeta',
+        'wordpress_term' => 'terms',
+        'wordpress_term_taxonomy' => 'term_taxonomy',
     ];
 
     /**

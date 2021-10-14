@@ -4,10 +4,10 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Legacy\Model\ResourceConnection;
+use FishPig\WordPress\Model\ResourceConnection;
 use FishPig\WordPress\Model\ShortcodeManager;
-use FishPig\WordPress\Model\PostTypeManager\Proxy as PostTypeManager;
-use FishPig\WordPress\Model\TaxonomyManager\Proxy as TaxonomyManager;
+use FishPig\WordPress\Model\PostTypeManager;
+use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Helper\Date as DateHelper;
@@ -28,7 +28,7 @@ class Context
     public function __construct(
 //        ResourceConnection $resourceConnection,
         \FishPig\WordPress\App\ResourceConnection $resourceConnection,
-        \FishPig\WordPress\Legacy\Model\OptionManager $optionManager,
+        \FishPig\WordPress\Model\OptionManager $optionManager,
         ShortcodeManager $shortcodeManager,
         PostTypeManager $postTypeManager,
         TaxonomyManager $taxonomyManager,

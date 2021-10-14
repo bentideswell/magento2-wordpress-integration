@@ -4,10 +4,8 @@
  */
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\AbstractResourcelessModel;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Homepage extends AbstractResourcelessModel implements ViewableInterface
+class FrontPage extends \Magento\Framework\DataObject implements \FishPig\WordPress\Api\Data\Entity\ViewableInterface
 {
     /**
      * @const string
@@ -19,6 +17,17 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
      * @var
      */
     protected $staticPage;
+
+    /**
+     *
+     */
+    public function __construct(
+        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\PostRepository $postRepository
+    ) {
+        $this->option = $option;
+        $this->postRepository = $postRepository;
+    }
 
     /**
      * @return string
@@ -69,24 +78,46 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
+     * @return string
+     */
+    public function getPageTitle()
+    {
+        return sprintf('%s | %s', $this->getName(), $this->getBlogName());
+    }
+
+    /**
+     * @return false|string|FishPig\WordPress\Model\Image
+     */
+    public function getImage()
+    {
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRobots()
+    {
+        return (int)$this->option->get('blog_public') === 0 ? 'noindex,nofollow' : 'index,follow';
+    }
+
+    /**
+     * @return string
+     */
+    public function getCanonicalUrl()
+    {
+        return $this->getUrl();
+    }
+    
+    /**
      * @return
      */
     public function getFrontStaticPage()
     {
-        if ($this->staticPage !== null) {
-            return $this->staticPage;
-        }
-
-        $this->staticPage = false;
-
-        if ((int)$this->getPageForPostsId() > 0) {
-            $staticPage = $this->factory->create('FishPig\WordPress\Model\Post')->load(
-                $this->getPageForPostsId()
-            );
-
-            if ($staticPage->getId()) {
-                $this->staticPage = $staticPage;
-            }
+        if ($this->staticPage === null) {
+            $this->staticPage = (int)$this->getPageForPostsId() > 0 
+                                    ? $this->postRepository->get($this->getPageForPostsId()) 
+                                    : false;
         }
 
         return $this->staticPage;
@@ -99,8 +130,8 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
      */
     public function getFrontPageId()
     {
-        if ($this->optionManager->getOption('show_on_front') === 'page') {
-            if ($pageId = $this->optionManager->getOption('page_on_front')) {
+        if ($this->option->get('show_on_front') === 'page') {
+            if ($pageId = $this->option->get('page_on_front')) {
                 return $pageId;
             }
         }
@@ -115,21 +146,13 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
      */
     public function getPageForPostsId()
     {
-        if ($this->optionManager->getOption('show_on_front') === 'page') {
-            if ($pageId = $this->optionManager->getOption('page_for_posts')) {
+        if ($this->option->get('show_on_front') === 'page') {
+            if ($pageId = $this->option->get('page_for_posts')) {
                 return $pageId;
             }
         }
 
         return false;
-    }
-
-    /**
-     *
-     */
-    public function load($modelId, $field = null)
-    {
-        return $this;
     }
 
     /**
@@ -140,12 +163,8 @@ class Homepage extends AbstractResourcelessModel implements ViewableInterface
         if (!$this->hasRealHomepageUrl()) {
             $this->setRealHomepageUrl($this->getUrl());
 
-            if ($this->getFrontPageId()) {
-                $page = $this->factory->create('FishPig\WordPress\Model\Post')->setTaxonomy('page')->load($this->getFrontPageId());
-
-                if ($page->getId()) {
-                    $this->setRealHomepageUrl($page->getUrl());
-                }
+            if ($frontPageId = $this->getFrontPageId()) {
+                $this->setRealHomepageUrl($this->postRepository->get($frontPageId, 'page')->getUrl());
             }
         }
 

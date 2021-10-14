@@ -11,7 +11,7 @@ namespace FishPig\WordPress\Model;
 class Url
 {
     /**
-     *
+     * @param \FishPig\WordPress\App\Url $url
      */
     public function __construct(\FishPig\WordPress\App\Url $url)
     {
@@ -19,8 +19,6 @@ class Url
     }
 
     /**
-     * Get the Magento base URL
-     *
      * @return string
      */
     public function getMagentoUrl()
@@ -37,9 +35,6 @@ class Url
     }
 
     /**
-     * Generate a WordPress frontend URL
-     *
-     * @param  string $uri = ''
      * @return string
      */
     public function getUrl($uri = '')
@@ -48,8 +43,6 @@ class Url
     }
 
     /**
-     * Generate a WordPress frontend URL with the Front var in it
-     *
      * @param  string $uri = ''
      * @return string
      */

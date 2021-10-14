@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Legacy\Model;
+namespace FishPig\WordPress\Model;
 
 class ResourceConnection
 {

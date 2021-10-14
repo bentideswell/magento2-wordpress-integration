@@ -9,7 +9,7 @@ use Magento\Framework\Data\Collection\EntityFactoryInterface;
 use Psr\Log\LoggerInterface;
 use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
 use Magento\Framework\Event\ManagerInterface;
-use FishPig\WordPress\Legacy\Model\OptionManager;
+use FishPig\WordPress\Model\OptionManager;
 use FishPig\WordPress\Model\PostTypeManager;
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;

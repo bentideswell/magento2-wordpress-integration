@@ -22,8 +22,20 @@ class Option
     /**
      * @return mixed
      */
-    public function get($key)
+    public function get($key, $default = null)
     {
-        return $this->valueResolver->resolve()->get($key);
+        return $this->valueResolver->resolve()->get($key, $default);
+    }
+    
+    /**
+     * @return []
+     */
+    public function getUnserialized($key): array
+    {
+        if ($data = $this->get($key)) {
+            return unserialize($data, [false]);
+        }
+        
+        return [];
     }
 }

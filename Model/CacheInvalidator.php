@@ -15,7 +15,7 @@ class CacheInvalidator
      *
      */
     public function __construct(
-        \FishPig\WordPress\Legacy\Model\OptionManager $optionManager,
+        \FishPig\WordPress\Model\OptionManager $optionManager,
         \FishPig\WordPress\Model\Logger $logger,
         \Magento\Framework\Event\Manager $eventManager,
         \Magento\Framework\App\RequestInterface $request,
