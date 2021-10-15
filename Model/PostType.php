@@ -37,7 +37,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      */
     public function useGuidLinks()
     {
-        return trim($this->getData('rewrite/slug')) === '';
+        return trim($this->getSlug()) === '';
     }
 
     /**
@@ -57,7 +57,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      */
     public function getPermalinkStructure()
     {
-        $structure = ltrim(str_replace('index.php/', '', ltrim($this->getData('rewrite/slug'), ' -/')), '/');
+        $structure = ltrim(str_replace('index.php/', '', ltrim($this->getSlug(), ' -/')), '/');
 
         if (!$this->isDefault() && strpos($structure, '%postname%') === false) {
             $structure = rtrim($structure, '/') . '/%postname%/';
@@ -117,7 +117,7 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      */
     public function permalinkHasTrainingSlash()
     {
-        return substr($this->getData('rewrite/slug'), -1) === '/' || substr($this->getPermalinkStructure(), -1) === '/';
+        return substr($this->getSlug(), -1) === '/' || substr($this->getPermalinkStructure(), -1) === '/';
     }
 
     /**

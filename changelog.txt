@@ -1,3 +1,6 @@
+15/10/2021 - 2.0.23.7
+- Added fix to allow for post type slug translation in WPML.
+
 10/10/2021 - 2.0.23.6
 - Added support for DB_CHARSET in wp-config.php
 
