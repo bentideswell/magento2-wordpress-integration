@@ -33,7 +33,6 @@ abstract class AbstractResource extends AbstractDb
     public function __construct(Context $context, WPContext $wpContext, $connectionName = null)
     {
         $this->wpContext = $wpContext;
-        $this->factory = $wpContext->getFactory();
         $this->resourceConnection = $wpContext->getResourceConnection();
 
         parent::__construct($context, $connectionName);

@@ -9,7 +9,6 @@ use FishPig\WordPress\Model\ShortcodeManager;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\Factory;
 use FishPig\WordPress\Helper\Date as DateHelper;
 use Magento\Framework\Registry;
 use Magento\Framework\View\Layout;
@@ -33,7 +32,6 @@ class Context
         PostTypeManager $postTypeManager,
         TaxonomyManager $taxonomyManager,
         Url $url,
-        Factory $factory,
         DateHelper $dateHelper,
         Registry $registry,
         Layout $layout,
@@ -51,7 +49,6 @@ class Context
         $this->postTypeManager = $postTypeManager;
         $this->taxonomyManager = $taxonomyManager;
         $this->url = $url;
-        $this->factory = $factory;
         $this->dateHelper = $dateHelper;
         $this->registry = $registry;
         $this->layout = $layout;
@@ -110,14 +107,6 @@ class Context
     public function getUrl()
     {
         return $this->url;
-    }
-
-    /**
-     * @return
-     */
-    public function getFactory()
-    {
-        return $this->factory;
     }
 
     /**

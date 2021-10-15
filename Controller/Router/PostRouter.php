@@ -31,7 +31,7 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
         $postId = $this->permalinkResource->getPostIdByPathInfo(
             $this->routerUrlHelper->getRelativePathInfo($request)
         );
-          
+
         if ($postId !== false) {
             return $this->requestDispatcher->dispatch(
                 $request, 

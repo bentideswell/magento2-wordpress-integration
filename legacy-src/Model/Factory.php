@@ -33,7 +33,17 @@ class Factory
      */
     public function create($type, array $args = [])
     {
-        echo __LINE__;exit;
+        $e = new \Exception($type);
+        
+        if (php_sapi_name() === 'cli') {
+            echo $e->getMessage() . "\n\n" . $e->getTraceAsString();
+            exit(1);
+        }
+        
+        echo '<h2>' . $e->getMessage() . "</h2><br/><br/><pre>" . $e->getTraceAsString();
+        exit(1);
+
+
         if ($className = $this->getClassNameFromType($type)) {
             return $this->getObjectManager()->create($className, $args);
         }

@@ -18,6 +18,11 @@ class Permalink
     private $pathInfoIdMap = [];
 
     /**
+     * @var \Zend_Db_Expr|string
+     */
+    private $permalinkSqlColumn = null;
+
+    /**
      * @param \FishPig\WordPress\App\ResourceConnection $resourceConnection 
      */
     public function __construct(
@@ -222,32 +227,36 @@ class Permalink
     /**
      * @return string|\Zend_Db_Expr
      */
-    private function getPermalinkSqlColumn()
+    public function getPermalinkSqlColumn()
     {
-        $postTypes  = $this->postTypeRepository->getAll();
-        $sqlColumns = [];
-        $fields     = $this->getPermalinkSqlFields();
-
-        foreach ($postTypes as $postType) {
-            $tokens = $postType->getExplodedPermalinkStructure();
-            $sqlFields = [];
-
-            foreach ($tokens as $token) {
-                if (substr($token, 0, 1) === '%' && isset($fields[trim($token, '%')])) {
-                    $sqlFields[] = $fields[trim($token, '%')];
-                } else {
-                    $sqlFields[] = "'" . $token . "'";
+        if ($this->permalinkSqlColumn === null) {
+            $postTypes  = $this->postTypeRepository->getAll();
+            $sqlColumns = [];
+            $fields     = $this->getPermalinkSqlFields();
+    
+            foreach ($postTypes as $postType) {
+                $tokens = $postType->getExplodedPermalinkStructure();
+                $sqlFields = [];
+    
+                foreach ($tokens as $token) {
+                    if (substr($token, 0, 1) === '%' && isset($fields[trim($token, '%')])) {
+                        $sqlFields[] = $fields[trim($token, '%')];
+                    } else {
+                        $sqlFields[] = "'" . $token . "'";
+                    }
+                }
+    
+                if (count($sqlFields) > 0) {
+                    $sqlColumns[$postType->getPostType()] = ' WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
                 }
             }
-
-            if (count($sqlFields) > 0) {
-                $sqlColumns[$postType->getPostType()] = ' WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
-            }
+    
+            $this->permalinkSqlColumn = count($sqlColumns) > 0
+                ? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
+                : '';
         }
-
-        return count($sqlColumns) > 0
-            ? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
-            : '';
+        
+        return $this->permalinkSqlColumn;
     }
 
     /**

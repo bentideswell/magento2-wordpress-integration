@@ -18,13 +18,21 @@
     </type>
     <type name="FishPig\WordPress\Controller\Router">
         <arguments>
-            <argument name="routers" xsi:type="array">
+            <argument name="routerPool" xsi:type="array">
                 <item name="homepage" xsi:type="object" sortOrder="10">FishPig\WordPress\Controller\Router\HomepageRouter</item>
                 <item name="simple" xsi:type="object" sortOrder="20">FishPig\WordPress\Controller\Router\SimpleRouter</item>
                 <item name="post" xsi:type="object" sortOrder="30">FishPig\WordPress\Controller\Router\PostRouter</item>
             </argument>
         </arguments>
     </type>
+    
+    
+    <type name="FishPig\WordPress\Controller\Post\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\SeoMetaDataProvider</argument>
+        </arguments>
+    </type>
+
     <!-- Inject any required assets -->
     <type name="Magento\Framework\Controller\ResultInterface">
         <plugin name="result-fishpig-wordpress-plugin" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="40"/>

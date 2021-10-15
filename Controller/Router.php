@@ -15,7 +15,7 @@ class Router implements \Magento\Framework\App\RouterInterface
     /**
      * @var []
      */
-    private $routers = [];
+    private $routerPool = [];
 
     /**
      *
@@ -23,11 +23,11 @@ class Router implements \Magento\Framework\App\RouterInterface
     public function __construct(
         \FishPig\WordPress\App\Integration\Tests $integrationTests,
         \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper,
-        array $routers = []
+        array $routerPool = []
     ) {
         $this->integrationTests = $integrationTests;
         $this->routerUrlHelper = $routerUrlHelper;
-        $this->routers = $routers;
+        $this->routerPool = $routerPool;
     }
 
     /**
@@ -43,7 +43,7 @@ class Router implements \Magento\Framework\App\RouterInterface
             return false;
         }
 
-        foreach ($this->routers as $routerId => $router) {
+        foreach ($this->routerPool as $routerId => $router) {
             if (!($router instanceof \Magento\Framework\App\RouterInterface)) {
                 continue;
             }
@@ -52,7 +52,8 @@ class Router implements \Magento\Framework\App\RouterInterface
                 return $result;
             }
         }
-                    echo __LINE__;exit;
+        echo 'No router match in ' . __METHOD__;
+        exit;
         return false;
 
 

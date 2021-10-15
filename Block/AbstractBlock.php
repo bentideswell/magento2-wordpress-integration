@@ -32,11 +32,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     protected $url;
 
     /**
-     * @var Factory
-     */
-    protected $factory;
-
-    /**
      * @param Context $context
      * @param App
      * @param array   $data
@@ -51,7 +46,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
         $this->shortcodeManager = $wpContext->getShortcodeManager();
         $this->registry = $wpContext->getRegistry();
         $this->url = $wpContext->getUrl();
-        $this->factory = $wpContext->getFactory();
 
         parent::__construct($context, $data);
     }
@@ -75,15 +69,6 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     public function doShortcode($shortcode, $object = null)
     {
         return $this->renderShortcode($shortcode, $object);
-    }
-
-    /**
-     *
-     * @return Factory
-     */
-    public function getFactory()
-    {
-        return $this->factory;
     }
 
     /**

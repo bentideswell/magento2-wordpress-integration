@@ -4,29 +4,100 @@
  */
 namespace FishPig\WordPress\Controller\Post;
 
-use FishPig\WordPress\Controller\Action;
 use Magento\Framework\Controller\ResultFactory;
+use FishPig\WordPress\Model\Post;
 
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
+
     /**
-     * Load and return a Post model
-     *
-     * @return \FishPig\WordPress\Model\Post|false
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
      */
-    protected function _getEntity()
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\PostRepository $postRepository,
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+    ) {
+        $this->postRepository = $postRepository;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+        parent::__construct($context, $wpContext);
+    }
+    
+    /**
+     *
+     */
+    public function execute()
     {
-        $post = $this->factory->create('Post')->load(
-            $this->getEntityId()
+        // Load the post
+        $post = $this->postRepository->get(
+            (int)$this->getRequest()->getParam('id')
+        );
+        
+        $this->registry->register($post::ENTITY, $post);
+
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
         );
 
-        if (!$post->getId()) {
-            return false;
-        }
+        $this->addLayoutHandles($resultPage, $this->getLayoutHandles($post));
 
-        return $post;
+        $this->seoMetaDataProvider->addMetaData($resultPage, $post);
+        
+        echo __LINE__;exit;
     }
 
+
+    /**
+     * @param  Post $post
+     * @return array
+     */
+    public function getLayoutHandles(Post $post): array
+    {
+        $postType = $post->getPostType();
+        $template = $post->getMetaValue('_wp_page_template');
+        
+        if ($postType == 'revision' && $post->getParentPost()) {
+            $postType = $post->getParentPost()->getPostType();
+            
+            if (!$template) {
+                $template = $post->getParentPost()->getMetaValue('_wp_page_template');
+            }
+        }
+
+        $layoutHandles = ['wordpress_post_view_default'];
+
+        if ($post->isFrontPage()) {
+            $layoutHandles[] = 'wordpress_front_page';
+        }
+
+        $layoutHandles[] = 'wordpress_' . $postType . '_view';
+        $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $post->getId();
+
+        if ($template) {
+            $templateName = str_replace('.php', '', $template);
+
+            $layoutHandles[] = 'wordpress_post_view_' . $templateName;
+            $layoutHandles[] = 'wordpress_post_view_' . $templateName . '_' . $post->getId();
+
+            if ($postType !== 'post') {
+                $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName;
+                $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName . '_' . $post->getId();
+            }
+        }
+
+        if ($post->getParentId()) {
+            $layoutHandles[] = 'wordpress_' . $postType . '_view_parent_' . $post->getParentId();
+        }
+
+        if ($urlKey = preg_replace('/[^a-z0-9]+/', '_', strtolower(rtrim($post->getPermalink(), '/')))) {
+            $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $urlKey;
+        }
+
+        return $layoutHandles;
+    }
+    
     /**
      * @return int
      */
@@ -142,57 +213,6 @@ class View extends Action
         return $crumbs;
     }
 
-    /**
-     * @return array
-     */
-    public function getLayoutHandles()
-    {
-        if (!($post = $this->getEntityObject())) {
-            return [];
-        }
-
-        $postType = $post->getPostType();
-        $template = $post->getMetaValue('_wp_page_template');
-        
-        if ($postType == 'revision' && $post->getParentPost()) {
-            $postType = $post->getParentPost()->getPostType();
-            
-            if (!$template) {
-                $template = $post->getParentPost()->getMetaValue('_wp_page_template');
-            }
-        }
-
-        $layoutHandles = ['wordpress_post_view_default'];
-
-        if ($post->isFrontPage()) {
-            $layoutHandles[] = 'wordpress_front_page';
-        }
-
-        $layoutHandles[] = 'wordpress_' . $postType . '_view';
-        $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $post->getId();
-
-        if ($template) {
-            $templateName = str_replace('.php', '', $template);
-
-            $layoutHandles[] = 'wordpress_post_view_' . $templateName;
-            $layoutHandles[] = 'wordpress_post_view_' . $templateName . '_' . $post->getId();
-
-            if ($postType !== 'post') {
-                $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName;
-                $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $templateName . '_' . $post->getId();
-            }
-        }
-
-        if ($post->getParentId()) {
-            $layoutHandles[] = 'wordpress_' . $postType . '_view_parent_' . $post->getParentId();
-        }
-
-        if ($urlKey = preg_replace('/[^a-z0-9]+/', '_', strtolower(rtrim($post->getPermalink(), '/')))) {
-            $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $urlKey;
-        }
-
-        return array_merge(parent::getLayoutHandles(), $layoutHandles);
-    }
     
     /**
      *
