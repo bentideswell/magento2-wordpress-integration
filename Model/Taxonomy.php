@@ -8,7 +8,7 @@ use FishPig\WordPress\Model\AbstractModel;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 use FishPig\WordPress\Model\PostTypeManager;
 
-class Taxonomy extends AbstractResourcelessModel
+class Taxonomy extends \Magento\Framework\DataObject
 {
     /**
      * @const string
@@ -20,6 +20,19 @@ class Taxonomy extends AbstractResourcelessModel
      */
     const CACHE_TAG = 'wordpress_taxonomy';
 
+    /**
+     * @param array $data = []
+     */
+    public function __construct(
+        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        array $data = []
+    ) {
+        $this->url = $url;
+        $this->resourceConnection = $resourceConnection;
+        parent::__construct($data);
+    }
+    
     /**
      * Get the URI's that apply to $uri
      *
@@ -43,16 +56,15 @@ class Taxonomy extends AbstractResourcelessModel
      */
     public function getRedirectableUris($uri = '')
     {
-        $resource   = $this->wpContext->resourceConnection;
-        $connection = $resource->getConnection();
+        $connection = $this->resourceConnection->getConnection();
 
         $select = $connection->select()
             ->from(
-                ['term' => $resource->getTable('wordpress_term')],
+                ['term' => $this->resourceConnection->getTable('wordpress_term')],
                 ['id' => 'term_id', 'url_key' => 'slug']
             )
             ->join(
-                ['tax' => $resource->getTable('wordpress_term_taxonomy')],
+                ['tax' => $this->resourceConnection->getTable('wordpress_term_taxonomy')],
                 $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
                 null
             )
@@ -102,8 +114,7 @@ class Taxonomy extends AbstractResourcelessModel
 
         $this->setAllUris(false);
 
-        $resource   = $this->wpContext->resourceConnection;
-        $connection = $resource->getConnection();
+        $connection = $this->resourceConnection->getConnection();
 
         if ($results = $connection->fetchAll($this->getSelectForGetAllUris())) {
             if ((int)$this->getData('rewrite/hierarchical') === 1) {
@@ -127,19 +138,18 @@ class Taxonomy extends AbstractResourcelessModel
      */
     public function getSelectForGetAllUris()
     {
-        $resource   = $this->wpContext->resourceConnection;
-        $connection = $resource->getConnection();
+        $connection = $this->resourceConnection->getConnection();
 
         $select = $connection->select()
             ->from(
-                ['term' => $resource->getTable('wordpress_term')],
+                ['term' => $this->resourceConnection->getTable('wordpress_term')],
                 [
                     'id' => 'term_id',
                     'url_key' => 'slug',
                 ]
             )
             ->join(
-                ['tax' => $resource->getTable('wordpress_term_taxonomy')],
+                ['tax' => $this->resourceConnection->getTable('wordpress_term_taxonomy')],
                 $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
                 'parent'
             );

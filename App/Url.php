@@ -177,11 +177,18 @@ class Url
     }
     
     /**
-     * @param  $uri = ''
-     * @return string
+     * @deprecated
      */
     public function getUrl($uri = ''): string
     {
         return $this->getHomeUrl($uri);
+    }
+
+    /**
+     * @deprecated
+     */
+    public function getUrlWithFront($uri = ''): string
+    {
+        return $this->getHomeUrlWithFront($uri);
     }
 }

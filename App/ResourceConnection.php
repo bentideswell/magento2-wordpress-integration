@@ -28,6 +28,8 @@ class ResourceConnection
         'wordpress_post_meta' => 'postmeta',
         'wordpress_term' => 'terms',
         'wordpress_term_taxonomy' => 'term_taxonomy',
+        'wordpress_user' => 'users',
+        'wordpress_user_meta' => 'usermeta',
     ];
 
     /**

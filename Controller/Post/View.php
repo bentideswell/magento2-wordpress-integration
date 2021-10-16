@@ -6,6 +6,7 @@ namespace FishPig\WordPress\Controller\Post;
 
 use Magento\Framework\Controller\ResultFactory;
 use FishPig\WordPress\Model\Post;
+use Magento\Framework\Exception\NoSuchEntityException;
 
 class View extends \FishPig\WordPress\Controller\Action
 {
@@ -18,10 +19,15 @@ class View extends \FishPig\WordPress\Controller\Action
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\PostRepository $postRepository,
-        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\App\Url $url,
+        \Magento\Customer\Model\Session $customerSession
     ) {
         $this->postRepository = $postRepository;
         $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->url = $url;
+        $this->customerSession = $customerSession;
+
         parent::__construct($context, $wpContext);
     }
     
@@ -30,13 +36,73 @@ class View extends \FishPig\WordPress\Controller\Action
      */
     public function execute()
     {
-        // Load the post
-        $post = $this->postRepository->get(
-            (int)$this->getRequest()->getParam('id')
-        );
+        $request = $this->getRequest();
+        
+        // This will throw Exception is post does not exist
+        $post = $this->postRepository->get((int)$request->getParam('id'));
         
         $this->registry->register($post::ENTITY, $post);
 
+        if ($post->isFrontPage()) {
+            // URL is post URL but this is front page so redirect to home URL
+            if (!$this->isRequestForWPHome()) {
+                return $this->resultFactory->create(
+                    ResultFactory::TYPE_REDIRECT
+                )->setUrl(
+                    $this->url->getHomeUrl()
+                );
+            }
+
+            // Check for previews
+            foreach (['p', 'page_id', 'preview_id'] as $paramKey) {
+                if ($previewId = (int)$request->getParam($paramKey)) {
+                    try {
+                        $previewPost = $this->postRepository->get($previewId);
+    
+                        if (!$previewPost->isPublished()) {
+                            $request->setParam('preview_id', $previewPost->getId());
+    
+                            $this->registry->unregister($previewPost::ENTITY);
+    
+                            return $this->resultFactory
+                                ->create(
+                                    \Magento\Framework\Controller\ResultFactory::TYPE_FORWARD
+                                )->setModule(
+                                    'wordpress'
+                                )->setController(
+                                    'post'
+                                )->forward(
+                                    'preview'
+                                );
+                        }
+                    } catch (NoSuchEntityException $e) {
+                        /* Ignore */
+                    }
+                }
+            }   
+        }
+        
+        if ($post->getPostStatus() === 'private' && !$this->customerSession->isLoggedIn()) {
+            return $this->getNoRouteForward();
+        }
+            
+        // Check for comments
+        // This could be improved, maybe using cookies in WP?
+        $commentId = (int)$this->getRequest()->getParam('comment-id');
+        $commentStatus = (int)$this->getRequest()->getParam('comment-status');
+        $unapproved = (int)$this->getRequest()->getParam('unapproved');
+        
+        if ($unapproved > 0 || ($commentId > 0 && $commentStatus === 0)) {
+            $this->messageManager->addSuccess(
+                __('Your comment has been posted and is awaiting moderation.')
+            );
+        } elseif ($commentId > 0) {
+            $this->messageManager->addSuccess(
+                __('Your comment has been posted.')
+            );
+        }
+        
+        // We got here, we must be good.
         $resultPage = $this->resultFactory->create(
             \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
         );
@@ -45,15 +111,14 @@ class View extends \FishPig\WordPress\Controller\Action
 
         $this->seoMetaDataProvider->addMetaData($resultPage, $post);
         
-        echo __LINE__;exit;
+        return $resultPage;
     }
-
 
     /**
      * @param  Post $post
      * @return array
      */
-    public function getLayoutHandles(Post $post): array
+    private function getLayoutHandles(Post $post): array
     {
         $postType = $post->getPostType();
         $template = $post->getMetaValue('_wp_page_template');
@@ -96,87 +161,6 @@ class View extends \FishPig\WordPress\Controller\Action
         }
 
         return $layoutHandles;
-    }
-    
-    /**
-     * @return int
-     */
-    public function getEntityId(): int
-    {
-        return (int)$this->getRequest()->getParam('id');
-    }
-    
-    /**
-     * @return bool
-     */
-    protected function _canPreview()
-    {
-        return true;
-    }
-
-    /**
-     * @return
-     */
-    protected function _getForward()
-    {
-        if ($entity = $this->_getEntity()) {
-            if ($entity->isFrontPage()) {
-                if ((int)$this->getRequest()->getParam('is_front') === 0) {
-                    return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($this->url->getHomeUrl());
-                } elseif (strpos($this->_url->getCurrentUrl(), 'is_front/1') !== false) {
-                    $realUrl = $entity->getUrl();
-
-                    if (strpos($realUrl, 'is_front/1') === false) {
-                        return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setUrl($realUrl);
-                    }
-                }
-
-                // Request is static homepage (page) with a preview set (maybe visual editor)
-                foreach (['p', 'page_id', 'preview_id'] as $paramKey) {
-                    if ($previewId = (int)$this->getRequest()->getParam($paramKey)) {
-                        $previewPost = $this->factory->create('Post')->load($previewId);
-
-                        if ($previewPost->getId() && !$previewPost->isPublished()) {
-                            $this->getRequest()->setParam('preview_id', $previewPost->getId());
-
-                            $this->registry->unregister($previewPost::ENTITY);
-
-                            return $this->resultFactory
-                                ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-                                ->setModule('wordpress')
-                                ->setController('post')
-                                ->forward('preview');
-                        }
-                    }
-                }
-            }
-
-            if ($entity->getPostStatus() === 'private' && !$this->wpContext->getCustomerSession()->isLoggedIn()) {
-                return $this->_getNoRouteForward();
-            }
-        }
-
-        return parent::_getForward();
-    }
-
-    /**
-     *
-     */
-    protected function _initLayout()
-    {
-        parent::_initLayout();
-
-        $commentId = (int)$this->getRequest()->getParam('comment-id');
-        $commentStatus = (int)$this->getRequest()->getParam('comment-status');
-        $unapproved = (int)$this->getRequest()->getParam('unapproved');
-        
-        if ($unapproved > 0 || ($commentId > 0 && $commentStatus === 0)) {
-            $this->messageManager->addSuccess(__('Your comment has been posted and is awaiting moderation.'));
-        } elseif ($commentId > 0) {
-            $this->messageManager->addSuccess(__('Your comment has been posted.'));
-        }
-
-        return $this;
     }
 
     /**

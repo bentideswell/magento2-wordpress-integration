@@ -81,6 +81,8 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
 
         $extra = rtrim('?' . implode('&', $extra), '?');
 
-        return $this->url->getUrlWithFront('search/' . urlencode($this->getSearchTerm()) . '/' . $extra);
+        return $this->url->getHomeUrlWithFront(
+            'search/' . urlencode($this->getSearchTerm()) . '/' . $extra
+        );
     }
 }

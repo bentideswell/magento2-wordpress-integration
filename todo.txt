@@ -12,6 +12,5 @@ Controller
 - breadcrumbs, layout handle, entity, SEO?
 
 SEO handler interface
-
-
 - Add Yoast check to warnings in integration tests
+- Ensure WP always creates post_content so we never have to autop.

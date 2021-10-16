@@ -2,7 +2,6 @@
 /**
  *
  */
-
 namespace FishPig\WordPress\Api\Data\Entity;
 
 /**
@@ -12,58 +11,12 @@ namespace FishPig\WordPress\Api\Data\Entity;
 interface ViewableInterface
 {
     /**
-     * Get the item's name (for a post, this is the post title)
-     *
      * @return string
      */
     public function getName();
 
     /**
-     *
-     *
      * @return string
      */
     public function getUrl();
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getContent();
-
-    /**
-     *
-     *
-     * @return \FishPig\WordPress\Model\Image
-     */
-    public function getImage();
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getPageTitle();
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getMetaDescription();
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getRobots();
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getCanonicalUrl();
 }

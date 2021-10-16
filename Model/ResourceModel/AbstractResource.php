@@ -12,10 +12,6 @@ use FishPig\WordPress\Model\Context as WPContext;
 
 abstract class AbstractResource extends AbstractDb
 {
-    /**
-     *
-     */
-    protected $wpContext;
 
     /**
      *
@@ -30,10 +26,13 @@ abstract class AbstractResource extends AbstractDb
     /**
      *
      */
-    public function __construct(Context $context, WPContext $wpContext, $connectionName = null)
-    {
-        $this->wpContext = $wpContext;
-        $this->resourceConnection = $wpContext->getResourceConnection();
+    public function __construct(
+        Context $context, 
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        $connectionName = null
+    ) {
+//        $this->wpContext = $wpContext;
+        $this->resourceConnection = $resourceConnection;
 
         parent::__construct($context, $connectionName);
     }

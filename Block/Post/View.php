@@ -11,20 +11,6 @@ class View extends Post
     /**
      *
      */
-    protected function _prepareLayout()
-    {
-        if ($post = $this->getPost()) {
-            if (!$post->isContentBlock()) {
-                $post->applyPageConfigData($this->pageConfig);
-            }
-        }
-
-        return parent::_prepareLayout();
-    }
-
-    /**
-     *
-     */
     protected function _beforeToHtml()
     {
         if (!$this->getPost()) {

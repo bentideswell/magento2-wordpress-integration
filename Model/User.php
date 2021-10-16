@@ -1,13 +1,17 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\Meta\AbstractMeta;
+use Magento\Framework\DataObject\IdentityInterface;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class User extends AbstractMeta implements ViewableInterface
+class User extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
 {
     /**
      * @const string
@@ -28,13 +32,22 @@ class User extends AbstractMeta implements ViewableInterface
     protected $_eventObject = 'user';
 
     /**
-     * @return void
+     *
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\User');
-    }
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->url = $url;
 
+        parent::__construct($context, $registry, $resource, $resourceCollection);
+    }
+    
     /**
      * @return string
      */
@@ -74,7 +87,9 @@ class User extends AbstractMeta implements ViewableInterface
     public function getUrl()
     {
         if (!$this->hasUrl()) {
-            $this->setUrl($this->url->getUrlWithFront('author/' . urlencode($this->getUserNicename()) . '/'));
+            $this->setUrl(
+                $this->url->getHomeUrlWithFront('author/' . urlencode($this->getUserNicename()) . '/')
+            );
         }
 
         return $this->_getData('url');
@@ -99,7 +114,6 @@ class User extends AbstractMeta implements ViewableInterface
     public function getTablePrefix()
     {
         return $this->getResource()->getTablePrefix();
-        return $this->getResourceConnection()->getTablePrefix();
     }
 
     /**
@@ -213,5 +227,13 @@ class User extends AbstractMeta implements ViewableInterface
     public function getMetaTableAlias()
     {
         return 'wordpress_user_meta';
+    }
+    
+    /**
+     * @retur array
+     */
+    public function getIdentities()
+    {
+        return [static::CACHE_TAG . '_' . $this->getId()];
     }
 }

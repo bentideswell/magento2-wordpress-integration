@@ -10,53 +10,27 @@ namespace FishPig\WordPress\Model;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 
-class PostRepository
+class PostRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
     /**
-     * @const string
+     * @param  int $id
+     * @param  array|string $types
+     * @return FishPig\WordPress\Model\Post
      */
-    const FIELD_DEFAULT = 'ID';
-
-    /**
-     * @param \FishPig\WordPress\Model\PostFactory $postFactory
-     */
-    public function __construct(
-        \FishPig\WordPress\Model\PostFactory $postFactory
-    ) {
-        $this->postFactory = $postFactory;
-    }
-    
-    /**
-     *
-     */
-    public function get($id, $type = null, $field = self::FIELD_DEFAULT)
+    public function getWithType($id, $types)
     {
-        if ($field === self::FIELD_DEFAULT) {
-            if (isset($this->cache[(int)$id])) {
-                return $this->cache[(int)$id];
-            }
-        } elseif ($this->cache) {
-            foreach ($this->cache as $id => $post) {
-                if ($post->getData($field) === $id) {
-                    return $post;
-                }
-            }
-        }
+        $post = $this->get($id);
         
-        $this->cache[$id] = false;
-        
-        $post = $this->postFactory->create();
-        
-        if ($type !== null) {
-            $post->setPostType($type);
-        }
-
-        if (!$post->load($id, $field)->getId()) {
+        if (!in_array($post->getPostType(), (array)$types)) {
             throw new NoSuchEntityException(
-                __("The WordPress post (" . $field . '=' . $id . ") that was requested doesn't exist. Verify the post and try again.")
+                __(
+                    'The WordPress post exits but failed the type check. ID is %1, type is %2',
+                    $post->getId(),
+                    $post->getPostType()
+                )
             );
         }
         
-        return $this->cache[(int)$post->getId()] = $post;
+        return $post;
     }
 }

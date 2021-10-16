@@ -1,38 +1,48 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\Meta\AbstractMeta;
+use Magento\Framework\DataObject\IdentityInterface;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Archive extends AbstractModel implements ViewableInterface
+class Archive extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
 {
-    /**
-     *
-     */
-    const ENTITY = 'wordpress_archive';
-
     /**
      * @const string
      */
+    const ENTITY = 'wordpress_archive';
     const CACHE_TAG = 'wordpress_archive';
 
     /**
      *
      */
-    public function _construct()
-    {
-        $this->_init('\FishPig\WordPress\Model\ResourceModel\Archive');
-    }
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Helper\Date $dateHelper,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->url = $url;
+        $this->dateHelper = $dateHelper;
 
+        parent::__construct($context, $registry, $resource, $resourceCollection);
+    }
+    
     /**
      * @return
      */
     public function getName()
     {
-        return $this->wpContext->getDateHelper()->translateDate($this->_getData('name'));
+        return $this->dateHelper->translateDate($this->_getData('name'));
     }
 
     /**
@@ -87,17 +97,11 @@ class Archive extends AbstractModel implements ViewableInterface
     }
 
     /**
-     * Determine whether posts exist for this archive
-     *
      * @return bool
      */
     public function hasPosts()
     {
-        if ($this->hasData('post_count')) {
-            return $this->getPostCount() > 0;
-        }
-
-        return count($this->getPostCollection()) > 0;
+        return $this->hasData('post_count') ? $this->getPostCount() > 0 : count($this->getPostCollection()) > 0;
     }
 
     /**
@@ -120,21 +124,10 @@ class Archive extends AbstractModel implements ViewableInterface
     }
 
     /**
-     *
-     *
-     * @return string
+     * @retur array
      */
-    public function getContent()
+    public function getIdentities()
     {
-        return '';
-    }
-
-    /**
-     *
-     *
-     */
-    public function getResourceCollection()
-    {
-        return false;
+        return [static::CACHE_TAG . '_' . $this->getId()];
     }
 }

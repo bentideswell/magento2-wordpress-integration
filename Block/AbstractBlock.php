@@ -38,15 +38,15 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \FishPig\WordPress\Model\Context $wpContext,
         array $data = []
     ) {
+        /*
         $this->wpContext = $wpContext;
         $this->optionManager = $wpContext->getOptionManager();
         $this->shortcodeManager = $wpContext->getShortcodeManager();
         $this->registry = $wpContext->getRegistry();
         $this->url = $wpContext->getUrl();
-
+*/
         parent::__construct($context, $data);
     }
 

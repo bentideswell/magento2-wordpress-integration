@@ -6,8 +6,11 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Data;
+namespace FishPig\WordPress\Model;
 
-class Taxonomy extends EntityType
+use Magento\Framework\Exception\NoSuchEntityException;
+
+class UserRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
+
 }

@@ -8,7 +8,10 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-class Post extends AbstractViewableEntityModel
+use Magento\Framework\DataObject\IdentityInterface;
+use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+
+class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
 {
     /**
      * @const string
@@ -28,28 +31,26 @@ class Post extends AbstractViewableEntityModel
      */
     private $typeInstance = null;
 
+    /**
+     *
+     */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\App\Url $url,
-        \FishPig\WordPress\App\Option $option,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
+        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+        $this->url = $url;
         $this->postTypeRepository = $postTypeRepository;
-        parent::__construct($context, $registry, $url, $option, $resource, $resourceCollection);
-    }
+        $this->shortcodeFactory = $shortcodeFactory;
+        $this->termCollectionFactory = $termCollectionFactory;
 
-    /**
-     *
-     */
-    public function _construct()
-    {
-        $this->_init(\FishPig\WordPress\Model\ResourceModel\Post::class);
-
-        return parent::_construct();
+        parent::__construct($context, $registry, $resource, $resourceCollection);
     }
 
     /**
@@ -58,48 +59,6 @@ class Post extends AbstractViewableEntityModel
     public function getName()
     {
         return $this->_getData('post_title');
-    }
-
-    /**
-     *
-     */
-    public function getMetaDescription()
-    {
-        if ($this->hasPostExcerpt()) {
-            return $this->getData('post_excerpt');
-        }
-
-        if ($teaser = $this->_getPostTeaser(false)) {
-            return $teaser;
-        }
-
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getPageTitle()
-    {
-        return sprintf('%s | %s', $this->getName(), $this->getBlogName());
-    }
-
-    /**
-     * @return string
-     */
-    public function getRobots(): string
-    {
-        return (int)$this->option->getOption('blog_public') === 0
-            ? 'noindex,nofollow'
-            : 'index,follow';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCanonicalUrl()
-    {
-        return $this->getUrl();
     }
 
     /**
@@ -283,7 +242,7 @@ class Post extends AbstractViewableEntityModel
      */
     public function getTermCollection($taxonomy)
     {
-        return $this->factory->create('FishPig\WordPress\Model\Term')
+        return $this->termFactory->create('FishPig\WordPress\Model\Term')
             ->getCollection()
             ->addTaxonomyFilter($taxonomy)
             ->addPostIdFilter($this->getId());
@@ -407,7 +366,7 @@ class Post extends AbstractViewableEntityModel
         if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
             if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
                 if (strpos($renderedContent, '[') !== false) {
-                    $renderedContent = $this->shortcodeManager->renderShortcode($renderedContent, $this);
+                    $renderedContent = $this->shortcodeFactory->create()->setShortcode($renderedContent)->setPost($this)->toHtml();
                 }
 
                 return $renderedContent;
@@ -430,8 +389,7 @@ class Post extends AbstractViewableEntityModel
      */
     protected function formatContentString($postContent)
     {
-        $postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
-        $postContent = $this->shortcodeManager->renderShortcode($postContent, $this);
+        $postContent = $this->shortcodeFactory->create()->setShortcode($postContent)->setPost($this)->toHtml();
 
         return $postContent;
     }
@@ -869,16 +827,6 @@ class Post extends AbstractViewableEntityModel
     }
 
     /**
-     * Return cache identities
-     *
-     * @return string[]
-     */
-    public function getIdentities()
-    {
-        return [self::CACHE_TAG . '_' . $this->getId()];
-    }
-
-    /**
      *
      *
      * @return
@@ -917,5 +865,14 @@ class Post extends AbstractViewableEntityModel
     public function isContentBlock(): bool
     {
         return $this->getPostType() === self::POST_TYPE_CONTENT_BLOCK;
+    }
+    
+
+    /**
+     * @retur array
+     */
+    public function getIdentities()
+    {
+        return [static::CACHE_TAG . '_' . $this->getId()];
     }
 }

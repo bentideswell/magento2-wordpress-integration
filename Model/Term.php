@@ -11,7 +11,7 @@ namespace FishPig\WordPress\Model;
 use Magento\Framework\DataObject\IdentityInterface;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Term extends AbstractViewableEntityModel
+class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
 {
     /**
      * @const string
@@ -29,22 +29,14 @@ class Term extends AbstractViewableEntityModel
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\App\Url $url,
-        \FishPig\WordPress\App\Option $option,
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
+        $this->url = $url;
         $this->taxonomyRepository = $taxonomyRepository;
-        parent::__construct($context, $registry, $url, $option, $resource, $resourceCollection);
-    }
-
-    /**
-     *
-     */
-    public function _construct()
-    {
-        $this->_init(\FishPig\WordPress\Model\ResourceModel\Term::class);
+        parent::__construct($context, $registry, $resource, $resourceCollection);
     }
 
     /**
@@ -63,6 +55,11 @@ class Term extends AbstractViewableEntityModel
         return $this->_getData('description');
     }
 
+    public function getImage()
+    {
+        return '';
+    }
+    
     /**
      * @return \FishPig\WordPress\Model\Taxonomy
      */
@@ -223,5 +220,13 @@ class Term extends AbstractViewableEntityModel
     public function getMetaValue($key)
     {
         return null;
+    }
+    
+    /**
+     * @retur array
+     */
+    public function getIdentities()
+    {
+        return [static::CACHE_TAG . '_' . $this->getId()];
     }
 }

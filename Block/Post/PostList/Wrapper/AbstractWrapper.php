@@ -24,19 +24,6 @@ abstract class AbstractWrapper extends AbstractBlock
      *
      *
      */
-    protected function _prepareLayout()
-    {
-        if ($this->getEntity()) {
-            $this->getEntity()->applyPageConfigData($this->pageConfig);
-        }
-
-        return parent::_prepareLayout();
-    }
-
-    /**
-     *
-     *
-     */
     public function getIntroText()
     {
         return $this->getEntity() ? $this->getEntity()->getContent() : '';

@@ -66,47 +66,11 @@ class FrontPage extends \Magento\Framework\DataObject implements \FishPig\WordPr
     }
 
     /**
-     *
-     */
-    public function getMetaDescription()
-    {
-        if ($staticPage = $this->getFrontStaticPage()) {
-            return $staticPage->getMetaDescription();
-        }
-
-        return $this->getBlogDescription();
-    }
-
-    /**
-     * @return string
-     */
-    public function getPageTitle()
-    {
-        return sprintf('%s | %s', $this->getName(), $this->getBlogName());
-    }
-
-    /**
      * @return false|string|FishPig\WordPress\Model\Image
      */
     public function getImage()
     {
         return false;
-    }
-
-    /**
-     * @return string
-     */
-    public function getRobots()
-    {
-        return (int)$this->option->get('blog_public') === 0 ? 'noindex,nofollow' : 'index,follow';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCanonicalUrl()
-    {
-        return $this->getUrl();
     }
     
     /**

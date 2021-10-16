@@ -7,8 +7,6 @@
 namespace FishPig\WordPress\Model\ResourceModel;
 
 use FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use FishPig\WordPress\Model\Context as WPContext;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager;
 
@@ -35,14 +33,14 @@ class Post extends AbstractMeta
      * @return
      */
     public function __construct(
-        Context $context,
-        WPContext $wpContext,
+        \Magento\Framework\Model\ResourceModel\Db\Context $context,
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
         $connectionName = null
     ) {
         $this->permalinkResource = $permalinkResource;
 
-        parent::__construct($context, $wpContext, $connectionName);
+        parent::__construct($context, $resourceConnection, $connectionName);
     }
 
     /**

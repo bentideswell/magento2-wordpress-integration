@@ -115,6 +115,66 @@
     </type>
     <!--
     /**
+     * Repositories
+     */
+    -->
+    <type name="FishPig\WordPress\Model\PostRepository">
+		<arguments>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\PostFactory</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\TermRepository">
+		<arguments>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TermFactory</argument>
+			<argument name="idFieldName" xsi:type="string">term_id</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\UserRepository">
+		<arguments>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\UserFactory</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\PostTypeRepository">
+		<arguments>
+			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Data\PostType</argument>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\PostTypeFactory</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\TaxonomyRepository">
+		<arguments>
+			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Data\Taxonomy</argument>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TaxonomyFactory</argument>
+		</arguments>
+    </type>
+    
+    
+    <!--
+    /**
+     * Models
+     */
+    -->
+    <type name="FishPig\WordPress\Model\Post">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\Term">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\User">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\Archive">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Archive</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
      * CLI
      */
     -->

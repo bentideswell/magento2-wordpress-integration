@@ -11,7 +11,7 @@ use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Factory;
 
-class PostType extends \Magento\Framework\DataObject /*implements ViewableInterface*/
+class PostType extends \Magento\Framework\DataObject/* implements ViewableInterface*/
 {
     /**
      *
