@@ -38,4 +38,12 @@ class Option
         
         return [];
     }
+    
+    /**
+     * @deprecated since version 3
+     */
+    public function getOption($key, $default = null)
+    {
+        return $this->get($key, $default);
+    }
 }

@@ -1,29 +1,19 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
-use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection as AbstractMetaCollection;
-use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Psr\Log\LoggerInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Event\ManagerInterface;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\PostTypeManager;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-
-class Collection extends AbstractMetaCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
     /**
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post_collection';
-
-    /**
-     * @var string
-     */
     protected $_eventObject = 'posts';
 
     /**
@@ -37,12 +27,38 @@ class Collection extends AbstractMetaCollection
     protected $postTypes = [];
 
     /**
-     * @return void
+     *
+     */
+    public function __construct(
+        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        string $modelName = null
+    ) {
+        $this->postTypeRepository = $postTypeRepository;
+        $this->permalinkResource = $permalinkResource;
+
+        parent::__construct(
+            $entityFactory, 
+            $logger, 
+            $fetchStrategy, 
+            $eventManager, 
+            $connection, 
+            $resource, 
+            $modelName
+        );
+    }
+    
+    /**
+     *
      */
     public function _construct()
     {
-        $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
-
         $this->_map['fields']['ID'] = 'main_table.ID';
         $this->_map['fields']['post_type'] = 'main_table.post_type';
         $this->_map['fields']['post_status'] = 'main_table.post_status';
@@ -51,9 +67,7 @@ class Collection extends AbstractMetaCollection
     }
 
     /**
-     * Init collection select
      *
-     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     protected function _initSelect()
     {
@@ -75,7 +89,7 @@ class Collection extends AbstractMetaCollection
         parent::_beforeLoad();
 
         if (!$this->getFlag('skip_permalink_generation')) {
-            if ($sql = $this->getResource()->getPermalinkSqlColumn()) {
+            if ($sql = $this->permalinkResource->getPermalinkSqlColumn()) {
                 $this->getSelect()->columns(['permalink' => $sql]);
             }
         }

@@ -11,14 +11,21 @@ namespace FishPig\WordPress\App;
 class Theme
 {
     /**
+     * @var array
+     */
+    private $themeMods = null;
+
+    /**
      * @return void
      */
     public function __construct(
         \FishPig\WordPress\App\Theme\LocalHashGenerator $localHashGenerator,
-        \FishPig\WordPress\App\Theme\RemoteHashRetrieverResolver $remoteHashRetrieverResolver
+        \FishPig\WordPress\App\Theme\RemoteHashRetrieverResolver $remoteHashRetrieverResolver,
+        \FishPig\WordPress\App\Option $option
     ) {
         $this->localHashGenerator = $localHashGenerator;
         $this->remoteHashRetrieverResolver = $remoteHashRetrieverResolver;
+        $this->option = $option;
     }
 
     /**
@@ -51,5 +58,25 @@ class Theme
     public function getRemoteHash(): string
     {
         return $this->remoteHashRetrieverResolver->resolve()->getHash();
+    }
+    
+    /**
+     * @return mixed
+     */
+    public function getThemeMods($key = null)
+    {
+        if ($this->themeMods === null) {
+            $this->themeMods = $this->option->getUnserialized('theme_mods_fishpig');
+        }
+
+        if ($this->themeMods) {
+            if ($key !== null) {
+                return isset($this->themeMods[$key]) ? $this->themeMods[$key] : false;
+            }
+
+            return $this->themeMods;
+        }
+
+        return false;
     }
 }

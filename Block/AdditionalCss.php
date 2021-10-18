@@ -4,32 +4,32 @@
  */
 namespace FishPig\WordPress\Block;
 
-use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Model\Theme;
-use FishPig\WordPress\Model\PostFactory;
-
 class AdditionalCss extends \Magento\Framework\View\Element\Template
 {
     /**
      * @var Theme
      */
-    protected $theme;
+    private $theme;
 
     /**
      * @var PostFactory
      */
-    protected $postFactory;
+    private $postFactory;
 
     /**
      * @param Context $context
      * @param Theme   $theme
      */
-    public function __construct(Context $context, Theme $theme, PostFactory $postFactory)
-    {
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context, 
+        \FishPig\WordPress\App\Theme $theme, 
+        \FishPig\WordPress\Model\PostFactory $postFactory,
+        array $data = []
+    ) {
         $this->theme = $theme;
         $this->postFactory = $postFactory;
 
-        parent::__construct($context);
+        parent::__construct($context, $data);
     }
 
     /**

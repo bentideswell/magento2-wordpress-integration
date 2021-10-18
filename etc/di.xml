@@ -145,9 +145,7 @@
 			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Data\Taxonomy</argument>
 			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TaxonomyFactory</argument>
 		</arguments>
-    </type>
-    
-    
+    </type>   
     <!--
     /**
      * Models
@@ -156,21 +154,59 @@
     <type name="FishPig\WordPress\Model\Post">
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Collection</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\Post\Comment">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection</argument>
 		</arguments>
     </type>
     <type name="FishPig\WordPress\Model\Term">
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term\Collection</argument>
 		</arguments>
     </type>
     <type name="FishPig\WordPress\Model\User">
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User\Collection</argument>
 		</arguments>
     </type>
     <type name="FishPig\WordPress\Model\Archive">
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Archive</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Collections
+     */
+    -->
+    <type name="FishPig\WordPress\Model\ResourceModel\Post\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post\Comment</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Term\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Term</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\User\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\User</argument>
 		</arguments>
     </type>
     <!--

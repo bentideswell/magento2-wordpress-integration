@@ -1,28 +1,30 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\Helper\Context;
-use FishPig\WordPress\Model\OptionManager;
-
-class Date extends AbstractHelper
+class Date extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     * @Var OptionManager
+     * @var \FishPig\WordPress\App\Option
      */
-    protected $optionManager;
+    private $option;
 
     /**
      *
      */
-    public function __construct(Context $context, OptionManager $optionManager)
-    {
+    public function __construct(
+        \Magento\Framework\App\Helper\Context $context, 
+        \FishPig\WordPress\App\Option $option
+    ) {
         parent::__construct($context);
 
-        $this->optionManager = $optionManager;
+        $this->option = $option;
     }
 
     /**
@@ -85,7 +87,7 @@ class Date extends AbstractHelper
      */
     public function getDefaultDateFormat()
     {
-        if ($format = $this->optionManager->getOption('date_format')) {
+        if ($format = $this->option->get('date_format')) {
             return $format;
         }
 
@@ -97,7 +99,7 @@ class Date extends AbstractHelper
      */
     public function getDefaultTimeFormat()
     {
-        if ($format = $this->optionManager->getOption('time_format')) {
+        if ($format = $this->option->get('time_format')) {
             return $format;
         }
 

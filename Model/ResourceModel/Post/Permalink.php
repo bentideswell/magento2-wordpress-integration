@@ -104,9 +104,9 @@ class Permalink
      * @param  PostType $postType
      * @return string
      */
-    public function completePostSlug($slug, $postId, $postType)
+    public function completePostSlug(string $slug, int $postId, PostType $postType)
     {
-        if (!preg_match_all('/(\%[a-z0-9_-]{1,}\%)/U', $slug, $matches)) {
+        if (!$slug || !preg_match_all('/(\%[a-z0-9_-]{1,}\%)/U', $slug, $matches)) {
             return $slug;
         }
 

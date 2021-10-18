@@ -39,16 +39,22 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\App\Url $url,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Model\UserRepository $userRepository,
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
-        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
+        \FishPig\WordPress\Model\TermFactory $termFactory,
+        \FishPig\WordPress\Model\ImageFactory $imageFactory,
+        \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->url = $url;
         $this->postTypeRepository = $postTypeRepository;
+        $this->userRepository = $userRepository;
         $this->shortcodeFactory = $shortcodeFactory;
-        $this->termCollectionFactory = $termCollectionFactory;
+        $this->termFactory = $termFactory;
+        $this->imageFactory = $imageFactory;
+        $this->dateHelper = $dateHelper;
 
         parent::__construct($context, $registry, $resource, $resourceCollection);
     }
@@ -242,10 +248,13 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
      */
     public function getTermCollection($taxonomy)
     {
-        return $this->termFactory->create('FishPig\WordPress\Model\Term')
-            ->getCollection()
-            ->addTaxonomyFilter($taxonomy)
-            ->addPostIdFilter($this->getId());
+        return $this->termFactory->create()
+            ->getCollection(
+            )->addTaxonomyFilter(
+                $taxonomy
+            )->addPostIdFilter(
+                $this->getId()
+            );
     }
 
     /**
@@ -419,8 +428,15 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
     public function getImages()
     {
         if (!$this->hasData('images')) {
+            
+            
+
+$e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exit;
             $this->setImages(
-                $this->factory->create('Image')->getCollection()->setParent($this->getData('ID'))
+                $this->imageFactory->create()->getCollection(
+                    )->setParent(
+                        (int)$this->getData('ID')
+                    )
             );
         }
 
@@ -436,7 +452,14 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
      */
     public function getImage()
     {
-        return $this->getResource()->getFeaturedImage($this);
+        if ($imageId = (int)$this->getMetaValue('_thumbnail_id')) {
+            $image = $this->imageFactory->create()->load($imageId);
+            
+            /* ToDo: add caching */
+            return $image->getId() ? $image : false;
+        }
+        
+        return false;
     }
 
     /**
@@ -458,13 +481,7 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
      */
     public function getUser()
     {
-        if (!$this->hasUser()) {
-            $this->setUser(
-                $this->factory->create('User')->load($this->getUserId())
-            );
-        }
-
-        return $this->_getData('user');
+        return $this->userRepository->get($this->getUserId());
     }
 
     /**
@@ -487,7 +504,7 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
             $date = date('Y-m-d H:i:s');
         }
 
-        return $this->wpContext->getDateHelper()->formatDate($date, $format);
+        return $this->dateHelper->formatDate($date, $format);
     }
 
     /**
@@ -502,7 +519,7 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
             $date = date('Y-m-d H:i:s');
         }
 
-        return $this->wpContext->getDateHelper()->formatDate($date, $format);
+        return $this->dateHelper->formatDate($date, $format);
     }
 
     /**
@@ -663,13 +680,16 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
         if (!$this->hasParentPost()) {
             $this->setParentPost(false);
 
-            if ($this->getParentId()) {
-                $parent = $this->factory->create('Post')
-                    ->setPostType($this->getPostType() === 'revision' ? '*' : $this->getPostType())
-                    ->load($this->getParentId());
-
-                if ($parent->getId()) {
-                    $this->setParentPost($parent);
+            if ($parentId = (int)$this->getParentId()) {
+                try {
+                    $this->setParentPost(
+                        $this->postRepo->getWithType(
+                            $parentId,
+                            $this->getPostType() === 'revision' ? '*' : $this->getPostType()
+                        )
+                    );
+                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                    $this->setParentPost(false);
                 }
             }
         }

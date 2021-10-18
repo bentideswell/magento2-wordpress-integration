@@ -23,13 +23,21 @@ class ResourceConnection
     /**
      * @var []
      */
+    private $tableMap = [];
+
+    /**
+     * @var []
+     */
     private $legacyTableMap = [
         'wordpress_post' => 'posts',
         'wordpress_post_meta' => 'postmeta',
         'wordpress_term' => 'terms',
         'wordpress_term_taxonomy' => 'term_taxonomy',
+        'wordpress_term_relationship' => 'term_relationships',
         'wordpress_user' => 'users',
         'wordpress_user_meta' => 'usermeta',
+        'wordpress_post_comment' => 'comments',
+        'wordpress_post_comment_meta' => 'commentmeta',
     ];
 
     /**
@@ -116,15 +124,35 @@ class ResourceConnection
      */
     public function getTable($table, $canBeUsedInNetwork = true): string
     {
+        $storeId = (int)$this->storeManager->getStore()->getId();
+
         if (isset($this->legacyTableMap[$table])) {
             $table = $this->legacyTableMap[$table];
         }
 
-        if (!$canBeUsedInNetwork) {
-            return $this->getTablePrefix() . $table;
+        if (!isset($this->tableMap[$storeId])) {
+            $this->tableMap[$storeId] = [];
+        } elseif (isset($this->tableMap[$storeId][$table])) {
+            return $this->tableMap[$storeId][$table];
         }
-        
-        return $this->getTablePrefix() . $table;        
+
+        $tablePrefix = $this->getTablePrefix();
+
+        if ($tablePrefix && strpos($table, $tablePrefix) === 0) {
+            $cleanedTableName = substr($table, strlen($tablePrefix));;
+
+            if (isset($this->tableMap[$storeId][$cleanedTableName])) {
+                return $this->tableMap[$storeId][$cleanedTableName];
+            }
+        }
+
+        if (!$canBeUsedInNetwork) {
+            $mappedTable = $this->getTablePrefix() . $table;
+        } else {
+            $mappedTable = $this->getTablePrefix() . $table;        
+        }
+
+        return $this->tableMap[$storeId][$table] = $mappedTable;
     }
 
     /**

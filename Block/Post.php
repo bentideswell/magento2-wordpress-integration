@@ -10,18 +10,14 @@ use Magento\Framework\DataObject\IdentityInterface;
 class Post extends AbstractBlock implements IdentityInterface
 {
     /**
-     * Retrieve the current post object
-     *
-     * @return null|\FishPig\WordPress\Model\Post
+     * @return ?\FishPig\WordPress\Model\Post
      */
     public function getPost()
     {
-        return $this->_getData('post') ? $this->_getData('post') : $this->registry->registry('wordpress_post');
+        return $this->_getData('post') ?? $this->registry->registry('wordpress_post');
     }
 
     /**
-     * Returns the ID of the currently loaded post
-     *
      * @return int|false
      */
     public function getPostId()

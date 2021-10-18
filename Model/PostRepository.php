@@ -20,8 +20,8 @@ class PostRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
     public function getWithType($id, $types)
     {
         $post = $this->get($id);
-        
-        if (!in_array($post->getPostType(), (array)$types)) {
+
+        if (!in_array('*', (array)$types) && !in_array($post->getPostType(), (array)$types)) {
             throw new NoSuchEntityException(
                 __(
                     'The WordPress post exits but failed the type check. ID is %1, type is %2',

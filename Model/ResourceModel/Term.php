@@ -18,15 +18,11 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
 
     public function _construct()
     {
-        $this->_init('wordpress_term', 'term_id');
+        $this->_init('terms', 'term_id');
     }
 
     /**
-     * Custom load SQL to combine required tables
      *
-     * @param string                   $field
-     * @param string|int               $value
-     * @param Mage_Core_Model_Abstract $object
      */
     protected function _getLoadSelect($field, $value, $object)
     {

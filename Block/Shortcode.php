@@ -23,7 +23,8 @@ class Shortcode extends AbstractBlock
             return '';
         }
 
-        return $this->shortcodeManager->renderShortcode($shortcode);
+        return $shortcode;
+        return $this->shortcodeRenderer->render($shortcode);
     }
 
     /**

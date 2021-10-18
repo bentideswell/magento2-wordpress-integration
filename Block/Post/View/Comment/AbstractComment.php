@@ -96,7 +96,7 @@ abstract class AbstractComment extends Post
      */
     public function getPagerHtml()
     {
-        if ($this->optionManager->getOption('page_comments', false)) {
+        if ($this->option->getOption('page_comments', false)) {
             return $this->getChildHtml('pager');
         }
     }

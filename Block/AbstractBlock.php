@@ -7,63 +7,58 @@ namespace FishPig\WordPress\Block;
 abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 {
     /**
-     * @var
-     */
-    protected $wpContext;
-
-    /**
      * @var OptionManager
      */
     protected $optionManager;
 
     /**
-     * @var ShortcodeManager
+     * @var \FishPig\WordPress\Block\ShortcodeFactory
      */
-    protected $shortcodeManager;
+    protected $shortcodeFactory;
 
     /**
-     * @var Registry
+     * @var \Magento\Framework\Registry
      */
     protected $registry;
 
     /**
-     * @var Url
-     */
-    protected $url;
-
-    /**
-     * @param Context $context
-     * @param App
-     * @param array   $data
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
         array $data = []
     ) {
-        /*
-        $this->wpContext = $wpContext;
-        $this->optionManager = $wpContext->getOptionManager();
-        $this->shortcodeManager = $wpContext->getShortcodeManager();
+        $this->logger = $wpContext->getLogger();
         $this->registry = $wpContext->getRegistry();
+        $this->shortcodeFactory = $wpContext->getShortcodeFactory();
+        $this->option = $wpContext->getOption();
         $this->url = $wpContext->getUrl();
-*/
+
         parent::__construct($context, $data);
     }
 
     /**
-     * Parse and render a shortcode
-     *
      * @param  string $shortcode
-     * @param  mixed  $object    = null
+     * @param  \Magento\Framework\DataObject  $object = null
      * @return string
      */
     public function renderShortcode($shortcode, $object = null)
     {
-        return $this->shortcodeManager->renderShortcode($shortcode, ['object' => $object]);
+        return $this->shortcodeFactory->create(
+            /**/
+        )->setShortcode(
+            $shortcode
+        )->setPost(
+            $object
+        )->toHtml();
     }
 
     /**
-     *
+     * @param  string $shortcode
+     * @param  \Magento\Framework\DataObject  $object = null
      * @return string
      */
     public function doShortcode($shortcode, $object = null)
@@ -79,17 +74,9 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
         try {
             return parent::toHtml();
         } catch (\Exception $e) {
-            $this->wpContext->getLogger()->error($e);
+            $this->logger->error($e);
 
             throw $e;
         }
-    }
-    
-    /**
-     *
-     */
-    public function getWpUrl()
-    {
-        return $this->url;
     }
 }

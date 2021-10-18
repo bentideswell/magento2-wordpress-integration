@@ -36,9 +36,11 @@ class Post extends AbstractMeta
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \FishPig\WordPress\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory $commentCollectionFactory,
         $connectionName = null
     ) {
         $this->permalinkResource = $permalinkResource;
+        $this->commentCollectionFactory = $commentCollectionFactory;
 
         parent::__construct($context, $resourceConnection, $connectionName);
     }
@@ -50,7 +52,7 @@ class Post extends AbstractMeta
      */
     public function _construct()
     {
-        $this->_init('wordpress_post', 'ID');
+        $this->_init('posts', 'ID');
     }
 
     /**
@@ -89,14 +91,16 @@ class Post extends AbstractMeta
     public function preparePosts($posts)
     {
         foreach ($posts as $post) {
-            $post->setData(
-                'permalink',
-                $this->permalinkResource->completePostSlug(
-                    $post->getData('permalink'), 
-                    $post->getId(), 
-                    $post->getTypeInstance()
-                )
-            );
+            if ($permalink = $post->getData('permalink')) {
+                $post->setData(
+                    'permalink',
+                    $this->permalinkResource->completePostSlug(
+                        $permalink,
+                        $post->getId(), 
+                        $post->getTypeInstance()
+                    )
+                );
+            }
         }
 
         return $this;
@@ -178,11 +182,16 @@ class Post extends AbstractMeta
      */
     public function getPostComments(\FishPig\Wordpress\Model\Post $post)
     {
-        return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
-            ->setPost($post)
-            ->addCommentApprovedFilter()
-            ->addParentCommentFilter(0)
-            ->addOrderByDate();
+        return $this->commentCollectionFactory->create()
+            ->setPost(
+                $post
+            )->addCommentApprovedFilter(
+                
+            )->addParentCommentFilter(
+                0
+            )->addOrderByDate(
+                
+            );
     }
 
     /**

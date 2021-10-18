@@ -1,7 +1,11 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Term;
 
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
@@ -10,19 +14,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      * @var string
      */
     protected $_eventPrefix = 'wordpress_term_collection';
-
-    /**
-     * @var string
-     */
     protected $_eventObject = 'terms';
-
-    /**
-     *
-     */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\Term', 'FishPig\WordPress\Model\ResourceModel\Term');
-    }
 
     /**
      * Flag that determines whether term_relationships has been joined
@@ -192,7 +184,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      */
     public function addCloudFilter($taxonomy)
     {
-        $cloudIdsSelect = $this->wpContext->getFactory()->create('Term')->getCollection()
+        $cloudIdsSelect = $this->getNewEmptyItem()->getCollection()
             ->addTaxonomyFilter($taxonomy)
             ->addOrderByItemCount()
             ->setPageSize(20)
