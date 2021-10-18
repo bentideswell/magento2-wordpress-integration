@@ -1,3 +1,6 @@
+18/10/2021 - 2.0.23.8
+- Fixed template for Elementor Canvas
+
 15/10/2021 - 2.0.23.7
 - Added fix to allow for post type slug translation in WPML.
 
