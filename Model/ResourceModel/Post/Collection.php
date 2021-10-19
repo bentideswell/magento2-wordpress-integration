@@ -151,68 +151,6 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     }
 
     /**
-     * Filters the collection by an array of post ID's and category ID's
-     * When filtering by a category ID, all posts from that category will be returned
-     * If you change the param $operator to AND, only posts that are in a category specified in
-     * $categoryIds and $postIds will be returned
-     *
-     * @param mixed  $postIds
-     * @param mixed  $categoryIds
-     * @param string $operator
-     */
-    public function addCategoryAndPostIdFilter($postIds, $categoryIds, $operator = 'OR')
-    {
-        if (!is_array($postIds)) {
-            $postIds = [$postIds];
-        }
-
-        if (!is_array($categoryIds)) {
-            $categoryIds = [$categoryIds];
-        }
-
-        if (count($categoryIds) > 0) {
-            $this->joinTermTables('category');
-        }
-
-        $readAdapter = $this->getConnection();
-
-        $postSql = $readAdapter->quoteInto("`main_table`.`ID` IN (?)", $postIds);
-        $categorySql = $readAdapter->quoteInto("`tax_category`.`term_id` IN (?)", $categoryIds);
-
-        if (count($postIds) > 0 && count($categoryIds) > 0) {
-            $this->getSelect()->where("{$postSql} {$operator} {$categorySql}");
-        } elseif (count($postIds) > 0) {
-            $this->getSelect()->where("{$postSql}");
-        } elseif (count($categoryIds) > 0) {
-            $this->getSelect()->where("{$categorySql}");
-        }
-
-        return $this;
-    }
-
-    /**
-     * Filter the collection by a category ID
-     *
-     * @param  int $categoryId
-     * @return $this
-     */
-    public function addCategoryIdFilter($categoryId)
-    {
-        return $this->addTermIdFilter($categoryId, 'category');
-    }
-
-    /**
-     * Filter the collection by a tag ID
-     *
-     * @param  int $categoryId
-     * @return $this
-     */
-    public function addTagIdFilter($tagId)
-    {
-        return $this->addTermIdFilter($tagId, 'post_tag');
-    }
-
-    /**
      * Filters the collection with an archive date
      * EG: 2010/10
      *
@@ -560,5 +498,23 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $this->getSelect()->order('menu_order ' . $dir);
 
         return $this;
+    }
+    
+    /**
+     * @param  int $categoryId
+     * @return self
+     */
+    public function addCategoryIdFilter($categoryId): self
+    {
+        return $this->addTermIdFilter($categoryId, 'category');
+    }
+
+    /**
+     * @param  int $categoryId
+     * @return self
+     */
+    public function addTagIdFilter($tagId): self
+    {
+        return $this->addTermIdFilter($tagId, 'post_tag');
     }
 }

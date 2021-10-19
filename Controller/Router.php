@@ -55,47 +55,5 @@ class Router implements \Magento\Framework\App\RouterInterface
         echo 'No router match in ' . __METHOD__;
         exit;
         return false;
-
-
-        $this->addRouteCallback([$this, '_getTaxonomyRoutes']);
-
-    }
-
-    /**
-     * Get the custom taxonomy URI's
-     * First check whether a valid taxonomy exists in $uri
-     *
-     * @param  string $uri = ''
-     * @return $this
-     */
-    protected function _getTaxonomyRoutes($uri = '')
-    {
-        foreach ($this->factory->get(\FishPig\WordPress\Model\TaxonomyManager::class)->getTaxonomies() as $taxonomy) {
-            if (($routes = $taxonomy->getUris($uri)) !== false) {
-                foreach ($routes as $routeId => $route) {
-                    if ($route === $uri) {
-                        return $this->addRoute($route, '*/term/view', ['id' => $routeId, 'taxonomy' => $taxonomy->getTaxonomyType()]);
-                    }
-                }
-            }
-
-            if (($routes = $taxonomy->getRedirectableUris($uri)) !== false) {
-                foreach ($routes as $routeId => $route) {
-                    if ($uri === $route['source']) {
-                        return $this->addRoute(
-                            $route['source'],
-                            '*/term/view',
-                            [
-                            'id' => $routeId,
-                            'taxonomy' => $taxonomy->getTaxonomyType(),
-                            '__redirect_to' => $this->url->getUrl($route['target'])
-                            ]
-                        );
-                    }
-                }
-            }
-        }
-
-        return $this;
     }
 }

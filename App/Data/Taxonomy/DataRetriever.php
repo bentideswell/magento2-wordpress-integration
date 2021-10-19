@@ -41,7 +41,7 @@ class DataRetriever implements \FishPig\WordPress\Api\Data\App\Data\Taxonomy\Tax
                 'hierarchical' => true,
                 'rewrite' => [
                     'hierarchical' => true,
-                    'slug' => $this->option->get('category_base') ?? 'category',
+                    'slug' => $this->getBase('category_base', 'category'),
                     'with_front' => true,
                 ],
                 '_builtin' => true,
@@ -56,11 +56,25 @@ class DataRetriever implements \FishPig\WordPress\Api\Data\App\Data\Taxonomy\Tax
                 'public' => true,
                 'hierarchical' => false,
                 'rewrite' => [
-                    'slug' => $this->option->get('tag_base') ?? 'tag',
+                    'slug' => $this->getBase('tag_base', 'tag'),
                     'with_front' => true,
                 ],
                 '_builtin' => true,
             ]
         ];
+    }
+    
+    /**
+     * @param  string $key
+     * @param  string $default
+     * @return string
+     */
+    private function getBase(string $key, string $default): string
+    {
+        if ($base = trim($this->option->get($key), '/')) {
+            return $base;
+        }
+        
+        return $default;
     }
 }

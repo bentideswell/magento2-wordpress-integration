@@ -37,7 +37,7 @@ class View extends \FishPig\WordPress\Controller\Action
         $request = $this->getRequest();
 
         // This will throw Exception is post does not exist
-        $term = $this->termRepository->getByNicename(
+        $term = $this->termRepository->get(
             (int)$request->getParam('id')
         );
 

@@ -18,9 +18,11 @@ class RequestDispatcher
      * @param \FishPig\WordPress\App\Url\Router $routerUrlHelper
      */
     public function __construct(
+        \Magento\Framework\App\ResponseInterface $response,
         \Magento\Framework\App\ActionFactory $actionFactory,
         \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper
     ) {
+        $this->response = $response;
         $this->actionFactory = $actionFactory;
         $this->routerUrlHelper = $routerUrlHelper;
     }
@@ -52,6 +54,22 @@ class RequestDispatcher
 
         return $this->actionFactory->create(
             \Magento\Framework\App\Action\Forward::class
+        );
+    }
+
+    /**
+     * @param  RequestInterface $request
+     * @param  string $url
+     * @param  int $code = 302
+     * @return ActionInterface
+     */
+    public function redirect(RequestInterface $request, string $url, int $code = 302): ActionInterface
+    {
+        $this->response->setRedirect($url, $code);
+        $request->setDispatched(true);
+
+        return $this->actionFactory->create(
+            \Magento\Framework\App\Action\Redirect::class
         );
     }
 

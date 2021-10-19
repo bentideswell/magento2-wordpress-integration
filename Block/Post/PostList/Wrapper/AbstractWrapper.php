@@ -43,16 +43,9 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
     {
         if ($this->postCollection === null) {
             $this->postCollection = $this->getBasePostCollection()
-                ->addIsViewableFilter(
-                    true
-                )->addOrder(
+                ->addIsViewableFilter()
+                ->addOrder(
                     'post_date', 'desc'
-                )->setFlag(
-                    'after_load_event_name', 
-                    $this->_getPostCollectionEventName() . '_after_load'
-                )->setFlag(
-                    'after_load_event_block', 
-                    $this
                 );
         }
 
@@ -88,9 +81,7 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
                 $this->setChild('wp.post.list', $postListBlock);
         }
 
-        if ($postListBlock && !$postListBlock->getWrapperBlock()) {
-            $postListBlock->setWrapperBlock($this);
-        }
+        $postListBlock->setCollection($this->getPostCollection());
 
         return $postListBlock;
     }

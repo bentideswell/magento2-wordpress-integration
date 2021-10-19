@@ -1,46 +1,43 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Term;
 
 use \FishPig\WordPress\Model\Term;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
-    public function getEntity()
-    {
-        return $this->getTerm();
-    }
-
     /**
-     * Returns the current Wordpress category
-     * This is just a wrapper for getCurrentCategory()
-     *
-     * @return \FishPig\WordPress\Model\Term
+     * @var Term
      */
-    public function getTerm()
+    private $term = null;
+    
+    /**
+     * @return Term
+     */
+    public function getTerm(): Term
     {
-        if (!$this->hasTerm()) {
-            $this->setTerm($this->registry->registry(Term::ENTITY));
+        if ($this->term === null) {
+            $this->term = $this->registry->registry(Term::ENTITY) ?? false;
         }
+        
+        return $this->term;
 
-        return $this->_getData('term');
     }
 
     /**
-     * Generates and returns the collection of posts
-     *
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    protected function _getPostCollection()
+    protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        if ($this->getTerm()) {
-            return $this->getTerm()->getPostCollection();
-        }
-
-        return false;
+        return $this->postCollectionFactory->create()->addTermIdFilter(
+            (int)$this->getTerm()->getId(),
+            $this->getTerm()->getTaxonomy()         
+        );
     }
 }

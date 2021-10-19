@@ -59,15 +59,22 @@ class ListPost extends \FishPig\WordPress\Block\Post
      */
     public function setPostCollection(PostCollection $collection): self
     {
+        if ($this->postCollection !== null) {
+            throw new \Exception('The post collection is already set in this block.');
+        }
+
         $this->postCollection = $collection;
         
         if ($pager = $this->getChildBlock('pager')) {
-            $pager->setPostListBlock($this)->setCollection($this->postCollection);
+            $pager->setPostListBlock(
+                $this
+            )->setCollection(
+                $this->postCollection
+            );
         }
 
         return $this;
     }
-
 
     /**
      * Get the HTML for the pager block

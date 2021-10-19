@@ -193,6 +193,13 @@ class Permalink
                     } else {
                         return false;
                     }
+
+                    // Check if field requires number
+                    if (in_array($token, ['%year%', '%day%', '%monthnum%'])) {
+                        if ((int)$filters[trim($token, '%')] === 0) {
+                            return false;
+                        }
+                    }
                 } elseif (substr($pathInfo, 0, strlen($token)) === $token) {
                     $pathInfo = substr($pathInfo, strlen($token));
                 } else {

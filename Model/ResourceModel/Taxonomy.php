@@ -30,7 +30,11 @@ class Taxonomy
         $this->storeManager = $storeManager;
     }
     
-    public function getAllRoutes(TaxonomyModel $taxonomy)
+    /**
+     * @param  TaxonomyModel $taxonomy
+     * @return array
+     */
+    public function getAllRoutes(TaxonomyModel $taxonomy): array
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
         $cacheKey = $storeId . '_get_all_routes' . $taxonomy->getTaxonomy();
@@ -39,12 +43,11 @@ class Taxonomy
             return $this->cache[$cacheKey];
         }
         
-        $this->cache[$cacheKey] = false;        
+        $this->cache[$cacheKey] = [];        
 
         $results = $this->resourceConnection->getConnection()->fetchAll(
             $this->getSelectForGetAllUris($taxonomy)
         );
-
     
         if ($results) {
             $slug = $taxonomy->getSlug();
@@ -68,8 +71,9 @@ class Taxonomy
         return $this->cache[$cacheKey];
     }
 
-    /**
-     *
+     /**
+     * @param  TaxonomyModel $taxonomy
+     * @return 
      */
     public function getSelectForGetAllUris(TaxonomyModel $taxonomy)
     {
@@ -90,5 +94,54 @@ class Taxonomy
             );
             
         return $select;
+    }
+    
+    /**
+     * @param  TaxonomyModel $taxonomy
+     * @return array
+     */
+    public function getRedirectableUris(TaxonomyModel $taxonomy): array
+    {
+        $connection = $this->resourceConnection->getConnection();
+
+        $select = $connection->select()
+            ->from(
+                ['term' => $this->resourceConnection->getTable('terms')],
+                ['id' => 'term_id', 'url_key' => 'slug']
+            )
+            ->join(
+                ['tax' => $this->resourceConnection->getTable('term_taxonomy')],
+                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $taxonomy->getTaxonomyType()),
+                null
+            )
+            ->where('tax.parent > 0');
+
+
+        if (!($redirectableUris = $connection->fetchAll($select))) {
+            return [];
+        }
+
+        foreach ($redirectableUris as &$redirectableUri) {
+            $redirectableUri['parent'] = 0;
+        }
+        
+        // These are the URIs we redirect to
+        $targetUris = $this->hierarchicalUrlGenerator->generateRoutes($redirectableUris, $taxonomy->getSlug());
+        $redirectableData = [];
+
+        if (!($allUris = $this->getAllRoutes($taxonomy))) {
+            return [];
+        }
+ 
+        foreach ($redirectableUris as $redirectableUri) {
+            if (isset($targetUris[$redirectableUri['id']])) {
+                $redirectableData[$redirectableUri['id']] = [
+                    'source' => $targetUris[$redirectableUri['id']],
+                    'target' => $allUris[$redirectableUri['id']],
+                ];
+            }
+        }
+
+        return $redirectableData;
     }
 }
