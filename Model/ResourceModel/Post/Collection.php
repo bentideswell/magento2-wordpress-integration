@@ -36,12 +36,14 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
         string $modelName = null
     ) {
         $this->postTypeRepository = $postTypeRepository;
         $this->permalinkResource = $permalinkResource;
+        $this->customerSession = $customerSession;
 
         parent::__construct(
             $entityFactory, 
@@ -96,7 +98,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
         if (!$this->hasPostTypeFilter()) {
             if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
-                if ($postTypes = $this->postTypeManager->getPostTypes()) {
+                if ($postTypes = $this->postTypeRepository->getAll()) {
                     $supportedTypes = [];
 
                     foreach ($postTypes as $postType) {
@@ -117,7 +119,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         }
 
         if (count($this->postTypes) === 0) {
-            $this->addFieldToFilter('post_type', ['in' => array_keys($this->postTypeManager->getPostTypes())]);
+            $this->addFieldToFilter('post_type', ['in' => array_keys($this->postTypeRepository->getAll())]);
         } else {
             $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
         }
@@ -137,6 +139,15 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $this->getResource()->preparePosts($this->_items);
 
         return $this;
+    }
+
+    /**
+     * @param  int $userId
+     * @return self
+     */
+    public function addUserIdFilter(int $userId): self
+    {
+        return $this->addFieldToFilter('post_author', $userId);
     }
 
     /**
@@ -311,7 +322,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     {
         $fields = ['publish', 'protected'];
 
-        if ($this->wpContext->getCustomerSession()->isLoggedIn()) {
+        if ($this->customerSession->isLoggedIn()) {
             $fields[] = 'private';
         }
 

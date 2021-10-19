@@ -17,18 +17,26 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
      *
      */
     const ENTITY = 'wordpress_post_type';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_post_type';
 
     /**
-     * Cache of URI's for hierarchical post types
-     *
-     * @var array static
+     * @var \FishPig\WordPress\Model\ResourceModel\PostType
      */
-    static $_uriCache = [];
+    private $_resource;
+    
+    /**
+     * @param array $data = []
+     */
+    public function __construct(
+        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\ResourceModel\PostType $resource,
+        array $data = []
+    ) {
+        $this->url = $url;
+        $this->_resource = $resource;
+        
+        parent::__construct($data);
+    }
 
     /**
      * Determine whether post type uses GUID links
@@ -128,16 +136,6 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
     public function getUrl()
     {
         return $this->url->getUrl($this->getArchiveSlug() . '/');
-    }
-
-    /**
-     * Retrieve the post collection for this post type
-     *
-     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
-     */
-    public function getPostCollection()
-    {
-        return $this->factory->create('Model\ResourceModel\Post\Collection')->addPostTypeFilter($this->getPostType());
     }
 
     /**
@@ -290,36 +288,8 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
         if (!$this->isHierarchical()) {
             return false;
         }
-
-        $storeId = (int)$this->wpContext->getStoreManager()->getStore()->getId();
-
-        if (isset(self::$_uriCache[$storeId][$this->getPostType()])) {
-            return self::$_uriCache[$storeId][$this->getPostType()];
-        }
-
-        $resource = $this->wpContext->getResourceConnection();
-
-        if (!($db = $resource->getConnection())) {
-            return false;
-        }
-
-        if (!isset(self::$_uriCache[$storeId])) {
-            self::$_uriCache[$storeId] = [];
-        }
-
-        $select = $db->select()
-            ->from(
-                ['term' => $resource->getTable('wordpress_post')],
-                [
-                'id'      => 'ID',
-                'url_key' =>  'post_name',
-                'parent'  => 'post_parent'
-                ]
-            )
-            ->where('post_type=?', $this->getPostType())
-            ->where('post_status=?', 'publish');
-
-        return self::$_uriCache[$storeId][$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
+        
+        return $this->getResource()->getHierarchicalPostNames($this);
     }
 
     /**
@@ -430,112 +400,6 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
 
         return $crumbs;
     }
-
-    /**
-     * Generate an array of URI's based on $results
-     *
-     * @param  array $results
-     * @return array
-     */
-    public static function generateRoutesFromArray($results, $prefix = '')
-    {
-        $objects = [];
-        $byParent = [];
-
-        foreach ($results as $key => $result) {
-            if (!$result['parent']) {
-                $objects[$result['id']] = $result;
-            } else {
-                if (!isset($byParent[$result['parent']])) {
-                    $byParent[$result['parent']] = [];
-                }
-
-                $byParent[$result['parent']][$result['id']] = $result;
-            }
-        }
-
-        if (count($objects) === 0) {
-            return false;
-        }
-
-        $routes = [];
-
-        foreach ($objects as $objectId => $object) {
-            if (($children = self::createArrayTree($objectId, $byParent)) !== false) {
-                $objects[$objectId]['children'] = $children;
-            }
-
-            $routes += self::createLookupTable($objects[$objectId], $prefix);
-        }
-
-        return $routes;
-    }
-
-    /**
-     * Create a lookup table from an array tree
-     *
-     * @param  array  $node
-     * @param  string $idField
-     * @param  string $field
-     * @param  string $prefix  = ''
-     * @return array
-     */
-    protected static function createLookupTable(&$node, $prefix = '')
-    {
-        if (!isset($node['id'])) {
-            return [];
-        }
-
-        $urls = [
-            $node['id'] => ltrim($prefix . '/' . urldecode($node['url_key']), '/')
-        ];
-
-        if (isset($node['children'])) {
-            foreach ($node['children'] as $childId => $child) {
-                $urls += self::createLookupTable($child, $urls[$node['id']]);
-            }
-        }
-
-        return $urls;
-    }
-
-    /**
-     * Create an array tree. This is used for creating static URL lookup tables
-     * for categories and pages
-     *
-     * @param  int    $id
-     * @param  array  $pool
-     * @param  string $field = 'parent'
-     * @return false|array
-     */
-    protected static function createArrayTree($id, &$pool)
-    {
-        if (isset($pool[$id]) && $pool[$id]) {
-            $children = $pool[$id];
-
-            unset($pool[$id]);
-
-            foreach ($children as $childId => $child) {
-                unset($children[$childId]['parent']);
-                if (($result = self::createArrayTree($childId, $pool)) !== false) {
-                    $children[$childId]['children'] = $result;
-                }
-            }
-
-            return $children;
-        }
-
-        return false;
-    }
-
-    /**
-     *
-     *
-     */
-    public function load($modelId, $field = null)
-    {
-        return $this->factory->create('PostTypeManager')->getPostType($modelId);
-    }
     
     /**
      * @return bool
@@ -543,5 +407,13 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
     public function isPublic()
     {
         return (int)$this->_getData('public') === 1;
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\PostType
+     */
+    public function getResource(): \FishPig\WordPress\Model\ResourceModel\PostType
+    {
+        return $this->_resource;
     }
 }

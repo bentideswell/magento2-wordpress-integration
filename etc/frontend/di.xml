@@ -32,6 +32,18 @@
             <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\SeoMetaDataProvider</argument>
         </arguments>
     </type>
+    <type name="FishPig\WordPress\Controller\Term\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\Term\SeoMetaDataProvider</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\User\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\User\SeoMetaDataProvider</argument>
+        </arguments>
+    </type>
+
+
 
     <!-- Inject any required assets -->
     <type name="Magento\Framework\Controller\ResultInterface">

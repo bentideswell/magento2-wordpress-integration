@@ -1,22 +1,65 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Term;
 
-use FishPig\WordPress\Controller\Action;
-
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
-   
+    /**
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * @param \FishPig\WordPress\Model\PostRepository $postRepository,
+     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \Magento\Customer\Model\Session $customerSession
+     */
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+    ) {
+        $this->termRepository = $termRepository;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+
+        parent::__construct($context, $wpContext);
+    }
+
     /**
      *
      */
-    protected function _getEntity()
+    public function execute()
     {
-        $object = $this->factory->create('Term')->load((int)$this->getRequest()->getParam('id'));
+        $request = $this->getRequest();
 
-        return $object->getId() ? $object : false;
+        // This will throw Exception is post does not exist
+        $term = $this->termRepository->getByNicename(
+            (int)$request->getParam('id')
+        );
+
+        $this->registry->register($term::ENTITY, $term);
+
+        // We got here, we must be good.
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
+        );
+
+        $this->addLayoutHandles(
+            $resultPage,
+            [
+                'wordpress_term_view',
+                'wordpress_' . $term->getTaxonomy() . '_view',
+                'wordpress_' . $term->getTaxonomy() . '_view_' . $term->getId(),
+            ]
+        );
+
+        $this->seoMetaDataProvider->addMetaData($resultPage, $term);
+
+        return $resultPage;
     }
 
     /**
@@ -67,26 +110,5 @@ class View extends Action
         ];
 
         return $crumbs;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLayoutHandles()
-    {
-        if (!$this->_getEntity()) {
-            return [];
-        }
-
-        $taxonomyType = $this->_getEntity()->getTaxonomyType();
-
-        return array_merge(
-            parent::getLayoutHandles(),
-            [
-               'wordpress_term_view',
-                'wordpress_' . $taxonomyType . '_view',
-                'wordpress_' . $taxonomyType . '_view_' . $this->_getEntity()->getId(),
-            ]
-        );
     }
 }

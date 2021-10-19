@@ -43,6 +43,7 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
         \FishPig\WordPress\Model\TermFactory $termFactory,
         \FishPig\WordPress\Model\ImageFactory $imageFactory,
+        \FishPig\WordPress\Model\FrontPage\Proxy $homepage,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -55,7 +56,8 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
         $this->termFactory = $termFactory;
         $this->imageFactory = $imageFactory;
         $this->dateHelper = $dateHelper;
-
+        $this->homepage = $homepage;
+        
         parent::__construct($context, $registry, $resource, $resourceCollection);
     }
 
@@ -776,27 +778,18 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
      *
      * @return bool
      */
-    public function isFrontPage()
+    public function isFrontPage(): bool
     {
-        return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getFrontPageId();
+        return $this->isType('page') && (int)$this->getId() === (int)$this->homepage->getFrontPageId();
     }
 
     /**
      *
      * @return bool
      */
-    public function isPageForPosts()
+    public function isPageForPosts(): bool
     {
-        return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getPageForPostsId();
-    }
-
-    /**
-     *
-     * @return \FishPig\WordPress\Model\Homepage
-     */
-    protected function _getHomepageModel()
-    {
-        return $this->factory->get('Homepage');
+        return $this->isType('page') && (int)$this->getId() === (int)$this->homepage->getPageForPostsId();
     }
 
     /**
@@ -809,11 +802,15 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
         if (!$this->hasPostFormat()) {
             $this->setPostFormat('');
 
-            $formats = $this->factory->create('Term')->getCollection()
-                ->addTaxonomyFilter('post_format')
-                ->setPageSize(1)
-                ->addObjectIdFilter($this->getId())
-                ->load();
+            $formats = $this->termFactory->create()->getCollection(
+                
+                )->addTaxonomyFilter(
+                    'post_format'
+                )->setPageSize(
+                    1
+                )->addObjectIdFilter(
+                    $this->getId()
+                )->load();
 
             if (count($formats) > 0) {
                 $this->setPostFormat(

@@ -21,15 +21,21 @@ class Taxonomy extends \Magento\Framework\DataObject
     const CACHE_TAG = 'wordpress_taxonomy';
 
     /**
+     * @var \FishPig\WordPress\Model\ResourceModel\Taxonomy
+     */
+    private $_resource;
+    
+    /**
      * @param array $data = []
      */
     public function __construct(
         \FishPig\WordPress\App\Url $url,
-        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        \FishPig\WordPress\Model\ResourceModel\Taxonomy $resource,
         array $data = []
     ) {
         $this->url = $url;
-        $this->resourceConnection = $resourceConnection;
+        $this->_resource = $resource;
+        
         parent::__construct($data);
     }
     
@@ -108,54 +114,9 @@ class Taxonomy extends \Magento\Framework\DataObject
      */
     public function getAllUris()
     {
-        if ($this->hasAllUris()) {
-            return $this->_getData('all_uris');
-        }
-
-        $this->setAllUris(false);
-
-        $connection = $this->resourceConnection->getConnection();
-
-        if ($results = $connection->fetchAll($this->getSelectForGetAllUris())) {
-            if ((int)$this->getData('rewrite/hierarchical') === 1) {
-                $this->setAllUris(PostType::generateRoutesFromArray($results, $this->getSlug()));
-            } else {
-                $routes = [];
-
-                foreach ($results as $result) {
-                    $routes[$result['id']] = ltrim($this->getSlug() . '/' . $result['url_key'], '/');
-                }
-
-                $this->setAllUris($routes);
-            }
-        }
-
-        return $this->_getData('all_uris');
+        return $this->getResource()->getAllRoutes($this);
     }
 
-    /**
-     *
-     */
-    public function getSelectForGetAllUris()
-    {
-        $connection = $this->resourceConnection->getConnection();
-
-        $select = $connection->select()
-            ->from(
-                ['term' => $this->resourceConnection->getTable('wordpress_term')],
-                [
-                    'id' => 'term_id',
-                    'url_key' => 'slug',
-                ]
-            )
-            ->join(
-                ['tax' => $this->resourceConnection->getTable('wordpress_term_taxonomy')],
-                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $this->getTaxonomyType()),
-                'parent'
-            );
-            
-        return $select;
-    }
 
     /**
      * Retrieve the URI for $term
@@ -262,5 +223,13 @@ class Taxonomy extends \Magento\Framework\DataObject
     public function getTaxonomy()
     {
         return $this->getTaxonomyType();
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\Taxonomy
+     */
+    public function getResource(): \FishPig\WordPress\Model\ResourceModel\Taxonomy
+    {
+        return $this->_resource;
     }
 }

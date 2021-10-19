@@ -11,12 +11,12 @@
         <ol class="post-list grid">
             <?php foreach ($posts as $post): ?>
                 <?php if ($renderedPostHtml = $block->renderPost($post)): ?>
-                    <li class="item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?= $block->escapeHtml($post->getPostFormat()) ?>">
-                        <?= $renderedPostHtml ?>
+                    <li class="item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?= $block->escapeHtmlAttr($post->getPostFormat()) ?>">
+                        <?= /* noEscape */ $renderedPostHtml ?>
                     </li>
                 <?php endif; ?>
             <?php endforeach; ?>
         </ol>
-        <?= $block->getPagerHtml() ?>
+        <?= /* noEscape */  $block->getPagerHtml() ?>
     </div>
 <?php endif; ?>

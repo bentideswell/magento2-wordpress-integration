@@ -12,5 +12,12 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 class UserRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
-
+    /**
+     * @param  string $name
+     * @return \FishPig\WordPress\Model\User
+     */
+    public function getByNicename($name): \FishPig\WordPress\Model\User
+    {
+        return $this->getByField($name, 'user_nicename');
+    }
 }

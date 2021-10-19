@@ -1,7 +1,11 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Post;
 
 use Magento\Framework\Controller\ResultFactory;
@@ -10,22 +14,22 @@ use Magento\Framework\Exception\NoSuchEntityException;
 
 class View extends \FishPig\WordPress\Controller\Action
 {
-
     /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * @param \FishPig\WordPress\Model\PostRepository $postRepository,
+     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \Magento\Customer\Model\Session $customerSession
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
-        \FishPig\WordPress\App\Url $url,
         \Magento\Customer\Model\Session $customerSession
     ) {
         $this->postRepository = $postRepository;
         $this->seoMetaDataProvider = $seoMetaDataProvider;
-        $this->url = $url;
         $this->customerSession = $customerSession;
 
         parent::__construct($context, $wpContext);

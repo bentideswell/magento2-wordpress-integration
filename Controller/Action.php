@@ -30,7 +30,8 @@ abstract class Action extends \Magento\Framework\App\Action\Action
         \FishPig\WordPress\Controller\Action\Context $wpContext
     ) {
         $this->registry = $wpContext->getRegistry();
-
+        $this->url = $wpContext->getUrl();
+        
         parent::__construct($context);
 
         // Used to prevent some installations overwriting this
