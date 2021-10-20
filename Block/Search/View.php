@@ -1,42 +1,60 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Search;
 
-use FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
-
-class View extends AbstractWrapper
+class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
     /**
-     *
-     *
-     * @return
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
      */
-    public function getEntity()
-    {
-        if ($this->getData('entity')) {
-            return $this->getData('entity');
-        }
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        \FishPig\WordPress\Model\Search $searchModel,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        array $data = []
+    ) {
+        $this->searchModel = $searchModel;
+        $this->postTypeRepository = $postTypeRepository;
 
-        return $this->registry->registry('wordpress_search');
+        parent::__construct($context, $wpContext, $postCollectionFactory, $data);
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\Search
+     */
+    public function getSearchModel(): \FishPig\WordPress\Model\Search
+    {
+        return $this->searchModel;
     }
 
     /**
-     * Generates and returns the collection of posts
-     *
-     * @return FishPig\WordPress\Model_Mysql4_Post_Collection
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    protected function _getPostCollection()
+    protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        $collection = parent::_getPostCollection()
-            ->addSearchStringFilter($this->_getParsedSearchString(), ['post_title' => 5, 'post_content' => 1]);
+        $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
+            $this->_getParsedSearchString(), 
+            [
+                'post_title' => 5, 
+                'post_content' => 1
+            ]
+        );
 
         // Post Types
         $searchablePostTypes = $this->getRequest()->getParam('post_type');
 
         if (!$searchablePostTypes) {
-            $postTypes = $this->wpContext->getPostTypeManager()->getPostTypes();
+            $postTypes = $this->postTypeRepository->getAll();
             $searchablePostTypes = [];
 
             foreach ($postTypes as $postType) {
@@ -61,8 +79,25 @@ class View extends AbstractWrapper
         if ($tagSlug = $this->getRequest()->getParam('tag')) {
             $collection->addTermFilter($tagSlug, 'post_tag');
         }
-
+        
         return $collection;
+    }
+
+    /**
+     * @param  bool $escape = false
+     * @return string
+     */
+    public function getSearchTerm($escape = false): string
+    {
+        return $this->searchModel->getSearchTerm($escape);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSearchVar(): string
+    {
+        return $this->_getData('search_var') ? $this->_getData('search_var') : 's';
     }
 
     /**
@@ -71,7 +106,7 @@ class View extends AbstractWrapper
      *
      * @return array
      */
-    protected function _getParsedSearchString()
+    private function _getParsedSearchString()
     {
         $words = explode(' ', $this->getSearchTerm());
 
@@ -86,26 +121,5 @@ class View extends AbstractWrapper
         }
 
         return $words;
-    }
-
-    /**
-     * Retrieve the current search term
-     *
-     * @param  bool $escape = false
-     * @return string
-     */
-    public function getSearchTerm($escape = false)
-    {
-        return $this->getEntity() ? $this->getEntity()->getSearchTerm($escape) : '';
-    }
-
-    /**
-     * Retrieve the search variable
-     *
-     * @return string
-     */
-    public function getSearchVar()
-    {
-        return $this->_getData('search_var') ? $this->_getData('search_var') : 's';
     }
 }

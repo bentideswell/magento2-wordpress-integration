@@ -1,42 +1,55 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Search;
 
-use FishPig\WordPress\Controller\Action;
-use FishPig\WordPress\Model\Search;
-
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
     /**
-     * @return Search
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * $param \FishPig\WordPress\Model\Search $search,
+     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
      */
-    public function _getEntity()
-    {
-        return $this->factory->create('Search');
-    }
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\Search $search,
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+    ) {
+        $this->search = $search;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
 
+        parent::__construct($context, $wpContext);
+    }
     /**
-     * @return array
+     *
      */
-    protected function _getBreadcrumbs()
+    public function execute()
     {
-        return array_merge(
-            parent::_getBreadcrumbs(),
-            [
-            'archives' => [
-            'label' => __($this->_getEntity()->getName()),
-            'title' => __($this->_getEntity()->getName())
-            ]]
+        $request = $this->getRequest();
+
+        // We got here, we must be good.
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
         );
-    }
 
-    /**
-     * @return array
-     */
-    public function getLayoutHandles()
-    {
-        return array_merge(parent::getLayoutHandles(), ['wordpress_search_view']);
+        $this->addLayoutHandles($resultPage, ['wordpress_search_view']);
+
+        $this->seoMetaDataProvider->addMetaData($resultPage, $this->search);
+        
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($this->search)
+        );
+
+        return $resultPage;
     }
 }

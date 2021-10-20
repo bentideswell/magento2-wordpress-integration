@@ -55,6 +55,12 @@
             <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Archive\View\BreadcrumbsDataProvider</argument>
         </arguments>
     </type>
+    <type name="FishPig\WordPress\Controller\Search\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Search\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Search\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
     <!-- Inject any required assets -->
     <type name="Magento\Framework\Controller\ResultInterface">
         <plugin name="result-fishpig-wordpress-plugin" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="40"/>
