@@ -1,60 +1,30 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block;
 
-/**
- * Parent
-*/
-use Magento\Framework\View\Element\Template;
-
-/**
- * Constructor Args
-*/
-use Magento\Framework\View\Element\Template\Context as Context;
-use FishPig\WordPress\Model\WidgetManager;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\Plugin;
-use Magento\Framework\Registry;
-
-class Sidebar extends Template
+class Sidebar extends \Magento\Framework\View\Element\Template
 {
-    
     /**
      *
-     */
-    protected $widgetManager;
-
-    /**
-     *
-     */
-    protected $optionManager;
-
-    /**
-     *
-     */
-    protected $plugin;
-
-    /**
-     * Constructor
-     *
-     * @param Context $context
-     * @param App
-     * @param array   $data
      */
     public function __construct(
-        Context $context,
-        WidgetManager $widgetManager,
-        OptionManager $optionManager,
-        Plugin $plugin,
-        Registry $registry,
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Model\WidgetManager $widgetManager,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \FishPig\WordPress\App\Plugin $plugin,
+        \Magento\Framework\Registry $registry,
         array $data = []
     ) {
         $this->widgetManager = $widgetManager;
-        $this->optionManager = $optionManager;
-        $this->plugin        = $plugin;
-        $this->registry      = $registry;
+        $this->optionRepository = $optionRepository;
+        $this->plugin = $plugin;
+        $this->registry = $registry;
 
         parent::__construct($context, $data);
     }
@@ -115,7 +85,7 @@ class Sidebar extends Template
     public function getWidgetsArray()
     {
         if ($this->getWidgetArea()) {
-            $widgets = $this->optionManager->getOption('sidebars_widgets');
+            $widgets = $this->optionRepository->get('sidebars_widgets');
 
             if ($widgets) {
                 $widgets = unserialize($widgets);
@@ -142,7 +112,7 @@ class Sidebar extends Template
             return $this->getWidgetArea();
         }
 
-        if (!($settings = @unserialize($this->optionManager->getOption('cs_modifiable')))) {
+        if (!($settings = @unserialize($this->optionRepository->get('cs_modifiable')))) {
             return $this->getWidgetArea();
         }
 

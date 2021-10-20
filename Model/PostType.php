@@ -341,50 +341,6 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
      *
      * @return array
      */
-    public function getBreadcrumbStructure($post)
-    {
-        $tokens  = explode('/', trim($this->getSlug(), '/'));
-        $objects = [];
-
-        foreach ($tokens as $token) {
-            if ($token === $this->getPostType() || ($this->getArchiveSlug() && trim($this->getArchiveSlug(), '/') === $token)) {
-                if (!$this->isDefault() && $this->hasArchive()) {
-                    $objects['post_type'] = $this;
-                }
-            } elseif (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
-                if ($taxonomy = $this->taxonomyManager->getTaxonomy(substr($token, 1, -1))) {
-                    if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
-                        $objects[$taxonomy->getTaxonomyType()] = $term;
-                    }
-                }
-            } elseif (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
-                $parent = $this->factory->create('Post')->setPostType('page')->load($token, 'post_name');
-
-                if ($parent->getId()) {
-                    $objects['parent_post_' . $parent->getId()] = $parent;
-                }
-            }
-        }
-
-        if ($this->isHierarchical()) {
-            $parent = $post;
-            $buffer = [];
-
-            while (($parent = $parent->getParentPost()) !== false) {
-                $buffer['parent_post_' . $parent->getId()] = $parent;
-            }
-
-            $objects = $objects + array_reverse($buffer);
-        }
-
-        return $objects ? $objects : false;
-    }
-
-    /**
-     *
-     *
-     * @return array
-     */
     public function getArchiveBreadcrumbStructure()
     {
         $crumbs = [];

@@ -38,7 +38,7 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
         $this->logger = $wpContext->getLogger();
         $this->registry = $wpContext->getRegistry();
         $this->shortcodeFactory = $wpContext->getShortcodeFactory();
-        $this->option = $wpContext->getOption();
+        $this->optionRepository = $wpContext->getOptionRepository();
         $this->url = $wpContext->getUrl();
 
         parent::__construct($context, $data);

@@ -89,25 +89,41 @@ abstract class Action extends \Magento\Framework\App\Action\Action
         );
     }
 
-
-    protected function applyBreadcrumbs(array $crumbs)
+    
+    /**
+     * @param  array $crumbs
+     * @return void
+     */
+    protected function addBreadcrumbs(array $crumbs): void
     {
-        if ($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs')) {
-            if ($crumbs = $this->_getBreadcrumbs()) {
-                $this->_eventManager->dispatch('wordpress_breadcrumbs', ['breadcrumbs' => &$crumbs]);
+        if (!($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs'))) {
+            return;   
+        }
 
-                foreach ($crumbs as $key => $crumb) {
-                    $breadcrumbsBlock->addCrumb($key, $crumb);
+        $crumbs = array_merge(
+            $this->getBaseBreadcrumbs(),
+            $crumbs
+        );
+        
+        $eventTransport = new \Magento\Framework\DataObject(['breadcrumbs' => $crumbs]);
+        
+        $this->_eventManager->dispatch('wordpress_breadcrumbs', ['transport' => $eventTransport]);
+        
+        if ($crumbs = $eventTransport->getBreadcrumbs()) {
+            foreach ($crumbs as $key => $crumb) {
+                if (!isset($crumb['title'])) {
+                    $crumb['title'] = $crumb['label'];
                 }
+
+                $breadcrumbsBlock->addCrumb($key, $crumb);
             }
         }
     }
 
-
     /**
      * @return array
      */
-    protected function _getBreadcrumbs()
+    private function getBaseBreadcrumbs(): array
     {
         $crumbs = [
             'home' => [

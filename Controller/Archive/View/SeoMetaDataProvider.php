@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Model\Term;
+namespace FishPig\WordPress\Controller\Archive\View;
 
 class SeoMetaDataProvider implements \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface
 {
@@ -17,23 +17,23 @@ class SeoMetaDataProvider implements \FishPig\WordPress\Api\Data\Entity\SeoMetaD
      */
     public function addMetaData(
         \Magento\Framework\View\Result\Page $resultPage,
-        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $term
+        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $archive
     ): void 
     {
         $pageLayout = $resultPage->getLayout();
         $pageConfig = $resultPage->getConfig();
 
-        $pageConfig->setMetaTitle($term->getName());
-        $pageConfig->getTitle()->set($term->getName());
+        $pageConfig->setMetaTitle($archive->getName());
+        $pageConfig->getTitle()->set($archive->getName());
 
         $pageConfig->addRemotePageAsset(
-            $term->getUrl(),
+            $archive->getUrl(),
             'canonical',
             ['attributes' => ['rel' => 'canonical']]
         );
 
         if ($pageMainTitle = $pageLayout->getBlock('page.main.title')) {
-            $pageMainTitle->setPageTitle($term->getName());
+            $pageMainTitle->setPageTitle($archive->getName());
         }
     }
 }

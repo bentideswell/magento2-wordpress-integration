@@ -31,12 +31,12 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
-        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
         string $modelName = null
     ) {
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
 
         parent::__construct(
             $entityFactory, 
@@ -58,7 +58,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     public function addOrderByDate($dir = null)
     {
         if (is_null($dir)) {
-            $dir = $this->option->getOption('comment_order');
+            $dir = $this->optionRepository->getOption('comment_order');
             $dir = in_array($dir, ['asc', 'desc']) ? $dir : 'asc';
         }
 

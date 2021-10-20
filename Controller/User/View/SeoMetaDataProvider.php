@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Model\Post;
+namespace FishPig\WordPress\Controller\User\View;
 
 class SeoMetaDataProvider implements \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface
 {
@@ -17,32 +17,23 @@ class SeoMetaDataProvider implements \FishPig\WordPress\Api\Data\Entity\SeoMetaD
      */
     public function addMetaData(
         \Magento\Framework\View\Result\Page $resultPage,
-        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $post
+        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $user
     ): void 
     {
         $pageLayout = $resultPage->getLayout();
         $pageConfig = $resultPage->getConfig();
 
-
-        $pageConfig->setMetaTitle($post->getName());
-        $pageConfig->getTitle()->set($post->getName());
-
-        if ($description = $post->getPostExcerpt(32)) {
-            $pageConfig->setDescription($description);
-        }
-
+        $pageConfig->setMetaTitle($user->getName());
+        $pageConfig->getTitle()->set($user->getName());
 
         $pageConfig->addRemotePageAsset(
-            $post->getUrl(),
+            $user->getUrl(),
             'canonical',
             ['attributes' => ['rel' => 'canonical']]
         );
 
-
         if ($pageMainTitle = $pageLayout->getBlock('page.main.title')) {
-            $pageMainTitle->setPageTitle($post->getName());
+            $pageMainTitle->setPageTitle($user->getName());
         }
-
     }
-
 }

@@ -1,15 +1,14 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Sidebar\Widget;
 
-/**
- * Parent
-*/
-use FishPig\WordPress\Block\AbstractBlock;
-
-abstract class AbstractWidget extends AbstractBlock
+abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
 {
     /**
      * Retrieve the default title
@@ -32,6 +31,7 @@ abstract class AbstractWidget extends AbstractBlock
     {
         return '';
     }
+
     /**
      * Attempt to load the widget information from the WordPress options table
      *
@@ -40,7 +40,7 @@ abstract class AbstractWidget extends AbstractBlock
     protected function _beforeToHtml()
     {
         if ($this->getWidgetType()) {
-            $data = $this->optionManager->getOption('widget_' . $this->getWidgetType());
+            $data = $this->optionRepository->get('widget_' . $this->getWidgetType());
 
             if ($data) {
                 $data = unserialize($data);
@@ -54,69 +54,6 @@ abstract class AbstractWidget extends AbstractBlock
         }
 
         return parent::_beforeToHtml();
-    }
-
-    /**
-     * Set some default values
-     *
-     * @param  array $defaults
-     * @return $this
-     */
-    protected function _setDataDefaults(array $defaults)
-    {
-        foreach ($defaults as $key => $value) {
-            if (!$this->hasData($key)) {
-                $this->setData($key, $value);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Convert data values to something else
-     *
-     * @param  array $values
-     * @return $this
-     */
-    protected function _convertDataValues(array $values)
-    {
-        foreach ($this->getData() as $key => $value) {
-            foreach ($values as $find => $replace) {
-                if ($value === $find) {
-                    $this->setData($key, $replace);
-                    continue;
-                }
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * Retrieve the current page title
-     *
-     * @return string
-     */
-    protected function _getPageTitle()
-    {
-        if (($headBlock = $this->getLayout()->getBlock('head')) !== false) {
-            return $headBlock->getTitle();
-        }
-
-        return $this->_getWpOption('name');
-    }
-
-    /**
-     * Retrieve the meta description for the page
-     *
-     * @return string
-     */
-    protected function _getPageDescription()
-    {
-        if (($headBlock = $this->getLayout()->getBlock('head')) !== false) {
-            return $headBlock->getDescription();
-        }
     }
 
     /**

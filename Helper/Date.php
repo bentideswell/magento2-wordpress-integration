@@ -20,11 +20,11 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context, 
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
         parent::__construct($context);
 
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -87,11 +87,7 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDefaultDateFormat()
     {
-        if ($format = $this->option->get('date_format')) {
-            return $format;
-        }
-
-        return 'F jS, Y';
+        return $this->optionRepository->get('date_format', 'F jS, Y');
     }
 
     /**
@@ -99,10 +95,6 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getDefaultTimeFormat()
     {
-        if ($format = $this->option->get('time_format')) {
-            return $format;
-        }
-
-        return 'g:ia';
+        return $this->optionRepository->get('time_format', 'g:ia');
     }
 }

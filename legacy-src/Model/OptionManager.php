@@ -11,22 +11,19 @@ namespace FishPig\WordPress\Model;
 class OptionManager
 {
     /**
-     * @param \FishPig\WordPress\App\Option $option
+     * @param \FishPig\WordPress\App\OptionRepository $optionRepository
      */
-    public function __construct(\FishPig\WordPress\App\Option $option)
+    public function __construct(\FishPig\WordPress\Model\OptionRepository $optionRepository)
     {
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
-     * Get option value
      *
-     * @param  string $key
-     * @return mixed
      */
     public function getOption($key)
     {
-        return $this->option->get($key);
+        return $this->optionRepository->get($key);
     }
 
     /**
@@ -34,7 +31,7 @@ class OptionManager
      */
     public function optionExists($key)
     {
-        return $this->option->exists($key);
+        return $this->optionRepository->exists($key);
     }
 
     /**
@@ -42,7 +39,7 @@ class OptionManager
      */
     public function setOption($key, $value)
     {
-        return $this->option->set($key, $value);
+        return $this->optionRepository->set($key, $value);
     }
 
     /**

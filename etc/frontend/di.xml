@@ -26,26 +26,35 @@
             </argument>
         </arguments>
     </type>
-    
-    
+    <!--
+    /**
+     * 
+     */
+    -->
     <type name="FishPig\WordPress\Controller\Post\View">
         <arguments>
-            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\SeoMetaDataProvider</argument>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Post\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Post\View\BreadcrumbsDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Controller\Term\View">
         <arguments>
-            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\Term\SeoMetaDataProvider</argument>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Term\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Term\View\BreadcrumbsDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Controller\User\View">
         <arguments>
-            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Model\User\SeoMetaDataProvider</argument>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\User\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\User\View\BreadcrumbsDataProvider</argument>
         </arguments>
     </type>
-
-
-
+    <type name="FishPig\WordPress\Controller\Archive\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Archive\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Archive\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
     <!-- Inject any required assets -->
     <type name="Magento\Framework\Controller\ResultInterface">
         <plugin name="result-fishpig-wordpress-plugin" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="40"/>

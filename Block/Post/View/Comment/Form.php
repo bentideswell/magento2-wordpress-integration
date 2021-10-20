@@ -53,7 +53,7 @@ class Form extends AbstractBlock
      */
     public function customerMustLogin(): bool
     {
-        return $this->option->getOption('comment_registration') && !$this->isCustomerLoggedIn();
+        return $this->optionRepository->get('comment_registration') && !$this->isCustomerLoggedIn();
     }
 
     /**

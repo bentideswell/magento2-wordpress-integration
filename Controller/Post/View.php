@@ -26,10 +26,12 @@ class View extends \FishPig\WordPress\Controller\Action
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider,
         \Magento\Customer\Model\Session $customerSession
     ) {
         $this->postRepository = $postRepository;
         $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
         $this->customerSession = $customerSession;
 
         parent::__construct($context, $wpContext);
@@ -114,7 +116,11 @@ class View extends \FishPig\WordPress\Controller\Action
         $this->addLayoutHandles($resultPage, $this->getLayoutHandles($post));
 
         $this->seoMetaDataProvider->addMetaData($resultPage, $post);
-        
+
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($post)
+        );
+
         return $resultPage;
     }
 
@@ -166,44 +172,9 @@ class View extends \FishPig\WordPress\Controller\Action
 
         return $layoutHandles;
     }
-
-    /**
-     * Get the blog breadcrumbs
-     *
-     * @return array
-     */
-    protected function _getBreadcrumbs()
-    {
-        if ($this->_getEntity()->isFrontPage()) {
-            return [];
-        }
-
-        $crumbs = parent::_getBreadcrumbs();
-
-        // Handle post type breadcrumb
-        $postType = $this->getEntityObject()->getTypeInstance();
-
-        if ($crumbObjects = $postType->getBreadcrumbStructure($this->getEntityObject())) {
-            foreach ($crumbObjects as $crumbType => $crumbObject) {
-                $crumbs[$crumbType] = [
-                    'label' => (string)__($crumbObject->getName()),
-                    'title' => (string)__($crumbObject->getName()),
-                    'link' => $crumbObject->getUrl(),
-                ];
-            }
-        }
-
-        $crumbs['post'] = [
-            'label' => (string)__($this->_getEntity()->getName()),
-            'title' => (string)__($this->_getEntity()->getName())
-        ];
-
-        return $crumbs;
-    }
-
     
     /**
-     *
+     * ToDo: update this method
      */
     protected function _afterExecute()
     {

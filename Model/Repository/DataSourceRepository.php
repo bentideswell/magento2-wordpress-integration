@@ -57,7 +57,7 @@ abstract class DataSourceRepository
         if (!isset($objects[$id])) {
             throw new NoSuchEntityException(
                 __(
-                    "The object (%3) that was requested doesn't exist. Verify the object and try again.",
+                    "The object (%1) that was requested doesn't exist. Verify the object and try again.",
                     $id
                 )
             );

@@ -21,11 +21,11 @@ class Theme
     public function __construct(
         \FishPig\WordPress\App\Theme\LocalHashGenerator $localHashGenerator,
         \FishPig\WordPress\App\Theme\RemoteHashRetrieverResolver $remoteHashRetrieverResolver,
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
         $this->localHashGenerator = $localHashGenerator;
         $this->remoteHashRetrieverResolver = $remoteHashRetrieverResolver;
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -66,7 +66,7 @@ class Theme
     public function getThemeMods($key = null)
     {
         if ($this->themeMods === null) {
-            $this->themeMods = $this->option->getUnserialized('theme_mods_fishpig');
+            $this->themeMods = $this->optionRepository->getUnserialized('theme_mods_fishpig');
         }
 
         if ($this->themeMods) {

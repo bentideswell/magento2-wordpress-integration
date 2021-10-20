@@ -21,10 +21,12 @@ class View extends \FishPig\WordPress\Controller\Action
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\UserRepository $userRepository,
-        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
     ) {
         $this->userRepository = $userRepository;
         $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
 
         parent::__construct($context, $wpContext);
     }
@@ -51,25 +53,11 @@ class View extends \FishPig\WordPress\Controller\Action
         $this->addLayoutHandles($resultPage, ['wordpress_user_view']);
 
         $this->seoMetaDataProvider->addMetaData($resultPage, $user);
+        
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($user)
+        );
 
         return $resultPage;
-    }
-
-    /**
-     * Get the blog breadcrumbs
-     *
-     * @return array
-     */
-    protected function _getBreadcrumbs()
-    {
-        return array_merge(
-            parent::_getBreadcrumbs(),
-            [
-                'archives' => [
-                    'label' => __($this->_getEntity()->getName()),
-                    'title' => __($this->_getEntity()->getName())
-                ]
-            ]
-        );
     }
 }

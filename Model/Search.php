@@ -1,12 +1,14 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-class Search extends AbstractResourcelessModel implements ViewableInterface
+class Search extends \Magento\Framework\DataObject implements \FishPig\WordPress\Api\Data\Entity\ViewableInterface
 {
     /**
      * @const string
@@ -17,6 +19,20 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
     const VAR_NAME_POST_TYPE = 'post_type';
 
     /**
+     * @param  \Magento\Framework\App\RequestInterface $request
+     * @param  array $data = []
+     */
+    public function __construct(
+        \FishPig\WordPress\Model\UrlInterface $url,
+        \Magento\Framework\App\RequestInterface $request,
+        array $data = []
+    ) {
+        $this->url = $url;
+        $this->request = $request;
+        parent::__construct($data);
+    }
+
+    /**
      * Get the search term
      *
      * @return string
@@ -24,7 +40,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
     public function getSearchTerm()
     {
         if (!$this->getData('search_term')) {
-            return $this->wpContext->getRequest()->getParam(self::VAR_NAME);
+            return $this->request->getParam(self::VAR_NAME);
         }
 
         return $this->getData('search_term');
@@ -47,7 +63,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
      */
     public function getPostTypes()
     {
-        return $this->wpContext->getRequest()->getParam(self::VAR_NAME_POST_TYPE);
+        return $this->request->getParam(self::VAR_NAME_POST_TYPE);
     }
 
     /**
@@ -68,7 +84,7 @@ class Search extends AbstractResourcelessModel implements ViewableInterface
         }
 
         foreach (['cat', 'tag'] as $key) {
-            if ($value = $this->wpContext->getRequest()->getParam($key)) {
+            if ($value = $this->request->getParam($key)) {
                 if (is_array($value)) {
                     foreach ($values as $v) {
                         $extra[] = $key . '[]=' . $v;

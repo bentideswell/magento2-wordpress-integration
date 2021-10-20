@@ -9,13 +9,29 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Categories extends AbstractWidget
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
+        array $data = []
+    ) {
+        $this->termCollectionFactory = $termCollectionFactory;
+
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Returns the current category collection
      *
      * @return FishPig\WordPress\Model_Resource_Term_Collection
      */
     public function getCategories()
     {
-        $collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
+        $collection = $this->termCollectionFactory->create()
             ->addTaxonomyFilter($this->getTaxonomy())
             ->addParentIdFilter($this->getParentId());
             

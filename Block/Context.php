@@ -11,7 +11,7 @@ namespace FishPig\WordPress\Block;
 use Magento\Framework\Registry;
 use FishPig\WordPress\App\Logger;
 use FishPig\WordPress\Block\ShortcodeFactory;
-use FishPig\WordPress\App\Option;
+use FishPig\WordPress\Model\OptionRepository;
 use FishPig\WordPress\App\Url;
 
 class Context
@@ -32,9 +32,9 @@ class Context
     private $shortcodeFactory;
     
     /**
-     * @var Option
+     * @var OptionRepository
      */
-    private $option;
+    private $optionRepository;
     
     /**
      * @var Url
@@ -48,13 +48,13 @@ class Context
         Registry $registry,
         Logger $logger,
         ShortcodeFactory $shortcodeFactory,
-        Option $option,
+        OptionRepository $optionRepository,
         Url $url
     ) {
         $this->registry = $registry;
         $this->logger = $logger;
         $this->shortcodeFactory = $shortcodeFactory;
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
         $this->url = $url;
     }
     
@@ -85,9 +85,9 @@ class Context
     /**
      * @return Option
      */
-    public function getOption(): Option
+    public function getOptionRepository(): OptionRepository
     {
-        return $this->option;
+        return $this->optionRepository;
     }
     
     /**

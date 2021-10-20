@@ -9,6 +9,22 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Pages extends AbstractWidget
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $postCollectionFactory;
+
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Returns the currently loaded page model
      *
      * @return FishPig\WordPress\Model\Post
@@ -69,7 +85,7 @@ class Pages extends AbstractWidget
      */
     public function getPosts()
     {
-        $posts = $this->factory->create('Model\ResourceModel\Post\Collection')->addPostTypeFilter('page');
+        $posts = $this->postCollectionFactory->create()->addPostTypeFilter('page')->addIsViewableFilter();
 
         if ($this->hasParentId()) {
             $posts->addPostParentIdFilter($this->getParentId());
@@ -80,10 +96,10 @@ class Pages extends AbstractWidget
         }
         
         if ($excludedIds = $this->getExcludedPageIds()) {
-            $posts->getSelect()->where('main_table.ID NOT IN (?)', $excludedIds);
+            $posts->addFieldToFilter('main_table.ID', ['nin' => $excludedIds]);
         }
 
-        return $posts->addIsViewableFilter()->load();
+        return $posts->load();
     }
 
     /**

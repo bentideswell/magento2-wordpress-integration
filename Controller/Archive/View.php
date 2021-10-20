@@ -1,52 +1,67 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Archive;
 
-use FishPig\WordPress\Controller\Action;
-
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
-    
     /**
-     * Load the Archive model
-     *
-     * @return \FishPig\WordPress\Model\Archive
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * @param \FishPig\WordPress\Model\PostRepository $postRepository,
+     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \Magento\Customer\Model\Session $customerSession
      */
-    protected function _getEntity()
-    {
-        return $this->factory->create('Archive')->load(
-            trim($this->_request->getParam('year') . '/' . $this->_request->getParam('month') . '/' . $this->_request->getParam('day'), '/')
-        );
-    }
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\ArchiveFactory $archiveFactory,
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+    ) {
+        $this->archiveFactory = $archiveFactory;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
 
-    /**
-     * Get the blog breadcrumbs
-     *
-     * @return array
-     */
-    protected function _getBreadcrumbs()
-    {
-        return array_merge(
-            parent::_getBreadcrumbs(),
-            [
-            'archives' => [
-            'label' => __($this->_getEntity()->getName()),
-            'title' => __($this->_getEntity()->getName())
-            ]]
-        );
+        parent::__construct($context, $wpContext);
     }
 
     /**
      *
-     * @return array
      */
-    public function getLayoutHandles()
+    public function execute()
     {
-        return array_merge(
-            parent::getLayoutHandles(),
-            ['wordpress_archive_view']
+        $request = $this->getRequest();
+
+        // This will throw Exception is post does not exist
+        $archive = $this->archiveFactory->create()->load(
+            trim($request->getParam('year') . '/' . $request->getParam('month') . '/' . $request->getParam('day'), '/')
         );
+
+        if (!$archive->getId()) {
+            return $this->getNoRouteForward();
+        }
+        
+        $this->registry->register($archive::ENTITY, $archive);
+
+        // We got here, we must be good.
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
+        );
+
+        $this->addLayoutHandles($resultPage, ['wordpress_archive_view']);
+
+        $this->seoMetaDataProvider->addMetaData($resultPage, $archive);
+        
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($archive)
+        );
+
+        return $resultPage;
     }
 }

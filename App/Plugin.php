@@ -13,9 +13,9 @@ class Plugin
     /**
      * @return void
      */
-    public function __construct(\FishPig\WordPress\App\Option $option)
+    public function __construct(\FishPig\WordPress\Model\OptionRepository $optionRepository)
     {
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -46,6 +46,6 @@ class Plugin
         }
         */
         
-        return $this->option->getUnserialized('active_plugins') ?? [];
+        return $this->optionRepository->getUnserialized('active_plugins') ?? [];
     }
 }

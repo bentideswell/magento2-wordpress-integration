@@ -36,10 +36,12 @@ class Post extends AbstractMeta
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \FishPig\WordPress\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
         \FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory $commentCollectionFactory,
         $connectionName = null
     ) {
         $this->permalinkResource = $permalinkResource;
+        $this->postCollectionFactory = $postCollectionFactory;
         $this->commentCollectionFactory = $commentCollectionFactory;
 
         parent::__construct($context, $resourceConnection, $connectionName);
@@ -220,7 +222,7 @@ class Post extends AbstractMeta
 
     public function getPostsOnDayByYearMonth($dateStr)
     {
-        $collection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')
+        $collection = $this->postCollectionFactory->create()
             ->addPostDateFilter($dateStr)
             ->addIsViewableFilter();
 

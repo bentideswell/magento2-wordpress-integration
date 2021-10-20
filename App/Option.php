@@ -18,32 +18,12 @@ class Option
     ) {
         $this->valueResolver = $valueResolver;
     }
-    
+
     /**
      * @return mixed
      */
     public function get($key, $default = null)
     {
         return $this->valueResolver->resolve()->get($key, $default);
-    }
-    
-    /**
-     * @return []
-     */
-    public function getUnserialized($key): array
-    {
-        if ($data = $this->get($key)) {
-            return unserialize($data, [false]);
-        }
-        
-        return [];
-    }
-    
-    /**
-     * @deprecated since version 3
-     */
-    public function getOption($key, $default = null)
-    {
-        return $this->get($key, $default);
     }
 }

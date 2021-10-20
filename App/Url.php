@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App;
 
-class Url
+class Url implements \FishPig\WordPress\Model\UrlInterface
 {
     /**
      * @var []

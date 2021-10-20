@@ -32,7 +32,7 @@ class Comment extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\App\Url $url,
         \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
-        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
@@ -40,7 +40,7 @@ class Comment extends \Magento\Framework\Model\AbstractModel
     ) {
         $this->url = $url;
         $this->postCollectionFactory = $postCollectionFactory;
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
         $this->dateHelper = $dateHelper;
 
         parent::__construct($context, $registry, $resource, $resourceCollection);
@@ -135,7 +135,7 @@ class Comment extends \Magento\Framework\Model\AbstractModel
             if ($post = $this->getPost()) {
                 $pageId = '';
 
-                if ($this->option->getOption('page_comments')) {
+                if ($this->optionRepository->get('page_comments')) {
                     $pageId = '/comment-page-' . $this->getCommentPageId();
                 }
 
@@ -163,7 +163,7 @@ class Comment extends \Magento\Framework\Model\AbstractModel
             $this->setCommentPageId(1);
             if ($post = $this->getPost()) {
                 $totalComments = count($post->getComments());
-                $commentsPerPage = $this->option->get('comments_per_page', 50);
+                $commentsPerPage = $this->optionRepository->get('comments_per_page', 50);
 
                 if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
                     $it = 0;
@@ -207,12 +207,12 @@ class Comment extends \Magento\Framework\Model\AbstractModel
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasGravatarUrl()) {
-            if ($this->option->getOption('show_avatars')) {
+            if ($this->optionRepository->get('show_avatars')) {
                 if ($this->getCommentAuthorEmail()) {
                     $params = [
-                        'r' => $this->option->getOption('avatar_rating'),
+                        'r' => $this->optionRepository->get('avatar_rating'),
                         's' => (int)$size,
-                        'd' => $this->option->getOption('avatar_default'),
+                        'd' => $this->optionRepository->get('avatar_default'),
                         'v' => 45345
                     ];
 

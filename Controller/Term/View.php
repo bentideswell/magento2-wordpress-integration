@@ -21,10 +21,12 @@ class View extends \FishPig\WordPress\Controller\Action
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\TermRepository $termRepository,
-        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
     ) {
         $this->termRepository = $termRepository;
         $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
 
         parent::__construct($context, $wpContext);
     }
@@ -59,56 +61,10 @@ class View extends \FishPig\WordPress\Controller\Action
 
         $this->seoMetaDataProvider->addMetaData($resultPage, $term);
 
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($term)
+        );
+
         return $resultPage;
-    }
-
-    /**
-     * Get the blog breadcrumbs
-     *
-     * @return array
-     */
-    protected function _getBreadcrumbs()
-    {
-        $crumbs = parent::_getBreadcrumbs();
-        $term = $this->_getEntity();
-
-        if ($taxonomy = $term->getTaxonomyInstance()) {
-            $postTypes = $this->factory->get('PostTypeManager')->getPostTypes();
-
-            if (count($postTypes) > 2) {
-                foreach ($postTypes as $postType) {
-                    if ($postType->hasArchive() && $postType->getArchiveSlug() === $taxonomy->getSlug()) {
-                        $crumbs['post_type_archive_' . $postType->getPostType()] = [
-                            'label' => __($postType->getName()),
-                            'title' => __($postType->getName()),
-                            'link' => $postType->getUrl(),
-                        ];
-
-                        break;
-                    }
-                }
-            }
-
-            if ($taxonomy->isHierarchical()) {
-                $buffer = $term;
-
-                while ($buffer->getParentTerm()) {
-                    $buffer = $buffer->getParentTerm();
-
-                    $crumbs['term_' . $buffer->getId()] = [
-                        'label' => __($buffer->getName()),
-                        'title' => __($buffer->getName()),
-                        'link' => $buffer->getUrl(),
-                    ];
-                }
-            }
-        }
-
-        $crumbs['term'] = [
-            'label' => __($term->getName()),
-            'title' => __($term->getName())
-        ];
-
-        return $crumbs;
     }
 }

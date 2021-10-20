@@ -1,31 +1,44 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Homepage;
 
-use FishPig\WordPress\Controller\Action;
-use FishPig\WordPress\Model\Homepage;
-use FishPig\WordPress\Model\Post;
-use Magento\Framework\Controller\ResultFactory;
-
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
-    
     /**
-     * @return Homepage
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * @param \FishPig\WordPress\Model\PostRepository $postRepository,
+     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \Magento\Customer\Model\Session $customerSession
      */
-    protected function _getEntity()
-    {
-        return $this->factory->get('Homepage');
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\FrontPage $frontPage
+        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+    ) {
+        $this->frontPage = $frontPage;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+
+        parent::__construct($context, $wpContext);
     }
 
     /**
-     * Provides support for Elementor without Root
+     *
      */
-    protected function _getForward()
+    public function execute()
     {
-        if ($previewPostId = (int)$this->getRequest()->getParam('elementor-preview')) {
+        $request = $this->getRequest();
+
+        if ($previewPostId = (int)$this->getPreviewId()) {
+            echo __METHOD__;
+            exit;
             return $this->resultFactory
                 ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
                 ->setModule('wordpress')
@@ -33,65 +46,27 @@ class View extends Action
                 ->setParams(['id' => $previewPostId])
                 ->forward('view');
         }
-        
-        return false;
-    }
-    
-    /**
-     * @return bool
-     */
-    protected function _canPreview()
-    {
-        return true;
-    }
 
-    /**
-     * Get the blog breadcrumbs
-     *
-     * @return array
-     */
-    protected function _getBreadcrumbs()
-    {
-        $crumbs = parent::_getBreadcrumbs();
 
-        if ($this->url->isRoot()) {
-            $crumbs['blog'] = [
-                'label' => __($this->_getEntity()->getName()),
-                'title' => __($this->_getEntity()->getName())
-            ];
-        } else {
-            unset($crumbs['blog']['link']);
-        }
+        // We got here, we must be good.
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
+        );
 
-        return $crumbs;
+        $this->addLayoutHandles($resultPage, $this->getLayoutHandles());
+
+        $this->seoMetaDataProvider->addMetaData($resultPage, $term);
+
+        $this->addBreadcrumbs([]);
+
+        return $resultPage;
     }
 
     /**
-     * Set the 'wordpress_front_page' handle if this is the front page
-     *
-     * @return array
+     * @return int
      */
-    public function getLayoutHandles()
+    private function getPreviewId()
     {
-        $handles = ['wordpress_homepage_view'];
-
-        if ($entity = $this->_getEntity()) {
-            if (!$entity->getStaticFrontPageId()) {
-                $handles[] = 'wordpress_front_page';
-            }
-
-            if ($page = $entity->getFrontStaticPage()) {
-                if ($template = $page->getMetaValue('_wp_page_template')) {
-                    if ($template !== 'default') {
-                        $templateName = str_replace('.php', '', $template);
-
-                        $handles[] = 'wordpress_post_view_' . $templateName;
-                        $handles[] = 'wordpress_post_view_' . $templateName . '_' . $page->getId();
-                    }
-                }
-            }
-        }
-
-        return array_merge(parent::getLayoutHandles(), $handles);
+        return $this->request->getParam('elementor-preview') ?? 0;
     }
 }
