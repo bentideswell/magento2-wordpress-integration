@@ -5,13 +5,12 @@
 namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Model\AbstractResourcelessModel;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 use FishPig\WordPress\Model\ResourceConnection;
 use FishPig\WordPress\Model\Url;
 use FishPig\WordPress\Model\TaxonomyManager;
 use FishPig\WordPress\Model\Factory;
 
-class PostType extends \Magento\Framework\DataObject/* implements ViewableInterface*/
+class PostType extends \Magento\Framework\DataObject implements \FishPig\WordPress\Api\Data\Entity\ViewableInterface
 {
     /**
      *
@@ -28,36 +27,58 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
      * @param array $data = []
      */
     public function __construct(
-        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\UrlInterface $url,
         \FishPig\WordPress\Model\ResourceModel\PostType $resource,
+        \FishPig\WordPress\Helper\FrontPage $frontPageHelper,
         array $data = []
     ) {
         $this->url = $url;
         $this->_resource = $resource;
+        $this->frontPageHelper = $frontPageHelper;
         
         parent::__construct($data);
     }
 
     /**
-     * Determine whether post type uses GUID links
-     *
      * @return bool
      */
-    public function useGuidLinks()
+    public function isPublic(): bool
+    {
+        return (int)$this->_getData('public') === 1;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return (int)$this->_getData('_builtin') === 1;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function useGuidLinks(): bool
     {
         return trim($this->getData('rewrite/slug')) === '';
     }
 
     /**
-     * Determine whether the post type is a built-in type
-     *
      * @return bool
      */
-    public function isDefault()
+    public function isFrontPage(): bool
     {
-        return (int)$this->_getData('_builtin') === 1;
-    }
+        if ($this->getPostType() !== 'post') {
+            return false;
+        }
 
+        if (!$this->frontPageHelper->isFrontPageDefaultPostTypeArchive()) {
+            return true;
+        }
+
+        return false;
+    }
+    
     /**
      * Get the permalink structure as a string
      *
@@ -83,11 +104,9 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
     }
 
     /**
-     * Does the URL include the front
-     *
      * @return bool
      */
-    public function withFront()
+    public function withFront(): bool
     {
         return (int)$this->getData('rewrite/with_front') === 1;
     }
@@ -159,6 +178,16 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
      *
      * @return string
      */
+     
+     
+    /**
+     * @return bool
+     */
+    public function hasArchive()
+    {
+        return $this->getHasArchive() && $this->getHasArchive() !== '0';
+    }
+    
     /**
      * Get the archive slug for the post type
      *
@@ -239,6 +268,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
      */
     public function getName()
     {
+
         return $this->getData('labels/name');
     }
 
@@ -247,7 +277,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
      *
      * @return bool
      */
-    public function isHierarchical()
+    public function isHierarchical(): bool
     {
         return (int)$this->getData('hierarchical') === 1;
     }
@@ -268,6 +298,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
         return false;
     }
 
+    /* ToDo: standardise getallroutes calls */
     /**
      * Get all routes (hierarchical)
      *
@@ -292,13 +323,6 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
         return $this->getResource()->getHierarchicalPostNames($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasArchive()
-    {
-        return $this->getHasArchive() && $this->getHasArchive() !== '0';
-    }
 
     /**
      * @return string
@@ -337,8 +361,7 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
     }
 
     /**
-     *
-     *
+     * Todo: move this to breadcrumbsdataprovider
      * @return array
      */
     public function getArchiveBreadcrumbStructure()
@@ -355,14 +378,6 @@ class PostType extends \Magento\Framework\DataObject/* implements ViewableInterf
         $crumbs['post_type'] = $this;
 
         return $crumbs;
-    }
-    
-    /**
-     * @return bool
-     */
-    public function isPublic()
-    {
-        return (int)$this->_getData('public') === 1;
     }
     
     /**

@@ -8,10 +8,9 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-use Magento\Framework\DataObject\IdentityInterface;
 use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
 
-class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
+class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
 {
     /**
      * @const string
@@ -37,28 +36,27 @@ class Post extends \Magento\Framework\Model\AbstractModel implements IdentityInt
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\UserRepository $userRepository,
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
         \FishPig\WordPress\Model\TermFactory $termFactory,
         \FishPig\WordPress\Model\ImageFactory $imageFactory,
-        \FishPig\WordPress\Model\FrontPage\Proxy $homepage,
+        \FishPig\WordPress\Helper\FrontPage $frontPage,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->url = $url;
         $this->postTypeRepository = $postTypeRepository;
         $this->userRepository = $userRepository;
         $this->shortcodeFactory = $shortcodeFactory;
         $this->termFactory = $termFactory;
         $this->imageFactory = $imageFactory;
         $this->dateHelper = $dateHelper;
-        $this->homepage = $homepage;
+        $this->frontPage = $frontPage;
         
-        parent::__construct($context, $registry, $resource, $resourceCollection);
+        parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection);
     }
 
     /**
@@ -756,23 +754,6 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
         return $this->getChildrenPosts();
     }
 
-    /**
-     * @return string
-     */
-    public function getMetaTableAlias()
-    {
-        return 'wordpress_post_meta';
-    }
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getMetaTableObjectField()
-    {
-        return 'post_id';
-    }
 
     /**
      *
@@ -780,7 +761,7 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
      */
     public function isFrontPage(): bool
     {
-        return $this->isType('page') && (int)$this->getId() === (int)$this->homepage->getFrontPageId();
+        return $this->isType('page') && (int)$this->getId() === $this->frontPage->getFrontPageId();
     }
 
     /**
@@ -789,7 +770,7 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
      */
     public function isPageForPosts(): bool
     {
-        return $this->isType('page') && (int)$this->getId() === (int)$this->homepage->getPageForPostsId();
+        return $this->isType('page') && (int)$this->getId() === $this->frontPage->getPageForPostsId();
     }
 
     /**

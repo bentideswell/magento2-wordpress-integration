@@ -16,7 +16,7 @@ class HomepageRouter implements \Magento\Framework\App\RouterInterface
     public function __construct(
         \FishPig\WordPress\Controller\Router\RequestDispatcher $requestDispatcher,
         \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper,
-        \FishPig\WordPress\Model\FrontPage $frontPage
+        \FishPig\WordPress\Helper\FrontPage $frontPage
     ) {
         $this->requestDispatcher = $requestDispatcher;
         $this->routerUrlHelper = $routerUrlHelper;
@@ -46,11 +46,11 @@ class HomepageRouter implements \Magento\Framework\App\RouterInterface
             return $this->requestDispatcher->dispatch(
                 $request, 
                 '*/post/view', 
-                ['id' => $frontPageId, 'is_front' => 1]
+                ['id' => $frontPageId]
             );
         }
             
-        return $this->requestDispatcher->dispatch($request, '*/homepage/view', ['id' => $postId]);
+        return $this->requestDispatcher->dispatch($request, '*/postType/view', ['post_type' => 'post']);
     }
     
     /**

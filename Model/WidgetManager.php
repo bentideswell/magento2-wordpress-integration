@@ -7,6 +7,7 @@ namespace FishPig\WordPress\Model;
 use Magento\Framework\View\Layout;
 use FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget;
 
+/* ToDo: change to WidgetRepository */
 class WidgetManager
 {
     

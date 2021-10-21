@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Controller\Search\View;
+namespace FishPig\WordPress\Controller\PostType\View;
 
 class SeoMetaDataProvider extends \FishPig\WordPress\Controller\Action\SeoMetaDataProvider
 {
@@ -17,15 +17,19 @@ class SeoMetaDataProvider extends \FishPig\WordPress\Controller\Action\SeoMetaDa
      */
     public function addMetaData(
         \Magento\Framework\View\Result\Page $resultPage,
-        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $search
+        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $postType
     ): void 
     {
-        parent::addMetaData($resultPage, $search);
+        parent::addMetaData($resultPage, $postType);
 
-        $searchName = (string)$search->getName();
-        
-        $this->setMetaTitleWithBlogName($searchName);
-        $this->setPageTitle($searchName);
-        $this->setCanonicalUrl($search->getUrl());
+        if ($postType->getPostType() === 'post') {
+            $blogName = $this->getBlogInfo()->getBlogName();
+            $this->setMetaTitle($blogName);
+            $this->setPageTitle($blogName);
+            $this->setCanonicalUrl($postType->getArchiveUrl());
+        } else {
+            echo __METHOD__;
+            exit;
+        }
     }
 }

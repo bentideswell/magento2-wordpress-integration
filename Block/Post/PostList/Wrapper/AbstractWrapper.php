@@ -82,7 +82,7 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
                 $this->setChild('wp.post.list', $postListBlock);
         }
 
-        $postListBlock->setCollection($this->getPostCollection());
+        $postListBlock->setPostCollection($this->getPostCollection());
 
         return $postListBlock;
     }
@@ -101,5 +101,14 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
         }
 
         return $this;
+    }
+    
+    /**
+     * @deprecated since 3.0
+     * @return string
+     */
+    public function getIntroText()
+    {
+        return $this->getDescription();
     }
 }

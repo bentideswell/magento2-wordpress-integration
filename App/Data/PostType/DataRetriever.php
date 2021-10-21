@@ -38,6 +38,10 @@ class DataRetriever implements \FishPig\WordPress\Api\Data\App\Data\PostType\Pos
                 'taxonomies' => ['category', 'post_tag'],
                 '_builtin' => true,
                 'public' => true,
+                'labels' => [
+                    'name' => 'Posts',
+                    'singular_name' => 'Post',
+                ]
             ],
             'page' => [
                 'post_type' => 'page',
@@ -48,6 +52,10 @@ class DataRetriever implements \FishPig\WordPress\Api\Data\App\Data\PostType\Pos
                 'taxonomies' => [],
                 '_builtin' => true,
                 'public' => true,
+                'labels' => [
+                    'name' => 'Pages',
+                    'singular_name' => 'Page',
+                ]
             ]
         ];
     }

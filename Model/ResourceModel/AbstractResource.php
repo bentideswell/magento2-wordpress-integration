@@ -1,22 +1,24 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Magento\Framework\Model\ResourceModel\Db\Context;
-use FishPig\WordPress\Model\Context as WPContext;
-
-abstract class AbstractResource extends AbstractDb
+abstract class AbstractResource extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
-
     /**
-     *
+     * @var \FishPig\WordPress\App\ResourceConnection
      */
-    protected $resourceConnection = null;
+    private $resourceConnection = null;
+    
+    /**
+     * @var \FishPig\WordPress\Api\Data\MetaDataProviderInterface
+     */
+    private $metaDataProvider = null;
 
     /**
      *
@@ -27,13 +29,13 @@ abstract class AbstractResource extends AbstractDb
      *
      */
     public function __construct(
-        Context $context, 
-        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
-        $connectionName = null
+        \Magento\Framework\Model\ResourceModel\Db\Context $context, 
+        \FishPig\WordPress\Model\ResourceModel\Context $wpContext,
+        $connectionName = null,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider = null
     ) {
-//        $this->wpContext = $wpContext;
-        $this->resourceConnection = $resourceConnection;
-
+        $this->resourceConnection = $wpContext->getResourceConnection();
+        $this->metaDataProvider = $metaDataProvider;
         parent::__construct($context, $connectionName);
     }
 
@@ -46,7 +48,7 @@ abstract class AbstractResource extends AbstractDb
     }
 
     /**
-     * @return
+     * @return string
      */
     public function getTable($tableName)
     {
@@ -85,5 +87,16 @@ abstract class AbstractResource extends AbstractDb
     public function filterLoadSelect($select, $object = null)
     {
         return $select;
+    }
+    
+    /**
+     * @param  \FishPig\WordPress\Api\Data\ViewableInterface $object
+     * @param  string $key
+     * @param  mixed $default = null
+     * @return mixed
+     */
+    public function getMetaValue(\FishPig\WordPress\Api\Data\ViewableInterface $object, string $key, $default = null)
+    {
+        return $this->metaDataProvider ? $this->metaDataProvider->getValue($object, $key, $default) : $default;
     }
 }

@@ -183,6 +183,22 @@
     </type>
     <!--
     /**
+     * Resource Models
+     */
+    -->
+    <type name="FishPig\WordPress\Model\ResourceModel\Post">
+		<arguments>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <virtualType name="FishPig\WordPress\Model\ResourceModel\Post\MetaDataProvider" type="FishPig\WordPress\Model\ResourceModel\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string">postmeta</argument>
+            <argument name="objectField" xsi:type="string">post_id</argument>
+        </arguments>
+    </virtualType>
+    <!--
+    /**
      * Collections
      */
     -->

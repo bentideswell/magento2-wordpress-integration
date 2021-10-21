@@ -54,11 +54,6 @@ class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInt
     {
         return $this->_getData('description');
     }
-
-    public function getImage()
-    {
-        return '';
-    }
     
     /**
      * @return \FishPig\WordPress\Model\Taxonomy

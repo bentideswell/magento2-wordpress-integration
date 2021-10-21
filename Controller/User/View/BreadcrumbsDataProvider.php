@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Controller\User\View;
 
-class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface
+class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface
 {
     /**
      * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object

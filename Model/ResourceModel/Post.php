@@ -6,11 +6,10 @@
  */
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use FishPig\WordPress\Model\ResourceModel\Meta\AbstractMeta;
 use FishPig\WordPress\Model\PostTypeManager;
 use FishPig\WordPress\Model\TaxonomyManager;
 
-class Post extends AbstractMeta
+class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
 {
     /**
      * @var
@@ -34,17 +33,18 @@ class Post extends AbstractMeta
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
-        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        \FishPig\WordPress\Model\ResourceModel\Context $wpContext,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
         \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
         \FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory $commentCollectionFactory,
-        $connectionName = null
+        $connectionName = null,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider = null
     ) {
         $this->permalinkResource = $permalinkResource;
         $this->postCollectionFactory = $postCollectionFactory;
         $this->commentCollectionFactory = $commentCollectionFactory;
 
-        parent::__construct($context, $resourceConnection, $connectionName);
+        parent::__construct($context, $wpContext, $connectionName, $metaDataProvider);
     }
 
     /**

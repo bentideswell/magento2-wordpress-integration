@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Block\Term;
 
-use \FishPig\WordPress\Model\Term;
+use FishPig\WordPress\Model\Term;
 
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
@@ -39,5 +39,13 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
             (int)$this->getTerm()->getId(),
             $this->getTerm()->getTaxonomy()         
         );
+    }
+    
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return (string)$this->getTerm()->getDescription();
     }
 }

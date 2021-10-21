@@ -143,7 +143,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
      *
      * @return bool
      */
-    private function hasTrailingSlash()
+    public function hasTrailingSlash()
     {
         if ($permalinkStructure = $this->option->get('permalink_structure')) {
             return substr($permalinkStructure, -1) === '/';

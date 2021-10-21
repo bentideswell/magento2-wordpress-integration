@@ -6,17 +6,15 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\Data\Entity;
+namespace FishPig\WordPress\Api\Controller\Action;
 
-interface SeoMetaDataProviderInterface
+interface BreadcrumbsDataProviderInterface
 {
     /**
-     * @param  \Magento\Framework\View\Result\Page $resultPage,
      * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
-     * @return void
+     * @return array
      */
-    public function addMetaData(
-        \Magento\Framework\View\Result\Page $resultPage,
+    public function getData(
         \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
-    ): void;
+    ): array;
 }

@@ -36,6 +36,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
@@ -43,6 +44,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     ) {
         $this->postTypeRepository = $postTypeRepository;
         $this->permalinkResource = $permalinkResource;
+        $this->optionRepository = $optionRepository;
         $this->customerSession = $customerSession;
 
         parent::__construct(
@@ -176,7 +178,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      */
     public function addStickyPostsToCollection()
     {
-        if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
+        if (($sticky = trim($this->optionRepository->get('sticky_posts'))) !== '') {
             $stickyIds = unserialize($sticky);
 
             if (count($stickyIds) > 0) {
@@ -205,7 +207,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      */
     public function addIsStickyPostFilter($flag = true)
     {
-        if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
+        if (($sticky = trim($this->optionRepository->get('sticky_posts'))) !== '') {
             $stickyIds = unserialize($sticky);
 
             if (count($stickyIds) > 0) {

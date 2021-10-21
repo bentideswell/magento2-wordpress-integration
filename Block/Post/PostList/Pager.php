@@ -1,30 +1,30 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Post\PostList;
 
-use Magento\Theme\Block\Html\Pager as MagentoPager;
-use Magento\Framework\View\Element\Template\Context;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\Url as WPUrl;
 use Magento\Store\Model\ScopeInterface;
 
-class Pager extends MagentoPager
+class Pager extends \Magento\Theme\Block\Html\Pager
 {
     /**
-     * @param Context       $context
-     * @param OptionManager $optionManager
-     * @param WPUrl         $wpUrl
-     * @param array         $data
+     * @param \Magento\Framework\View\Element\Template\Context $context
+     * @param \FishPig\WordPress\Model\OptionRepository $optionRepository
+     * @param \FishPig\WordPress\Model\UrlInterface $wpUrl
+     * @param array $data
      */
     public function __construct(
-        Context $context,
-        OptionManager $optionManager,
-        WPUrl $wpUrl,
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \FishPig\WordPress\Model\UrlInterface $wpUrl,
         array $data = []
     ) {
-        $this->optionManager = $optionManager;
+        $this->optionRepository = $optionRepository;
         $this->wpUrl = $wpUrl;
         
         parent::__construct($context, $data);
@@ -39,7 +39,7 @@ class Pager extends MagentoPager
 
         $this->setPageVarName('page');
 
-        $baseLimit = $this->optionManager->getOption('posts_per_page', 10);
+        $baseLimit = $this->optionRepository->getOption('posts_per_page', 10);
 
         $this->setDefaultLimit($baseLimit);
         $this->setLimit($baseLimit);

@@ -9,7 +9,7 @@ declare(strict_types=1);
 namespace FishPig\WordPress\Controller\Action;
 
 use Magento\Framework\Registry;
-use FishPig\WordPress\App\Url;
+use FishPig\WordPress\Model\UrlInterface;
 
 class Context
 {
@@ -19,7 +19,7 @@ class Context
      */
     public function __construct(
         Registry $registry,
-        Url $url
+        UrlInterface $url
     ) {
         $this->registry = $registry;
         $this->url = $url;
@@ -34,9 +34,9 @@ class Context
     }
 
     /**
-     * @return Url
+     * @return UrlInterface
      */
-    public function getUrl(): Url
+    public function getUrl(): UrlInterface
     {
         return $this->url;
     }

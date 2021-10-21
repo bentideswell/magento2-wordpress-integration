@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Controller\Term\View;
 
-class SeoMetaDataProvider implements \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface
+class SeoMetaDataProvider extends \FishPig\WordPress\Controller\Action\SeoMetaDataProvider
 {
     /**
      * @param  \Magento\Framework\View\Result\Page $resultPage,
@@ -20,20 +20,14 @@ class SeoMetaDataProvider implements \FishPig\WordPress\Api\Data\Entity\SeoMetaD
         \FishPig\WordPress\Api\Data\Entity\ViewableInterface $term
     ): void 
     {
-        $pageLayout = $resultPage->getLayout();
-        $pageConfig = $resultPage->getConfig();
+        parent::addMetaData($resultPage, $term);
 
-        $pageConfig->setMetaTitle($term->getName());
-        $pageConfig->getTitle()->set($term->getName());
-
-        $pageConfig->addRemotePageAsset(
-            $term->getUrl(),
-            'canonical',
-            ['attributes' => ['rel' => 'canonical']]
-        );
-
-        if ($pageMainTitle = $pageLayout->getBlock('page.main.title')) {
-            $pageMainTitle->setPageTitle($term->getName());
+        $this->setMetaTitleWithBlogName($term->getName());
+        $this->setPageTitle($term->getName());
+        $this->setCanonicalUrl($term->getUrl());
+        
+        if ($description = $term->getDescription()) {
+            $this->setMetaDescription($description);
         }
     }
 }

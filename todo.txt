@@ -14,3 +14,10 @@ Controller
 SEO handler interface
 - Add Yoast check to warnings in integration tests
 - Ensure WP always creates post_content so we never have to autop.
+
+Menu models
+images
+shortcodes
+Check for App refs in Model/Block and replace with interfaces or something else (no direct App in Model/Block//Helper etc)
+Rename interfaces where possible
+Move interfaces from Api\Data\App to Api\App
