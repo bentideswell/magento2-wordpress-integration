@@ -21,7 +21,7 @@ abstract class DataSourceRepository
      * @param \FishPig\WordPress\Model\PostFactory $postFactory
      */
     public function __construct(
-        \FishPig\WordPress\Api\Data\Entity\TypeDataSourceInterface $dataSource,
+        \FishPig\WordPress\Api\Data\PostTypeTaxonomyDataSourceInterface $dataSource,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\ObjectManagerInterface $objectManager,
         string $factoryClass

@@ -12,12 +12,12 @@ class SeoMetaDataProvider extends \FishPig\WordPress\Controller\Action\SeoMetaDa
 {
     /**
      * @param  \Magento\Framework\View\Result\Page $resultPage,
-     * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return void
      */
     public function addMetaData(
         \Magento\Framework\View\Result\Page $resultPage,
-        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $term
+        \FishPig\WordPress\Api\Data\ViewableModelInterface $term
     ): void 
     {
         parent::addMetaData($resultPage, $term);

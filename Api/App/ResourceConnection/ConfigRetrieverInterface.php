@@ -6,12 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\Data\App\Data\PostType;
+namespace FishPig\WordPress\Api\App\ResourceConnection;
 
-interface PostTypeRetrieverInterface
+interface ConfigRetrieverInterface
 {
     /**
-     * @return []
+     * @return array
      */
-    public function getData(): array;
+    public function getDatabaseConfig(): array;
 }

@@ -8,14 +8,12 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-use Magento\Framework\DataObject\IdentityInterface;
-
-abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
+abstract class AbstractMetaModel extends AbstractModel
 {
     /**
-     * @var \FishPig\WordPress\Model\UrlInterface
+     * @var \FishPig\WordPress\Api\Data\MetaDataProviderInterface
      */
-    protected $url;
+    private $metaDataProvider = null;
 
     /**
      *
@@ -24,19 +22,22 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->url = $wpContext->getUrl();
-        parent::__construct($context, $registry, $resource, $resourceCollection);
+        $this->metaDataProvider = $metaDataProvider;
+        parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection, $data);
     }
 
     /**
-     * @retur array
+     * @param  string $key
+     * @param  mixed $default = null
+     * @return mixed
      */
-    public function getIdentities()
+    public function getMetaValue(string $key, $default = null)
     {
-        return [static::CACHE_TAG . '_' . $this->getId()];
+        return $this->metaDataProvider->getValue($this, $key) ?? $default;
     }
 }

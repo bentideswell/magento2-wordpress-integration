@@ -28,11 +28,13 @@ class Permalink
     public function __construct(
        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
-       \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository
+       \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+       \FishPig\WordPress\Model\ResourceModel\HierarchicalUrlGenerator $hierarchicalUrlGenerator
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->postTypeRepository = $postTypeRepository;
         $this->taxonomyRepository = $taxonomyRepository;
+        $this->hierarchicalUrlGenerator = $hierarchicalUrlGenerator;
     }
     
     /**
@@ -50,43 +52,62 @@ class Permalink
         $this->pathInfoIdMap[$cacheKey] = false;
 
         $fields = $this->getPermalinkSqlFields();
-            
+        $db = $this->getConnection();
+        
         foreach ($this->postTypeRepository->getAll() as $postType) {
             if (!$postType->isPublic()) {
                 continue;   
             }
 
-            if (($filters = $this->getPostTypeFilters($postType, $pathInfo)) === false) {
-                continue;
-            }
+            $routes = false;
 
-            $select = $this->getConnection()->select()
-                ->from(
-                    [
-                        'main_table' => $this->resourceConnection->getTable('posts')
-                    ], 
-                    [
-                        'id' => 'ID', 
-                        'permalink' => $this->getPermalinkSqlColumn()
-                    ]
-                )->where(
-                    'post_type = ?', 
-                    $postType->getPostType()
-                )->where(
-                    'post_status IN (?)', 
-                    ['publish', 'protected', 'private']
-                )->limit(
-                    1
+            if ($postType->isHierarchical()) {
+                $routes = $this->hierarchicalUrlGenerator->generateRoutes(
+                    $db->fetchAll(
+                        $db->select()->from(
+                            $this->resourceConnection->getTable('posts'),
+                            [
+                                'id' => 'ID',
+                                'parent' => 'post_parent',
+                                'url_key' => 'post_name'
+                            ]
+                        )->where(
+                            'post_name IN (?)', explode('/', $pathInfo)
+                        )
+                    )
                 );
-
-            foreach ($filters as $field => $value) {
-                if (isset($fields[$field])) {
-                    $select->where($fields[$field] . ' = ?', urlencode($value));
+            } else {
+                if (($filters = $this->getPostTypeFilters($postType, $pathInfo)) === false) {
+                    continue;
                 }
-            }
-
-            if ($routes = $this->getConnection()->fetchPairs($select)) {
+    
+                $select = $this->getConnection()->select()
+                    ->from(
+                        ['main_table' => $this->resourceConnection->getTable('posts')],
+                        [
+                            'id' => 'ID', 
+                            'permalink' => $this->getPermalinkSqlColumn()
+                        ]
+                    )->where(
+                        'post_type = ?', 
+                        $postType->getPostType()
+                    )->where(
+                        'post_status IN (?)', 
+                        ['publish', 'protected', 'private']
+                    )->limit(
+                        1
+                    );
+    
+                foreach ($filters as $field => $value) {
+                    if (isset($fields[$field])) {
+                        $select->where($fields[$field] . ' = ?', urlencode($value));
+                    }
+                }
                 
+                $routes = $this->getConnection()->fetchPairs($select);
+            }
+            
+            if ($routes) {
                 foreach ($routes as $id => $permalink) {
                     if (rtrim($pathInfo, '/') === rtrim($this->completePostSlug($permalink, $id, $postType), '/')) {
                         return $this->pathInfoIdMap[$cacheKey] = $id;
@@ -130,7 +151,7 @@ class Permalink
 
         return urldecode($slug);
     }
-    
+
     /**
      * @param  PostType $postType
      * @param  string $pathInfo
@@ -140,6 +161,11 @@ class Permalink
     {
         if ($postType->permalinkHasTrainingSlash()) {
             $pathInfo = rtrim($pathInfo, '/') . '/';
+        }
+
+        // If permalink structure has more slashes than pathInfo, cannot match
+        if (substr_count(rtrim($postType->getPermalinkStructure(), '/'), '/') > substr_count($pathInfo, '/')) {
+            return false;
         }
 
         $fields = $this->getPermalinkSqlFields();
@@ -165,6 +191,8 @@ class Permalink
             }
 
             foreach ($tokens as $key => $token) {
+                
+                echo $token . '<br/>';
                 if (substr($token, 0, 1) === '%') {
                     if (!isset($fields[trim($token, '%')])) {
                         $taxonomyToken = trim($token, '%');

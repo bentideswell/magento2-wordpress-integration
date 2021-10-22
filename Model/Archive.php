@@ -8,10 +8,10 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-use Magento\Framework\DataObject\IdentityInterface;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+use FishPig\WordPress\Api\Data\ViewableModelInterface;
+use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 
-class Archive extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
+class Archive extends AbstractModel implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
      * @const string
@@ -25,26 +25,33 @@ class Archive extends \Magento\Framework\Model\AbstractModel implements Identity
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->url = $url;
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->dateHelper = $dateHelper;
-
-        parent::__construct($context, $registry, $resource, $resourceCollection);
+        parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection, $data);
     }
     
     /**
-     * @return
+     * @return string
      */
     public function getName()
     {
         return $this->dateHelper->translateDate($this->_getData('name'));
     }
 
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url->getUrlWithFront($this->getId() . '/');
+    }
+    
     /**
      * Load an archive model by it's YYYY/MM
      * EG: 2010/06
@@ -87,47 +94,21 @@ class Archive extends \Magento\Framework\Model\AbstractModel implements Identity
     }
 
     /**
-     * Get the archive page URL
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url->getUrlWithFront($this->getId() . '/');
-    }
-
-    /**
      * @return bool
      */
-    public function hasPosts()
+    public function hasPosts(): bool
     {
         return $this->hasData('post_count') ? $this->getPostCount() > 0 : count($this->getPostCollection()) > 0;
     }
 
     /**
-     * Retrieve a collection of blog posts
-     *
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    public function getPostCollection()
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        if (!$this->hasPostCollection()) {
-            $collection = parent::getPostCollection()
-                ->addIsViewableFilter()
-                ->addArchiveDateFilter($this->getId(), $this->getIsDaily())
-                ->setOrderByPostDate();
-
-            $this->setPostCollection($collection);
-        }
-
-        return $this->getData('post_collection');
-    }
-
-    /**
-     * @retur array
-     */
-    public function getIdentities()
-    {
-        return [static::CACHE_TAG . '_' . $this->getId()];
+        return $this->postCollectionFactory->create()->addArchiveDateFilter(
+            $this->getId(), 
+            $this->getIsDaily()
+        );
     }
 }

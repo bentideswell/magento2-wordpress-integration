@@ -32,8 +32,6 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
      */
     protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        return $this->postCollectionFactory->create()->addUserIdFilter(
-            (int)$this->getUser()->getId()            
-        );
+        return $this->getUser()->getPostCollection();
     }
 }

@@ -14,15 +14,15 @@ class View extends \FishPig\WordPress\Controller\Action
      * @param \Magento\Framework\App\Action\Context $context
      * @param \FishPig\WordPress\Controller\Action\Context $wpContext
      * $param \FishPig\WordPress\Model\Search $search,
-     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
-     * @param \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+     * @param \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\Search $search,
-        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
-        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+        \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
     ) {
         $this->search = $search;
         $this->seoMetaDataProvider = $seoMetaDataProvider;

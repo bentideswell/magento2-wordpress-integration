@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Url;
 
-class MagentoUrl implements \FishPig\WordPress\Api\Data\App\Url\UrlInterface
+class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
     /**
      * @var []

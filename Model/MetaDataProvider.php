@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Model\ResourceModel;
+namespace FishPig\WordPress\Model;
 
 class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderInterface
 {
@@ -33,13 +33,13 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
     }
     
     /**
-     * @param  \FishPig\WordPress\Api\Data\ViewableInterface $object
-     * @return array
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
+     * @param  string $key
+     * @return mixed
      */
     public function getValue(
-        \FishPig\WordPress\Api\Data\ViewableInterface $object,
-        string $key,
-        $default = null
+        \FishPig\WordPress\Api\Data\ViewableModelInterface $object,
+        string $key
     ) {
         $cacheKey = (int)$object->getId() . '--' . $key;
         
@@ -61,7 +61,7 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
             return $this->cache[$cacheKey] = is_string($value) ? trim($value) : $value;
         }
 
-        return $default;
+        return null;
     }
 
     /**

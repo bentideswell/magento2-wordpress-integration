@@ -6,15 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Model\ResourceModel;
+namespace FishPig\WordPress\Api\App\Data\PostType;
 
-class User extends AbstractResourceModel
+interface PostTypeRetrieverInterface
 {
     /**
-     * @return void
+     * @return []
      */
-    public function _construct()
-    {
-        $this->_init('users', 'ID');
-    }
+    public function getData(): array;
 }

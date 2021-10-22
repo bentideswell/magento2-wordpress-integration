@@ -14,15 +14,15 @@ class View extends \FishPig\WordPress\Controller\Action
      * @param \Magento\Framework\App\Action\Context $context
      * @param \FishPig\WordPress\Controller\Action\Context $wpContext
      * @param \FishPig\WordPress\Model\PostRepository $postRepository,
-     * @param \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider
      * @param \Magento\Customer\Model\Session $customerSession
      */
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Controller\Action\Context $wpContext,
         \FishPig\WordPress\Model\TermRepository $termRepository,
-        \FishPig\WordPress\Api\Data\Entity\SeoMetaDataProviderInterface $seoMetaDataProvider,
-        \FishPig\WordPress\Api\Data\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+        \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
     ) {
         $this->termRepository = $termRepository;
         $this->seoMetaDataProvider = $seoMetaDataProvider;

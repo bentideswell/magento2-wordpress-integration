@@ -11,7 +11,7 @@ namespace FishPig\WordPress\App\Integration\Test;
 use FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException;
 use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 
-class UrlTest implements \FishPig\WordPress\Api\Data\App\Integration\TestInterface
+class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
      * @param \FishPig\WordPress\App\Url $url

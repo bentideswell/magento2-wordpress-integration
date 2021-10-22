@@ -6,12 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\Data\App\Integration;
+namespace FishPig\WordPress\Api\App\Url;
 
-interface TestInterface
+interface UrlInterface
 {
     /**
-     * @return void
+     * @return string
      */
-    public function runTest(): void;
+    public function getUrl(): string;
 }

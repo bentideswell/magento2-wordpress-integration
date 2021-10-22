@@ -6,9 +6,9 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\Data\Entity;
+namespace FishPig\WordPress\Api\Data;
 
-interface TypeDataSourceInterface
+interface PostTypeTaxonomyDataSourceInterface
 {
     /**
      * @param  string $id

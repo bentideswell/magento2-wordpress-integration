@@ -34,11 +34,6 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
      */
     protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        $archive = $this->getArchive();
-        
-        return $this->postCollectionFactory->create()->addArchiveDateFilter(
-            $archive->getId(), 
-            $archive->getIsDaily()
-        );
+        return $this->getArchive()->getPostCollection();
     }
 }

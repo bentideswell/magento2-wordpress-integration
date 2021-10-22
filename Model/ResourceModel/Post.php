@@ -1,26 +1,15 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use FishPig\WordPress\Model\PostTypeManager;
-use FishPig\WordPress\Model\TaxonomyManager;
-
-class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+class Post extends AbstractResourceModel
 {
-    /**
-     * @var
-     */
-    protected $postTypeManager;
-
-    /**
-     * @var
-     */
-    protected $taxonomyManager;
-
     /**
      * @var array
      */
@@ -37,19 +26,16 @@ class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
         \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
         \FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory $commentCollectionFactory,
-        $connectionName = null,
-        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider = null
+        $connectionName = null
     ) {
         $this->permalinkResource = $permalinkResource;
         $this->postCollectionFactory = $postCollectionFactory;
         $this->commentCollectionFactory = $commentCollectionFactory;
 
-        parent::__construct($context, $wpContext, $connectionName, $metaDataProvider);
+        parent::__construct($context, $wpContext, $connectionName);
     }
 
     /**
-     * Set the table and primary key
-     *
      * @return void
      */
     public function _construct()
@@ -98,7 +84,7 @@ class Post extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
                     'permalink',
                     $this->permalinkResource->completePostSlug(
                         $permalink,
-                        $post->getId(), 
+                        (int)$post->getId(), 
                         $post->getTypeInstance()
                     )
                 );

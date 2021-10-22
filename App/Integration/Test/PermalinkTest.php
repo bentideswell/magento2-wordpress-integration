@@ -10,7 +10,7 @@ namespace FishPig\WordPress\App\Integration\Test;
 
 use FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException;
 
-class PermalinkTest implements \FishPig\WordPress\Api\Data\App\Integration\TestInterface
+class PermalinkTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
      * @param \FishPig\WordPress\App\Option $option

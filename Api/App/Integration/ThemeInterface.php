@@ -6,12 +6,17 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\Data\App\Url;
+namespace FishPig\WordPress\Api\App\Integration;
 
-interface UrlInterface
+interface ThemeInterface
 {
     /**
      * @return string
      */
-    public function getUrl(): string;
+    public function getLocalHash(): string;
+    
+    /**
+     * @return string
+     */
+    public function getRemoteHash(): string;
 }

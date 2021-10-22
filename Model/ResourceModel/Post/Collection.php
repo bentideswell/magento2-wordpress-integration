@@ -10,6 +10,7 @@ namespace FishPig\WordPress\Model\ResourceModel\Post;
 
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
+    /* ToDo: refactor everything. Remove deprecated methods. Move all filters into filter array and process in beforeLoad */
     /**
      * @var string
      */
@@ -79,7 +80,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
         $this->setOrder('main_table.menu_order', 'ASC');
         $this->setOrder('main_table.post_date', 'DESC');
-
+            
         return $this;
     }
 

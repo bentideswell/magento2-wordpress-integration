@@ -21,11 +21,11 @@ class PostType
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        \FishPig\WordPress\Model\ResourceModel\Context $wpContext,
         \FishPig\WordPress\Model\ResourceModel\HierarchicalUrlGenerator $hierarchicalUrlGenerator,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
-        $this->resourceConnection = $resourceConnection;
+        $this->resourceConnection = $wpContext->getResourceConnection();
         $this->hierarchicalUrlGenerator = $hierarchicalUrlGenerator;
         $this->storeManager = $storeManager;
     }

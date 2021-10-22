@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Integration\Mode\Subdirectory;
 
-class WPConfig implements \FishPig\WordPress\Api\Data\App\ResourceConnection\ConfigRetrieverInterface
+class WPConfig implements \FishPig\WordPress\Api\App\ResourceConnection\ConfigRetrieverInterface
 {
     /**
      * @return void

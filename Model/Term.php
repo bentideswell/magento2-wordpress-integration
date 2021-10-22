@@ -8,10 +8,10 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-use Magento\Framework\DataObject\IdentityInterface;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
+use FishPig\WordPress\Api\Data\ViewableModelInterface;
 
-class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInterface, ViewableInterface
+class Term extends AbstractModel implements PostCollectionGeneratorInterface, ViewableModelInterface
 {
     /**
      * @const string
@@ -25,18 +25,26 @@ class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInt
     protected $_eventPrefix = 'wordpress_term';
     protected $_eventObject = 'term';
 
+    /**
+     * @var \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory
+     */
+    private $postCollectionFactory;
+    
+    /**
+     *
+     */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->url = $url;
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->taxonomyRepository = $taxonomyRepository;
-        parent::__construct($context, $registry, $resource, $resourceCollection);
+        parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection, $data);
     }
 
     /**
@@ -45,6 +53,17 @@ class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInt
     public function getName()
     {
         return $this->_getData('name');
+    }
+
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
+     */
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
+    {
+        return $this->postCollectionFactory->create()->addTermIdFilter(
+            (int)$this->getId(),
+            $this->getTaxonomy()         
+        );
     }
 
     /**
@@ -112,25 +131,13 @@ class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInt
     }
 
     /**
-     * Loads the posts belonging to this category
-     *
-     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
-     */
-    public function getPostCollection()
-    {
-        return parent::getPostCollection()
-            ->addIsViewableFilter()
-            ->addTermIdFilter($this->getChildIds(), $this->getTaxonomy());
-    }
-
-    /**
      * Retrieve the numbers of items that belong to this term
      *
      * @return int
      */
-    public function getItemCount()
+    public function getItemCount(): int
     {
-        return $this->getCount();
+        return (int)$this->getCount();
     }
 
     /**
@@ -204,24 +211,5 @@ class Term extends \Magento\Framework\Model\AbstractModel implements IdentityInt
         }
 
         return $this->_getData('child_ids');
-    }
-
-    /**
-     * Get the meta value using ACF if it's installed
-     *
-     * @param  string $key
-     * @return mixed
-     */
-    public function getMetaValue($key)
-    {
-        return null;
-    }
-    
-    /**
-     * @retur array
-     */
-    public function getIdentities()
-    {
-        return [static::CACHE_TAG . '_' . $this->getId()];
     }
 }

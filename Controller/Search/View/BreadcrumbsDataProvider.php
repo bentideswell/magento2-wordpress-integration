@@ -11,10 +11,10 @@ namespace FishPig\WordPress\Controller\Search\View;
 class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface
 {
     /**
-     * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\Entity\ViewableInterface $search): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $search): array 
     {
         return [
             $search::ENTITY => [

@@ -8,7 +8,10 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-class Search extends \Magento\Framework\DataObject implements \FishPig\WordPress\Api\Data\Entity\ViewableInterface
+use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
+use FishPig\WordPress\Api\Data\ViewableModelInterface;
+
+class Search extends \Magento\Framework\DataObject implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
      * @const string
@@ -23,27 +26,16 @@ class Search extends \Magento\Framework\DataObject implements \FishPig\WordPress
      * @param  array $data = []
      */
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \Magento\Framework\App\RequestInterface $request,
         array $data = []
     ) {
-        $this->url = $url;
+        $this->url = $wpContext->getUrl();
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
+        $this->postTypeRepository = $postTypeRepository;
         $this->request = $request;
         parent::__construct($data);
-    }
-
-    /**
-     * Get the search term
-     *
-     * @return string
-     */
-    public function getSearchTerm()
-    {
-        if (!$this->getData('search_term')) {
-            return $this->request->getParam(self::VAR_NAME);
-        }
-
-        return $this->getData('search_term');
     }
 
     /**
@@ -53,17 +45,7 @@ class Search extends \Magento\Framework\DataObject implements \FishPig\WordPress
      */
     public function getName()
     {
-        return __('Search results for %1', $this->getSearchTerm());
-    }
-
-    /**
-     * Get an array of post types
-     *
-     * @return array
-     */
-    public function getPostTypes()
-    {
-        return $this->request->getParam(self::VAR_NAME_POST_TYPE);
+        return __('Search results for \'%1\'', $this->getSearchTerm());
     }
 
     /**
@@ -100,5 +82,99 @@ class Search extends \Magento\Framework\DataObject implements \FishPig\WordPress
         return $this->url->getHomeUrlWithFront(
             'search/' . urlencode($this->getSearchTerm()) . '/' . $extra
         );
+    }
+
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
+     */
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
+    {
+        $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
+            $this->getParsedSearchString(), 
+            [
+                'post_title' => 5, 
+                'post_content' => 1
+            ]
+        );
+
+        // Post Types
+        $searchablePostTypes = $this->request->getParam('post_type');
+
+        if (!$searchablePostTypes) {
+            $postTypes = $this->postTypeRepository->getAll();
+            $searchablePostTypes = [];
+
+            foreach ($postTypes as $postType) {
+                if ($postType->isSearchable()) {
+                    $searchablePostTypes[] = $postType->getPostType();
+                }
+            }
+        }
+
+        if (!$searchablePostTypes) {
+            $searchablePostTypes = ['post', 'page'];
+        }
+
+        $collection->addPostTypeFilter($searchablePostTypes);
+
+        /* ToDo: change addTermFilter to addTermSlugFilter + move to methods so can manually set cat, tag, post_types etc */
+        // Category
+        if ($categorySlug = $this->request->getParam('cat')) {
+            $collection->addTermFilter($categorySlug, 'category');
+        }
+
+        // Tag
+        if ($tagSlug = $this->request->getParam('tag')) {
+            $collection->addTermFilter($tagSlug, 'post_tag');
+        }
+        
+        return $collection;
+    }
+
+    /**
+     * Get the search term
+     *
+     * @return string
+     */
+    public function getSearchTerm()
+    {
+        if (!$this->getData('search_term')) {
+            return $this->request->getParam(self::VAR_NAME);
+        }
+
+        return $this->getData('search_term');
+    }
+    
+    /**
+     * Get an array of post types
+     *
+     * @return array
+     */
+    public function getPostTypes()
+    {
+        return $this->request->getParam(self::VAR_NAME_POST_TYPE);
+    }
+    
+    /**
+     * Retrieve a parsed version of the search string
+     * If search by single word, string will be split on each space
+     *
+     * @return array
+     */
+    private function getParsedSearchString()
+    {
+        $words = explode(' ', $this->getSearchTerm());
+
+        if (count($words) > 15) {
+            $words = array_slice($words, 0, $maxWords);
+        }
+
+        foreach ($words as $it => $word) {
+            if (strlen($word) < 3) {
+                unset($words[$it]);
+            }
+        }
+
+        return $words;
     }
 }

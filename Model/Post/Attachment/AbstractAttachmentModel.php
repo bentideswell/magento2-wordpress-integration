@@ -12,7 +12,6 @@ abstract class AbstractAttachmentModel extends Post
 {
     /**
      *
-     *
      */
     public function _construct()
     {
@@ -22,7 +21,6 @@ abstract class AbstractAttachmentModel extends Post
     }
 
     /**
-     *
      *
      */
     protected function _afterLoad()
@@ -38,7 +36,8 @@ abstract class AbstractAttachmentModel extends Post
     public function loadSerializedData()
     {
         if ($this->getId() > 0 && !$this->getIsFullyLoaded()) {
-            $this->getResource()->loadSerializedData($this);
+            /* ToDo */
+//            $this->getResource()->loadSerializedData($this);
         }
     }
 
@@ -46,7 +45,7 @@ abstract class AbstractAttachmentModel extends Post
      *
      *
      */
-    public function getMetaValue($key)
+    public function getMetaValue(string $key, $default = null)
     {
         return parent::getMetaValue('_wp_attachment_' . $key);
     }

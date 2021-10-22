@@ -8,16 +8,13 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInterface
+class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\ViewableModelInterface
 {
     /**
      * @const string
      */
     const ENTITY = 'wordpress_post';
     const CACHE_TAG = 'wordpress_post';
-    const POST_TYPE_CONTENT_BLOCK = 'fp_content_block';
 
     /**
      * @var string
@@ -37,7 +34,9 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Model\UserRepository $userRepository,
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
         \FishPig\WordPress\Model\TermFactory $termFactory,
@@ -49,6 +48,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
         array $data = []
     ) {
         $this->postTypeRepository = $postTypeRepository;
+        $this->postRepository = $postRepository;
         $this->userRepository = $userRepository;
         $this->shortcodeFactory = $shortcodeFactory;
         $this->termFactory = $termFactory;
@@ -56,11 +56,11 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
         $this->dateHelper = $dateHelper;
         $this->frontPage = $frontPage;
         
-        parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection);
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
 
     /**
-     *
+     * @return string
      */
     public function getName()
     {
@@ -68,39 +68,38 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
     }
 
     /**
-     *
+     * @param  string $type
+     * @return bool
      */
-    public function isType($type)
+    public function isType(string $type): bool
     {
         return $this->getPostType() === $type;
     }
 
     /**
-     *
+     * @return \FishPig\WordPress\Model\PostType
      */
-    public function getTypeInstance()
+    public function getTypeInstance(): \FishPig\WordPress\Model\PostType
     {
-        if (!$this->hasTypeInstance() && $this->getPostType()) {
-            if ($this->getPostType() === 'revision') {
-                if ($this->getParentPost()) {
-                    $this->setTypeInstance(
-                        $this->getParentPost()->getTypeInstance()
-                    );
-                }
-            } elseif ($typeInstance = $this->postTypeRepository->get($this->getPostType())) {
-                $this->setTypeInstance($typeInstance);
-            } else {
-                $this->setTypeInstance($this->postTypeRepository->get('post'));
-            }
+        if ($this->typeInstance !== null && $this->typeInstance->getPostType() === $this->getPostType()) {
+            return $this->typeInstance;
         }
 
-        return $this->_getData('type_instance');
+        $this->typeInstance = null;
+
+        if ($this->getPostType() === 'revision') {
+            if ($this->getParentPost()) {
+                $this->typeInstance = $this->getParentPost()->getTypeInstance();
+            }
+        } else {
+            $this->typeInstance = $this->postTypeRepository->get($this->getPostType());
+        }
+
+        return $this->typeInstance;
     }
 
     /**
-     * Set the categories after loading
-     *
-     * @return $this
+     * @return self
      */
     protected function _afterLoad()
     {
@@ -114,7 +113,7 @@ class Post extends \FishPig\WordPress\Model\AbstractModel implements ViewableInt
     /**
      * @return string
      */
-    public function getGuid()
+    public function getGuid(): string
     {
         if ($this->getPostType() === 'page') {
             return $this->url->getUrl() . '?page_id=' . $this->getId();
@@ -683,7 +682,7 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
             if ($parentId = (int)$this->getParentId()) {
                 try {
                     $this->setParentPost(
-                        $this->postRepo->getWithType(
+                        $this->postRepository->getWithType(
                             $parentId,
                             $this->getPostType() === 'revision' ? '*' : $this->getPostType()
                         )
@@ -838,39 +837,9 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
 
     /**
      *
-     *
-     */
-    public function applyPageConfigData($pageConfig)
-    {
-        parent::applyPageConfigData($pageConfig);
-
-        if (!$pageConfig) {
-            return $this;
-        }
-
-        if ($this->isFrontPage()) {
-            $pageConfig->addBodyClass('wordpress-frontpage');
-        } elseif ($this->isPageForPosts()) {
-            $pageConfig->addBodyClass('wordpress-post-list');
-        }
-
-        return $this;
-    }
-    
-    /**
-     *
      */
     public function isContentBlock(): bool
     {
         return $this->getPostType() === self::POST_TYPE_CONTENT_BLOCK;
-    }
-    
-
-    /**
-     * @retur array
-     */
-    public function getIdentities()
-    {
-        return [static::CACHE_TAG . '_' . $this->getId()];
     }
 }

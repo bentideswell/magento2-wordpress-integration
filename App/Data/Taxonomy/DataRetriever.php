@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Data\Taxonomy;
 
-class DataRetriever implements \FishPig\WordPress\Api\Data\App\Data\Taxonomy\TaxonomyRetrieverInterface
+class DataRetriever implements \FishPig\WordPress\Api\App\Data\Taxonomy\TaxonomyRetrieverInterface
 {
     /**
      * @var

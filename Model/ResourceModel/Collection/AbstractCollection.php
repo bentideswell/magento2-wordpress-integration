@@ -28,4 +28,14 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
             $this->setModel($modelName);
         }
     }
+    
+    /**
+     * @return void
+     */
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+
+        $this->_eventManager->dispatch($this->_eventPrefix . '_init_select', [$this->_eventObject => $this]);
+    }
 }

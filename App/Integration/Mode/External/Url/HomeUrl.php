@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Integration\Mode\External\Url;
 
-class HomeUrl implements \FishPig\WordPress\Api\Data\App\Url\UrlInterface
+class HomeUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
     /**
      *

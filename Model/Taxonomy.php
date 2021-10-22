@@ -1,12 +1,12 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
-namespace FishPig\WordPress\Model;
+declare(strict_types=1);
 
-use FishPig\WordPress\Model\AbstractModel;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-use FishPig\WordPress\Model\PostTypeManager;
+namespace FishPig\WordPress\Model;
 
 class Taxonomy extends \Magento\Framework\DataObject
 {
@@ -14,10 +14,6 @@ class Taxonomy extends \Magento\Framework\DataObject
      * @const string
      */
     const ENTITY = 'wordpress_taxonomy';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_taxonomy';
 
     /**
@@ -29,11 +25,11 @@ class Taxonomy extends \Magento\Framework\DataObject
      * @param array $data = []
      */
     public function __construct(
-        \FishPig\WordPress\App\Url $url,
+        \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\ResourceModel\Taxonomy $resource,
         array $data = []
     ) {
-        $this->url = $url;
+        $this->url = $wpContext->getUrl();
         $this->_resource = $resource;
         
         parent::__construct($data);
@@ -149,14 +145,14 @@ class Taxonomy extends \Magento\Framework\DataObject
      */
     public function getPostTermsCollection(\FishPig\WordPress\Model\Post $post)
     {
+        /* ToDo */
         return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Term\Collection')
             ->addTaxonomyFilter($this->getTaxonomyType())
             ->addPostIdFilter($post->getId());
     }
 
     /**
-     *
-     *
+     * @return string
      */
     public function getTaxonomyType()
     {
@@ -164,10 +160,9 @@ class Taxonomy extends \Magento\Framework\DataObject
     }
 
     /**
-     *
-     *
+     * @return string
      */
-    public function getTaxonomy()
+    public function getTaxonomy(): string
     {
         return $this->getTaxonomyType();
     }

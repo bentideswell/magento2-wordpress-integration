@@ -110,11 +110,17 @@ abstract class Action extends \Magento\Framework\App\Action\Action
         $this->_eventManager->dispatch('wordpress_breadcrumbs', ['transport' => $eventTransport]);
         
         if ($crumbs = $eventTransport->getBreadcrumbs()) {
+//            $crumbCount = count($crumbs);
+            
             foreach ($crumbs as $key => $crumb) {
                 if (!isset($crumb['title'])) {
                     $crumb['title'] = $crumb['label'];
                 }
-
+//
+//                if (--$crumbCount === 0) {
+//                    unset($crumb['link']);
+//                }
+                
                 $breadcrumbsBlock->addCrumb($key, $crumb);
             }
         }

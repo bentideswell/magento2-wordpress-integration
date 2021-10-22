@@ -6,12 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\Data\App\Data\Taxonomy;
+namespace FishPig\WordPress\Api\App\Integration;
 
-interface TaxonomyRetrieverInterface
+interface TestInterface
 {
     /**
-     * @return []
+     * @return void
      */
-    public function getData(): array;
+    public function runTest(): void;
 }

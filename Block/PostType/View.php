@@ -35,9 +35,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
      */
     protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        $collection = $this->postCollectionFactory->create()->addPostTypeFilter(
-            $this->getPostType()->getPostType()
-        );
+        $collection = $this->getPostType()->getPostCollection();
         
         if ($this->getPostType()->isFrontPage()) {
             $collection->addStickyPostsToCollection();

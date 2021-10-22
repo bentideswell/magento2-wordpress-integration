@@ -11,13 +11,12 @@ namespace FishPig\WordPress\Api\Data;
 interface MetaDataProviderInterface
 {
     /**
-     * @param  \FishPig\WordPress\Api\Data\ViewableInterface $object
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @param  string $key
      * @return mixed
      */
     public function getValue(
-        \FishPig\WordPress\Api\Data\ViewableInterface $object,
-        string $key,
-        $default = null
+        \FishPig\WordPress\Api\Data\ViewableModelInterface $object,
+        string $key
     );
 }

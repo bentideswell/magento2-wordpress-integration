@@ -20,10 +20,10 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
     }
 
     /**
-     * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\Entity\ViewableInterface $post): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $post): array 
     {
         $crumbs = [];
 
@@ -68,13 +68,15 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
 
         if ($postType->isHierarchical()) {
             $parent = $post;
-            $buffer = [];
 
             while (($parent = $parent->getParentPost()) !== false) {
-                $buffer['parent_post_' . $parent->getId()] = $parent;
+                $crumbs['parent_post_' . $parent->getId()] = [
+                    'label' => $parent->getName(),
+                    'link' => $parent->getUrl()
+                ];
             }
 
-            $objects = $objects + array_reverse($buffer);
+            $crumbs = array_reverse($crumbs);
         }
 
         $crumbs['post'] = [

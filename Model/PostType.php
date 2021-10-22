@@ -1,19 +1,20 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\AbstractResourcelessModel;
-use FishPig\WordPress\Model\ResourceConnection;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\TaxonomyManager;
-use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Api\Data\ViewableModelInterface;
+use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 
-class PostType extends \Magento\Framework\DataObject implements \FishPig\WordPress\Api\Data\Entity\ViewableInterface
+class PostType extends \Magento\Framework\DataObject implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
-     *
+     * @const string
      */
     const ENTITY = 'wordpress_post_type';
     const CACHE_TAG = 'wordpress_post_type';
@@ -27,12 +28,13 @@ class PostType extends \Magento\Framework\DataObject implements \FishPig\WordPre
      * @param array $data = []
      */
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url,
+        \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\ResourceModel\PostType $resource,
         \FishPig\WordPress\Helper\FrontPage $frontPageHelper,
         array $data = []
     ) {
-        $this->url = $url;
+        $this->url = $wpContext->getUrl();
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->_resource = $resource;
         $this->frontPageHelper = $frontPageHelper;
         
@@ -333,8 +335,6 @@ class PostType extends \Magento\Framework\DataObject implements \FishPig\WordPre
     }
 
     /**
-     *
-     *
      * @return string
      */
     public function getId()
@@ -355,29 +355,19 @@ class PostType extends \Magento\Framework\DataObject implements \FishPig\WordPre
      *
      * @return bool
      */
-    public function isSearchable()
+    public function isSearchable(): bool
     {
         return (int)$this->getData('exclude_from_search') === 0;
     }
-
+    
     /**
-     * Todo: move this to breadcrumbsdataprovider
-     * @return array
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    public function getArchiveBreadcrumbStructure()
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        $crumbs = [];
-
-        if ($this->withFront() && ($front = $this->getFront())) {
-            $crumbs['front'] = [
-                'label' => ucwords($front),
-                'link'  => $this->url->getUrl($front),
-            ];
-        }
-
-        $crumbs['post_type'] = $this;
-
-        return $crumbs;
+        return $this->postCollectionFactory->create()->addPostTypeFilter(
+            $this->getPostType()
+        );
     }
     
     /**

@@ -42,45 +42,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
      */
     protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
-            $this->_getParsedSearchString(), 
-            [
-                'post_title' => 5, 
-                'post_content' => 1
-            ]
-        );
-
-        // Post Types
-        $searchablePostTypes = $this->getRequest()->getParam('post_type');
-
-        if (!$searchablePostTypes) {
-            $postTypes = $this->postTypeRepository->getAll();
-            $searchablePostTypes = [];
-
-            foreach ($postTypes as $postType) {
-                if ($postType->isSearchable()) {
-                    $searchablePostTypes[] = $postType->getPostType();
-                }
-            }
-        }
-
-        if (!$searchablePostTypes) {
-            $searchablePostTypes = ['post', 'page'];
-        }
-
-        $collection->addPostTypeFilter($searchablePostTypes);
-
-        // Category
-        if ($categorySlug = $this->getRequest()->getParam('cat')) {
-            $collection->addTermFilter($categorySlug, 'category');
-        }
-
-        // Tag
-        if ($tagSlug = $this->getRequest()->getParam('tag')) {
-            $collection->addTermFilter($tagSlug, 'post_tag');
-        }
-        
-        return $collection;
+        return $this->getSearchModel()->getPostCollection();
     }
 
     /**
@@ -98,28 +60,5 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     public function getSearchVar(): string
     {
         return $this->_getData('search_var') ? $this->_getData('search_var') : 's';
-    }
-
-    /**
-     * Retrieve a parsed version of the search string
-     * If search by single word, string will be split on each space
-     *
-     * @return array
-     */
-    private function _getParsedSearchString()
-    {
-        $words = explode(' ', $this->getSearchTerm());
-
-        if (count($words) > 15) {
-            $words = array_slice($words, 0, $maxWords);
-        }
-
-        foreach ($words as $it => $word) {
-            if (strlen($word) < 3) {
-                unset($words[$it]);
-            }
-        }
-
-        return $words;
     }
 }

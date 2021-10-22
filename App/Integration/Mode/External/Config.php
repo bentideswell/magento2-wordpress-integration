@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Integration\Mode\External;
 
-class Config implements \FishPig\WordPress\Api\Data\App\ResourceConnection\ConfigRetrieverInterface
+class Config implements \FishPig\WordPress\Api\App\ResourceConnection\ConfigRetrieverInterface
 {
     /**
      * @return void

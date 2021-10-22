@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Data\PostType;
 
-class DataRetriever implements \FishPig\WordPress\Api\Data\App\Data\PostType\PostTypeRetrieverInterface
+class DataRetriever implements \FishPig\WordPress\Api\App\Data\PostType\PostTypeRetrieverInterface
 {
     /**
      * @var

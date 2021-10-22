@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Integration\Test;
 
-class ModeTest implements \FishPig\WordPress\Api\Data\App\Integration\TestInterface
+class ModeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
      * @param  \FishPig\WordPress\App\Integration\Mode $appMode

@@ -12,11 +12,11 @@ interface SeoMetaDataProviderInterface
 {
     /**
      * @param  \Magento\Framework\View\Result\Page $resultPage,
-     * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return void
      */
     public function addMetaData(
         \Magento\Framework\View\Result\Page $resultPage,
-        \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
+        \FishPig\WordPress\Api\Data\ViewableModelInterface $object
     ): void;
 }

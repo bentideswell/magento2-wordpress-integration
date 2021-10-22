@@ -10,7 +10,7 @@ namespace FishPig\WordPress\Model\Post;
 
 use FishPig\WordPress\Model\Post;
 
-class Comment extends \Magento\Framework\Model\AbstractModel
+class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
      * @const string
@@ -30,20 +30,19 @@ class Comment extends \Magento\Framework\Model\AbstractModel
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \FishPig\WordPress\App\Url $url,
-        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->url = $url;
-        $this->postCollectionFactory = $postCollectionFactory;
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->optionRepository = $optionRepository;
         $this->dateHelper = $dateHelper;
 
-        parent::__construct($context, $registry, $resource, $resourceCollection);
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
     
     /**
@@ -269,25 +268,5 @@ class Comment extends \Magento\Framework\Model\AbstractModel
     public function getPostTitle() : string
     {
         return $this->getPost() ? $this->getPost()->getPostTitle() : '';
-    }
-    
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getMetaTableAlias()
-    {
-        return 'wordpress_post_comment_meta';
-    }
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getMetaTableObjectField()
-    {
-        return 'comment_id';
     }
 }

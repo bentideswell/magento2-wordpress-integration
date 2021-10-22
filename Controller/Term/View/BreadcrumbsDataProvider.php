@@ -20,10 +20,10 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
     }
 
     /**
-     * @param  \FishPig\WordPress\Api\Data\Entity\ViewableInterface $object
+     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\Entity\ViewableInterface $term): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $term): array 
     {
         $crumbs = [];
         $taxonomy = $term->getTaxonomyInstance();
