@@ -39,7 +39,6 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     public function getHomeUrl($uri = ''): string
     {
         $homeUrl = rtrim($this->homeUrlResolver->resolve()->getUrl(), '/');
-        $homeUrl = 'https://m2wp.local.fishpig.com/blog';
 
         if ($uri) {
             $homeUrl .= '/' . $uri;
@@ -150,6 +149,29 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
         }
 
         return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function doUrlsMatch($url, $url2 = null, $strict = false): bool
+    {
+        $urls = [
+            $url, 
+            $url2 ?? $this->magentoUrl->getCurrentUrl()
+        ];
+        
+        foreach ($urls as $key => $url) {
+            $urls[$key] = rtrim(strtolower($urls[$key]), '/');
+        }
+        
+        if (!$strict) {
+            foreach ($urls as $key => $url) {
+                $urls[$key] = str_replace(['https://', 'http://'], '', $urls[$key]);
+            }
+        }
+        
+        return $urls[0] === $urls[1];
     }
 
     /**

@@ -30,13 +30,13 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     public function __construct(
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\ResourceModel\PostType $resource,
-        \FishPig\WordPress\Helper\FrontPage $frontPageHelper,
+        \FishPig\WordPress\Helper\FrontPage $frontPage,
         array $data = []
     ) {
         $this->url = $wpContext->getUrl();
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->_resource = $resource;
-        $this->frontPageHelper = $frontPageHelper;
+        $this->frontPage = $frontPage;
         
         parent::__construct($data);
     }
@@ -74,7 +74,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
             return false;
         }
 
-        if (!$this->frontPageHelper->isFrontPageDefaultPostTypeArchive()) {
+        if ($this->frontPage->isFrontPageDefaultPostTypeArchive()) {
             return true;
         }
 
@@ -223,9 +223,17 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
      *
      * @return string
      */
-    public function getArchiveUrl()
+    public function getArchiveUrl(): string
     {
-        return $this->hasArchive() ? $this->url->getUrl($this->getArchiveSlug() . '/') : '';
+        if ($this->getPostType() !== 'post') {
+            return $this->hasArchive() ? $this->url->getUrl($this->getArchiveSlug() . '/') : '';
+        }
+        
+        if ($this->isFrontPage()) {
+            return $this->url->getHomeUrl();
+        }
+        
+        return $this->frontPage->getPostsPage()->getUrl();
     }
 
     /**
@@ -270,7 +278,6 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
      */
     public function getName()
     {
-
         return $this->getData('labels/name');
     }
 

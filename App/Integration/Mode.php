@@ -15,7 +15,7 @@ class Mode
      */
     const MODE_DISABLED = '';
     
-    const MODE_SUBDIRECTORY = 'subdirectory';
+    const MODE_LOCAL = 'local';
 
     const MODE_EXTERNAL = 'external';
 
@@ -51,9 +51,9 @@ class Mode
     /**
      * @return bool
      */
-    public function isSubdirectoryMode(): bool
+    public function isLocalMode(): bool
     {
-        return $this->getMode() === self::MODE_SUBDIRECTORY;
+        return $this->getMode() === self::MODE_LOCAL;
     }
 
     /**
@@ -104,7 +104,7 @@ class Mode
     {
         return [
             self::MODE_DISABLED => __('Disabled'),
-            self::MODE_SUBDIRECTORY => __('SubDirectory'),
+            self::MODE_LOCAL => __('Local'),
             self::MODE_EXTERNAL => __('External'),
             self::MODE_API => __('API'),
         ];

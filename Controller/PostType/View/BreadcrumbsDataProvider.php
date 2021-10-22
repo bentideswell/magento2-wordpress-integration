@@ -22,9 +22,15 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
             return $crumbs;
         }
 
-        $crumbs['post'] = [
-            'label' => __($postType->getName()),
-        ];
+        if ($postType->getPostType() === 'post') {
+            $crumbs['post'] = [
+                'label' => __('Blog'),
+            ];            
+        } else {
+            $crumbs['post'] = [
+                'label' => __($postType->getName()),
+            ];
+        }
 
         return $crumbs;
     }

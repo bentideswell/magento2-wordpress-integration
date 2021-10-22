@@ -1,12 +1,14 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Post\View\Comment;
 
-use FishPig\WordPress\Block\Post\PostList\Pager as PostListPager;
-
-class Pager extends PostListPager
+class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager
 {
     /**
      * Only display the pager if the Post is set
@@ -29,7 +31,7 @@ class Pager extends PostListPager
      */
     public function getLimit()
     {
-        $this->_limit = $this->getRequest()->getParam('limit', $this->optionManager->getOption('comments_per_page', 50));
+        $this->_limit = $this->getRequest()->getParam('limit', $this->optionRepository->get('comments_per_page', 50));
 
         return $this->_limit;
     }

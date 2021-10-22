@@ -25,7 +25,7 @@ class SubdirectoryModeTest implements \FishPig\WordPress\Api\App\Integration\Tes
      */
     public function runTest(): void
     {
-        if (!$this->appMode->isSubdirectoryMode()) {
+        if (!$this->appMode->isLocalMode()) {
             return;
         }
         

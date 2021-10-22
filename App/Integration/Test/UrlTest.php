@@ -30,12 +30,13 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     public function runTest(): void
     {
         /*
+            ToDo
         if (!$this->theme->isThemeIntegrated()) {
             return $this;
         }*/
 
         $magentoUrl = $this->url->getMagentoUrl();
-        $homeUrl = $this->url->getHomeUrl();
+        $homeUrl = rtrim($this->url->getHomeUrl(), '/'); // Trimmed incase WP configured to add trailing slash to home
         $siteUrl = $this->url->getSiteUrl();
         $isRoot = $this->url->isRoot();
 

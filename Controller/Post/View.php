@@ -51,7 +51,7 @@ class View extends \FishPig\WordPress\Controller\Action
 
         if ($post->isFrontPage()) {
             // URL is post URL but this is front page so redirect to home URL
-            if (!$this->isRequestForWPHome()) {
+            if (!$this->url->doUrlsMatch($this->url->getHomeUrl())) {
                 return $this->resultFactory->create(
                     ResultFactory::TYPE_REDIRECT
                 )->setUrl(

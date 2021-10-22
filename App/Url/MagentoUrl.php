@@ -60,6 +60,14 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 
         return $this->cache[$storeId];
     }
+    
+    /**
+     * @return string
+     */
+    public function getCurrentUrl(): string
+    {
+        return preg_replace('/\?.*$/', '', $this->storeManager->getStore()->getCurrentUrl(false));
+    }
 
     /**
      * @return bool

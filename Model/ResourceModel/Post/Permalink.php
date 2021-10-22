@@ -191,8 +191,6 @@ class Permalink
             }
 
             foreach ($tokens as $key => $token) {
-                
-                echo $token . '<br/>';
                 if (substr($token, 0, 1) === '%') {
                     if (!isset($fields[trim($token, '%')])) {
                         $taxonomyToken = trim($token, '%');

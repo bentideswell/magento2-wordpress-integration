@@ -15,13 +15,13 @@
                     <label>Mode</label>
                     <source_model>FishPig\WordPress\App\Integration\Mode</source_model>
                 </field>
-                <group id="mode_subdirectory"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>SubDirectory Integration</label>
-                    <depends><field id="mode">subdirectory</field></depends>
+                <group id="mode_local"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Local Integration</label>
+                    <depends><field id="mode">local</field></depends>
                     <field id="path" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                         <label>Path</label>
                         <comment>Enter the path to your WordPress installation.</comment>
-                        <config_path>wordpress/mode_subdirectory/path</config_path>
+                        <config_path>wordpress/mode_local/path</config_path>
                     </field>
                 </group>
                 <group id="mode_external"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">

@@ -56,8 +56,8 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
                 } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
                     /**/
                 }
-            } elseif (strlen($slugPart) > 1 && substr($slugPart, 0, 1) !== '.') {
-                    echo __METHOD__;exit;
+            } elseif ($postType->isHierarchical() && strlen($slugPart) > 1 && substr($slugPart, 0, 1) !== '.') {
+                echo __METHOD__;exit;
                 $parent = $this->factory->create('Post')->setPostType('page')->load($slugPart, 'post_name');
 
                 if ($parent->getId()) {

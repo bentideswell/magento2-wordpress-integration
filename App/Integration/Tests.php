@@ -20,18 +20,23 @@ class Tests
     private $warnings = [];
 
     /**
+     * @var array
+     */
+    private $integrationTestPool;
+
+    /**
      * @return void
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\Model\Logger $logger,
-        array $integrationTests = []
+        array $integrationTestPool = []
     ) {
         $this->appMode = $appMode;
         $this->storeManager = $storeManager;
         $this->logger = $logger;
-        $this->integrationTests = $integrationTests;
+        $this->integrationTestPool = $integrationTestPool;
     }
     
     /**
@@ -51,7 +56,7 @@ class Tests
             $this->warnings[$storeId] = [];
 
             try {
-                foreach ($this->integrationTests as $integrationTest) {
+                foreach ($this->integrationTestPool as $integrationTest) {
                     try {
                         $integrationTest->runTest();
                     } catch (IntegrationRecoverableException $e) {

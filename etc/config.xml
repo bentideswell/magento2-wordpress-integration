@@ -3,11 +3,11 @@
 	<default>
 		<wordpress>
 			<setup>
-                <mode>subdirectory</mode>
+                <mode>local</mode>
 			</setup>
-			<mode_subdirectory>
+			<mode_local>
     			<path>wp</path>
-			</mode_subdirectory>
+			</mode_local>
 			<mode_external_db>
     			<table_prefix>wp_</table_prefix>
     			<charset>utf8</charset>

@@ -16,11 +16,13 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
     public function __construct(
         \FishPig\WordPress\Controller\Router\RequestDispatcher $requestDispatcher,
         \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper,
-        \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource
+        \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \FishPig\WordPress\Helper\FrontPage $frontPage
     ) {
         $this->requestDispatcher = $requestDispatcher;
         $this->routerUrlHelper = $routerUrlHelper;
         $this->permalinkResource = $permalinkResource;
+        $this->frontPage = $frontPage;
     }
 
     /**
@@ -32,14 +34,25 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
             $this->routerUrlHelper->getRelativePathInfo($request)
         );
 
-        if ($postId !== false) {
+        if ($postId === false) {
+            return false;
+        }
+        
+        if ($this->frontPage->getPostsPageId() === $postId) {
             return $this->requestDispatcher->dispatch(
                 $request, 
-                '*/post/view', 
-                ['id' => $postId]
+                '*/postType/view', 
+                ['post_type' => 'post']
             );
+        } elseif ($this->frontPage->getFrontPageId() === $postId) {
+            echo __METHOD__;
+            exit;
         }
-
-        return false;
+        
+        return $this->requestDispatcher->dispatch(
+            $request, 
+            '*/post/view', 
+            ['id' => $postId]
+        );
     }
 }

@@ -767,9 +767,9 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
      *
      * @return bool
      */
-    public function isPageForPosts(): bool
+    public function isPostsPage(): bool
     {
-        return $this->isType('page') && (int)$this->getId() === $this->frontPage->getPageForPostsId();
+        return $this->isType('page') && (int)$this->getId() === $this->frontPage->getPostsPageId();
     }
 
     /**

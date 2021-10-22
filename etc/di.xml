@@ -8,7 +8,7 @@
     -->
 	<type name="FishPig\WordPress\App\Integration\Tests">
 		<arguments>
-			<argument name="integrationTests" xsi:type="array">
+			<argument name="integrationTestPool" xsi:type="array">
 				<item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ModeTest</item>
 				<item name="subdirectoryMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\SubdirectoryModeTest</item>
 				<item name="externalMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ExternalModeTest</item>
