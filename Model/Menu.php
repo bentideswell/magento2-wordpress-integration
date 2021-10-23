@@ -6,9 +6,8 @@
  */
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Model\Term;
-
-class Menu extends Term
+/* ToDo*/
+class Menu extends \FishPig\WordPress\Model\Term
 {
     /**
      * @const string

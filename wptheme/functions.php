@@ -12,7 +12,7 @@
 /**
  *
  */
-define('FISHPIG_THEME_HASH', '{REMOTE_HASH}');
+define('FISHPIG_THEME_HASH', '88a553fe7a5b56d02d04928bd44cdc19');
 
 /**
  *
@@ -358,6 +358,19 @@ add_action('save_post', function($post_id) {
 add_action(
     'rest_api_init',
     function() {
+        register_rest_route(
+            'fishpig/v1', 
+            '/data/', 
+            [
+                'methods' => 'GET',
+                'callback' => function() {
+                    return apply_filters('fishpig_api_v1_data', [
+                        '_time' => time()
+                    ]);
+                },
+            ]
+        );
+        
         // Version
         register_rest_route(
             'fishpig/v1', 
@@ -383,8 +396,11 @@ add_filter('wp_calculate_image_srcset',           '__return_false');
 /**
  *
  */
-foreach (['related-products.php', 'content-blocks.php', 'local.php'] as $themeFile) {
-    if (is_file(__DIR__ . '/' . $themeFile)) {
-        include_once __DIR__ . '/' . $themeFile;
+$includesDir = __DIR__ . '/includes';
+if (is_dir($includesDir)) {
+    foreach (scandir($includesDir) as $file) {
+        if (strpos($file, '.php') !== false) {
+            include_once $includesDir . '/' . $file;
+        }
     }
 }

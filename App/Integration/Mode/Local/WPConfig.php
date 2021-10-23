@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Mode\Subdirectory;
+namespace FishPig\WordPress\App\Integration\Mode\Local;
 
 class WPConfig implements \FishPig\WordPress\Api\App\ResourceConnection\ConfigRetrieverInterface
 {

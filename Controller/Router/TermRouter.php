@@ -33,6 +33,10 @@ class TermRouter implements \Magento\Framework\App\RouterInterface
         $pathInfo = $this->routerUrlHelper->getRelativePathInfo($request);
 
         foreach ($this->taxonomyRepository->getAll() as $taxonomy) {
+            if ($taxonomy->getSlug() && strpos($pathInfo, $taxonomy->getSlug() . '/') !== 0) {
+                continue;
+            }
+
             foreach ($taxonomy->getResource()->getAllRoutes($taxonomy) as $termId => $route) {
                 if ($pathInfo === $route) {
                     return $this->requestDispatcher->dispatch(
@@ -41,13 +45,15 @@ class TermRouter implements \Magento\Framework\App\RouterInterface
                         ['id' => $termId]
                     );
                 }
-                
             }
         }
 
-
         // Now let's look for redirectable taxonomies
         foreach ($this->taxonomyRepository->getAll() as $taxonomy) {
+            if ($taxonomy->getSlug() && strpos($pathInfo, $taxonomy->getSlug() . '/') !== 0) {
+                continue;
+            }
+            
             if (($routes = $taxonomy->getResource()->getRedirectableUris($taxonomy, $pathInfo)) !== false) {
                 foreach ($routes as $routeId => $route) {
                     if ($pathInfo === $route['source']) {
