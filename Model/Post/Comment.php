@@ -140,7 +140,7 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
 
                 $fragment = '#comment-' . $this->getId();
 
-                if ($post->getTypeInstance()->permalinkHasTrainingSlash()) {
+                if (substr($post->getUrl(), -1) === '/') {
                     $fragment = '/' . $fragment;
                 }
 

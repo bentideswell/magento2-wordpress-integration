@@ -37,7 +37,7 @@ class Taxonomy
     public function getAllRoutes(TaxonomyModel $taxonomy): array
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
-        $cacheKey = $storeId . '_get_all_routes' . $taxonomy->getTaxonomy();
+        $cacheKey = $storeId . '::get_all_routes::' . $taxonomy->getTaxonomy();
         
         if (isset($this->cache[$cacheKey])) {
             return $this->cache[$cacheKey];
@@ -52,14 +52,13 @@ class Taxonomy
         if ($results) {
             $slug = $taxonomy->getSlug();
 
-            if ($taxonomy->isHierarchical()) {
+            if ($taxonomy->isRewriteHierarchical()) {
                 $this->cache[$cacheKey] = $this->hierarchicalUrlGenerator->generateRoutes(
                     $results,
                     $slug
                 );
             } else {
                 $routes = [];
-
                 foreach ($results as $result) {
                     $routes[$result['id']] = ltrim($slug . '/' . $result['url_key'], '/');
                 }
@@ -67,7 +66,7 @@ class Taxonomy
                 $this->cache[$cacheKey] = $routes;
             }
         }
-        
+
         return $this->cache[$cacheKey];
     }
 
@@ -89,7 +88,7 @@ class Taxonomy
             )
             ->join(
                 ['tax' => $this->resourceConnection->getTable('term_taxonomy')],
-                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $taxonomy->getTaxonomyType()),
+                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $taxonomy->getTaxonomy()),
                 'parent'
             );
             
@@ -111,7 +110,7 @@ class Taxonomy
             )
             ->join(
                 ['tax' => $this->resourceConnection->getTable('term_taxonomy')],
-                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $taxonomy->getTaxonomyType()),
+                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $taxonomy->getTaxonomy()),
                 null
             )
             ->where('tax.parent > 0');

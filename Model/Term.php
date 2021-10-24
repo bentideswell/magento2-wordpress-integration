@@ -31,6 +31,11 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
     private $postCollectionFactory;
     
     /**
+     * @var \FishPig\WordPress\Model\Term
+     */
+    private $parentTerm = null;
+
+    /**
      *
      */
     public function __construct(
@@ -38,12 +43,14 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->taxonomyRepository = $taxonomyRepository;
+        $this->termRepository = $termRepository;
         parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection, $data);
     }
 
@@ -53,6 +60,19 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
     public function getName()
     {
         return $this->_getData('name');
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        $taxonomy = $this->getTaxonomyInstance();
+        $urlPath = $taxonomy->getUriById($this->getId());
+
+        return $taxonomy->withFront() 
+                ? $this->url->getHomeUrlWithFront($urlPath) 
+                : $this->url->getHomeUrl($urlPath);
     }
 
     /**
@@ -83,107 +103,38 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
     }
 
     /**
-     * Retrieve the taxonomy label
-     *
-     * @return string
-     */
-    public function getTaxonomyLabel()
-    {
-        if ($this->getTaxonomy()) {
-            return ucwords(str_replace('_', ' ', $this->getTaxonomy()));
-        }
-
-        return false;
-    }
-
-    /**
-     * Retrieve the parent term
-     *
-     * @reurn false|\FishPig\WordPress\Model\Term
+     * @reurn \FishPig\WordPress\Model\Term|false
      */
     public function getParentTerm()
     {
-        if (!$this->hasParentTerm()) {
-            $this->setParentTerm(false);
-
-            if ($this->getParentId()) {
-                $parentTerm = clone $this;
-
-                $parentTerm->clearInstance()->load($this->getParentId());
-
-                if ($parentTerm->getId()) {
-                    $this->setParentTerm($parentTerm);
+        if ($this->parentTerm === null) {
+            $this->parentTerm = false;
+            if ($parentId = $this->getParentId()) {
+                try {
+                    $this->parentTerm = $this->termRepository->get($parentId);
+                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                    $this->parentTerm = false;
                 }
             }
         }
-
-        return $this->_getData('parent_term');
+        
+        return $this->parentTerm;
     }
 
     /**
-     * Retrieve a collection of children terms
-     *
      * @return \FishPig\WordPress\Model\ResourceModel\Term\Collection
      */
-    public function getChildrenTerms()
+    public function getChildrenTerms(): \FishPig\WordPress\Model\ResourceModel\Term\Collection
     {
         return $this->getCollection()->addParentFilter($this);
     }
 
     /**
-     * Retrieve the numbers of items that belong to this term
-     *
      * @return int
      */
-    public function getItemCount(): int
+    public function getParentId(): int
     {
-        return (int)$this->getCount();
-    }
-
-    /**
-     * Retrieve the parent ID
-     *
-     * @return int|false
-     */
-    public function getParentId()
-    {
-        return $this->_getData('parent') ? $this->_getData('parent') : false;
-    }
-
-    /**
-     * Retrieve the taxonomy type for this term
-     *
-     * @return string
-     */
-    public function getTaxonomyType()
-    {
-        return $this->getTaxonomy();
-    }
-
-    /**
-     * Retrieve the URL for this term
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url->getUrl($this->getUri() . '/');
-    }
-
-    /**
-     * Retrieve the URL for this term
-     *
-     * @return string
-     */
-    public function getUri()
-    {
-        if (!$this->hasUri()) {
-            if ($taxonomy = $this->getTaxonomyInstance()) {
-                $this->setUri($taxonomy->getUriById($this->getId()));
-            }
-        }
-
-        return $this->_getData('uri');
+        return (int)$this->_getData('parent');
     }
 
     /**
@@ -195,14 +146,14 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
     {
         return (int)$this->getCount();
     }
+    
 
     /**
-     * Get an array of all child ID's
-     * This includes the ID's of children's children
+     * Get a recursive array of all children IDs
      *
      * @return array
      */
-    public function getChildIds()
+    public function getChildIds(): array
     {
         if (!$this->hasChildIds()) {
             $this->setChildIds(
@@ -211,5 +162,36 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
         }
 
         return $this->_getData('child_ids');
+    }
+    
+    
+    /**
+     * @deprecated since 3.0
+     * @return string
+     */
+    public function getTaxonomyLabel()
+    {
+        echo __METHOD__;exit;
+        return $this->getName();
+    }
+    
+    /**
+     * @deprecated since 3.0
+     * @return string
+     */
+    public function getTaxonomyType()
+    {
+        throw new \Exception(__METHOD__);
+
+        return $this->getTaxonomy();
+    }
+    
+    /**
+     * @deprecated since 3.0
+     * @return int
+     */
+    public function getItemCount(): int
+    {
+        return (int)$this->getCount();
     }
 }

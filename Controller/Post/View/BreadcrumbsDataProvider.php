@@ -34,10 +34,17 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
         $postType = $post->getTypeInstance();
         $slugParts  = explode('/', trim($postType->getSlug(), '/'));
 
+        if (!$postType->isDefault() && $postType->hasArchive()) {
+            $crumbs[$postType::ENTITY] = [
+                'label' => __($postType->getName()),
+                'link' => $postType->getUrl()
+            ];
+        }
+
         foreach ($slugParts as $slugPart) {
             if ($this->isPostTypeBaseSlug($slugPart, $postType)) {
                 if (!$postType->isDefault() && $postType->hasArchive()) {
-                    $crumbs[$postType->getPostType()] = [
+                    $crumbs[$postType::ENTITY] = [
                         'label' => $postType->getName(),
                         'link' => $postType->getUrl(),
                     ];
@@ -45,8 +52,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
             } elseif (substr($slugPart, 0, 1) === '%' && substr($slugPart, -1) === '%') {
                 try {
                     if ($taxonomy = $this->taxonomyRepository->get(substr($slugPart, 1, -1))) {
-                        echo __METHOD__;exit;
-                        if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
+                        if ($term = $post->getParentTerm($taxonomy->getTaxonomy())) {
                             $crumbs[$term::ENTITY . '_' . $term->getId()] = [
                                 'label' => $term->getName(),
                                 'link' => $term->getUrl(),
@@ -57,7 +63,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
                     /**/
                 }
             } elseif ($postType->isHierarchical() && strlen($slugPart) > 1 && substr($slugPart, 0, 1) !== '.') {
-                echo __METHOD__;exit;
+                echo __LINE__ . '::' . __METHOD__;exit;
                 $parent = $this->factory->create('Post')->setPostType('page')->load($slugPart, 'post_name');
 
                 if ($parent->getId()) {

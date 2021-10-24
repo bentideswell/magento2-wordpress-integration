@@ -46,7 +46,8 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Data\PostType\PostType
             'page' => [
                 'post_type' => 'page',
                 'rewrite' => [
-                    'slug' => '%postname%/'
+                    'slug' => '%postname%/',
+                    'hierarchical' => true
                 ],
                 'hierarchical'  => true,
                 'taxonomies' => [],

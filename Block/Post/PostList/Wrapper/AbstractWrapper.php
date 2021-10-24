@@ -43,7 +43,6 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
     {
         if ($this->postCollection === null) {
             $this->postCollection = $this->getBasePostCollection()
-                ->addPostTypeFilter('post')
                 ->addIsViewableFilter()
                 ->addOrder(
                     'post_date', 'desc'

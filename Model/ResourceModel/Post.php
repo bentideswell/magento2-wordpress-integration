@@ -94,51 +94,7 @@ class Post extends AbstractResourceModel
         return $this;
     }
 
-    /**
-     * Get the category IDs that are related to the postIds
-     *
-     * @param  array $postIds
-     * @param  bool  $getAllIds = true
-     * @return array|false
-     */
-    public function getParentTermsByPostId($postId, $taxonomy = 'category')
-    {
-        $select = $this->getConnection()->select()
-            ->distinct()
-            ->from(['_relationship' => $this->getTable('wordpress_term_relationship')], 'object_id')
-            ->where('object_id = (?)', $postId)
-            ->order('_term.term_id ASC');
 
-        $select->join(
-            ['_taxonomy' => $this->getTable('wordpress_term_taxonomy')],
-            $this->getConnection()->quoteInto("_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?", $taxonomy),
-            '*'
-        );
-
-        $select->join(
-            ['_term' => $this->getTable('wordpress_term')],
-            "`_term`.`term_id` = `_taxonomy`.`term_id`",
-            'name'
-        );
-
-        $this->addPrimaryCategoryToSelect($select, $postId);
-
-        $select->reset('columns')
-            ->columns(
-                [
-                $taxonomy . '_id' => '_term.term_id',
-                'term_id' => '_term.term_id',
-                'object_id'
-                ]
-            )->limit(1);
-
-        return $this->getConnection()->fetchAll($select);
-    }
-
-    public function addPrimaryCategoryToSelect($select, $postId)
-    {
-        return $this;
-    }
 
 
 

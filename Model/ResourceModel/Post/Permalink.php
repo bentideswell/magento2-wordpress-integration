@@ -136,8 +136,8 @@ class Permalink
         foreach ($matchedTokens as $mtoken) {
             if ($mtoken === '%postnames%') {
                 $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
-            } elseif ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
-                $termData = $this->getParentTermsByPostId([$postId], $taxonomy->getTaxonomyType(), false);
+            } elseif ($taxonomy = $this->taxonomyRepository->get(trim($mtoken, '%'))) {
+                $termData = $this->getParentTermsByPostId($postId, $taxonomy->getTaxonomy(), false);
 
                 foreach ($termData as $key => $term) {
                     if ((int)$term['object_id'] === (int)$postId) {
@@ -152,6 +152,45 @@ class Permalink
         return urldecode($slug);
     }
 
+    /**
+     * Get the category IDs that are related to the postIds
+     *
+     * @param  array $postIds
+     * @param  bool  $getAllIds = true
+     * @return array|false
+     */
+    private function getParentTermsByPostId($postId, $taxonomy = 'category')
+    {
+        $select = $this->getConnection()->select()
+            ->distinct()
+            ->from(['_relationship' => $this->resourceConnection->getTable('wordpress_term_relationship')], 'object_id')
+            ->where('object_id = (?)', $postId)
+            ->order('_term.term_id ASC');
+
+        $select->join(
+            ['_taxonomy' => $this->resourceConnection->getTable('wordpress_term_taxonomy')],
+            $this->getConnection()->quoteInto("_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?", $taxonomy),
+            '*'
+        );
+
+        $select->join(
+            ['_term' => $this->resourceConnection->getTable('wordpress_term')],
+            "`_term`.`term_id` = `_taxonomy`.`term_id`",
+            'name'
+        );
+
+        $select->reset('columns')
+            ->columns(
+                [
+                $taxonomy . '_id' => '_term.term_id',
+                'term_id' => '_term.term_id',
+                'object_id'
+                ]
+            )->limit(1);
+
+        return $this->getConnection()->fetchAll($select);
+    }
+    
     /**
      * @param  PostType $postType
      * @param  string $pathInfo
@@ -169,7 +208,7 @@ class Permalink
         }
 
         $fields = $this->getPermalinkSqlFields();
-        $tokens = $postType->getExplodedPermalinkStructure();
+        $tokens = $this->getExplodedPermalinkStructure($postType);
         $filters = [];
         $lastToken = $tokens[count($tokens)-1];
 
@@ -202,7 +241,8 @@ class Permalink
                                 && !isset($tokens[$key+3]);
 
                             if ($endsWithPostname) {
-                                $pathInfo = rtrim(substr($pathInfo, strrpos(rtrim($pathInfo, '/'), '/')), '/');
+                                $pos = strrpos(rtrim($pathInfo, '/'), '/');
+                                $pathInfo = $pos !== false ? rtrim(substr($pathInfo, $pos), '/') : '';
                                 continue;
                             }
                         }
@@ -268,7 +308,7 @@ class Permalink
             $fields     = $this->getPermalinkSqlFields();
     
             foreach ($postTypes as $postType) {
-                $tokens = $postType->getExplodedPermalinkStructure();
+                $tokens = $this->getExplodedPermalinkStructure($postType);
                 $sqlFields = [];
     
                 foreach ($tokens as $token) {
@@ -290,6 +330,32 @@ class Permalink
         }
         
         return $this->permalinkSqlColumn;
+    }
+
+    /**
+     * Retrieve the permalink structure in array format
+     *
+     * @return false|array
+     */
+    private function getExplodedPermalinkStructure(PostType $postType)
+    {
+        $structure = $postType->getPermalinkStructure();
+        $parts = preg_split("/(\/|-)/", $structure, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $structure = [];
+
+        foreach ($parts as $part) {
+            if ($result = preg_split("/(%[a-zA-Z0-9_]{1,}%)/", $part, -1, PREG_SPLIT_DELIM_CAPTURE)) {
+                $results = array_filter(array_unique($result));
+
+                foreach ($results as $result) {
+                    array_push($structure, $result);
+                }
+            } else {
+                $structure[] = $part;
+            }
+        }
+
+        return $structure;
     }
 
     /**
