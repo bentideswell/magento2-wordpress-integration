@@ -53,7 +53,7 @@ class Permalink
 
         $fields = $this->getPermalinkSqlFields();
         $db = $this->getConnection();
-        
+
         foreach ($this->postTypeRepository->getAll() as $postType) {
             if (!$postType->isPublic()) {
                 continue;   
@@ -116,6 +116,7 @@ class Permalink
             }
         }
 
+exit;
         return $this->pathInfoIdMap[$cacheKey];
     }
 

@@ -6,9 +6,9 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Data;
+namespace FishPig\WordPress\App;
 
-abstract class EntityType implements \FishPig\WordPress\Api\Data\PostTypeTaxonomyDataSourceInterface
+class Taxonomy implements \FishPig\WordPress\Api\Data\PostTypeTaxonomyDataSourceInterface
 {
     /**
      * @var

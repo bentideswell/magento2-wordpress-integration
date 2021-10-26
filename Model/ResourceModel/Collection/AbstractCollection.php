@@ -38,4 +38,15 @@ abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel
 
         $this->_eventManager->dispatch($this->_eventPrefix . '_init_select', [$this->_eventObject => $this]);
     }
+    
+    /**
+     * @param string $table
+     * @return $this
+     */
+    public function setMainTable($table)
+    {
+        $this->_mainTable = $table;
+
+        return $this;
+    }
 }

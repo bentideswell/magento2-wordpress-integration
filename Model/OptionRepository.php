@@ -40,7 +40,7 @@ class OptionRepository
     public function getUnserialized($key): array
     {
         if ($data = $this->get($key)) {
-            return unserialize($data, [false]);
+            return unserialize($data, ['allowed_classes' => false]);
         }
 
         return [];

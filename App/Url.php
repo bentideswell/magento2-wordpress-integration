@@ -197,7 +197,15 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     {
         return $this->getSiteUrl('wp-content/');
     }
-    
+
+    /**
+     * @return string
+     */    
+    public function getUploadUrl(): string
+    {
+        return $this->getWpContentUrl() . 'uploads/';
+    }
+
     /**
      * @deprecated
      */

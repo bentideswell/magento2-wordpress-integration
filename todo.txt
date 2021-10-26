@@ -21,3 +21,5 @@ shortcodes
 Check for App refs in Model/Block and replace with interfaces or something else (no direct App in Model/Block//Helper etc)
 Rename interfaces where possible
 Move interfaces from Api\Data\App to Api\App
+
+Remove data dir from post types and taxonomies

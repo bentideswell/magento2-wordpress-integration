@@ -11,21 +11,29 @@ namespace FishPig\WordPress\Helper;
 class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     * @var \FishPig\WordPress\Model\Post
+     * @var []
      */
-    private $frontPage = null;
-    private $postsPage = null;
+    private $frontPage = [];
+
+    /**
+     * @var []
+     */
+    private $postsPage = [];
 
     /**
      *
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context, 
+        \FishPig\WordPress\Model\UrlInterface $url,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
-        \FishPig\WordPress\Model\PostRepository $postRepository
+        \FishPig\WordPress\Model\PostRepository $postRepository,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
+        $this->url = $url;
         $this->optionRepository = $optionRepository;
         $this->postRepository = $postRepository;
+        $this->storeManager = $storeManager;
         
         parent::__construct($context);
     }
@@ -35,13 +43,15 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getFrontPage()
     {
-        if ($this->frontPage === null) {
-            $this->frontPage = $this->getFrontPageId()
+        $storeId = $this->getStoreId();
+        
+        if (!isset($this->frontPage[$storeId])) {
+            $this->frontPage[$storeId] = $this->getFrontPageId()
                 ? $this->postRepository->get($this->getFrontPageId()) 
                 : false;
         }
 
-        return $this->frontPage;
+        return $this->frontPage[$storeId];
     }
 
     /**
@@ -49,13 +59,13 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getPostsPage()
     {
-        if ($this->postsPage === null) {
-            $this->postsPage = $this->getPostsPageId()
+        if (!isset($this->postsPage[$storeId])) {
+            $this->postsPage[$storeId] = $this->getPostsPageId()
                 ? $this->postRepository->get($this->getPostsPageId()) 
                 : false;
         }
 
-        return $this->postsPage;
+        return $this->postsPage[$storeId];
     }
     
     /**
@@ -97,8 +107,28 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return string
      */
+    public function getRealHomepageUrl(): string
+    {
+        if ($frontPage = $this->getFrontPage()) {
+            return $frontPage->getUrl();
+        }
+        
+        return $this->url->getHomeUrl();
+    }
+    
+    /**
+     * @return string
+     */
     private function getShowOnFront(): string
     {
         return (string)$this->optionRepository->get('show_on_front');
+    }
+    
+    /**
+     * @return int
+     */
+    private function getStoreId(): int
+    {
+        return (int)$this->storeManager->getStore()->getId();
     }
 }

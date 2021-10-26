@@ -21,7 +21,7 @@ class TaxonomyManager
      * @return void
      */
     public function __construct(
-        \FishPig\WordPress\App\Data\Taxonomy $dataSource
+        \FishPig\WordPress\Model\TaxonomyRepository $dataSource
     ) {
         $this->dataSource = $dataSource;
     }

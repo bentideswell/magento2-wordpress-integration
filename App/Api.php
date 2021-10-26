@@ -13,35 +13,39 @@ class Api
     /**
      * @var array
      */
-    private $data = null;
+    private $data = [];
 
     /**
      * @param \FishPig\WordPress\App\Api\Rest\Client $apiClient
      */
     public function __construct(
-        \FishPig\WordPress\App\Api\Rest\Client $apiClient
+        \FishPig\WordPress\App\Api\Rest\Client $apiClient,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->apiClient = $apiClient;
+        $this->storeManager = $storeManager;
     }
-    
+
     /**
      * @param $key = null
      * @return mixed
      */
     public function getData($key = null)
     {
-        if ($this->data === null) {
-            $this->data = $this->apiClient->getJson('/fishpig/v1/data');
+        $storeId = (int)$this->storeManager->getStore()->getId();
+
+        if (!isset($this->data[$storeId])) {
+            $this->data[$storeId] = $this->apiClient->getJson('/fishpig/v1/data');
         }
-        
+
         if ($key === null) {
-            return $this->data;
+            return $this->data[$storeId];
         }
-        
-        if (!isset($this->data[$key])) {
-            throw new \Exception('Unable to get ' . $key . ' from API data.');
+
+        if (!isset($this->data[$storeId][$key])) {
+            throw new \FishPig\WordPress\App\Api\MissingApiDataException('Unable to get ' . $key . ' from API data.');
         }
-        
-        return $this->data[$key];
+
+        return $this->data[$storeId][$key];
     }
 }

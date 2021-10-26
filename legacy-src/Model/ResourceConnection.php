@@ -13,18 +13,29 @@ class ResourceConnection
     /**
      * @var
      */
-    public function __construct(\FishPig\WordPress\App\ResourceConnection $resourceConnection)
-    {
+    public function __construct(
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection
+    ) {
         $this->resourceConnection = $resourceConnection;
     }
 
     /**
      * @param  string $alias
+     * @param  bool   $canBeUsedInNetwork = true
      * @return string
      */
-    public function getTable($alias)
+    public function getTable($alias, bool $canBeUsedInNetwork = true)
     {
-        return $this->resourceConnection->getTableName($alias);
+        return $this->resourceConnection->getTable($alias, $canBeUsedInNetwork);
+    }
+    
+    /**
+     * @param  string $alias
+     * @return string
+     */
+    public function getTableName($alias)
+    {
+        return $this->getTable($alias);
     }
 
     /**

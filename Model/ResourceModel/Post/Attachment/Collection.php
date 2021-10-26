@@ -1,14 +1,14 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
-namespace FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection;
+declare(strict_types=1);
 
-use FishPig\WordPress\Model\ResourceModel\Post\Collection;
+namespace FishPig\WordPress\Model\ResourceModel\Post\Attachment;
 
-abstract class AbstractAttachmentCollection extends Collection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
 
     /**

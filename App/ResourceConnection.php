@@ -94,10 +94,11 @@ class ResourceConnection
                 $db->quoteInto('SET NAMES ?', $config['charset'])
             );
 
-            $tablesExistCacheKey = md5(implode(':', $config));
+            $tablesExistCacheKey = md5($storeId . '::' . implode(':', $config));
 
             if ((int)$this->cache->load($tablesExistCacheKey) !== 1) {
-                $targetTable = $config['table_prefix'] . 'posts';
+                $targetTable = $this->getTable('posts');
+
                 $tableExists = false !== $db->fetchOne(
                     $db->select()
                         ->from('information_schema.tables', 'TABLE_NAME')
@@ -122,7 +123,7 @@ class ResourceConnection
      * @param  bool $canBeUsedInNetwork = true
      * @return string
      */
-    public function getTable($table, $canBeUsedInNetwork = true): string
+    public function getTable($table, bool $canBeUsedInNetwork = true): string
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
 
@@ -136,32 +137,32 @@ class ResourceConnection
             return $this->tableMap[$storeId][$table];
         }
 
-        $tablePrefix = $this->getTablePrefix();
-
-        if ($tablePrefix && strpos($table, $tablePrefix) === 0) {
-            $cleanedTableName = substr($table, strlen($tablePrefix));;
-
-            if (isset($this->tableMap[$storeId][$cleanedTableName])) {
-                return $this->tableMap[$storeId][$cleanedTableName];
-            }
-        }
-
-        if (!$canBeUsedInNetwork) {
-            $mappedTable = $this->getTablePrefix() . $table;
+        if ($canBeUsedInNetwork) {
+            $tablePrefix = $this->getNetworkTablePrefix();            
         } else {
-            $mappedTable = $this->getTablePrefix() . $table;        
+            $tablePrefix = $this->getTablePrefix();
         }
+
+        $mappedTable = $tablePrefix . $table;
 
         return $this->tableMap[$storeId][$table] = $mappedTable;
+    }
+    
+    /**
+     * @return string
+     */
+    public function getTablePrefix(): string
+    {
+        $storeId = (int)$this->storeManager->getStore()->getId();
+
+        return isset($this->tablePrefix[$storeId]) ? $this->tablePrefix[$storeId] : '';
     }
 
     /**
      * @return string
      */
-    private function getTablePrefix(): string
+    public function getNetworkTablePrefix(): string
     {
-        $storeId = (int)$this->storeManager->getStore()->getId();
-
-        return isset($this->tablePrefix[$storeId]) ? $this->tablePrefix[$storeId] : '';
+        return $this->getTablePrefix();
     }
 }

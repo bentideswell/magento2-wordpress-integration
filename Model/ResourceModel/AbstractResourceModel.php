@@ -44,11 +44,19 @@ abstract class AbstractResourceModel extends \Magento\Framework\Model\ResourceMo
     }
 
     /**
-     * @return
+     * @return string
      */
     public function getTablePrefix()
     {
         return $this->resourceConnection->getTablePrefix();
+    }
+    
+    /**
+     * @return \FishPig\WordPress\App\ResourceConnection
+     */
+    public function getResourceConnection()
+    {
+        return $this->resourceConnection;
     }
     
     /**
@@ -71,9 +79,9 @@ abstract class AbstractResourceModel extends \Magento\Framework\Model\ResourceMo
     }
     
     /**
-     * @return Select
+     * @return \Magento\Framework\DB\Select
      */
-    public function filterLoadSelect($select, $object = null)
+    public function filterLoadSelect(\Magento\Framework\DB\Select $select, $object = null): \Magento\Framework\DB\Select
     {
         return $select;
     }

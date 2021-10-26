@@ -16,7 +16,7 @@ class PostTypeManager
     private $postTypeRepository;
 
     /**
-     * @param  \FishPig\WordPress\App\Data\PostType $dataSource
+     * @param \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository
      */
     public function __construct(\FishPig\WordPress\Model\PostTypeRepository $postTypeRepository)
     {

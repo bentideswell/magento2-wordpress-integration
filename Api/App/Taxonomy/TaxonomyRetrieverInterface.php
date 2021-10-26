@@ -6,8 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Data;
+namespace FishPig\WordPress\Api\App\Taxonomy;
 
-class Taxonomy extends EntityType
+interface TaxonomyRetrieverInterface
 {
+    /**
+     * @return []
+     */
+    public function getData(): array;
 }

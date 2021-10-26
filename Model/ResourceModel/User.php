@@ -17,4 +17,16 @@ class User extends AbstractResourceModel
     {
         $this->_init('users', 'ID');
     }
+    
+    /**
+     * @return string
+     */
+    public function getMainTable()
+    {
+        if (empty($this->_mainTable)) {
+            return parent::getMainTable();
+        }
+
+        return $this->getResourceConnection()->getTable($this->_mainTable, false);
+    }
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="FishPig\WordPress\Model\UrlInterface" type="FishPig\WordPress\App\Url"/>
+    <preference for="FishPig\WordPress\Model\NetworkInterface" type="FishPig\WordPress\App\Network"/>
+    <preference for="FishPig\WordPress\Model\PluginManagerInterface" type="FishPig\WordPress\App\Plugin"/>
     <!--
     /**
      * Integration Tests
@@ -17,6 +19,7 @@
 				<item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
 				<item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
 				<!--
+    				ToDo
 				<item name="network" xsi:type="object">FishPig\WordPress\Model\Integration\NetworkTest</item>
 				<item name="core" xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
 				-->
@@ -95,10 +98,10 @@
      * Post Type
      */
     -->
-    <type name="FishPig\WordPress\App\Data\PostType">
+    <type name="FishPig\WordPress\App\PostType">
 		<arguments>
 			<argument name="dataRetrievers" xsi:type="array">
-				<item name="default" xsi:type="object">FishPig\WordPress\App\Data\PostType\DataRetriever</item>
+				<item name="default" xsi:type="object">FishPig\WordPress\App\PostType\DataRetriever</item>
 			</argument>
 		</arguments>
     </type>
@@ -107,10 +110,10 @@
      * Taxonomy
      */
     -->
-    <type name="FishPig\WordPress\App\Data\Taxonomy">
+    <type name="FishPig\WordPress\App\Taxonomy">
 		<arguments>
 			<argument name="dataRetrievers" xsi:type="array">
-				<item name="default" xsi:type="object">FishPig\WordPress\App\Data\Taxonomy\DataRetriever</item>
+				<item name="default" xsi:type="object">FishPig\WordPress\App\Taxonomy\DataRetriever</item>
 			</argument>
 		</arguments>
     </type>
@@ -137,13 +140,13 @@
     </type>
     <type name="FishPig\WordPress\Model\PostTypeRepository">
 		<arguments>
-			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Data\PostType</argument>
+			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\PostType</argument>
 			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\PostTypeFactory</argument>
 		</arguments>
     </type>
     <type name="FishPig\WordPress\Model\TaxonomyRepository">
 		<arguments>
-			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Data\Taxonomy</argument>
+			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Taxonomy</argument>
 			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TaxonomyFactory</argument>
 		</arguments>
     </type>   
@@ -160,6 +163,19 @@
 		</arguments>
     </type>
     <virtualType name="FishPig\WordPress\Model\Post\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string">postmeta</argument>
+            <argument name="objectField" xsi:type="string">post_id</argument>
+        </arguments>
+    </virtualType>
+    <type name="FishPig\WordPress\Model\Post\Attachment">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\Attachment\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <virtualType name="FishPig\WordPress\Model\Post\Attachment\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
         <arguments>
             <argument name="tableName" xsi:type="string">postmeta</argument>
             <argument name="objectField" xsi:type="string">post_id</argument>
@@ -217,6 +233,12 @@
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
 			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post\Attachment</argument>
 		</arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection">

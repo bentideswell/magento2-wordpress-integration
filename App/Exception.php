@@ -6,12 +6,8 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\App\Data\PostType;
+namespace FishPig\WordPress\App;
 
-interface PostTypeRetrieverInterface
+class Exception extends \Exception
 {
-    /**
-     * @return []
-     */
-    public function getData(): array;
 }

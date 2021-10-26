@@ -6,8 +6,8 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Data;
+namespace FishPig\WordPress\App\Api;
 
-class PostType extends EntityType
+class MissingApiDataException extends \FishPig\WordPress\App\Exception
 {
 }

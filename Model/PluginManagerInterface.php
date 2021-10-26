@@ -10,5 +10,9 @@ namespace FishPig\WordPress\Model;
 
 interface PluginManagerInterface
 {
-    
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function isEnabled(string $name): bool;
 }

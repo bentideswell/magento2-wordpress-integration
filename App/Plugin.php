@@ -8,21 +8,24 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App;
 
-class Plugin
+class Plugin implements \FishPig\WordPress\Model\PluginManagerInterface
 {
     /**
      * @return void
      */
-    public function __construct(\FishPig\WordPress\Model\OptionRepository $optionRepository)
-    {
+    public function __construct(
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \FishPig\WordPress\Model\NetworkInterface $network
+    ) {
         $this->optionRepository = $optionRepository;
+        $this->network = $network;
     }
 
     /**
      * @param  string $name
      * @return bool
      */
-    public function isEnabled($name): bool
+    public function isEnabled(string $name): bool
     {
         foreach ($this->getActivePlugins() as $a => $b) {
             if (strpos($a . '-' . $b, $name) !== false) {
@@ -32,20 +35,12 @@ class Plugin
 
         return false;
     }
-    
+
     /**
      * @return []
      */
     public function getActivePlugins(): array
     {
-        /* ToDo: 
-        if ($this->network->isEnabled()) {
-            if ($networkPlugins = $this->option->getSiteOption('active_sitewide_plugins')) {
-                $plugins += (array)unserialize($networkPlugins);
-            }
-        }
-        */
-        
         return $this->optionRepository->getUnserialized('active_plugins') ?? [];
     }
 }

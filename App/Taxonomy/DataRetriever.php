@@ -6,9 +6,9 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Data\Taxonomy;
+namespace FishPig\WordPress\App\Taxonomy;
 
-class DataRetriever implements \FishPig\WordPress\Api\App\Data\Taxonomy\TaxonomyRetrieverInterface
+class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetrieverInterface
 {
     /**
      * @var

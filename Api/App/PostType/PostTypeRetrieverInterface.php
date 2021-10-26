@@ -6,9 +6,9 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\App\Data\Taxonomy;
+namespace FishPig\WordPress\Api\App\PostType;
 
-interface TaxonomyRetrieverInterface
+interface PostTypeRetrieverInterface
 {
     /**
      * @return []

@@ -76,4 +76,15 @@
     <type name="Magento\Framework\App\PageCache\Identifier">
         <plugin name="identifier-builtin-cache" type="FishPig\WordPress\Plugin\Magento\Framework\App\PageCache\IdentifierPlugin"/>
     </type>
+    <!--
+    /**
+     * Store Switching
+     */
+    -->
+    <type name="Magento\Store\ViewModel\SwitcherUrlProvider">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Store\ViewModel\SwitcherUrlProviderPlugin"/>
+    </type>
+    <type name="Magento\Store\Block\Switcher">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Store\Block\SwitcherPlugin"/>
+    </type>
 </config>

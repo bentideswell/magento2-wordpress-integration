@@ -33,12 +33,12 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
     }
     
     /**
-     * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
+     * @param  \FishPig\WordPress\Model\AbstractMetaModel $object
      * @param  string $key
      * @return mixed
      */
     public function getValue(
-        \FishPig\WordPress\Api\Data\ViewableModelInterface $object,
+        \FishPig\WordPress\Model\AbstractMetaModel $object,
         string $key
     ) {
         $cacheKey = (int)$object->getId() . '--' . $key;
