@@ -1,8 +1,12 @@
 <widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
     <widget class="FishPig\WordPress\Block\Widget\ListPosts" id="fishpig_wordpress_listposts">
-        <label>WordPress - Blog Post List</label>
+        <label>WordPress - Post List</label>
         <description>Show a list of blog posts from your FishPig WordPress Integrated blog.</description>
         <parameters>
+            <parameter name="widget_template" xsi:type="text" required="false" visible="true" sort_order="5">
+                <label>Template</label>
+                <description>Default: FishPig_WordPress::widget/post/list.phtml</description>
+            </parameter>
             <parameter name="post_limit" xsi:type="text" required="true" visible="true" sort_order="10">
                 <label>Number of Posts</label>
             </parameter>

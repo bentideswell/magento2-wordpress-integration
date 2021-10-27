@@ -15,11 +15,6 @@ class ListPosts extends Template implements BlockInterface
     /**
      *
      */
-    protected $_template = "FishPig_WordPress::widget/post/list.phtml";
-    
-    /**
-     *
-     */
     protected $collection;
 
     /**
@@ -61,12 +56,20 @@ class ListPosts extends Template implements BlockInterface
     {
         return $this->getPostCollection()->load();
     }
-
+    
     /**
      *
      */
     public function toHtml()
     {
+        if (!$this->getTemplate()) {
+            if ($template = $this->getWidgetTemplate()) {
+                $this->setTemplate($template);
+            } else {
+                $this->setTemplate('FishPig_WordPress::widget/post/list.phtml');
+            }
+        }
+
         try {
             if ($this->integrationManager->runTests() === true) {
                 return parent::toHtml();

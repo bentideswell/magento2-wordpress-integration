@@ -62,4 +62,12 @@ xsi:noNamespaceSchemaLocation="wordpress_core.xsd">
             <var name="supportComponent"/>
         </globalVariables>
     </group>
+    <group id="3d-flip-book">
+        <depends>
+            <plugin file="3d-flip-book/index.php"/>
+        </depends>
+        <globalVariables>
+            <var name="fb3d"/>
+        </globalVariables>
+    </group>
 </config>
