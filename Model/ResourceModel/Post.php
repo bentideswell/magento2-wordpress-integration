@@ -41,6 +41,9 @@ class Post extends AbstractMeta
     ) {
         $this->postTypeManager = $wpContext->getPostTypeManager();
         $this->taxonomyManager = $wpContext->getTaxonomyManager();
+        $this->postCollectionFactory = $wpContext->getFactory()->create(
+            \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory::class
+        );
 
         parent::__construct($context, $wpContext, $connectionName);
     }
@@ -306,7 +309,7 @@ class Post extends AbstractMeta
                                     throw new \Exception('Break');
                                 }
                             }
-    
+
                             // $permalinks += $buffer;
                         }
                     } catch (\Exception $e) {
@@ -334,25 +337,26 @@ class Post extends AbstractMeta
      */
     public function getPermalinks(array $filters = [], $postType)
     {
-
         $tokens = $postType->getExplodedPermalinkStructure();
         $fields = $this->getPermalinkSqlFields();
 
-        $select = $this->getConnection()
-            ->select()
-            ->from(['main_table' => $this->getMainTable()], ['id' => 'ID', 'permalink' => $this->getPermalinkSqlColumn()])
-            ->where('post_type = ?', $postType->getPostType())
-            ->where('post_status IN (?)', ['publish', 'protected', 'private']);
+        $collection = $this->postCollectionFactory->create()->addPostTypeFilter(
+            $postType->getPostType()
+        );
+
+        $collection->getSelect()->where('post_status IN (?)', ['publish', 'protected', 'private']);
 
         foreach ($filters as $field => $value) {
             if (isset($fields[$field])) {
-                $select->where($fields[$field] . ' = ?', urlencode($value));
+                $collection->getSelect()->where($fields[$field] . ' = ?', urlencode($value));
             }
         }
 
-        if ($routes = $this->getConnection()->fetchPairs($select)) {
-            foreach ($routes as $id => $permalink) {
-                $routes[$id] = urldecode($this->completePostSlug($permalink, $id, $postType));
+        if (count($collection->load()) > 0) {
+            $routes = [];
+
+            foreach ($collection as $post) {
+                $routes[$post->getId()] = urldecode($post->getPermalink());
             }
 
             return $routes;

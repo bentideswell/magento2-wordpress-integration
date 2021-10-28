@@ -1,3 +1,6 @@
+28/10/2021 - 2.0.23.11
+- Added fix for rewritten pages in WPML.
+
 28/10/2021 - 2.0.23.10
 - Update FishPig theme in WordPress.
 
