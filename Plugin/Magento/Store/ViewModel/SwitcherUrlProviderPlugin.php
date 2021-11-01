@@ -14,14 +14,22 @@ class SwitcherUrlProviderPlugin
      * @var \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface
      */
     private $storeSwitcherUrlProvider = null;
+    
+    /**
+     * @var \FishPig\WordPress\App\Logger $logger
+     */
+    private $logger = null;
 
     /**
      * @param \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
+     * @param \FishPig\WordPress\App\Logger $logger
      */
     public function __construct(
-        \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
+        \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null,
+        \FishPig\WordPress\App\Logger $logger
     ) {        
         $this->storeSwitcherUrlProvider = $storeSwitcherUrlProvider;
+        $this->logger = $logger;
     }
 
     /**
@@ -33,8 +41,12 @@ class SwitcherUrlProviderPlugin
         \Magento\Store\Model\Store $store
     ) {
         if ($this->storeSwitcherUrlProvider !== null) {
-            if ($redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store)) {
-                return $redirectUrl;
+            try{
+                if ($redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store)) {
+                    return $redirectUrl;
+                }
+            } catch (\Exception $e) {
+                $this->logger->error($e);
             }
         }
         

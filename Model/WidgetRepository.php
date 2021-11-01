@@ -1,41 +1,43 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use Magento\Framework\View\Layout;
-use FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget;
-
-/* ToDo: change to WidgetRepository */
-class WidgetManager
-{
-    
+class WidgetRepository
+{    
     /**
      * @var array
      */
-    protected $widgets = [];
+    private $widgets = [];
 
     /**
-     * @var Layout
+     * @var \Magento\Framework\View\Layout
      */
-    protected $layout;
+    private $layout;
 
     /**
-     * @param  ModuleManager $moduleManaher
+     * @param  \Magento\Framework\View\Layout $layout
+     * @param  array $widgets = []
      * @return void
      */
-    public function __construct(array $widgets, Layout $layout)
-    {
-        $this->widgets = $widgets;
+    public function __construct(
+        \Magento\Framework\View\Layout $layout,
+        array $widgets = []
+    ) {
         $this->layout  = $layout;
+        $this->widgets = $widgets;
     }
 
     /**
-     * @param  string @widgetName
+     * @param  string $widgetName
      * @return string|false
      */
-    public function getWidget($widgetName)
+    public function get(string $widgetName)
     {
         $widgetIndex = preg_match("/([0-9]{1,})$/", $widgetName, $widgetIndexMatch) ? (int)$widgetIndexMatch[1] : 0;
         $widgetName  = rtrim(preg_replace("/-[0-9]+$/i", '', $widgetName), '-');
@@ -53,7 +55,7 @@ class WidgetManager
             ->setWidgetName($widgetName)
             ->setWidgetIndex($widgetIndex);
 
-        if ($widgetBlock instanceof AbstractWidget) {
+        if ($widgetBlock instanceof \FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget) {
             return $widgetBlock;
         }
 

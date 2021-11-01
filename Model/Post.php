@@ -203,7 +203,10 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
                 $excerpt .= sprintf(' <a href="%s" class="read-more">%s</a>', $this->getUrl(), $anchor);
             }
 
-            $excerpt = strip_tags($this->formatContentString($excerpt), '<a><img><strong>');
+            $excerpt = strip_tags(
+                $this->shortcodeFactory->create()->setShortcode($excerpt)->setPost($this)->toHtml(),
+                '<a><img><strong>'
+            );
 
             return $excerpt;
         }
@@ -377,29 +380,20 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
                     $renderedContent = $this->shortcodeFactory->create()->setShortcode($renderedContent)->setPost($this)->toHtml();
                 }
 
-                return $renderedContent;
+#                return $renderedContent;
             }
         }
 
         $key = '__processed_post_content';
 
         if (!$this->hasData($key)) {
-            $content = $this->formatContentString($content);
-
-            $this->setData($key, $content);
+            $this->setData(
+                $key, 
+                $this->shortcodeFactory->create()->setShortcode($content)->setPost($this)->toHtml()
+            );
         }
 
         return $this->getData($key);
-    }
-
-    /**
-     *
-     */
-    protected function formatContentString($postContent)
-    {
-        $postContent = $this->shortcodeFactory->create()->setShortcode($postContent)->setPost($this)->toHtml();
-
-        return $postContent;
     }
 
     /**

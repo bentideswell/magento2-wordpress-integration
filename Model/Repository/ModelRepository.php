@@ -48,6 +48,37 @@ abstract class ModelRepository
     }
     
     /**
+     * @param  mixed $id
+     * @return false|\Magento\Framework\DataObject
+     */
+    public function getQuietly($id)
+    {
+        try {
+            return $this->get($id);
+        } catch (NoSuchEntityException $e) {
+            return false;
+        }
+    }
+    
+    /**
+     *
+     */
+    public function getWithoutException($id): \Magento\Framework\DataObject
+    {
+        $id = (int)$id;
+        
+        if (isset($this->cache[$id])) {
+            return $this->cache[$id];
+        }
+        
+        $this->cache[$id] = false;
+
+        $object = $this->loadObject($id, $this->idFieldName);
+        
+        return $this->cache[$id] = $object;
+    }
+    
+    /**
      * @param  mixed  $value
      * @param  string $field     
      * @return \FishPig\WordPress\Api\Data\ViewableModelInterface

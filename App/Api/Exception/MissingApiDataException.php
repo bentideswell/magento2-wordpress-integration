@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Api;
+namespace FishPig\WordPress\App\Api\Exception;
 
 class MissingApiDataException extends \FishPig\WordPress\App\Exception
 {

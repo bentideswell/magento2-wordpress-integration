@@ -47,7 +47,7 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
         
         if (!isset($this->frontPage[$storeId])) {
             $this->frontPage[$storeId] = $this->getFrontPageId()
-                ? $this->postRepository->get($this->getFrontPageId()) 
+                ? $this->postRepository->getQuietly($this->getFrontPageId()) 
                 : false;
         }
 
@@ -61,7 +61,7 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
     {
         if (!isset($this->postsPage[$storeId])) {
             $this->postsPage[$storeId] = $this->getPostsPageId()
-                ? $this->postRepository->get($this->getPostsPageId()) 
+                ? $this->postRepository->getQuietly($this->getPostsPageId()) 
                 : false;
         }
 

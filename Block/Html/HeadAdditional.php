@@ -8,7 +8,6 @@ use Magento\Framework\View\Element\Context;
 use Magento\Framework\Module\Manager as ModuleManager;
 use Magento\Framework\View\Layout;
 use FishPig\WordPress\Model\Url as WPUrl;
-use FishPig\WordPress\Model\DirectoryList as WPDirectoryList;
 use Magento\Framework\View\Element\AbstractBlock;
 
 class HeadAdditional extends AbstractBlock
@@ -29,11 +28,6 @@ class HeadAdditional extends AbstractBlock
     protected $wpUrl;
 
     /**
-     * @var WPDirectoryList
-     */
-    protected $wpDirectoryList;
-
-    /**
      * @param Context $contenxt
      * @param array   $data     = []
      */
@@ -42,13 +36,11 @@ class HeadAdditional extends AbstractBlock
         ModuleManager $moduleManager,
         Layout $layout,
         WPUrl $wpUrl,
-        WPDirectoryList $wpDirectoryList,
         array $data = []
     ) {
         $this->moduleManager = $moduleManager;
         $this->layout = $layout;
         $this->wpUrl = $wpUrl;
-        $this->wpDirectoryList = $wpDirectoryList;
 
         parent::__construct($context, $data);
     }
@@ -63,7 +55,6 @@ class HeadAdditional extends AbstractBlock
         }
 
         $siteUrl = rtrim($this->wpUrl->getSiteurl(), '/') . '/';
-        $baseWpPath = $this->wpDirectoryList->getBasePath();
         $html = [];
         $layoutHandles = $this->layout->getUpdate()->getHandles();
 
@@ -74,9 +65,7 @@ class HeadAdditional extends AbstractBlock
             ];
 
             foreach ($cssFiles as $cssTypeId => $cssFile) {
-                if (is_file($baseWpPath . '/' . $cssFile)) {
-                    $html[] = sprintf('<link rel="stylesheet" id="%s" href="%s"  type="text/css" media="all"/>', $cssTypeId, $siteUrl . $cssFile);
-                }
+                $html[] = sprintf('<link rel="stylesheet" id="%s" href="%s"  type="text/css" media="all"/>', $cssTypeId, $siteUrl . $cssFile);
             }
         }
 

@@ -6,13 +6,13 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Model;
+namespace FishPig\WordPress\Api\Block;
 
-interface PluginManagerInterface
+interface ShortcodeRendererInterface
 {
     /**
-     * @param  string $name
-     * @return bool
+     * @param  string $shortcode
+     * @return string
      */
-    public function isEnabled(string $name): bool;
+    public function render(string $shortcode): string;
 }

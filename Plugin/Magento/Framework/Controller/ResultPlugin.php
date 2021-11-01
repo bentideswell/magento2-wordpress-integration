@@ -1,80 +1,36 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
-namespace FishPig\WordPress\Plugin\Magento\Framework\Controller;
+declare(strict_types=1);
 
-use FishPig\WordPress\Model\AssetInjectorFactory;
-use FishPig\WordPress\Model\AssetInjector;
-use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\App\Response\Http as ResponseHttp;
-use Magento\Framework\App\ResponseInterface;
+namespace FishPig\WordPress\Plugin\Magento\Framework\Controller;
 
 class ResultPlugin
 {
     /**
-     * @var AssetInjectorFactory
+     * @param \FishPig\WordPress\App\Request\AssetProvider $assetProvider
      */
-    protected $assetInjectorFactory;
-
-    /**
-     * This is required for Magento 2.1.9 and lower as 2.1.9 doesn't pass
-     * method arguments to 'after' plugins. THis is fixed in 2.2.0
-     *
-     * @var ResponseInterface
-     */
-    protected $response;
-
-    /**
-     * @param AssetInjectorFactory $assetInjectorFactory
-     * @param ResponseHttp         $response
-     */
-    public function __construct(AssetInjectorFactory $assetInjectorFactory, ResponseHttp $response)
-    {
-        $this->response = $response;
-        $this->assetInjectorFactory = $assetInjectorFactory;
+    public function __construct(
+        \FishPig\WordPress\App\Request\AssetProvider $assetProvider
+    ) {
+        $this->assetProvider = $assetProvider;
     }
 
     /**
-     * Inject any required assets into the response body
-     *
-     * @param  \Magento\Framework\Controller\ResultInterface $subject
-     * @param  \Magento\Framework\Controller\ResultInterface $result
-     * @param  \Magento\Framework\App\Response\Http          $respnse
+     * @param  \Magento\Framework\Controller\ResultInterface $subject,
+     * @param  \Magento\Framework\Controller\ResultInterface $result,
+     * @param  \Magento\Framework\App\Response\Http $response
      * @return \Magento\Framework\Controller\ResultInterface
      */
     public function afterRenderResult(
-        ResultInterface $subject,
-        ResultInterface $result,
-        ResponseInterface $response = null
-    ) {
-        // If Magento 2.1.9 or lower, $response won't be passed so load it separately
-        if (!$response) {
-            $response = $this->response;
-        }
-
-        $bodyHtml = $this->transformHtml($response->getBody());
-
-        /**
-         * This is usually defined in the AssetInjector but moving it here stops the AssetInjector from being created as often
-         */
-        if (AssetInjector::isAbspathDefined()) {
-            if ($newBodyHtml = $this->assetInjectorFactory->create()->process($bodyHtml)) {
-                $bodyHtml = $newBodyHtml;
-            }
-        }
-
-        $response->setBody($bodyHtml);
-
+        \Magento\Framework\Controller\ResultInterface $subject,
+        \Magento\Framework\Controller\ResultInterface $result,
+        \Magento\Framework\App\Response\Http $response
+    ): \Magento\Framework\Controller\ResultInterface {
+        $this->assetProvider->provideAssets($response);
         return $result;
-    }
-
-    /**
-     * @param  string $html
-     * @return string
-     */
-    public function transformHtml($html)
-    {
-        return $html;
     }
 }

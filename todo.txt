@@ -23,3 +23,5 @@ Rename interfaces where possible
 Move interfaces from Api\Data\App to Api\App
 
 Remove data dir from post types and taxonomies
+
+Copy over widget_template changes from live

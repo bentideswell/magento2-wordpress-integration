@@ -2,7 +2,6 @@
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference for="FishPig\WordPress\Model\UrlInterface" type="FishPig\WordPress\App\Url"/>
     <preference for="FishPig\WordPress\Model\NetworkInterface" type="FishPig\WordPress\App\Network"/>
-    <preference for="FishPig\WordPress\Model\PluginManagerInterface" type="FishPig\WordPress\App\Plugin"/>
     <!--
     /**
      * Integration Tests
@@ -291,6 +290,11 @@
 			</argument>
 		</arguments>
 	</type>
+	
+    <type name="Magento\Csp\Model\Collector\CspWhitelistXmlCollector">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Csp\Model\Collector\CspWhitelistXmlCollectorPlugin"/>
+    </type>
+    
     <!--
     /**
      * Review and Remove

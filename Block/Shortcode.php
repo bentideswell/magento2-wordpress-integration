@@ -1,16 +1,34 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block;
 
-use FishPig\WordPress\Block\AbstractBlock;
-
-class Shortcode extends AbstractBlock
+class Shortcode extends \Magento\Framework\View\Element\AbstractBlock
 {
     /**
-     * Render html output
-     *
+     * @var array
+     */
+    private $shortcodeRendererPool = [];
+
+    /**
+     * @param \Magento\Framework\View\Element\Context $context
+     * @param array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Context $context,
+        array $shortcodeRendererPool = [],
+        array $data = []
+    ) {
+        $this->shortcodeRendererPool = $shortcodeRendererPool;
+        parent::__construct($context, $data);
+    }
+    
+    /**
      * @return string
      */
     protected function _toHtml()
@@ -23,17 +41,20 @@ class Shortcode extends AbstractBlock
             return '';
         }
 
+        foreach ($this->shortcodeRendererPool as $shortcodeRenderer) {
+            if ($shortcodeRenderer instanceof \FishPig\WordPress\Api\Block\ShortcodeRendererInterface) {
+                $shortcode = $shortcodeRenderer->render($shortcode);
+            }
+        }
+        
         return $shortcode;
-        return $this->shortcodeRenderer->render($shortcode);
     }
 
     /**
-     *
-     *
      * @return string
      */
-    public function getShortcode()
+    public function getShortcode(): string
     {
-        return str_replace("\\\"", '"', $this->getData('shortcode'));
+        return str_replace("\\\"", '"', (string)$this->getData('shortcode'));
     }
 }

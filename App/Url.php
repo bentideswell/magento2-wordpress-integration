@@ -207,6 +207,13 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCurrentUrl(): string
+    {
+        return $this->magentoUrl->getCurrentUrl();
+    }
+    /**
      * @deprecated
      */
     public function getUrl($uri = ''): string
