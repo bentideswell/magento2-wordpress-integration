@@ -59,6 +59,8 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getPostsPage()
     {
+        $storeId = $this->getStoreId();
+
         if (!isset($this->postsPage[$storeId])) {
             $this->postsPage[$storeId] = $this->getPostsPageId()
                 ? $this->postRepository->getQuietly($this->getPostsPageId()) 

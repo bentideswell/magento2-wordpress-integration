@@ -29,13 +29,17 @@ class AssetProvider implements \FishPig\WordPress\Api\App\Request\AssetProviderI
     }
     
     /**
-     * @param  \Magento\Framework\App\Response\Http $response
+     * @param  \Magento\Framework\App\RequestInterface $request
+     * @param  \Magento\Framework\App\ResponseInterface $response
      * @return void
      */
-    public function provideAssets(\Magento\Framework\App\Response\Http $response): void
+    public function provideAssets(
+        \Magento\Framework\App\RequestInterface $request,
+        \Magento\Framework\App\ResponseInterface $response
+    ): void
     {
         foreach ($this->assetProviderPool as $assetProvider) {
-            $assetProvider->provideAssets($response);
+            $assetProvider->provideAssets($request, $response);
         }
     }
 }

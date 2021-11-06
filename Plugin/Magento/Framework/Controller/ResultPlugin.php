@@ -14,9 +14,11 @@ class ResultPlugin
      * @param \FishPig\WordPress\App\Request\AssetProvider $assetProvider
      */
     public function __construct(
-        \FishPig\WordPress\App\Request\AssetProvider $assetProvider
+        \FishPig\WordPress\App\Request\AssetProvider $assetProvider,
+        \Magento\Framework\App\RequestInterface $request
     ) {
         $this->assetProvider = $assetProvider;
+        $this->request = $request;
     }
 
     /**
@@ -29,8 +31,13 @@ class ResultPlugin
         \Magento\Framework\Controller\ResultInterface $subject,
         \Magento\Framework\Controller\ResultInterface $result,
         \Magento\Framework\App\Response\Http $response
-    ): \Magento\Framework\Controller\ResultInterface {
-        $this->assetProvider->provideAssets($response);
+    ): \Magento\Framework\Controller\ResultInterface
+    {
+        $this->assetProvider->provideAssets(
+            $this->request,
+            $response
+        );
+
         return $result;
     }
 }

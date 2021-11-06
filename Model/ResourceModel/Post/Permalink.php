@@ -73,6 +73,8 @@ class Permalink
                             ]
                         )->where(
                             'post_name IN (?)', explode('/', $pathInfo)
+                        )->where(
+                            'post_type = ?', $postType->getPostType()
                         )
                     )
                 );
@@ -116,7 +118,6 @@ class Permalink
             }
         }
 
-exit;
         return $this->pathInfoIdMap[$cacheKey];
     }
 

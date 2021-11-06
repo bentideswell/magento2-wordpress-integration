@@ -13,7 +13,7 @@ class Client
     /**
      * @const int
      */
-    const CACHE_VERSION = 1;
+    const CACHE_VERSION = 2;
 
     /**
      * @param \FishPig\WordPress\App\Cache $cache
@@ -35,9 +35,12 @@ class Client
         $cacheKey = $this->getCacheKey($url);
         
         if ($data = $this->cache->load($cacheKey)) {
+            $this->log(date('Y-m-d H:i:s') . ' - CACHED - ' . $url);
             return $data;
         }
 
+        $this->log(date('Y-m-d H:i:s') . ' -  GET - ' . $url);
+        
         $ch = curl_init();
 
         curl_setopt_array($ch, [
@@ -49,7 +52,17 @@ class Client
 
         $data = curl_exec($ch);
 
+        $httpCode = (int)curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+        
         curl_close($ch);
+
+        if (strpos($data, '<h1>404</h1>') !== false) {
+            $httpCode = 404;
+        }
+
+        if ($httpCode !== 200) {
+            throw new \FishPig\WordPress\App\Http\InvalidStatusException($url, $httpCode);
+        }
 
         if ($cacheKey) {
             $this->cache->save($cacheKey, $data);
@@ -65,5 +78,18 @@ class Client
     private function getCacheKey($url): string
     {
         return md5(get_class($this) . self::CACHE_VERSION . $url);
+    }
+    
+    /**
+     * @param string $msg
+     * @return void
+     */
+    private function log(string $msg): void
+    {
+        $e = new \Exception('');
+        $msg .= "\n\n" . preg_replace('/\#6.*$/s', '', $e->getTraceAsString()) . PHP_EOL;
+        
+        
+        file_put_contents(BP . '/var/log/wordpress-api-requests.log', $msg . PHP_EOL, FILE_APPEND);   
     }
 }

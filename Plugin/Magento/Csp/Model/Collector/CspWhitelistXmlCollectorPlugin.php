@@ -30,7 +30,7 @@ class CspWhitelistXmlCollectorPlugin
     public function afterCollect(CspWhitelistXmlCollector $cspWhitelistXmlCollector, $defaultPolicies = []): array
     {
         $wpDomain = $this->getWPDomain();
-        
+
         foreach ($this->getPolicyIds() as $policyId) {
             $defaultPolicies['fishpig_wp_' . $policyId] = new FetchPolicy(
                 $policyId,

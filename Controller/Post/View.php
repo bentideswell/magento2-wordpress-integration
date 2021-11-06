@@ -151,7 +151,7 @@ class View extends \FishPig\WordPress\Controller\Action
         $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $post->getId();
 
         if ($template) {
-            $templateName = str_replace('.php', '', $template);
+            $templateName = str_replace('-', '_', str_replace('.php', '', $template));
 
             $layoutHandles[] = 'wordpress_post_view_' . $templateName;
             $layoutHandles[] = 'wordpress_post_view_' . $templateName . '_' . $post->getId();
