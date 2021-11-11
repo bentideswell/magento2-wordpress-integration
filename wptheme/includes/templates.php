@@ -3,7 +3,7 @@
  *
  */
 add_action('wp_loaded', function() {
-    if ($post_types = get_post_types(array('public' => true, '_builtin' => false))) {
+    if ($post_types = get_post_types(['public' => true, '_builtin' => false])) {
         foreach ($post_types as $post_type) {
             add_filter(
                 "theme_{$post_type}_templates", 

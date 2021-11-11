@@ -15,5 +15,5 @@ add_action('widgets_init', function() {
 
     global $wp_widget_factory;
 
-    remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style'));
+    remove_action('wp_head', [$wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style']);
 });

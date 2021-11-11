@@ -26,9 +26,17 @@ add_action(
             [
                 'methods' => 'GET',
                 'callback' => function() {
-                    return apply_filters('fishpig_api_v1_data', [
+                    $data = apply_filters('fishpig_api_v1_data', [
                         '_time' => time()
                     ]);
+                    
+                    foreach ($data as $key => $value) {
+                        if (!is_array($value) && !is_string($value) && is_callable($value)) {
+                            $data[$key] = $value();
+                        }
+                    }
+                    
+                    return $data;
                 },
             ]
         );
@@ -43,6 +51,22 @@ add_action(
                     return ['hash' => FISHPIG_THEME_HASH];
                 },
             ]
+        );
+        
+        
+        // Allow CORS
+        remove_filter( 'rest_pre_serve_request', 'rest_send_cors_headers' );
+        
+        add_filter(
+            'rest_pre_serve_request',
+            function($value) {
+        		header('Access-Control-Allow-Origin: ' .get_home_url());
+                header('Access-Control-Allow-Methods: GET' );
+                header('Access-Control-Allow-Credentials: true' );
+                header('Access-Control-Expose-Headers: Link', false );
+
+                return $value;
+            }
         );
     }
 );

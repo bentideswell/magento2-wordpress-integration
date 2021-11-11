@@ -11,10 +11,10 @@ namespace FishPig\WordPress\Plugin\Magento\Framework\Controller;
 class ResultPlugin
 {
     /**
-     * @param \FishPig\WordPress\App\Request\AssetProvider $assetProvider
+     * @param \FishPig\WordPress\App\View\AssetProvider $assetProvider
      */
     public function __construct(
-        \FishPig\WordPress\App\Request\AssetProvider $assetProvider,
+        \FishPig\WordPress\App\View\AssetProvider $assetProvider,
         \Magento\Framework\App\RequestInterface $request
     ) {
         $this->assetProvider = $assetProvider;

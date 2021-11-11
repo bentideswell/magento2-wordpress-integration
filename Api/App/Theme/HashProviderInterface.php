@@ -6,8 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Theme;
+namespace FishPig\WordPress\Api\App\Theme;
 
-class RemoteHashRetrieverResolver extends \FishPig\WordPress\App\Integration\Mode\ObjectResolver
+interface HashProviderInterface
 {
+    /**
+     * @return string
+     */
+    public function getHash(): string;
 }

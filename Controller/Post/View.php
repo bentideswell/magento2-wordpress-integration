@@ -48,7 +48,8 @@ class View extends \FishPig\WordPress\Controller\Action
         $post = $this->postRepository->get((int)$request->getParam('id'));
         
         $this->registry->register($post::ENTITY, $post);
-
+        $this->registry->register(\FishPig\WordPress\Controller\Action::ENTITY_CURRENT, $post);
+        
         if ($post->isFrontPage()) {
             // URL is post URL but this is front page so redirect to home URL
             if (!$this->url->doUrlsMatch($this->url->getHomeUrl())) {

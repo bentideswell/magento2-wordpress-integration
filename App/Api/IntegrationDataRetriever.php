@@ -19,10 +19,10 @@ class IntegrationDataRetriever
      * @param \FishPig\WordPress\App\Api\Rest\Client $apiClient
      */
     public function __construct(
-        \FishPig\WordPress\App\Api\Rest\Client $apiClient,
+        \FishPig\WordPress\App\Api\Rest\RequestManager $restRequestManager,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
-        $this->apiClient = $apiClient;
+        $this->restRequestManager = $restRequestManager;
         $this->storeManager = $storeManager;
     }
 
@@ -35,7 +35,7 @@ class IntegrationDataRetriever
         $storeId = (int)$this->storeManager->getStore()->getId();
 
         if (!isset($this->data[$storeId])) {
-            $this->data[$storeId] = $this->apiClient->getJson('/fishpig/v1/data');
+            $this->data[$storeId] = $this->restRequestManager->getJson('/fishpig/v1/data');
         }
 
         if ($key === null) {

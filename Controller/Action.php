@@ -8,13 +8,17 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Controller;
 
-
 abstract class Action extends \Magento\Framework\App\Action\Action
 {
     /**
      * @const string
      */
     const LAYOUT_HANDLE_DEFAULT = 'wordpress_default';
+
+    /**
+     * @const string
+     */
+    const ENTITY_CURRENT = 'wordpress_entity_current';
 
     /**
      * @var int

@@ -19,12 +19,12 @@ class Theme
      * @return void
      */
     public function __construct(
-        \FishPig\WordPress\App\Theme\LocalHashGenerator $localHashGenerator,
-        \FishPig\WordPress\App\Theme\RemoteHashRetrieverResolver $remoteHashRetrieverResolver,
+        \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
+        \FishPig\WordPress\App\Theme\RemoteHashProvider $remoteHashProvider,
         \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
-        $this->localHashGenerator = $localHashGenerator;
-        $this->remoteHashRetrieverResolver = $remoteHashRetrieverResolver;
+        $this->localHashProvider = $localHashProvider;
+        $this->remoteHashProvider = $remoteHashProvider;
         $this->optionRepository = $optionRepository;
     }
 
@@ -47,17 +47,17 @@ class Theme
     /**
      * @return string
      */
-    public function getLocalHash(): string
+    private function getLocalHash(): string
     {
-        return $this->localHashGenerator->getHash();
+        return $this->localHashProvider->getHash();
     }
     
     /**
      * @return string
      */
-    public function getRemoteHash(): string
+    private function getRemoteHash(): string
     {
-        return $this->remoteHashRetrieverResolver->resolve()->getHash();
+        return $this->remoteHashProvider->getHash();
     }
     
     /**

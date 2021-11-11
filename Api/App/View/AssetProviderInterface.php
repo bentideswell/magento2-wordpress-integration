@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\Api\App\Request;
+namespace FishPig\WordPress\Api\App\View;
 
 interface AssetProviderInterface
 {

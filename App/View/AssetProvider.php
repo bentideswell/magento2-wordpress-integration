@@ -6,9 +6,11 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Request;
+namespace FishPig\WordPress\App\View;
 
-class AssetProvider implements \FishPig\WordPress\Api\App\Request\AssetProviderInterface
+use FishPig\WordPress\Api\App\View\AssetProviderInterface;
+
+class AssetProvider implements AssetProviderInterface
 {
     /**
      * @var []
@@ -22,8 +24,16 @@ class AssetProvider implements \FishPig\WordPress\Api\App\Request\AssetProviderI
         array $assetProviders = []
     ) {
         foreach ($assetProviders as $assetProviderId => $assetProvider) {
-            if ($assetProvider instanceof \FishPig\WordPress\Api\App\Request\AssetProviderInterface) {
+            if ($assetProvider instanceof AssetProviderInterface) {
                 $this->assetProviderPool[$assetProviderId] = $assetProvider;
+            } else {
+                throw new \Magento\Framework\Exception\InvalidArgumentException(
+                    __(
+                        '%1 does not implement %2.',
+                        get_class($assetProvider),
+                        AssetProviderInterface::class
+                    )
+                );
             }
         }
     }

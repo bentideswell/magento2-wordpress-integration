@@ -6,22 +6,22 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Mode\External\Theme;
+namespace FishPig\WordPress\App\Theme;
 
-class RemoteHashRetriever
+class LocalHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProviderInterface
 {
     /**
      * @var string
      */
     private $hash = null;
-    
+
     /**
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Api\Rest\Client $apiClient
+        \FishPig\WordPress\App\Theme\FileCollector $themeFileCollector
     ) {
-        $this->apiClient = $apiClient;
+        $this->themeFileCollector = $themeFileCollector;
     }
 
     /**
@@ -30,15 +30,15 @@ class RemoteHashRetriever
     public function getHash(): string
     {
         if ($this->hash === null) {
-            $this->hash = '';
+            $hashes = [];
             
-            if ($data = $this->apiClient->getJson('/fishpig/v1/theme-hash')) {
-                if (isset($data['hash'])) {
-                    $this->hash = $data['hash'];
-                }
+            foreach ($this->themeFileCollector->getFiles() as $file) {
+                $hashes[] = hash_file('md5', $file);
             }
+        
+            $this->hash = md5(implode('', $hashes));
         }
-
+        
         return $this->hash;
     }
 }

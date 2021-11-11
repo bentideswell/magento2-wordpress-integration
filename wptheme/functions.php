@@ -13,27 +13,24 @@
  *
  */
 define('FISHPIG_THEME_HASH', '88a553fe7a5b56d02d04928bd44cdc19');
+define('FISHPIG_THEME_INCLUDES_DIR', __DIR__ . '/includes');
+define('FISHPIG_THEME_ADDONS_DIR', __DIR__ . '/add-ons');
 
+include_once FISHPIG_THEME_INCLUDES_DIR . '/api.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/cleanup.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/fpc.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/http-headers.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/init.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/misc.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/preview-urls.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/redirects.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/templates.php';
+include_once FISHPIG_THEME_INCLUDES_DIR . '/widgets.php';
 
-
-/**
- *
- */
-$includesDir = __DIR__ . '/includes';
-if (is_dir($includesDir)) {
-    $files = [];
-    
-    foreach (scandir($includesDir) as $file) {
+if (is_dir(FISHPIG_THEME_ADDONS_DIR)) {
+    foreach (scandir(FISHPIG_THEME_ADDONS_DIR) as $file) {
         if (strpos($file, '.php') !== false) {
-            $files[$file] = $includesDir . '/' . $file;
-        }
-    }
-    
-    if ($files) {
-        sort($files);
-        
-        foreach ($files as $file) {
-            include $file;
+            include_once FISHPIG_THEME_ADDONS_DIR . '/' . $file;
         }
     }
 }
