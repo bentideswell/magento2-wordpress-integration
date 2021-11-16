@@ -450,9 +450,9 @@ class Router implements RouterInterface
         }
 
         if (count($pathInfo) == 1 && preg_match("/^[0-9]{1,8}$/", $pathInfo[0])) {
-            $request->setParam('p', $pathInfo[0]);
+//            $request->setParam('p', $pathInfo[0]);
 
-            array_shift($pathInfo);
+//            array_shift($pathInfo);
         }
 
         $uri = urldecode(implode('/', $pathInfo));

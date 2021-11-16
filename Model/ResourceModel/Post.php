@@ -99,7 +99,7 @@ class Post extends AbstractMeta
             if ($mtoken === '%postnames%') {
                 $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
             } elseif ($taxonomy = $this->taxonomyManager->getTaxonomy(trim($mtoken, '%'))) {
-                $termData = $this->getParentTermsByPostId([$postId], $taxonomy->getTaxonomyType(), false);
+                $termData = $this->getParentTermsByPostId($postId, $taxonomy->getTaxonomyType(), false);
 
                 foreach ($termData as $key => $term) {
                     if ((int)$term['object_id'] === (int)$postId) {

@@ -30,7 +30,14 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
      */
     protected function _getLoadSelect($field, $value, $object)
     {
-        $select = parent::_getLoadSelect($field, $value, $object);
+        $select = $this->getConnection()
+            ->select()
+                ->from(
+                    [$this->tableAlias => $this->getMainTable()]
+                )->where(
+                    $this->getConnection()->quoteIdentifier(sprintf('%s.%s', $this->tableAlias, $field)) . '=?',
+                     $value
+                );
 
         $select->reset('where');
 
@@ -50,7 +57,7 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
             $select->where('taxonomy.taxonomy=?', $object->getTaxonomy());
         }
 
-        return $select->limit(1);
+        return $this->filterLoadSelect($select->limit(1), $object);
     }
 
     /**
