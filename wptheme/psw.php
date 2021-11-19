@@ -2,7 +2,7 @@
 /**
  *
  */
-define('FISHPIG_PSW_BASE_PATH_RELATIVE', 'wp-content/fishpig/js');
+define('FISHPIG_PSW_BASE_PATH_RELATIVE', 'fishpig/js');
 define('FISHPIG_PSW_BASE_PATH', ABSPATH . FISHPIG_PSW_BASE_PATH_RELATIVE);
 
 // Clear JS when an upgrade happens

@@ -20,7 +20,7 @@ class ScriptPackager
     /**
      * @const string
      */
-    const WP_JS_URL_PREFIX = 'wp-content/fishpig/js';
+    const WP_JS_URL_PREFIX = 'fishpig/js';
     
     /**
      * @var string

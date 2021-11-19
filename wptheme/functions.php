@@ -61,6 +61,8 @@ class FishPig_Theme
         $this->cleanOldFiles();
         $this->includeLocalPhpFile();
 
+        include_once __DIR__ . DIRECTORY_SEPARATOR . 'psw.php';
+        
         // We have Yoast so lets disable some redirects
         if (isset($GLOBALS['wpseo_rewrite'])) {
             remove_filter('request', array($GLOBALS['wpseo_rewrite'], 'request'));
