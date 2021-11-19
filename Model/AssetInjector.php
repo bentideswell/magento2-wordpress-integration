@@ -60,7 +60,8 @@ class AssetInjector
         ShortcodeManager $shortcode,
         WordPressURL $wpUrl,
         ScopeConfigInterface $scopeConfig,
-        \FishPig\WordPress\Model\Plugin $plugin
+        \FishPig\WordPress\Model\Plugin $plugin,
+        \FishPig\WordPress\Model\AssetInjector\AssetProvider $assetProvider
     ) {
         $this->integrationManager = $integrationManager;
         $this->storeManager = $storeManager;
@@ -71,6 +72,7 @@ class AssetInjector
         $this->wpUrl = $wpUrl;
         $this->scopeConfig = $scopeConfig;
         $this->plugin = $plugin;
+        $this->assetProvider = $assetProvider;
     }
 
     /**
@@ -130,6 +132,13 @@ class AssetInjector
             return false;
         }
 
+        if ($this->scopeConfig->isSetFlag('wordpress/setup/use_psw_for_assets')) {
+            // New asset injection method taking from upcoming 2.1 release
+            // Includes slightly more JS but is a lot more stable
+            return $this->assetProvider->provideAssets($bodyHtml, $content);
+        }
+
+        // Legacy
         $this->processMetaLinks($shortcodes, $bodyHtml, $content);
 
         $scripts = $this->extractScriptsFromContent($content);
@@ -599,6 +608,9 @@ require([" . $depsString . "], function(" . $depsTokenString .") {
                 $originalScriptUrl = $matches[1];
                 
                 if (strpos($originalScriptUrl, '//maps.google.com/maps/api/js?') !== false) {
+                    $preloads[] = $script;
+                    unset($scripts[$skey]);
+                } elseif (strpos($originalScriptUrl, 'maps.googleapis.com/maps/api/js?') !== false) {
                     $preloads[] = $script;
                     unset($scripts[$skey]);
                 } elseif (strpos($originalScriptUrl, 'google.com/recaptcha/') !== false) {

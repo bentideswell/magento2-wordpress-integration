@@ -28,6 +28,10 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>If Yes, Blog URL is displayed without Magento store code.</comment>
                 </field>
+                <field id="use_psw_for_assets" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Use New Asset Injection System</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="autologin" sortOrder="30" showInDefault="1">
                 <label>WP-Admin Auto Login</label>

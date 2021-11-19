@@ -1,3 +1,7 @@
+19/11/2021 - 2.0.24.0
+- Added config option to include new Asset injection system. This is taken from the upcoming 2.1 release of the module.
+  It has slightly more JS but it is a lot more stable. Disabled by default.
+  
 28/10/2021 - 2.0.23.11
 - Added fix for rewritten pages in WPML.
 
