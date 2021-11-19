@@ -27,4 +27,21 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
     {
         parent::__construct($cacheFrontendPool->get(self::TYPE_IDENTIFIER), self::CACHE_TAG);
     }
+
+    /**
+     * @param  mixed $data
+     * @param  string $identifier
+     * @param  array $tags
+     * @param  int $lifeTime = null
+     * @return 
+     */
+    public function saveApiData($data, $identifier, array $tags = [], $lifeTime = null)
+    {
+        return $this->save(
+            $data, 
+            $identifier, 
+            array_merge($tags, ['fishpig-wordpress-api']),
+            $lifeTime ?? 60 * 60 * 4
+        );        
+    }
 }

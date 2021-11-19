@@ -113,6 +113,14 @@ class Taxonomy extends \Magento\Framework\DataObject
     }
     
     /**
+     * @return string
+     */
+    public function getTaxonomy(): string
+    {
+        return $this->getData('type');
+    }
+    
+    /**
      * @return \FishPig\WordPress\Model\ResourceModel\Taxonomy
      */
     public function getResource(): \FishPig\WordPress\Model\ResourceModel\Taxonomy

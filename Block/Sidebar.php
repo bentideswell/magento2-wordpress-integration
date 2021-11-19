@@ -15,15 +15,15 @@ class Sidebar extends \Magento\Framework\View\Element\Template
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
-        \FishPig\WordPress\Model\WidgetManager $widgetManager,
+        \FishPig\WordPress\Model\WidgetRepository $widgetRepository,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
-        \FishPig\WordPress\App\Plugin $plugin,
+        \FishPig\WordPress\Model\PluginManager $pluginManager,
         \Magento\Framework\Registry $registry,
         array $data = []
     ) {
-        $this->widgetManager = $widgetManager;
+        $this->widgetRepository = $widgetRepository;
         $this->optionRepository = $optionRepository;
-        $this->plugin = $plugin;
+        $this->pluginManager = $pluginManager;
         $this->registry = $registry;
 
         parent::__construct($context, $data);
@@ -38,7 +38,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
     {
         if ($widgets = $this->getWidgetsArray()) {
             foreach ($widgets as $widgetType) {
-                if ($block = $this->widgetManager->getWidget($widgetType)) {
+                if ($block = $this->widgetRepository->get($widgetType)) {
                     $this->setChild('wordpress_widget_' . $widgetType, $block);
                 }
             }
@@ -108,7 +108,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
      */
     public function getRealWidgetArea()
     {
-        if (!$this->plugin->isEnabled('custom-sidebars/customsidebars.php')) {
+        if (!$this->pluginManager->isEnabled('custom-sidebars/customsidebars.php')) {
             return $this->getWidgetArea();
         }
 

@@ -70,9 +70,9 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
         $taxonomy = $this->getTaxonomyInstance();
         $urlPath = $taxonomy->getUriById($this->getId());
 
-        return $taxonomy->withFront() 
-                ? $this->url->getHomeUrlWithFront($urlPath) 
-                : $this->url->getHomeUrl($urlPath);
+        // $urlPath will include front if term is configured to use it
+        // So we don't need to call getHomeUrlWithFront
+        return $this->url->getHomeUrl($urlPath);
     }
 
     /**

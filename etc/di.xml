@@ -307,7 +307,7 @@
 
 	<!-- Integration Manager -->
 	<!-- Widgets -->
-	<type name="FishPig\WordPress\Model\WidgetManager">
+	<type name="FishPig\WordPress\Model\WidgetRepository">
 		<arguments>
 			<argument name="widgets" xsi:type="array">
 				<item name="search" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Search</item>
