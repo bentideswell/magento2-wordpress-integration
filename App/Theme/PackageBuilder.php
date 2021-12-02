@@ -21,11 +21,11 @@ class PackageBuilder
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Theme\LocalHashGenerator $localHashGenerator,
+        \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
         \FishPig\WordPress\App\Theme\FileCollector $fileCollector,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList
     ) {
-        $this->localHashGenerator = $localHashGenerator;
+        $this->localHashProvider = $localHashProvider;
         $this->fileCollector = $fileCollector;
         $this->directoryList = $directoryList;
     }
@@ -44,10 +44,10 @@ class PackageBuilder
     private function build(): string
     {
         $file = $this->directoryList->getPath(DirectoryList::MEDIA)
-            . '/fishpig-wp-theme-' . substr($this->localHashGenerator->getHash(), 0, 12) . '.zip';
+            . '/fishpig-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
 
         if (is_file($file)) {
-            return $file;
+//            return $file;
         }
 
         $files = $this->fileCollector->getFiles();
@@ -74,6 +74,8 @@ class PackageBuilder
             throw new \Exception('Unable to open Zip for writing at ' . $zipFile);
         }
 
+        $localHash = $this->localHashProvider->getHash();
+
         foreach ($files as $relative => $file) {
             $relative = 'fishpig/' . $relative;
             $data = file_get_contents($file);
@@ -81,7 +83,7 @@ class PackageBuilder
             if (strpos($data, self::TOKEN_REMOTE_HASH) !== false) {
                 $zip->addFromString(
                     $relative,
-                    str_replace(self::TOKEN_REMOTE_HASH, $this->localHashGenerator->getHash(), $data)
+                    str_replace(self::TOKEN_REMOTE_HASH, $localHash, $data)
                 );
             } else {
                 $zip->addFile($file, $relative);

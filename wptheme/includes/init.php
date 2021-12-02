@@ -27,6 +27,11 @@ add_action('after_setup_theme', function() {
 
     /* Remove wptexturize to fix shortcodes */
     remove_filter('the_content', 'wptexturize');
+    
+    // Ensures Theme hash is set correctly
+    if (get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {
+        update_option(FISHPIG_THEME_OPTION_NAME, FISHPIG_THEME_HASH);
+    }
 });
 
 /**

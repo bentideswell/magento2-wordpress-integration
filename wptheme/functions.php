@@ -12,7 +12,8 @@
 /**
  *
  */
-define('FISHPIG_THEME_HASH', '88a553fe7a5b56d02d04928bd44cdc19');
+define('FISHPIG_THEME_OPTION_NAME', 'fishpig-theme-hash');
+define('FISHPIG_THEME_HASH', '{REMOTE_HASH}');
 define('FISHPIG_THEME_INCLUDES_DIR', __DIR__ . '/includes');
 define('FISHPIG_THEME_ADDONS_DIR', __DIR__ . '/add-ons');
 
@@ -29,7 +30,7 @@ include_once FISHPIG_THEME_INCLUDES_DIR . '/widgets.php';
 
 if (is_dir(FISHPIG_THEME_ADDONS_DIR)) {
     foreach (scandir(FISHPIG_THEME_ADDONS_DIR) as $file) {
-        if (strpos($file, '.php') !== false) {
+        if (strpos($file, '.php') !== false && strpos($file, '-template') === false) {
             include_once FISHPIG_THEME_ADDONS_DIR . '/' . $file;
         }
     }

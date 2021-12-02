@@ -71,7 +71,7 @@ class Tests
                 $this->logger->error($e);
             }
         }
-        
+
         if ($this->result[$storeId] instanceof \Exception) {
             throw $this->result[$storeId];
         }

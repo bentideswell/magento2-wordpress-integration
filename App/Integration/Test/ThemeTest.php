@@ -18,10 +18,12 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
      */
     public function __construct(
         \FishPig\WordPress\App\Theme $theme,
-        \Magento\Backend\Model\Url $url
+        \Magento\Backend\Model\Url $url,
+        \Magento\Framework\App\State $appState
     ) {
         $this->theme = $theme;
         $this->url = $url;
+        $this->appState = $appState;
     }
 
     /**
@@ -29,9 +31,9 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
      */
     public function runTest(): void
     {
-        if (php_sapi_name() === 'cli') {
+        if (php_sapi_name() === 'cli' || $this->appState->getAreaCode() !== 'adminhtml') {
             $errorMsg = sprintf(
-                'Run \'%s\' in the CLI to generate the theme and then install it in WordPress.',
+                'Run \'%s\' in the CLI to generate A ZIP archive of the theme and then install it in WordPress.',
                 'bin/magento fishpig:wordpress:build-theme'
             );
         } else {
@@ -46,6 +48,7 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         }
 
         if (!$this->theme->isLatestVersion()) {
+            throw new IntegrationFatalException('The WordPress FishPig theme has an update available. ' . $errorMsg);
             throw new IntegrationRecoverableException('The WordPress FishPig theme has an update available. ' . $errorMsg);
         }
     }
