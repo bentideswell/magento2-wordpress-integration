@@ -44,6 +44,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
                     'slug' => $this->getBase('category_base', 'category'),
                     'with_front' => true,
                 ],
+                'rest_base' => 'categories',
                 '_builtin' => true,
             ],
             'post_tag' => [
@@ -59,6 +60,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
                     'slug' => $this->getBase('tag_base', 'tag'),
                     'with_front' => true,
                 ],
+                'rest_base' => 'tags',
                 '_builtin' => true,
             ]
         ];

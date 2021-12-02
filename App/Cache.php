@@ -44,4 +44,16 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
             $lifeTime ?? 60 * 60 * 4
         );        
     }
+
+   /**
+     * @param  mixed $data
+     * @param  string $identifier
+     * @param  array $tags
+     * @param  int $lifeTime = 30
+     * @return 
+     */
+    public function quickSave($data, $identifier, array $tags = [], $lifeTime = 30)
+    {
+        return $this->save($data, $identifier, $tags, $lifeTime);
+    }
 }

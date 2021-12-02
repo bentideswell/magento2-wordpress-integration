@@ -16,9 +16,12 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     public function __construct(
         \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
-        \Magento\Framework\Serialize\SerializerInterface $serializer
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \FishPig\WordPress\App\Api\AuthToken $apiAuthToken
     ) {
         $this->serializer = $serializer;
+        $this->apiAuthToken = $apiAuthToken;
+
         parent::__construct($url, $httpClientFactory);
     }
     
@@ -82,5 +85,20 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         } catch (InvalidArgumentException $e) {
             return false;
         }
+    }
+
+    /**
+     * @return \Magento\Framework\HTTP\ClientInterface
+     */
+    protected function createHttpClient(): \Magento\Framework\HTTP\ClientInterface
+    {
+        $request = parent::createHttpClient();
+
+        $request->addHeader(
+            \FishPig\WordPress\App\Api\AuthToken::HTTP_HEADER_NAME, 
+            $this->apiAuthToken->getToken()
+        );
+
+        return $request;
     }
 }

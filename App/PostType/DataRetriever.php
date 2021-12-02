@@ -35,6 +35,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\PostType\PostTypeRetri
                 'rewrite' => [
                     'slug' => $this->option->get('permalink_structure')
                 ],
+                'rest_base' => 'posts',
                 'taxonomies' => ['category', 'post_tag'],
                 '_builtin' => true,
                 'public' => true,
@@ -49,6 +50,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\PostType\PostTypeRetri
                     'slug' => '%postname%/',
                     'hierarchical' => true
                 ],
+                'rest_base' => 'pages',
                 'hierarchical'  => true,
                 'taxonomies' => [],
                 '_builtin' => true,
