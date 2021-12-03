@@ -41,9 +41,9 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
         $this->resultPage = $resultPage;
         
         if (!$this->getBlogInfo()->isBlogPublic()) {
-            $this->resultPage->getConfig()->setRobots('NOINDEX,NOFOLLOW');
+            $this->setRobots('NOINDEX,NOFOLLOW');
         }
-        
+
         if ($blogDescription = $this->getBlogInfo()->getBlogDescription()) {
             $this->resultPage->getConfig()->setDescription($blogDescription);
         }
@@ -102,6 +102,15 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     protected function setMetaTitleWithBlogName(string $metaTitle): void
     {
         $this->setMetaTitle($metaTitle . ' | ' . $this->getBlogInfo()->getBlogName());
+    }
+    
+    /**
+     * @param  string $robots
+     * @return void
+     */
+    protected function setRobots(string $robots): void
+    {
+        $this->resultPage->getConfig()->setRobots($robots);
     }
     
     /**

@@ -93,12 +93,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     {
         parent::_beforeLoad();
 
-        if (!$this->getFlag('skip_permalink_generation')) {
-            if ($sql = $this->permalinkResource->getPermalinkSqlColumn()) {
-                $this->getSelect()->columns(['permalink' => $sql]);
-            }
-        }
-
+        /*
         if (!$this->hasPostTypeFilter()) {
             if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
                 if ($postTypes = $this->postTypeRepository->getAll()) {
@@ -113,7 +108,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
                     $this->addPostTypeFilter($supportedTypes);
                 }
             }
-        }
+        }*/
 
         if (count($this->postTypes) === 1) {
             if ($this->postTypes[0] === '*') {
@@ -122,11 +117,17 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         }
 
         if (count($this->postTypes) === 0) {
-            $this->addFieldToFilter('post_type', ['in' => array_keys($this->postTypeRepository->getAll())]);
-        } else {
-            $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
+            $this->postTypes = array_keys($this->postTypeRepository->getAll());
         }
 
+        $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
+
+        if (!$this->getFlag('skip_permalink_generation')) {
+            if ($sql = $this->permalinkResource->getPermalinkSqlColumn($this->postTypes)) {
+                $this->getSelect()->columns(['permalink' => $sql]);
+            }
+        }
+        
         return $this;
     }
 

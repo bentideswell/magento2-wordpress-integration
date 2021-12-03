@@ -1,38 +1,25 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Menu\Item;
 
-use \FishPig\WordPress\Model\ResourceModel\Post\Collection as PostCollection;
-
-class Collection extends PostCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
     /**
-     * Name prefix of events that are dispatched by model
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_menu_item_collection';
-
-    /**
-     * Name of event parameter
-     *
-     * @var string
-     */
     protected $_eventObject = 'menu_items';
 
     /**
-     * Initialise the object
+     * @var int
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\Menu\Item', 'FishPig\WordPress\Model\ResourceModel\Menu\Item');
-
-        $this->addPostTypeFilter('nav_menu_item');
-    }
+    private $menuId = null;
 
     /**
      * Ensures that only posts and not pages are returned
@@ -42,20 +29,64 @@ class Collection extends PostCollection
     {
         parent::_initSelect();
 
-        $this->getSelect()->order('menu_order ASC');
-
+        $this->getSelect()
+            ->where('post_type = ?', 'nav_menu_item')
+            ->where('post_status = ?', 'publish')
+            ->order('menu_order ASC');
+        
         return $this;
     }
 
     /**
-     * Filter the collection by parent ID
-     * Set 0 as $parentId to return root menu items
-     *
      * @param  int $parentId = 0
-     * @return $this
+     * @return self
      */
-    public function addParentItemIdFilter($parentId = 0)
+    public function addParentItemIdFilter(int $parentId = 0): self
     {
-        return $this->addMetaFieldToFilter('_menu_item_menu_item_parent', $parentId);
+        $this->getSelect()->join(
+            ['menu_parent_item_id' => $this->getTable('postmeta')],
+            implode(
+                ' AND ',
+                [
+                    'menu_parent_item_id.post_id = main_table.ID',
+                    'menu_parent_item_id.meta_key = \'_menu_item_menu_item_parent\'',
+                    'menu_parent_item_id.meta_value = ' . (int)$parentId
+                ]
+            ),
+            null
+        );
+
+        return $this;
+    }
+    
+    /**
+     * @return self
+     */
+    public function addMenuFilter(\FishPig\WordPress\Model\Menu $menu): self
+    {
+        if ($this->menuId !== null) {
+            return $this;
+        }
+        
+        $this->menuId = $menu->getId();
+        $type = $menu->getTaxonomy();
+
+        $this->getSelect()->distinct()->join(
+            ["rel_$type" => $this->getTable('term_relationships')], 
+            "rel_$type.object_id = main_table.ID",
+            null
+        )->join(
+            ["tax_$type" => $this->getTable('term_taxonomy')], 
+            "tax_$type.term_taxonomy_id=rel_$type.term_taxonomy_id AND tax_$type.taxonomy='$type'",
+            null
+        )->join(
+            ["terms_$type" => $this->getTable('terms')],
+            "terms_$type.term_id = tax_$type.term_id",
+            null
+        )->where(
+            "terms_$type.term_id = ?", $this->menuId
+        );
+
+        return $this;
     }
 }

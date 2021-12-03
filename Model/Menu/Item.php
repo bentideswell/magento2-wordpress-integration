@@ -1,14 +1,14 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\Menu;
 
-use \FishPig\WordPress\Model\Post;
-
-class Item extends Post
+class Item extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
      * Link types used to determine menu item functionality
@@ -20,105 +20,99 @@ class Item extends Post
     const LINK_TYPE_TAXONOMY = 'taxonomy';
 
     /**
-     * Prefix of model events names
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_menu_item';
-
-    /**
-     * Parameter name in event
-     *
-     * @var string
-     */
     protected $_eventObject = 'menu_item';
 
     /**
-     * Menu item children
+     * @var \FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection
      */
-    protected $_children = null;
+    private $children = null;
 
     /**
      *
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Menu\Item');
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \FishPig\WordPress\Model\PostRepository $postRepository,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->postRepository = $postRepository;
+        $this->termRepository = $termRepository;
+        
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
-
+    
     /**
-     * Retrieve the post type for this post
-     *
      * @return string
      */
-    public function getPostType()
+    public function getPostType(): string
     {
         return 'nav_menu_item';
     }
 
     /**
-     * Determine whether the link is a custom link
-     *
      * @return bool
      */
-    public function isCustomLink()
+    public function isCustomLink(): bool
     {
         return $this->getItemType() === self::LINK_TYPE_CUSTOM;
     }
 
     /**
-     * Determine whether the object type is a post_type
-     *
      * @return bool
      */
-    public function isPostTypeLink()
+    public function isPostTypeLink(): bool
     {
         return $this->getItemType() === self::LINK_TYPE_POST_TYPE;
     }
 
     /**
-     * Determine whether the object type is a post_type
-     *
      * @return bool
      */
-    public function isTaxonomyLink()
+    public function isTaxonomyLink(): bool
     {
         return $this->getItemType() === self::LINK_TYPE_TAXONOMY;
     }
 
     /**
-     * Retrieve the link object
-     *
-     * @return false|FishPig_WordPress_Model_Abstract
+     * @return false|\FishPig\WordPress\Model\AbstractModel
      */
     public function getObject()
     {
         $this->setObject(false);
 
-        if (!$this->isCustomLink()) {
-            if ($this->getObjectType()) {
-                if ($menuObjectId = $this->getMetaValue('_menu_item_object_id')) {
-                    if ($this->isPostTypeLink()) {
-                        $object = $this->factory->create('Post')->setPostType($this->getObjectType());
-                    } elseif ($this->isTaxonomyLink()) {
-                        $object = $this->factory->create('Term')->setTaxonomy($this->getObjectType());
-                    } else {
-                        $object = $this->factory->create('FishPig\WordPress\Model\\' . ucwords($this->getObjectType()));
-                    }
-
-                    if ($object && $object->setSkipObjectCache(true)->load($menuObjectId)->getId()) {
-                        $this->setObject($object);
-                    }
+        if ($this->isCustomLink() || !$this->getObjectType()) {
+            return $this->_getData('object');
+        }
+        
+        try {
+            if ($menuObjectId = (int)$this->getMetaValue('_menu_item_object_id')) {
+                if ($this->isPostTypeLink()) {
+                    $this->setObject(
+                        $this->postRepository->getWithType($menuObjectId, [$this->getObjectType()])
+                    );
+                } elseif ($this->isTaxonomyLink()) {
+                    $this->setObject(
+                        $this->termRepository->getWithTaxonomy($menuObjectId, [$this->getObjectType()])
+                    );
                 }
             }
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            $this->setObject(false);            
         }
 
         return $this->_getData('object');
     }
 
     /**
-     * Retrieve the menu item type
-     *
      * @return string
      */
     public function getItemType()
@@ -152,6 +146,8 @@ class Item extends Post
         } elseif ($this->getObject() !== false) {
             return $this->getObject()->getUrl();
         }
+        
+        return '';
     }
 
     /**
@@ -168,30 +164,28 @@ class Item extends Post
         } elseif ($this->isTaxonomyLink() && $this->getObject()) {
             return $this->getObject()->getName();
         }
+        
+        return '';
     }
 
     /**
-     * Determine whether the link is active
-     *
      * @return bool
      */
-    public function isItemActive()
+    public function isItemActive(): bool
     {
         return false;
     }
 
     /**
-     * Retrieve children menu items
-     *
-     * @return FishPig_WordPress_Model_Resource_Menu_Item_Collection
+     * @return \FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection
      */
-    public function getChildrenItems()
+    public function getChildrenItems(): \FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection
     {
-        if (null === $this->_children) {
-            $this->_children = $this->getCollection()->addParentItemIdFilter($this->getId());
+        if (null === $this->children) {
+            $this->children = $this->getCollection()->addParentItemIdFilter($this->getId());
         }
 
-        return $this->_children;
+        return $this->children;
     }
 
     /**

@@ -73,19 +73,6 @@
     </type>
     <!--
     /**
-     * Options
-     */
-    -->
-    <type name="FishPig\WordPress\App\Option\ValueResolver">
-		<arguments>
-			<argument name="objects" xsi:type="array">
-				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Option</item>
-				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Option</item>
-			</argument>
-		</arguments>
-    </type>
-    <!--
-    /**
      * Post Type
      */
     -->
@@ -210,6 +197,19 @@
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Archive</argument>
 		</arguments>
     </type>
+    <type name="FishPig\WordPress\Model\Menu">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu</argument>
+			<!--<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Collection</argument>-->
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\Menu\Item">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\MetaDataProvider</argument>
+		</arguments>
+    </type>
     <!--
     /**
      * Resource Models
@@ -250,6 +250,13 @@
 			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\User</argument>
 		</arguments>
     </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Menu\Item</argument>
+		</arguments>
+    </type>
+
     <!--
     /**
      * CLI

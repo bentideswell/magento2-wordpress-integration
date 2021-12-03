@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model\ResourceModel;
 
-class Term extends AbstractResourceModel
+class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
 {
     /**
      * @static bool

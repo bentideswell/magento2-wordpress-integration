@@ -1,22 +1,24 @@
 
 
+Yoast
+Related Products
+Content Blocks
+
+
+
+
+
 System.xml
 - Remove Theme Integration and control this via homeURL!==siteURL
 - Replace Ignore Store Code with 'Replace Home URL'
 - Remove XML sitemap option. If using xML sitemap, items will be added automatically
-- Change them validation from API to DB option check. Set hash in DB on the hook for adding a new theme
 - Ensure all objects have ViewableInterface (PostType temp removed but add back in).
 
-
-Controller
-- breadcrumbs, layout handle, entity, SEO?
 
 SEO handler interface
 - Add Yoast check to warnings in integration tests
 - Ensure WP always creates post_content so we never have to autop.
 
-Menu models
-images
 shortcodes
 Check for App refs in Model/Block and replace with interfaces or something else (no direct App in Model/Block//Helper etc)
 Rename interfaces where possible

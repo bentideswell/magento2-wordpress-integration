@@ -82,7 +82,7 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
             return $key;
         }
 
-        if (($tablePrefix = $this->resourceConn()->getTablePrefix()) === 'wp_') {
+        if (($tablePrefix = $this->resourceConnection->getTablePrefix()) === 'wp_') {
             return $key;
         }
 

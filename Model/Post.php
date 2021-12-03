@@ -39,7 +39,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Model\UserRepository $userRepository,
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
-        \FishPig\WordPress\Model\TermFactory $termFactory,
+        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
         \FishPig\WordPress\Model\ImageFactory $imageFactory,
         \FishPig\WordPress\Helper\FrontPage $frontPage,
         \FishPig\WordPress\Helper\Date $dateHelper,
@@ -51,7 +51,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         $this->postRepository = $postRepository;
         $this->userRepository = $userRepository;
         $this->shortcodeFactory = $shortcodeFactory;
-        $this->termFactory = $termFactory;
+        $this->termCollectionFactory = $termCollectionFactory;
         $this->imageFactory = $imageFactory;
         $this->dateHelper = $dateHelper;
         $this->frontPage = $frontPage;
@@ -250,9 +250,8 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      */
     public function getTermCollection($taxonomy)
     {
-        return $this->termFactory->create()
-            ->getCollection(
-            )->addTaxonomyFilter(
+        return $this->termCollectionFactory->create()
+            ->addTaxonomyFilter(
                 $taxonomy
             )->addPostIdFilter(
                 $this->getId()
@@ -776,9 +775,8 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
         if (!$this->hasPostFormat()) {
             $this->setPostFormat('');
 
-            $formats = $this->termFactory->create()->getCollection(
-                
-                )->addTaxonomyFilter(
+            $formats = $this->termCollectionFactory->create()
+                ->addTaxonomyFilter(
                     'post_format'
                 )->setPageSize(
                     1
