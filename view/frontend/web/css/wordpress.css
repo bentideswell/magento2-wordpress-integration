@@ -13,7 +13,6 @@ ol.comment-list  { list-style: none; padding: 0; margin: 0; }
 
 /* General Post Styles */
 .post-list li:after { content: ' '; clear: both; display: block; }
-.post-list li { /*display: inline-block; width: 48%; vertical-align: top;*/ }
 .post-entry { margin: 0 0 20px; }
 .post-image { margin: 0 0 10px; overflow: hidden; }
 .post-image a { display: inline-block; }
@@ -41,10 +40,6 @@ ol.comment-list  { list-style: none; padding: 0; margin: 0; }
 .shortcode-product {}
 .shortcode-product .products { text-align: left; list-style: none; }
 .shortcode-product .products > li { display: inline-block; width: 24%; text-align: center; }
-
-/* Post List Grid */
-.post-list.grid {}
-.post-list.grid li { display: inline-block; width: 48%; vertical-align: top; margin-right: 1%; }
 
 body.template-full-width main.page-main,
 body.elementor-template-full-width main.page-main {
