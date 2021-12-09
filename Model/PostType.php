@@ -61,7 +61,11 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
                 return $this->url->getHomeUrl();
             }
             
-            return $this->frontPage->getPostsPage()->getUrl();
+            if ($postsPage = $this->frontPage->getPostsPage()) {
+                return $postsPage->getUrl();
+            }
+            
+            return $this->url->getHomeUrl();
         }
         
         if (!$this->hasArchive()) {

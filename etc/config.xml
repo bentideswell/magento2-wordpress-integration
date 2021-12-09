@@ -4,14 +4,16 @@
 		<wordpress>
 			<setup>
                 <mode>local</mode>
-			</setup>
-			<mode_local>
+    			<theme_integration>1</theme_integration>
     			<path>wp</path>
-			</mode_local>
+			</setup>
 			<mode_external_db>
     			<table_prefix>wp_</table_prefix>
     			<charset>utf8</charset>
 			</mode_external_db>
+            <xmlsitemap>
+                <enabled>1</enabled>
+            </xmlsitemap>
 		</wordpress>
 	</default>
 </config>

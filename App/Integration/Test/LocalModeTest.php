@@ -8,16 +8,18 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Integration\Test;
 
-class SubdirectoryModeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
+class LocalModeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
      * @param  \FishPig\WordPress\App\Integration\Mode $appMode
      * @return void
      */
     public function __construct(
-        \FishPig\WordPress\App\Integration\Mode $appMode
+        \FishPig\WordPress\App\Integration\Mode $appMode,
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection
     ) {
         $this->appMode = $appMode;
+        $this->resourceConnection = $resourceConnection;
     }
 
     /**
@@ -26,10 +28,11 @@ class SubdirectoryModeTest implements \FishPig\WordPress\Api\App\Integration\Tes
     public function runTest(): void
     {
         if (!$this->appMode->isLocalMode()) {
-            return;
+            throw new \FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException(
+                __('Invalid mode')
+            );
         }
         
-        echo __METHOD__;
-        exit;
+        $this->resourceConnection->isConnected();
     }
 }

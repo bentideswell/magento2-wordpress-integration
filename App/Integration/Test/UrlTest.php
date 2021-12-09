@@ -18,10 +18,12 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
      */
     public function __construct(
         \FishPig\WordPress\App\Url $url,
-        \Magento\Framework\App\Route\Config $routeConfig
+        \Magento\Framework\App\Route\Config $routeConfig,
+        \FishPig\WordPress\Model\Config $config
     ) {
         $this->url = $url;
         $this->routeConfig = $routeConfig;
+        $this->config = $config;
     }
 
     /**
@@ -29,11 +31,9 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
      */
     public function runTest(): void
     {
-        /*
-            ToDo
-        if (!$this->theme->isThemeIntegrated()) {
-            return $this;
-        }*/
+        if (!$this->config->isThemeIntegrationEnabled()) {
+            return;
+        }
 
         $magentoUrl = $this->url->getMagentoUrl();
         $homeUrl = rtrim($this->url->getHomeUrl(), '/'); // Trimmed incase WP configured to add trailing slash to home

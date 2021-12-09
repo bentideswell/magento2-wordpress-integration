@@ -129,19 +129,13 @@ class Permalink
         }
 
         $matchedTokens = $matches[0];
-
+        
         foreach ($matchedTokens as $mtoken) {
             if ($mtoken === '%postnames%') {
                 $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
             } elseif ($taxonomy = $this->taxonomyRepository->get(trim($mtoken, '%'))) {
-                $termData = $this->getParentTermsByPostId($postId, $taxonomy->getTaxonomy(), false);
-
-                foreach ($termData as $key => $term) {
-                    if ((int)$term['object_id'] === (int)$postId) {
-                        $slug = str_replace($mtoken, $taxonomy->getUriById($term['term_id'], false), $slug);
-
-                        break;
-                    }
+                if ($termId = $this->getParentTermId($postId, $taxonomy->getTaxonomy())) {
+                    $slug = str_replace($mtoken, $taxonomy->getUriById($termId, false), $slug);
                 }
             }
         }
@@ -150,44 +144,34 @@ class Permalink
     }
 
     /**
-     * Get the category IDs that are related to the postIds
-     *
-     * @param  array $postIds
-     * @param  bool  $getAllIds = true
-     * @return array|false
+     * @param  int    $postId
+     * @param  string $taxonomy = 'category'
+     * @return int
      */
-    private function getParentTermsByPostId($postId, $taxonomy = 'category')
+    public function getParentTermId(int $postId, $taxonomy = 'category'): int
     {
         $select = $this->getConnection()->select()
             ->distinct()
-            ->from(['_relationship' => $this->resourceConnection->getTable('wordpress_term_relationship')], 'object_id')
-            ->where('object_id = (?)', $postId)
-            ->order('_term.term_id ASC');
+            ->from(['_relationship' => $this->resourceConnection->getTable('wordpress_term_relationship')], null)
+            ->where('object_id = ?', $postId)
+            ->order('_term.term_id ASC')
+            ->limit(1);
 
         $select->join(
             ['_taxonomy' => $this->resourceConnection->getTable('wordpress_term_taxonomy')],
             $this->getConnection()->quoteInto("_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?", $taxonomy),
-            '*'
+            null
         );
 
         $select->join(
             ['_term' => $this->resourceConnection->getTable('wordpress_term')],
             "`_term`.`term_id` = `_taxonomy`.`term_id`",
-            'name'
+            ['term_id']
         );
 
-        $select->reset('columns')
-            ->columns(
-                [
-                $taxonomy . '_id' => '_term.term_id',
-                'term_id' => '_term.term_id',
-                'object_id'
-                ]
-            )->limit(1);
-
-        return $this->getConnection()->fetchAll($select);
+        return (int)$this->getConnection()->fetchOne($select);
     }
-    
+
     /**
      * @param  PostType $postType
      * @param  string $pathInfo

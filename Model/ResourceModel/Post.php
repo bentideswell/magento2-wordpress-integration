@@ -68,7 +68,15 @@ class Post extends AbstractResourceModel
         return $this->filterLoadSelect($select, $object);
     }
 
-
+    /**
+     * @param  int $postId
+     * @param  string $taxonomy = 'category'
+     * @return int
+     */
+    public function getParentTermId(int $postId, $taxonomy = 'category'): int
+    {
+        return $this->permalinkResource->getParentTermId($postId, $taxonomy);
+    }
 
     /**
      * Prepare a collection/array of posts
@@ -93,11 +101,6 @@ class Post extends AbstractResourceModel
 
         return $this;
     }
-
-
-
-
-
 
     /**
      * Determine whether the given post has any children posts

@@ -69,9 +69,38 @@ class Mode
      */
     public function isApiMode(): bool
     {
+        return false;
         return $this->getMode() === self::MODE_API;
     }
 
+    /**
+     * @return $this
+     */
+    public function requireLocalMode(): self
+    {
+        if (!$this->isLocalMode()) {
+            throw new \Exception(
+                'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_LOCAL . '.'
+            );
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * @return $this
+     */
+    public function requireExternalMode(): self
+    {
+        if (!$this->isExternalMode()) {
+            throw new \Exception(
+                'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_LOCAL . '.'
+            );
+        }
+        
+        return $this;
+    }
+    
     /**
      * @return bool
      */
@@ -105,8 +134,7 @@ class Mode
         return [
             self::MODE_DISABLED => __('Disabled'),
             self::MODE_LOCAL => __('Local'),
-            self::MODE_EXTERNAL => __('External'),
-            self::MODE_API => __('API'),
+            self::MODE_EXTERNAL => __('External')
         ];
     }
 }

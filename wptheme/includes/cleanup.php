@@ -8,6 +8,11 @@ add_action('after_setup_theme', function() {
     remove_action( 'admin_print_scripts', 'print_emoji_detection_script' ); 
     remove_action( 'wp_print_styles', 'print_emoji_styles' ); 
     remove_action( 'admin_print_styles', 'print_emoji_styles' );
+    remove_action('wp_head', 'wlwmanifest_link');
+    remove_action('wp_head', 'wp_generator');
+    remove_action('wp_head', 'wp_resource_hints', 2 );
+    remove_action('wp_head', 'rsd_link');
+    remove_action('wp_head', 'rest_output_link_wp_head', 10);
 });
 
 /**

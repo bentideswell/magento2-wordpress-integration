@@ -37,6 +37,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\PostRepository $postRepository,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
         \FishPig\WordPress\Model\UserRepository $userRepository,
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
         \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
@@ -49,6 +50,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     ) {
         $this->postTypeRepository = $postTypeRepository;
         $this->postRepository = $postRepository;
+        $this->termRepository = $termRepository;
         $this->userRepository = $userRepository;
         $this->shortcodeFactory = $shortcodeFactory;
         $this->termCollectionFactory = $termCollectionFactory;
@@ -226,20 +228,16 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     }
 
     /**
-     * Get the parent term
-     * This is the term with the taxonomy as $taxonomy with the lowest term_id
-     *
      * @param  string $taxonomy
      * @return \FishPig\WordPress\Model\Term
      */
     public function getParentTerm($taxonomy)
     {
-        $terms = $this->getTermCollection($taxonomy)
-            ->setPageSize(1)
-            ->setCurPage(1)
-            ->load();
-
-        return count($terms) > 0 ? $terms->getFirstItem() : false;
+        if ($termId = $this->getResource()->getParentTermId((int)$this->getId(), $taxonomy)) {
+            return $this->termRepository->get($termId);
+        }
+        
+        return false;
     }
 
     /**
@@ -830,8 +828,8 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
     /**
      *
      */
-    public function isContentBlock(): bool
+    public function isPublic(): bool
     {
-        return $this->getPostType() === self::POST_TYPE_CONTENT_BLOCK;
+        return true;
     }
 }

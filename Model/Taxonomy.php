@@ -117,7 +117,7 @@ class Taxonomy extends \Magento\Framework\DataObject
      */
     public function getTaxonomy(): string
     {
-        return $this->getData('type');
+        return $this->getData('taxonomy');
     }
     
     /**

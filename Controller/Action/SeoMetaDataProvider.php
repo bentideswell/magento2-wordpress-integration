@@ -105,12 +105,18 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     }
     
     /**
-     * @param  string $robots
+     * @param  string|array $robots
      * @return void
      */
-    protected function setRobots(string $robots): void
+    protected function setRobots($robots): void
     {
-        $this->resultPage->getConfig()->setRobots($robots);
+        if (is_array($robots)) {
+            $robots = implode(',', array_filter($robots));
+        }
+
+        if (stripos($this->resultPage->getConfig()->getRobots(), 'noindex') === false) {
+            $this->resultPage->getConfig()->setRobots($robots);
+        }
     }
     
     /**

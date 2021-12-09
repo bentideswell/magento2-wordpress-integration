@@ -18,7 +18,7 @@ class Post extends AbstractItemProvider
         $items = [];
 
         foreach ($collection as $post) {
-            if ($post->isContentBlock()) {
+            if (!$post->isPublic()) {
                 continue;
             }
 

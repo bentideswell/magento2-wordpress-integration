@@ -38,7 +38,6 @@ if (!defined('FISHPIG_SKIP_LEGACY_AUTOLOAD')) {
             $legacyClassFile = __DIR__ . str_replace('\\', '/', str_replace($classTarget, '/legacy-src\\', $className)) . '.php';
   
             if (is_file($legacyClassFile)) {
-//                $e = new \Exception($legacyClassFile);echo $e->getMessage() . '<pre>' . $e->getTraceAsString();exit;
                 require_once $legacyClassFile;
                 return true;
             }

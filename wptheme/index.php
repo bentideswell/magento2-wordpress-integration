@@ -12,5 +12,5 @@
 		<fishpig:post:<?php the_ID() ?>><?php the_content() ?></fishpig:post:<?php the_ID() ?>>
 	<?php endwhile ?>
 <?php endif; ?>
-    <?php function_exists('fishpig_psw_render_queue') ? fishpig_psw_render_queue() : null ?>
+    <?= apply_filters('fishpig_index_template_after_loop_html', '') ?>
 <?php get_footer() ?>

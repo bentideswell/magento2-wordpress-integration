@@ -75,7 +75,7 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isFrontPageDefaultPostTypeArchive(): bool
     {
-        return $this->getShowOnFront() === '';
+        return $this->getShowOnFront() === 'posts';
     }
     
     /**

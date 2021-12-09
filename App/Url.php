@@ -38,7 +38,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
      */
     public function getHomeUrl($uri = ''): string
     {
-        $homeUrl = rtrim($this->homeUrlResolver->resolve()->getUrl(), '/');
+        $homeUrl = rtrim($this->homeUrlResolver->getUrl(), '/');
 
         if ($uri) {
             $homeUrl .= '/' . $uri;
@@ -75,7 +75,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
      */
     public function getSiteUrl($uri = ''): string
     {
-        $siteUrl = rtrim($this->siteUrlResolver->resolve()->getUrl(), '/');
+        $siteUrl = rtrim($this->siteUrlResolver->getUrl(), '/');
         
         if ($uri) {
             $siteUrl .= '/' . $uri;
@@ -179,7 +179,14 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
      */
     public function getBlogRoute(): string
     {
-        return trim(substr($this->getHomeUrl(), strlen($this->getMagentoUrl())), '/');
+        $magentoUrl = $this->getMagentoUrl();
+        $homeUrl = $this->getHomeUrl();
+        
+        if (strpos($this->getHomeUrl(), $this->getMagentoUrl()) !== 0) {
+            throw new \Exception('URLs appear to be invalid.');
+        }
+        
+        return trim(substr($homeUrl, strlen($magentoUrl)), '/');
     }
 
     /**

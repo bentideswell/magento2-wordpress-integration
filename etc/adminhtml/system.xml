@@ -11,7 +11,17 @@
             <resource>FishPig_WordPress::config_wordpress</resource>
             <group id="setup"  sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>WordPress Integration Setup</label>
-                <field id="mode" translate="label comment" type="select" sortOrder="11" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="custom_base_url" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Magento Base URL</label>
+                    <source_model>FishPig\WordPress\Model\Config\Source\MagentoBaseUrl</source_model>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\Form\Renderer\Config\MagentoBaseUrlSelector</frontend_model>
+                    <comment>The URL used as the Magento base URL</comment>
+                </field>
+                <field id="theme_integration" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Theme Integration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="mode" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Mode</label>
                     <source_model>FishPig\WordPress\App\Integration\Mode</source_model>
                 </field>
@@ -21,7 +31,7 @@
                     <field id="path" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                         <label>Path</label>
                         <comment>Enter the path to your WordPress installation.</comment>
-                        <config_path>wordpress/mode_local/path</config_path>
+                        <config_path>wordpress/setup/path</config_path>
                     </field>
                 </group>
                 <group id="mode_external"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -57,15 +67,6 @@
                         </field>
                     </group>
                 </group>
-                <field id="theme_integration" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Theme Integration</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="ignore_store_code" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Ignore Store Code</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment>If Yes, Blog URL is displayed without Magento store code.</comment>
-                </field>
             </group>
             <group id="autologin" sortOrder="30" showInDefault="1">
                 <label>WP-Admin Auto Login</label>

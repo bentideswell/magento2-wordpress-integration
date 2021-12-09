@@ -27,8 +27,12 @@ class ExternalModeTest implements \FishPig\WordPress\Api\App\Integration\TestInt
      */
     public function runTest(): void
     {
-        if ($this->appMode->isExternalMode()) {
-            $this->resourceConnection->isConnected();
+        if (!$this->appMode->isExternalMode()) {
+            throw new \FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException(
+                __('Invalid mode')
+            );
         }
+
+        $this->resourceConnection->isConnected();
     }
 }

@@ -173,18 +173,4 @@ class View extends \FishPig\WordPress\Controller\Action
 
         return $layoutHandles;
     }
-    
-    /**
-     * ToDo: update this method
-     */
-    protected function _afterExecute()
-    {
-        if ($post = $this->getEntityObject()) {
-            if ($post->isContentBlock()) {
-                $this->getPage()->getConfig()->setRobots('NOINDEX,NOFOLLOW');
-            }
-        }
-
-        return $this;
-    }
 }

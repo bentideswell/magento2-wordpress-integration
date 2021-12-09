@@ -14,6 +14,11 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
      * @var []
      */
     private $cache = [];
+    
+    /**
+     * @var array
+     */
+    private $currentUrl = [];
 
     /**
      *
@@ -35,23 +40,11 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
         $storeId = (int)$store->getId();
 
         if (!isset($this->cache[$storeId])) {
-            $magentoUrl = rtrim(
-                str_ireplace(
-                    'index.php',
-                    '',
-                    $store->getBaseUrl(
-                        \Magento\Framework\UrlInterface::URL_TYPE_LINK, 
-                        $this->isFrontendUrlSecure()
-                    )
-                ),
-                '/'
-            );
+            $magentoUrl = $this->getBaseUrl();
 
-            if ($this->ignoreStoreCode()) {
-                $storeCode = $store->getCode();
-
-                if (substr($magentoUrl, -strlen($storeCode)) === $storeCode) {
-                    $magentoUrl = substr($magentoUrl, 0, -strlen($storeCode)-1);
+            if ($this->isCustomBaseUrl()) {
+                if (($pos = strpos($magentoUrl, '/', strlen('https://'))) !== false) {
+                    $magentoUrl = substr($magentoUrl, 0, $pos);
                 }
             }
 
@@ -60,21 +53,47 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 
         return $this->cache[$storeId];
     }
-    
+
     /**
      * @return string
      */
     public function getCurrentUrl(): string
     {
-        return preg_replace('/\?.*$/', '', $this->storeManager->getStore()->getCurrentUrl(false));
-    }
+        $store = $this->storeManager->getStore();
+        $storeId = (int)$store->getId();
 
+        if (!isset($this->currentUrl[$storeId])) {
+            $this->currentUrl[$storeId] = preg_replace('/\?.*$/', '', $store->getCurrentUrl(false));
+
+            if ($this->isCustomBaseUrl()) {
+                $baseUrl = $this->getBaseUrl();
+                $activeBaseUrl = $this->getUrl();
+
+                if ($baseUrl !== $activeBaseUrl) {
+                    $this->currentUrl[$storeId] = str_replace($baseUrl, $activeBaseUrl, $this->currentUrl[$storeId]);
+                }
+            }
+        }
+        
+        return $this->currentUrl[$storeId];
+    }
+    
     /**
-     * @return bool
+     * @return string
      */
-    private function ignoreStoreCode(): bool
+    private function getBaseUrl(): string
     {
-        return false;
+        return rtrim(
+            str_ireplace(
+                'index.php',
+                '',
+                $this->storeManager->getStore()->getBaseUrl(
+                    \Magento\Framework\UrlInterface::URL_TYPE_LINK, 
+                    $this->isFrontendUrlSecure()
+                )
+            ),
+            '/'
+        );
     }
 
     /**
@@ -87,5 +106,15 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
             \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
             (int)$this->storeManager->getStore()->getId()
         );
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCustomBaseUrl(): bool
+    {
+        return (string)$this->scopeConfig->getValue(
+            'wordpress/setup/custom_base_url'
+        ) === \FishPig\WordPress\Model\Config\Source\MagentoBaseUrl::URL_USE_BASE;
     }
 }

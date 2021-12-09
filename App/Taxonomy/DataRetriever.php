@@ -31,8 +31,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
     {
         return [
             'category' => [
-                'type' => 'category',
-                'taxonomy_type' => 'category',
+                'taxonomy' => 'category',
                 'labels' => [
                     'name' => 'Categories',
                     'singular_name' => 'Category',
@@ -48,8 +47,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
                 '_builtin' => true,
             ],
             'post_tag' => [
-                'type' => 'post_tag',
-                'taxonomy_type' => 'post_tag',
+                'taxonomy' => 'post_tag',
                 'labels' => [
                     'name' => 'Tags',
                     'singular_name' => 'Tag',

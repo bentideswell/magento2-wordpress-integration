@@ -57,7 +57,7 @@ class PostType implements \FishPig\WordPress\Api\Data\PostTypeTaxonomyDataSource
         $this->objects[$storeId] = [];
 
         foreach ($this->dataRetrievers as $dataRetriever) {
-            $this->objects[$storeId] = array_merge_recursive(
+            $this->objects[$storeId] = array_merge(
                 $this->objects[$storeId],
                 $dataRetriever->getData()
             );

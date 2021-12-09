@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
-class Homepage extends \FishPig\WordPress\Model\FrontPage
+class Homepage
 {
     /**
      * @param \FishPig\WordPress\Helper\FrontPage $frontPage

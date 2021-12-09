@@ -42,13 +42,11 @@ class ResourceConnection
 
     /**
      * @param  \FishPig\WordPress\App\Integration\Mode $appMode
-     * @param  \FishPig\WordPress\App\Config $config
      * @param  \Magento\Framework\App\ResourceConnection\ConnectionFactory $connectionFactory
      * @return void
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
-        \FishPig\WordPress\App\Config $config,
         \FishPig\WordPress\App\ResourceConnection\ConfigRetriever $connectionConfigRetriever,
         \Magento\Framework\App\ResourceConnection\ConnectionFactory $connectionFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
@@ -60,7 +58,6 @@ class ResourceConnection
             throw new \Exception('Cannot use the ResourceConnection in API mode.');
         }
 
-        $this->config = $config;
         $this->connectionConfigRetriever = $connectionConfigRetriever;
         $this->connectionFactory = $connectionFactory;
         $this->storeManager = $storeManager;

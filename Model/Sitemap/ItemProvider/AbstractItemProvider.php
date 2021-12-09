@@ -102,8 +102,11 @@ abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvid
      * @param  int $storeId
      * @return bool
      */
-    protected function isEnabledForStore($storeId)
+    protected function isEnabledForStore($storeId): bool
     {
-        return (int)$this->scopeConfig->getValue('wordpress/xmlsitemap/enabled', \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId) === 1;
+        return $this->scopeConfig->isSetFlag(
+            'wordpress/xmlsitemap/enabled', 
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId
+        );
     }
 }

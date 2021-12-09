@@ -8,6 +8,22 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Url;
 
-class HomeUrlResolver extends \FishPig\WordPress\App\Integration\Mode\ObjectResolver
+class HomeUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
+    /**
+     *
+     */
+    public function __construct(
+        \FishPig\WordPress\App\Option $option
+    ) {
+        $this->option = $option;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->option->get('home');
+    }
 }

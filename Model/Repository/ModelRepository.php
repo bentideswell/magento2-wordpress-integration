@@ -37,6 +37,17 @@ abstract class ModelRepository
         $id = (int)$id;
         
         if (isset($this->cache[$id])) {
+            if ($this->cache[$id] === false) {
+                throw new NoSuchEntityException(
+                    __(
+                        "The %1 (%2=%3) that was requested doesn't exist. Verify the object and try again.",
+                        get_class($this->objectFactory->create()),
+                        $this->idFieldName,
+                        $id
+                    )
+                );
+            }
+
             return $this->cache[$id];
         }
         
@@ -117,7 +128,7 @@ abstract class ModelRepository
                 )
             );
         }
-        
+
         return $object;
     }
 }

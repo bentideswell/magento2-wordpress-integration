@@ -8,6 +8,22 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Url;
 
-class SiteUrlResolver extends \FishPig\WordPress\App\Integration\Mode\ObjectResolver
+class SiteUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
+    /**
+     *
+     */
+    public function __construct(
+        \FishPig\WordPress\App\Option $option
+    ) {
+        $this->option = $option;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->option->get('siteurl');
+    }
 }

@@ -11,20 +11,35 @@
 		<arguments>
 			<argument name="integrationTestPool" xsi:type="array">
 				<item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ModeTest</item>
-				<item name="subdirectoryMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\SubdirectoryModeTest</item>
-				<item name="externalMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ExternalModeTest</item>
-				<item name="apiMode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ApiModeTest</item>
 				<item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>				
 				<item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
 				<item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
-				<!--
-    				ToDo
-				<item name="network" xsi:type="object">FishPig\WordPress\Model\Integration\NetworkTest</item>
-				<item name="core" xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
-				-->
+				<item name="yoast" xsi:type="object">FishPig\WordPress\App\Integration\Test\YoastTest</item>
 			</argument>
 		</arguments>
 	</type>
+	
+    <type name="FishPig\WordPress\App\Integration\Test\ModeTestResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Test\LocalModeTest</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Test\ExternalModeTest</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * @Path Resolver
+     */
+    -->
+    <type name="FishPig\WordPress\App\DirectoryList\PathResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Local\PathResolver</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Local\PathResolver</item>
+			</argument>
+		</arguments>
+    </type>
     <!--
     /**
      * Database
@@ -33,7 +48,7 @@
     <type name="FishPig\WordPress\App\ResourceConnection\ConfigRetriever">
 		<arguments>
 			<argument name="objects" xsi:type="array">
-				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\WPConfig</item>
+				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Local\WPConfig</item>
 				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Config</item>
 			</argument>
 		</arguments>
@@ -47,27 +62,6 @@
 		<arguments>
 			<argument name="modules" xsi:type="array">
 				<item name="FishPig_WordPress" xsi:type="string">FishPig_WordPress</item>
-			</argument>
-		</arguments>
-    </type>
-    <!--
-    /**
-     * URLs
-     */
-    -->
-    <type name="FishPig\WordPress\App\Url\SiteUrlResolver">
-		<arguments>
-			<argument name="objects" xsi:type="array">
-				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Url\SiteUrl</item>
-				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Url\SiteUrl</item>
-			</argument>
-		</arguments>
-    </type>
-    <type name="FishPig\WordPress\App\Url\HomeUrlResolver">
-		<arguments>
-			<argument name="objects" xsi:type="array">
-				<item name="subdirectory" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Subdirectory\Url\HomeUrl</item>
-				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Url\HomeUrl</item>
 			</argument>
 		</arguments>
     </type>
