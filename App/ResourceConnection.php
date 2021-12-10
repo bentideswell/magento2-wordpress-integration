@@ -122,6 +122,9 @@ class ResourceConnection
      */
     public function getTable($table, bool $canBeUsedInNetwork = true): string
     {
+        // This setups up the connection
+        $this->isConnected();
+        
         $storeId = (int)$this->storeManager->getStore()->getId();
 
         if (isset($this->legacyTableMap[$table])) {

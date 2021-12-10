@@ -38,6 +38,7 @@ class Permalink
      */
     public function getPostIdByPathInfo($pathInfo)
     {
+
         $cacheKey = strtolower(rtrim($pathInfo));
         
         if (isset($this->pathInfoIdMap[$cacheKey])) {
@@ -53,6 +54,11 @@ class Permalink
             if (!$postType->isPublic()) {
                 continue;   
             }
+            
+            if (strpos($postType->getPostType(), 'news') === false) {
+                continue;
+            }
+            
 
             $routes = false;
 
