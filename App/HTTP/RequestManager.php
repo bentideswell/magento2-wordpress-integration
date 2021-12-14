@@ -19,33 +19,27 @@ class RequestManager
      * @var array
      */
     private $cache = [];
-    
+
     /**
      * @param \FishPig\WordPress\Model\UrlInterface $url
      */
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url,
-        \Magento\Framework\HTTP\ClientFactory $httpClientFactory
+        \FishPig\WordPress\Model\UrlInterface $url,      
+        \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
+        \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger
     ) {
         $this->url = $url;
         $this->httpClientFactory = $httpClientFactory;
+        $this->requestLogger = $requestLogger;
     }
-    
+
     /**
      * @param  string $url = null
      * @return ClientInterface
      */
     public function get(string $url = null): ClientInterface
     {
-        $cacheKey = md5(__METHOD__ . strtolower($url ?? '_current'));        
-        
-        if (!$this->isCacheEnabled() || !isset($this->cache[$cacheKey])) {
-            $this->log(' GET: ' . $url);
-            $this->cache[$cacheKey] = $client = $this->createHttpClient();
-            $client->get($url);
-        }
-        
-        return $this->cache[$cacheKey];
+        return $this->makeRequest('GET', $url);
     }
 
     /**
@@ -55,46 +49,57 @@ class RequestManager
      */
     public function post(string $url = null, array $data = []): ClientInterface
     {
-        $cacheKey = md5(__METHOD__ . strtolower($url ?? '_current'));        
-        
-        if (!$this->isCacheEnabled() || !isset($this->cache[$cacheKey])) {
-            $this->log('POST: ' . $url);
-            $this->cache[$cacheKey] = $client = $this->createHttpClient();
-            $client->post($url, $data);
-        }
-        
-        return $this->cache[$cacheKey];
+        return $this->makeRequest('POST', $url, $data);
     }
     
     /**
+     * @param  string $url = null
      * @return ClientInterface
      */
-    protected function createHttpClient(): ClientInterface
+    public function head(string $url = null): ClientInterface
     {
-        $request = $this->httpClientFactory->create();
-
-        $request->setOption(CURLOPT_SSL_VERIFYHOST, false);
-        $request->setOption(CURLOPT_SSL_VERIFYPEER, false);
-
-        return $request;
+        return $this->makeRequest('HEAD', $url);
     }
 
     /**
-     * @return bool
+     * @param  string $method = null
+     * @param  string $url    = null
+     * @param  array $data    = null
+     * @return ClientInterface
      */
-    protected function isCacheEnabled(): bool
+    protected function makeRequest(string $method, string $url = null, $args = null): ClientInterface
     {
-        return true;
+        $cacheKey = md5($method . strtolower($url ?? '_current'));        
+        
+        if (!isset($this->cache[$cacheKey])) {
+            $this->cache[$cacheKey] = $client = $this->httpClientFactory->create();
+            
+            $logData = [
+                'method' => str_pad($method, 4),
+                'status' => '',
+                'url' => $url
+            ];
+            
+            try {
+                if ($args === null) {
+                    $client->$method($url);
+                } else {
+                    $client->$method($url, $args);
+                }
+
+                $logData['status'] = $client->getStatus();
+                $this->requestLogger->logApiRequest($logData);
+            } catch (\Exception $e) {
+                $logData['status'] = $client->getStatus();
+                $logData[] = $e->getMessage();
+                
+                $this->requestLogger->logApiRequest($logData);
+                
+                throw $e;
+            }
+        }
+        
+        
+        return $this->cache[$cacheKey];
     }
-
-    /**
-     * @param string $msg
-     * @return void
-     */
-    private function log(string $msg): void
-    {
-//        $e = new \Exception('');        $msg .= "\n\n" . preg_replace('/\#6.*$/s', '', $e->getTraceAsString()) . PHP_EOL;
-
-        file_put_contents(BP . '/var/log/wordpress-api-requests.log', $msg . PHP_EOL, FILE_APPEND);   
-    }    
 }

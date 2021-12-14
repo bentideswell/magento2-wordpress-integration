@@ -14,12 +14,12 @@ use Magento\Csp\Model\Policy\FetchPolicy;
 class CspWhitelistXmlCollectorPlugin
 {
     /**
-     * @param  \FishPig\WordPress\Model\UrlInterface $url
+     * @param  \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $whitelistPolicyCollector
      */
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url
+        \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $whitelistPolicyCollector
     ) {
-        $this->url = $url;
+        $this->whitelistPolicyCollector = $whitelistPolicyCollector;
     }
     
     /**
@@ -29,61 +29,10 @@ class CspWhitelistXmlCollectorPlugin
      */
     public function afterCollect(CspWhitelistXmlCollector $cspWhitelistXmlCollector, $defaultPolicies = []): array
     {
-        $wpDomain = $this->getWPDomain();
-
-        foreach ($this->getPolicyIds() as $policyId) {
-            $defaultPolicies['fishpig_wp_' . $policyId] = new FetchPolicy(
-                $policyId,
-                false,
-                [$wpDomain],
-                [],
-                false,
-                false,
-                false,
-                [],
-                [],
-                false,
-                false
-            );
+        if ($newPolicies = $this->whitelistPolicyCollector->collect()) {
+            $defaultPolicies += $newPolicies;                   
         }
         
         return $defaultPolicies;
-    }
-    
-    /**
-     * @return string
-     */
-    private function getWPDomain(): string
-    {
-        $wpDomain = rtrim(str_replace(['https://', 'http://'], '', $this->url->getSiteUrl()), '/');
-        
-        if (($pos = strpos($wpDomain, '/')) !== false) {
-            $wpDomain = substr($wpDomain, 0, $pos);
-        }
-        
-        return $wpDomain;
-    }
-    
-    /**
-     * @return array
-     */
-    private function getPolicyIds(): array
-    {
-        return [
-            'default-src',
-            'child-src',
-            'connect-src',
-            'font-src',
-            'frame-src',
-            'img-src',
-//            'manifest-src',
-            'media-src',
-//            'object-src',
-            'script-src',
-            'style-src',
-//            'base-uri',
-            'form-action',
-            'frame-ancestors'
-        ];
     }
 }

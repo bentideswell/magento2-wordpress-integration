@@ -284,7 +284,6 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
         return false;
     }
 
-    /* ToDo: standardise getallroutes calls */
     /**
      * Get all routes (hierarchical)
      *

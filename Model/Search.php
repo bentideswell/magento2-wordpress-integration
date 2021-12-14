@@ -117,7 +117,6 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
 
         $collection->addPostTypeFilter($searchablePostTypes);
 
-        /* ToDo: change addTermFilter to addTermSlugFilter + move to methods so can manually set cat, tag, post_types etc */
         // Category
         if ($categorySlug = $this->request->getParam('cat')) {
             $collection->addTermFilter($categorySlug, 'category');

@@ -216,9 +216,9 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     /**
      * @return string
      */
-    public function getCurrentUrl(): string
+    public function getCurrentUrl($withQuery = false): string
     {
-        return $this->magentoUrl->getCurrentUrl();
+        return $this->magentoUrl->getCurrentUrl($withQuery);
     }
     /**
      * @deprecated

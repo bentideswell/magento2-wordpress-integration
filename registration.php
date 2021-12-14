@@ -7,21 +7,3 @@
 use \Magento\Framework\Component\ComponentRegistrar;
 
 ComponentRegistrar::register(ComponentRegistrar::MODULE, 'FishPig_WordPress', __DIR__);
-
-if (!function_exists('__')) {
-    $bootstrap    = BP . '/app/bootstrap.php';
-    $canIncludeFpFunctions = true;
-
-    if (strpos(file_get_contents($bootstrap), 'app/functions.php') !== false) {
-        $appFunctions = BP . '/app/functions.php';
-        $fpFunctions  = __DIR__ . '/functions.php';
-
-        if (is_file($appFunctions)) {
-            $canIncludeFpFunctions = md5_file($appFunctions) === md5_file($fpFunctions);
-        }
-    }
-
-    if ($canIncludeFpFunctions) {
-        include __DIR__ . '/functions.php';
-    }
-}

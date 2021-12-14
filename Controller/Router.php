@@ -52,8 +52,7 @@ class Router implements \Magento\Framework\App\RouterInterface
                 return $result;
             }
         }
-        echo 'No router match in ' . __METHOD__;
-        exit;
+
         return false;
     }
 }

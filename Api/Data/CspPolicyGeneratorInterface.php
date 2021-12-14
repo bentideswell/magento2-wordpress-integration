@@ -6,8 +6,12 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Logger;
+namespace FishPig\WordPress\Api\Data;
 
-class Handler extends \Magento\Framework\Logger\Handler\Base
+interface CspPolicyGeneratorInterface
 {
+    /**
+     * @return array
+     */
+    public function getData(): array;
 }

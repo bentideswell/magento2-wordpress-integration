@@ -45,18 +45,6 @@ class View extends \FishPig\WordPress\Controller\Action
         // This will throw Exception is post does not exist
         $postType = $this->postTypeRepository->get($request->getParam('post_type'));
 
-        if ($previewPostId = (int)$this->getPreviewId()) {
-            /* Todo */
-            echo __METHOD__;
-            exit;
-            return $this->resultFactory
-                ->create(\Magento\Framework\Controller\ResultFactory::TYPE_FORWARD)
-                ->setModule('wordpress')
-                ->setController('post')
-                ->setParams(['id' => $previewPostId])
-                ->forward('view');
-        }
-        
         $this->registry->register($postType::ENTITY, $postType);
 
         // We got here, we must be good.

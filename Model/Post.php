@@ -444,8 +444,7 @@ $e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exi
     {
         if ($imageId = (int)$this->getMetaValue('_thumbnail_id')) {
             $image = $this->imageFactory->create()->load($imageId);
-            
-            /* ToDo: add caching */
+
             return $image->getId() ? $image : false;
         }
         

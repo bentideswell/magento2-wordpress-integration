@@ -6,8 +6,8 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Logger;
+namespace FishPig\WordPress\App\HTTP;
 
-class Handler extends \Magento\Framework\Logger\Handler\Base
+class ClientFactory extends \Magento\Framework\HTTP\ClientFactory
 {
 }

@@ -1,20 +1,36 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 
-use FishPig\WordPress\Model\Post as PostModel;
-
-class Post extends AbstractItemProvider
+class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProviderInterface
 {
     /**
      *
      */
-    protected function _getItems($storeId)
+    public function __construct(
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory,
+        \Magento\Sitemap\Model\SitemapItemInterfaceFactory $itemFactory,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
+    ) {
+        $this->collectionFactory = $collectionFactory;
+        $this->itemFactory = $itemFactory;
+        $this->storeManager = $storeManager;
+    }
+
+    /**
+     * @param  int $storeId
+     * @return array
+     */
+    final public function getItems($storeId)
     {
         $storeBaseUrl =  rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
-        $collection   = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')->addIsViewableFilter();
+        $collection   = $this->collectionFactory->create()->addIsViewableFilter();
         $items = [];
 
         foreach ($collection as $post) {
@@ -30,7 +46,7 @@ class Post extends AbstractItemProvider
                 continue;
             }
 
-            if ($this->isPostNoIndex($post)) {
+            if (!$post->isPublic()) {
                 // Don't include posts that are set to noindex
                 continue;
             }
@@ -53,9 +69,9 @@ class Post extends AbstractItemProvider
      * Get the post imaages as an array
      *
      * @param  PostModel $post
-     * @return array
+     * @return ?\Magento\Framework\DataObject
      */
-    public function getPostImages(PostModel $post): ?\Magento\Framework\DataObject
+    public function getPostImages(\FishPig\WordPress\Model\Post $post): ?\Magento\Framework\DataObject
     {
         if ($image = $post->getImage()) {
             return new \Magento\Framework\DataObject(
@@ -68,18 +84,5 @@ class Post extends AbstractItemProvider
         }
 
         return null;
-    }
-
-    /**
-     * Determine whether the post as noindex in it's robots tag
-     *
-     * @param  PostModel $post
-     * @return bool
-     */
-    public function isPostNoIndex(PostModel $post): bool
-    {
-        $robots = strtoupper($post->getRobots());
-
-        return strpos($robots, 'NOINDEX') !== false;
     }
 }

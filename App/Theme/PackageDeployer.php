@@ -55,8 +55,37 @@ class PackageDeployer
         $zip->close();
 
         if (isset($tempFishPigThemePath)) {
-            /* ToDo: change to PHP rather than shell_exec */
-            shell_exec('rm -rf ' . $tempFishPigThemePath);
+            $this->recursiveDeleteDir($tempFishPigThemePath);
+        }
+    }
+    
+    /**
+     * @param  string $baseDir
+     * @return void
+     */
+    private function recursiveDeleteDir(string $baseDir, $level = 0): void
+    {
+        if (is_dir($baseDir)) {
+            if ($baseDirObjects = scandir($baseDir)) {
+                foreach ($baseDirObjects as $baseDirObjectName) {
+                    if ($baseDirObjectName === '.' || $baseDirObjectName === '..') {
+                        continue;
+                    }
+                    
+                    $file = $baseDir . '/' . $baseDirObjectName;
+                    
+                    if (is_file($file)) {
+                        unlink($file);
+                    } elseif (is_dir($file)) {
+                        $this->recursiveDeleteDir($file, $level+1);
+                        rmdir($file);
+                    }
+                }
+            }
+            
+            if ($level === 0) {
+                rmdir($baseDir);
+            }
         }
     }
 }

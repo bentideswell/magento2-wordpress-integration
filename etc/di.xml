@@ -273,6 +273,7 @@
 	<type name="FishPig\WordPress\App\Logger\Handler">
 		<arguments>
 			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+			<argument name="fileName" xsi:type="string">/var/log/wordpress.log</argument>
 		</arguments>
 	</type>
 	<type name="FishPig\WordPress\App\Logger">
@@ -283,11 +284,33 @@
 			</argument>
 		</arguments>
 	</type>
-	
-    <type name="Magento\Csp\Model\Collector\CspWhitelistXmlCollector">
-        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Csp\Model\Collector\CspWhitelistXmlCollectorPlugin"/>
+	<type name="FishPig\WordPress\App\HTTP\RequestManager\Logger\Handler">
+		<arguments>
+			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+			<argument name="fileName" xsi:type="string">/var/log/wordpress-http-requests.log</argument>
+		</arguments>
+	</type>
+	<type name="FishPig\WordPress\App\HTTP\RequestManager\Logger">
+		<arguments>
+			<argument name="name" xsi:type="string">FishPig_WordPress</argument>
+			<argument name="handlers"  xsi:type="array">
+				<item name="system" xsi:type="object">FishPig\WordPress\App\HTTP\RequestManager\Logger\Handler</item>
+			</argument>
+		</arguments>
+	</type>
+	<!--
+    	
+    -->
+    <type name="FishPig\WordPress\App\HTTP\RequestManager">
+        <arguments>
+            <argument name="httpClientFactory" xsi:type="object">FishPig\WordPress\App\HTTP\ClientFactory</argument>
+        </arguments>
     </type>
-    
+    <type name="FishPig\WordPress\App\HTTP\ClientFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">FishPig\WordPress\App\HTTP\Client\Curl</argument>
+        </arguments>        
+    </type>
     <!--
     /**
      * Review and Remove
@@ -301,7 +324,14 @@
 	<type name="Magento\Sitemap\Model\ItemProvider\Composite">
 		<arguments>
 			<argument name="itemProviders" xsi:type="array">
-				<item name="wordpressPostProvider" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\Post</item>
+				<item name="fishpig-wordpress-post" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider</item>
+			</argument>
+		</arguments>
+	</type>
+	<type name="FishPig\WordPress\Model\Sitemap\ItemProvider">
+		<arguments>
+			<argument name="itemProviders" xsi:type="array">
+				<item name="post" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\PostItemProvider</item>
 			</argument>
 		</arguments>
 	</type>
@@ -327,7 +357,6 @@
 			</argument>
 		</arguments>
 	</type>
-	<!-- WordPress logger - var/log/wordpress.log -->
     <type name="FishPig\WordPress\Model\CacheInvalidator">
         <arguments>
             <argument name="factories" xsi:type="array">
@@ -336,6 +365,7 @@
             </argument>
         </arguments>
     </type>
+    <!-- ToDo: core? -->
 	<!-- etc/wordpress_core.xml -->
     <virtualType name="WordPressCoreConfigReader" type="Magento\Framework\Config\Reader\Filesystem">
         <arguments>

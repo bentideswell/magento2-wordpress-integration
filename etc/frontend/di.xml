@@ -22,7 +22,7 @@
                 <item name="homepage" xsi:type="object" sortOrder="10">FishPig\WordPress\Controller\Router\HomepageRouter</item>
                 <item name="simple" xsi:type="object" sortOrder="20">FishPig\WordPress\Controller\Router\SimpleRouter</item>
                 <item name="post" xsi:type="object" sortOrder="30">FishPig\WordPress\Controller\Router\PostRouter</item>
-                <item name="term" xsi:type="object" sortOrder="30">FishPig\WordPress\Controller\Router\TermRouter</item>
+                <item name="term" xsi:type="object" sortOrder="40">FishPig\WordPress\Controller\Router\TermRouter</item>
             </argument>
         </arguments>
     </type>
@@ -86,5 +86,20 @@
     </type>
     <type name="Magento\Store\Block\Switcher">
         <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Store\Block\SwitcherPlugin"/>
+    </type>
+    <!--
+    /**
+     * CSP
+     */
+    -->
+    <type name="FishPig\WordPress\Model\Csp\WhitelistPolicyCollector">
+        <arguments>
+            <argument name="policyGeneratorPool" xsi:type="array">
+                <item name="default" xsi:type="object">FishPig\WordPress\Model\Csp\WhitelistPolicyGenerator</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Csp\Model\Collector\CspWhitelistXmlCollector">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Csp\Model\Collector\CspWhitelistXmlCollectorPlugin"/>
     </type>
 </config>

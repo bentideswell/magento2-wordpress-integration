@@ -57,25 +57,55 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
     /**
      * @return string
      */
-    public function getCurrentUrl(): string
+    public function getCurrentUrl($withQuery = false): string
     {
         $store = $this->storeManager->getStore();
-        $storeId = (int)$store->getId();
+        $cacheKey = (int)$store->getId() . '-' . (int)$withQuery;
 
-        if (!isset($this->currentUrl[$storeId])) {
-            $this->currentUrl[$storeId] = preg_replace('/\?.*$/', '', $store->getCurrentUrl(false));
+        if (!isset($this->currentUrl[$cacheKey])) {
+            $storeUrl = $store->getCurrentUrl(false);            
+            
+            if ($withQuery) {
+
+                
+                if (strpos($storeUrl, '___store=') !== false) {
+                    if (($pos = strpos($storeUrl, '?')) !== false) {
+                        $qs = substr($storeUrl, $pos+1);
+                        
+
+                        if ($qs) {
+                            parse_str($qs, $qsParsed);
+                            
+                            if (isset($qsParsed['___store'])) {
+                                unset($qsParsed['___store']);
+                                $storeUrl = substr($storeUrl, 0, $pos);
+
+                                if ($qsParsed) {
+                                    $storeUrl .= '?' . http_build_query($qsParsed);
+                                } else {
+                                    $storeUrl = substr($storeUrl, 0, $pos);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $this->currentUrl[$cacheKey] = $storeUrl;
+            } else {
+               $this->currentUrl[$cacheKey] = preg_replace('/\?.*$/', '', $storeUrl);
+            }
 
             if ($this->isCustomBaseUrl()) {
                 $baseUrl = $this->getBaseUrl();
                 $activeBaseUrl = $this->getUrl();
 
                 if ($baseUrl !== $activeBaseUrl) {
-                    $this->currentUrl[$storeId] = str_replace($baseUrl, $activeBaseUrl, $this->currentUrl[$storeId]);
+                    $this->currentUrl[$cacheKey] = str_replace($baseUrl, $activeBaseUrl, $this->currentUrl[$cacheKey]);
                 }
             }
         }
         
-        return $this->currentUrl[$storeId];
+        return $this->currentUrl[$cacheKey];
     }
     
     /**

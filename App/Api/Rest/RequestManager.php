@@ -14,15 +14,14 @@ use FishPig\WordPress\App\Http\InvalidResponseBodyException;
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
 {
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url,
+        \FishPig\WordPress\Model\UrlInterface $url,      
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
-        \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \FishPig\WordPress\App\Api\AuthToken $apiAuthToken
+        \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
+        \Magento\Framework\Serialize\SerializerInterface $serializer
     ) {
         $this->serializer = $serializer;
-        $this->apiAuthToken = $apiAuthToken;
 
-        parent::__construct($url, $httpClientFactory);
+        parent::__construct($url, $httpClientFactory, $requestLogger);
     }
     
     /**
@@ -45,9 +44,8 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     public function getJson(string $endpoint)
     {
         $httpResponse = $this->get($endpoint);
-  
+
         if ($httpResponse->getStatus() !== 200) {
-            
             if ($data = $this->parseJson($httpResponse->getBody())) {
                 if (isset($data['code'], $data['message'])) {
                     throw new InvalidStatusException(
@@ -82,23 +80,18 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     {
         try {
             return $this->serializer->unserialize($str);
-        } catch (InvalidArgumentException $e) {
-            return false;
+        } catch (\Exception $e) {
+            
+            echo $str;exit;
+            if (strpos($str, 'Fatal error') !== false) {
+                if (preg_match('/<b>Fatal error<\/b>:(.*)\n/Uis', $str, $m)) {
+                    throw new \Exception(trim($m[1]));
+                }
+                
+                throw new \Exception('A fatal PHP error occurred in WordPress.');
+            }
+            
+            throw $e;
         }
-    }
-
-    /**
-     * @return \Magento\Framework\HTTP\ClientInterface
-     */
-    protected function createHttpClient(): \Magento\Framework\HTTP\ClientInterface
-    {
-        $request = parent::createHttpClient();
-
-        $request->addHeader(
-            \FishPig\WordPress\App\Api\AuthToken::HTTP_HEADER_NAME, 
-            $this->apiAuthToken->getToken()
-        );
-
-        return $request;
     }
 }
