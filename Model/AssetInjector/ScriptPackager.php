@@ -31,7 +31,7 @@ class ScriptPackager
      * @param \FishPig\WordPress\Model\UrlInterface $url
      */
     public function __construct(
-        \FishPig\WordPress\Model\Url $url
+        \FishPig\WordPress\Model\UrlInterface $url
     ) {
         $this->siteUrl = rtrim($url->getSiteUrl() . '/');
     }

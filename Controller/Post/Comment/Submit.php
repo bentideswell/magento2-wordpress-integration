@@ -14,7 +14,7 @@ class Submit extends \Magento\Framework\App\Action\Action
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Model\PostFactory $postFactory,
-        \FishPig\WordPress\Model\Url $wpUrlBuilder
+        \FishPig\WordPress\Model\UrlInterface $wpUrlBuilder
     ) {
         $this->postFactory = $postFactory;
         $this->wpUrlBuilder = $wpUrlBuilder;

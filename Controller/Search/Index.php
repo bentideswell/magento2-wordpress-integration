@@ -7,7 +7,7 @@ namespace FishPig\WordPress\Controller\Search;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
 use FishPig\WordPress\Model\SearchFactory;
-use FishPig\WordPress\Model\Url as WpUrl;
+use FishPig\WordPress\Model\UrlInterface as WpUrl;
 use Magento\Framework\Controller\ResultFactory;
 
 class Index extends Action

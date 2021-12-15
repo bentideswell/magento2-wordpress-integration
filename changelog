@@ -1,5 +1,14 @@
 # Changelog
 
+## [Unreleased]
+- Auto update/install theme when using Local integration mode.
+- Add a URL generator/crawler to the test suite (local dev)
+- Reintroduce wordpress/find
+
+## [3.0.4] - 2021-12-15
+### [Changed]
+- Updated references to FishPig\WordPress\Model\Url to FishPig\WordPress\Model\UrlInterface
+
 ## [3.0.3] - 2021-12-15
 ### [Fixed]
 - PHP URL class error in HeadAdditional block
