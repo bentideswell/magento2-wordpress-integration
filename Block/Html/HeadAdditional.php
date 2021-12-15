@@ -4,44 +4,22 @@
  */
 namespace FishPig\WordPress\Block\Html;
 
-use Magento\Framework\View\Element\Context;
-use Magento\Framework\Module\Manager as ModuleManager;
-use Magento\Framework\View\Layout;
-use FishPig\WordPress\Model\Url as WPUrl;
-use Magento\Framework\View\Element\AbstractBlock;
-
-class HeadAdditional extends AbstractBlock
+class HeadAdditional extends \Magento\Framework\View\Element\AbstractBlock
 {
-    /**
-     * @var ModuleManager
-     */
-    protected $moduleManager;
-
-    /**
-     * @var Layout
-     */
-    protected $layout;
-
-    /**
-     * @var WPUrl
-     */
-    protected $wpUrl;
-
     /**
      * @param Context $contenxt
      * @param array   $data     = []
      */
     public function __construct(
-        Context $context,
-        ModuleManager $moduleManager,
-        Layout $layout,
-        WPUrl $wpUrl,
+        \Magento\Framework\View\Element\Context $context,
+        \Magento\Framework\Module\Manager $moduleManager,
+        \Magento\Framework\View\Layout $layout,
+        \FishPig\WordPress\Model\UrlInterface $url,
         array $data = []
     ) {
         $this->moduleManager = $moduleManager;
         $this->layout = $layout;
-        $this->wpUrl = $wpUrl;
-
+        $this->url = $url;
         parent::__construct($context, $data);
     }
 
@@ -54,7 +32,7 @@ class HeadAdditional extends AbstractBlock
             return '';
         }
 
-        $siteUrl = rtrim($this->wpUrl->getSiteurl(), '/') . '/';
+        $siteUrl = rtrim($this->url->getSiteurl(), '/') . '/';
         $html = [];
         $layoutHandles = $this->layout->getUpdate()->getHandles();
 
@@ -65,7 +43,7 @@ class HeadAdditional extends AbstractBlock
             ];
 
             foreach ($cssFiles as $cssTypeId => $cssFile) {
-                $html[] = sprintf('<link rel="stylesheet" id="%s" href="%s"  type="text/css" media="all"/>', $cssTypeId, $siteUrl . $cssFile);
+                $html[] = sprintf('<link rel="stylesheet" id="%s" href="%s" type="text/css" media="all"/>', $cssTypeId, $siteUrl . $cssFile);
             }
         }
 

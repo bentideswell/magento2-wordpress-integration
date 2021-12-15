@@ -28,9 +28,9 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
         $select = $this->getConnection()
             ->select()
                 ->from(
-                    [$this->tableAlias => $this->getMainTable()]
+                    ['main_table' => $this->getMainTable()]
                 )->where(
-                    $this->getConnection()->quoteIdentifier(sprintf('%s.%s', $this->tableAlias, $field)) . '=?',
+                    $this->getConnection()->quoteIdentifier(sprintf('%s.%s', 'main_table', $field)) . '=?',
                      $value
                 );
 

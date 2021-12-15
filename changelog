@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.3] - 2021-12-15
+### [Fixed]
+- PHP URL class error in HeadAdditional block
+
 ## [3.0.2] - 2021-12-15
 ### [Added]
 - Fallback for image resizer model, which is no longer included in the module as it's not possible to resize images in Magento anymore.
