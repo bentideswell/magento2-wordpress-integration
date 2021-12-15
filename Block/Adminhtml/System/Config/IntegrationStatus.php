@@ -31,8 +31,6 @@ class IntegrationStatus extends \Magento\Backend\Block\Template
         $this->moduleDirReader = $moduleDirReader;
         
         parent::__construct($context, $data);
-        
-
     }
 
     protected function _beforeToHtml()

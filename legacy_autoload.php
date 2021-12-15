@@ -6,7 +6,6 @@
  */
 declare(strict_types=1);
 
-/* ToDo: check compiler */
 if (!defined('FISHPIG_SKIP_LEGACY_AUTOLOAD')) {
     spl_autoload_register(function($className) {
         $classTarget = 'FishPig\\WordPress\\';

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.0.1] - 2021-12-15
+### [Changed]
+- References to FishPig\WordPress\Model\Logger have been changed to FishPig\WordPress\App\Logger
+
 ## [3.0.0] - 2021-12-15
 This is a new major version of this module and all add-on modules. The module now uses semantic versioning and each module has a public change log.
 You can see the old change log here: https://github.com/bentideswell/magento2-wordpress-integration/blob/dbce94d8089fc4f8d5c88225010394ec4c5f7dd5/changelog.txt

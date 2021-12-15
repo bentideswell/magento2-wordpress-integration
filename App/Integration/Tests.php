@@ -30,7 +30,7 @@ class Tests
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \FishPig\WordPress\Model\Logger $logger,
+        \FishPig\WordPress\App\Logger $logger,
         array $integrationTestPool = []
     ) {
         $this->appMode = $appMode;
