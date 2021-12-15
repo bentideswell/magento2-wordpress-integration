@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.0.2] - 2021-12-15
+### [Added]
+- Fallback for image resizer model, which is no longer included in the module as it's not possible to resize images in Magento anymore.
+  Instead, you should change the image sizes (or create new sizes) in WordPress and this data will be available in Magento.
+  
 ## [3.0.1] - 2021-12-15
 ### [Changed]
 - References to FishPig\WordPress\Model\Logger have been changed to FishPig\WordPress\App\Logger
