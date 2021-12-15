@@ -335,8 +335,6 @@
 			</argument>
 		</arguments>
 	</type>
-
-	<!-- Integration Manager -->
 	<!-- Widgets -->
 	<type name="FishPig\WordPress\Model\WidgetRepository">
 		<arguments>
@@ -357,27 +355,4 @@
 			</argument>
 		</arguments>
 	</type>
-    <type name="FishPig\WordPress\Model\CacheInvalidator">
-        <arguments>
-            <argument name="factories" xsi:type="array">
-                <item name="wordpress_post" xsi:type="object">FishPig\WordPress\Model\PostFactory</item>
-                <!--<item name="wordpress_term" xsi:type="object">FishPig\WordPress\Model\TermFactory</item>-->
-            </argument>
-        </arguments>
-    </type>
-    <!-- ToDo: core? -->
-	<!-- etc/wordpress_core.xml -->
-    <virtualType name="WordPressCoreConfigReader" type="Magento\Framework\Config\Reader\Filesystem">
-        <arguments>
-            <argument name="converter" xsi:type="object">FishPig\WordPress\Model\Config\Core\Converter</argument>
-            <argument name="schemaLocator" xsi:type="object">FishPig\WordPress\Model\Config\Core\SchemaLocator</argument>
-            <argument name="fileName" xsi:type="string">wordpress_core.xml</argument>
-        </arguments>
-    </virtualType>
-    <type name="FishPig\WordPress\Model\Config\Core">
-        <arguments>
-            <argument name="reader" xsi:type="object">WordPressCoreConfigReader</argument>
-            <argument name="cacheId" xsi:type="string">fishpig_wordpress_core_config</argument>
-        </arguments>
-    </type>
 </config>

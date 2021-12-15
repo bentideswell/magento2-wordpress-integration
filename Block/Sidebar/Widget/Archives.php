@@ -40,13 +40,12 @@ class Archives extends AbstractWidget
     {
         if (is_null($this->archiveCollection)) {
             $dates = $this->archiveResource->getDatesForWidget();
-            $archiveCollection = [];
+            $this->archiveCollection = [];
 
             foreach ($dates as $date) {
-                $archiveCollection[] = $this->archiveFactory->create()->load($date['archive_date'])->setPostCount($date['post_count']);
+                $archive = $this->archiveFactory->create()->load($date['archive_date'])->setPostCount($date['post_count']);;
+                $this->archiveCollection[$archive->getId()] = $archive;
             }
-
-            $this->archiveCollection = $archiveCollection;
         }
 
         return $this->archiveCollection;

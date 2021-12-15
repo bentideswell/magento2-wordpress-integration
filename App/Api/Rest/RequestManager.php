@@ -13,6 +13,9 @@ use FishPig\WordPress\App\Http\InvalidResponseBodyException;
 
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
 {
+    /**
+     *
+     */
     public function __construct(
         \FishPig\WordPress\Model\UrlInterface $url,      
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,

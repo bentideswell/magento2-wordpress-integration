@@ -165,10 +165,14 @@ class Post extends AbstractResourceModel
         return false;
     }
 
+    /**
+     * ToDo: improve this
+     */
     public function getPostsOnDayByYearMonth($dateStr)
     {
         $collection = $this->postCollectionFactory->create()
             ->addPostDateFilter($dateStr)
+            ->addPostTypeFilter('post')
             ->addIsViewableFilter();
 
         $collection->getSelect()

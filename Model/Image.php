@@ -14,10 +14,14 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
      * @param  string $code
      * @return string
      */
-    public function getImageUrl(string $code): string
+    public function getImageUrl($codes): string
     {
-        if ($imageFile = $this->getImageByCode($code, 'file')) {
-            return $this->url->getUploadUrl() . dirname($this->getFile()) . '/' . $imageFile;
+        $codes = (array)$codes;
+        
+        foreach ($codes as $code) {
+            if ($imageFile = $this->getImageByCode($code, 'file')) {
+                return $this->url->getUploadUrl() . dirname($this->getFile()) . '/' . $imageFile;
+            }
         }
         
         return '';

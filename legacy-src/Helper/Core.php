@@ -11,22 +11,11 @@ namespace FishPig\WordPress\Helper;
 class Core extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     *
-     */
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \FishPig\WordPress\App\Integration\Mode $integrationMode
-    ) {
-        $this->integrationMode = $integrationMode;
-        parent::__construct($context);
-    }
-
-    /**
      * @return bool
      */
     public function hasHelper(): bool
     {
-        return true;
+        return false;
     }
     
     /**
@@ -42,11 +31,7 @@ class Core extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      */
     public function simulatedCallback(\Closure $callback, array $params = [])
-    {
-        if (!$this->integrationMode->isLocalMode()) {
-            throw new \FishPig\WordPress\App\Exception('Cannot run WP code unless in local mode.');
-        }
-        
+    {   
         return null;
     }
 

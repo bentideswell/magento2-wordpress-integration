@@ -49,9 +49,12 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
             exit;
         }
         
+        // Allows for cache invalidation
+        $postAction = $request->getParam('wp_fpc_nonce') ? 'invalidate' : 'view';
+
         return $this->requestDispatcher->dispatch(
             $request, 
-            '*/post/view', 
+            '*/post/' . $postAction, 
             ['id' => $postId]
         );
     }

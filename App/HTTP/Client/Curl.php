@@ -18,7 +18,7 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     /**
      * @var string
      */
-    private $authToken = null;
+    private $authorisationKey = null;
 
     /**
      * @var int
@@ -29,10 +29,10 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Api\AuthToken $apiAuthToken,
+        \FishPig\WordPress\App\HTTP\AuthorisationKey $authorisationKey,
         $sslVersion = null
     ) {
-        $this->apiAuthToken = $apiAuthToken;
+        $this->authorisationKey = $authorisationKey;
         parent::__construct($sslVersion);
         
         $this->setOption(CURLOPT_SSL_VERIFYHOST, false);
@@ -40,8 +40,8 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
         $this->setOption(CURLOPT_FOLLOWLOCATION, true);
 
         $this->addHeader(
-            \FishPig\WordPress\App\Api\AuthToken::HTTP_HEADER_NAME, 
-            $this->apiAuthToken->getToken()
+            \FishPig\WordPress\App\HTTP\AuthorisationKey::HTTP_HEADER_NAME, 
+            $this->authorisationKey->getKey()
         );
     }
             

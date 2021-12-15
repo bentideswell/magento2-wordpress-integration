@@ -118,9 +118,11 @@ class View extends \FishPig\WordPress\Controller\Action
 
         $this->seoMetaDataProvider->addMetaData($resultPage, $post);
 
-        $this->addBreadcrumbs(
-            $this->breadcrumbsDataProvider->getData($post)
-        );
+        if (!$post->isFrontPage()) {
+            $this->addBreadcrumbs(
+                $this->breadcrumbsDataProvider->getData($post)
+            );
+        }
 
         return $resultPage;
     }

@@ -23,7 +23,7 @@ class Previews
         });
 
         add_filter('get_post_status', function($post_status, $post) {            
-            if (false === \FishPig\WordPress\X\Api::isAuthTokenValid()) {
+            if (false === \FishPig\WordPress\X\AuthorisationKey::isAuthorised()) {
                 return $post_status;
             }
             

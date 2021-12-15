@@ -1,93 +1,76 @@
 <?php
 /**
- *
- *
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Post;
 
-use Magento\Framework\App\Action\Action;
-use Magento\Framework\App\Action\Context;
-use FishPig\WordPress\Model\Factory;
-use FishPig\WordPress\Model\OptionManager;
-use Magento\Framework\App\CacheInterface;
-
-class Invalidate extends Action
+class Invalidate extends \Magento\Framework\App\Action\Action
 {
     /**
-     *
-     * @var Factory
+     * @const string
      */
-    protected $factory;
+    const NONCE_OPTION_NAME_PREFIX = '_fishpig_nonce_post_';
+    const INVALIDATION_URL_NONCE_FIELD = 'wp_fpc_nonce';
 
     /**
      *
-     * @var OptionManager
      */
-    protected $optionManager;
-
-    /**
-     *
-     * @var CacheInterface
-     */
-    protected $cacheManager;
-
-    /**
-     *
-     * @var ManagerInterface
-     */
-    protected $eventManager;
-
-    /**
-     *
-     *
-     *
-     */
-    public function __construct(Context $context, OptionManager $optionManager, Factory $factory, CacheInterface $cacheManager)
-    {
-        $this->optionManager = $optionManager;
-        $this->factory       = $factory;
-        $this->cacheManager  = $cacheManager;
-        $this->eventManager  = $context->getEventManager();
-
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \FishPig\WordPress\Model\PostRepository $postRepository,
+        \Magento\Framework\App\CacheInterface $cacheManager,
+        \Magento\Framework\Serialize\SerializerInterface $serializer
+    ){
+        $this->optionRepository = $optionRepository;
+        $this->postRepository = $postRepository;
+        $this->cacheManager = $cacheManager;
+        $this->eventManager = $context->getEventManager();
+        $this->serializer = $serializer;
         parent::__construct($context);
     }
 
     /**
-     *
-     *
      * @return void
      */
     public function execute()
     {
-        $this->getResponse()->appendBody(
-            json_encode(
-                [
-                'result' => $this->invalidateCache() ? 'success' : 'failure'
-                ]
-            )
+        try {
+            $this->invalidateCache();
+            $response = ['result' => 'success'];
+        } catch (\Exception $e) {
+            $this->logger->error($e);
+            $response = [
+                'result' => 'failure',
+                'error' => $e->getMessage()
+            ];
+        }
+        
+        return $this->getResponse()->setHeader(
+            'Content-Type', 'text/json; charset=utf-8'
+        )->setBody(
+            $this->serializer->serialize($response)
         );
     }
 
     /**
-     * Attempt to invalidate cache entry
+     * @return bool
      */
-    protected function invalidateCache()
+    private function invalidateCache(): bool
     {
         $postId = (int)$this->getRequest()->getParam('id');
-        $nonce  = $this->getRequest()->getParam('nonce');
+        $nonce  = $this->getRequest()->getParam(self::INVALIDATION_URL_NONCE_FIELD);
 
-        if (!$this->verifyNonce($nonce, 'invalidate_' . $postId)) {
-            return false;
+        if (!$this->isValidNonce($nonce, self::NONCE_OPTION_NAME_PREFIX . $postId)) {
+            throw new \Exception('Invalid nonce');
         }
 
-        $post = $this->factory->create('Post')->load($postId);
+        $post = $this->postRepository->get($postId);
 
-        if (!$post->getId()) {
-            return false;
-        }
-
-        // Clean cache related objects and then allow FPC plugins to do the same
         $post->cleanModelCache();
         $this->eventManager->dispatch('clean_cache_by_tags', ['object' => $post]);
 
@@ -95,26 +78,10 @@ class Invalidate extends Action
     }
 
     /**
-     * Validate given nonce
+     * @return bool
      */
-    protected function verifyNonce($nonce, $action)
+    protected function isValidNonce($nonce, $action): bool
     {
-        if (!($salt = $this->optionManager->getOption('fishpig_salt'))) {
-            return false;
-        }
-
-        $nonce_tick = ceil(time() / ( 86400 / 2 ));
-
-        // 0-12 hours
-        if (substr(hash_hmac('sha256', $nonce_tick . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
-            return true;
-        }
-
-        // 12-24 hours
-        if (substr(hash_hmac('sha256', ($nonce_tick - 1) . '|fishpig|' . $action, $salt), -12, 10) == $nonce) {
-            return true;
-        }
-
-        return false;
+        return $nonce && $nonce === $this->optionRepository->get($action);
     }
 }
