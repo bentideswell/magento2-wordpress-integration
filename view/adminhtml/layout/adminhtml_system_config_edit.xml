@@ -2,7 +2,8 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
 	<body>
 		<referenceContainer name="content">
-			<block name="wordpress.config.integrate" class="FishPig\WordPress\Block\System\Config\Integrate" before="system.config.edit"/>
+			<block name="wp.integrationStatus" class="FishPig\WordPress\Block\Adminhtml\System\Config\IntegrationStatus" 
+			       before="system.config.edit"/>
 		</referenceContainer>
 	</body>
 </page>

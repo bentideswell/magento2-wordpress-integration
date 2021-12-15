@@ -14,6 +14,24 @@ class Archives extends AbstractWidget
     protected $archiveCollection;
 
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ArchiveFactory $archiveFactory,
+        \FishPig\WordPress\Model\ResourceModel\Archive $archiveResource,
+        array $data = []
+    ) {
+        $this->archiveFactory = $archiveFactory;
+        $this->archiveResource = $archiveResource;
+
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Returns a collection of valid archive dates
      *
      * @return Varien_Data_Collection
@@ -21,14 +39,13 @@ class Archives extends AbstractWidget
     public function getArchives()
     {
         if (is_null($this->archiveCollection)) {
-            $dates = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Archive')->getDatesForWidget();
-            $archiveCollection = [];
+            $dates = $this->archiveResource->getDatesForWidget();
+            $this->archiveCollection = [];
 
             foreach ($dates as $date) {
-                $archiveCollection[] = $this->factory->create('FishPig\WordPress\Model\Archive')->load($date['archive_date'])->setPostCount($date['post_count']);
+                $archive = $this->archiveFactory->create()->load($date['archive_date'])->setPostCount($date['post_count']);;
+                $this->archiveCollection[$archive->getId()] = $archive;
             }
-
-            $this->archiveCollection = $archiveCollection;
         }
 
         return $this->archiveCollection;

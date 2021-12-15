@@ -1,40 +1,51 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\Meta\AbstractMeta;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
+use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
+use FishPig\WordPress\Api\Data\ViewableModelInterface;
 
-class User extends AbstractMeta implements ViewableInterface
+class User extends AbstractMetaModel implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
      * @const string
      */
     const ENTITY = 'wordpress_user';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_user';
 
     /**
-     * Event information
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_user';
     protected $_eventObject = 'user';
 
     /**
-     * @return void
+     * @var \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\User');
+    private $postCollectionFactory;
+    
+    /**
+     *
+     */
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
-
+    
     /**
      * @return string
      */
@@ -43,6 +54,32 @@ class User extends AbstractMeta implements ViewableInterface
         return $this->_getData('display_name');
     }
 
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        if (!$this->hasUrl()) {
+            
+
+            $this->setUrl(
+                $this->url->getHomeUrlWithFront('author/' . urlencode($this->getUserNicename()) . '/')
+            );
+        }
+
+        return $this->_getData('url');
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
+     */
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
+    {
+        return $this->postCollectionFactory->create()->addUserIdFilter(
+            (int)$this->getId()            
+        );
+    }
+    
     /**
      * @return string
      */
@@ -69,18 +106,6 @@ class User extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * @return string
-     */
-    public function getUrl()
-    {
-        if (!$this->hasUrl()) {
-            $this->setUrl($this->url->getUrlWithFront('author/' . urlencode($this->getUserNicename()) . '/'));
-        }
-
-        return $this->_getData('url');
-    }
-
-    /**
      * Load the WordPress user model associated with the current logged in customer
      *
      * @return \FishPig\WordPress\Model\User
@@ -99,7 +124,6 @@ class User extends AbstractMeta implements ViewableInterface
     public function getTablePrefix()
     {
         return $this->getResource()->getTablePrefix();
-        return $this->getResourceConnection()->getTablePrefix();
     }
 
     /**
@@ -189,29 +213,5 @@ class User extends AbstractMeta implements ViewableInterface
     protected function _getDefaultGravatarImage()
     {
         return '';
-    }
-
-    /**
-     * @return bool
-     */
-    public function doesMetaTableHavePrefix()
-    {
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetaTableObjectField()
-    {
-        return 'user_id';
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetaTableAlias()
-    {
-        return 'wordpress_user_meta';
     }
 }

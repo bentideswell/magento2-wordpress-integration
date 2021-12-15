@@ -9,7 +9,8 @@
 <?php get_header() ?>
 <?php if (have_posts()): ?>
 	<?php while (have_posts()): the_post() ?>
-		<article id="fp-post-<?php the_ID() ?>"><?php the_content() ?></article>
+		<fishpig:post:<?php the_ID() ?>><?php the_content() ?></fishpig:post:<?php the_ID() ?>>
 	<?php endwhile ?>
 <?php endif; ?>
+    <?= apply_filters('fishpig_index_template_after_loop_html', '') ?>
 <?php get_footer() ?>

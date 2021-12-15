@@ -1,79 +1,51 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Collection;
 
-use Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection as AbstractDbCollection;
-use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Psr\Log\LoggerInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Event\ManagerInterface;
-use FishPig\WordPress\Model\Context as WPContext;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-
-abstract class AbstractCollection extends AbstractDbCollection
+abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     /**
-     * @var WPContext
-     */
-    protected $wpContext;
-
-    /**
-     * @var OptionManager
-     */
-    protected $optionManager;
-
-    /**
-     * @vr
-     */
-    protected $postTypeManager;
-
-    /**
-     *
      *
      */
     public function __construct(
-        EntityFactoryInterface $entityFactory,
-        LoggerInterface $logger,
-        FetchStrategyInterface $fetchStrategy,
-        ManagerInterface $eventManager,
-        WPContext $wpContext,
-        AdapterInterface $connection = null,
-        AbstractDb $resource = null
+        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        string $modelName = null
     ) {
-        $this->wpContext       = $wpContext;
-        $this->optionManager   = $wpContext->getOptionManager();
-        $this->postTypeManager = $wpContext->getPostTypeManager();
-
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource);
+        
+        if ($modelName) {
+            $this->setModel($modelName);
+        }
     }
-
-    public function getConnection()
-    {
-        return $this->getResource()->getConnection();
-    }
-
+    
     /**
-     * Removes all order data set at the collection level
-     * This does not remove order set using self::getSelect()->order($field, $dir)
-     *
+     * @return void
+     */
+    protected function _initSelect()
+    {
+        parent::_initSelect();
+
+        $this->_eventManager->dispatch($this->_eventPrefix . '_init_select', [$this->_eventObject => $this]);
+    }
+    
+    /**
+     * @param string $table
      * @return $this
      */
-    public function resetOrderBy()
+    public function setMainTable($table)
     {
-        $this->_orders = [];
-
-        return $this;
-    }
-
-    /**
-     * Force the collection to be empty
-     */
-    public function forceEmpty()
-    {
-        $this->getSelect()->where('1=2')->limit(1);
+        $this->_mainTable = $table;
 
         return $this;
     }

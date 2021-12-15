@@ -1,63 +1,158 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\AbstractResourcelessModel;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-use FishPig\WordPress\Model\ResourceConnection;
-use FishPig\WordPress\Model\Url;
-use FishPig\WordPress\Model\TaxonomyManager;
-use FishPig\WordPress\Model\Factory;
+use FishPig\WordPress\Api\Data\ViewableModelInterface;
+use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 
-class PostType extends AbstractResourcelessModel implements ViewableInterface
+class PostType extends \Magento\Framework\DataObject implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
-    /**
-     *
-     */
-    const ENTITY = 'wordpress_post_type';
-
     /**
      * @const string
      */
+    const ENTITY = 'wordpress_post_type';
     const CACHE_TAG = 'wordpress_post_type';
 
     /**
-     * Cache of URI's for hierarchical post types
-     *
-     * @var array static
+     * @var \FishPig\WordPress\Model\ResourceModel\PostType
      */
-    static $_uriCache = [];
-
+    private $_resource;
+    
     /**
-     * Determine whether post type uses GUID links
-     *
-     * @return bool
+     * @param array $data = []
      */
-    public function useGuidLinks()
-    {
-        return trim($this->getSlug()) === '';
+    public function __construct(
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\PostType $resource,
+        \FishPig\WordPress\Helper\FrontPage $frontPage,
+        array $data = []
+    ) {
+        $this->url = $wpContext->getUrl();
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
+        $this->_resource = $resource;
+        $this->frontPage = $frontPage;
+        
+        parent::__construct($data);
     }
 
     /**
-     * Determine whether the post type is a built-in type
-     *
-     * @return bool
-     */
-    public function isDefault()
-    {
-        return (int)$this->_getData('_builtin') === 1;
-    }
-
-    /**
-     * Get the permalink structure as a string
+     * Get the name of the post type
      *
      * @return string
      */
-    public function getPermalinkStructure()
+    public function getName()
     {
-        $structure = ltrim(str_replace('index.php/', '', ltrim($this->getSlug(), ' -/')), '/');
+        return $this->getData('labels/name');
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        if ($this->getPostType() === 'post') {
+            if ($this->isFrontPage()) {
+                return $this->url->getHomeUrl();
+            }
+            
+            if ($postsPage = $this->frontPage->getPostsPage()) {
+                return $postsPage->getUrl();
+            }
+            
+            return $this->url->getHomeUrl();
+        }
+        
+        if (!$this->hasArchive()) {
+            return '';
+        }
+
+        $urlPath = $this->getArchiveSlug() . ($this->permalinkHasTrainingSlash() ? '/' : '');
+        
+        return $this->withFront()
+            ? $this->url->getHomeUrlWithFront($urlPath)
+            : $this->url->getHomeUrl($urlPath);
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
+     */
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
+    {
+        return $this->postCollectionFactory->create()->addPostTypeFilter(
+            $this->getPostType()
+        );
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\ResourceModel\PostType
+     */
+    public function getResource(): \FishPig\WordPress\Model\ResourceModel\PostType
+    {
+        return $this->_resource;
+    }
+
+    /**
+     * Determine whether the permalink has a trailing slash
+     *
+     * @return bool
+     */
+    public function permalinkHasTrainingSlash()
+    {
+        return substr($this->getSlug(), -1) === '/' || substr($this->getPermalinkStructure(), -1) === '/';
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return (int)$this->_getData('public') === 1;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function isDefault(): bool
+    {
+        return (int)$this->_getData('_builtin') === 1;
+    }
+    
+    /**
+     * @return bool
+     */
+    public function useGuidLinks(): bool
+    {
+        return trim($this->getData('rewrite/slug')) === '';
+    }
+
+    /**
+     * @return bool
+     */
+    public function withFront(): bool
+    {
+        return (int)$this->getData('rewrite/with_front') === 1;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFrontPage(): bool
+    {
+        return $this->getPostType() === 'post' && $this->frontPage->isFrontPageDefaultPostTypeArchive();
+    }
+    
+    /**
+     * @return string
+     */
+    public function getPermalinkStructure(): string
+    {
+        $structure = ltrim(str_replace('index.php/', '', ltrim($this->getData('rewrite/slug'), ' -/')), '/');
 
         if (!$this->isDefault() && strpos($structure, '%postname%') === false) {
             $structure = rtrim($structure, '/') . '/%postname%/';
@@ -75,104 +170,33 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * Does the URL include the front
-     *
+     * @return string
+     */
+    public function getSlug(): string
+    {
+        return $this->getData('rewrite/slug');
+    }
+
+    /**
      * @return bool
      */
-    public function withFront()
+    public function hasArchive(): bool
     {
-        return (int)$this->getData('rewrite/with_front') === 1;
+        return $this->getHasArchive() && $this->getHasArchive() !== '0';
     }
-
-    /**
-     * Retrieve the permalink structure in array format
-     *
-     * @return false|array
-     */
-    public function getExplodedPermalinkStructure()
-    {
-        $structure = $this->getPermalinkStructure();
-        $parts = preg_split("/(\/|-)/", $structure, -1, PREG_SPLIT_DELIM_CAPTURE);
-        $structure = [];
-
-        foreach ($parts as $part) {
-            if ($result = preg_split("/(%[a-zA-Z0-9_]{1,}%)/", $part, -1, PREG_SPLIT_DELIM_CAPTURE)) {
-                $results = array_filter(array_unique($result));
-
-                foreach ($results as $result) {
-                    array_push($structure, $result);
-                }
-            } else {
-                $structure[] = $part;
-            }
-        }
-
-        return $structure;
-    }
-
-    /**
-     * Determine whether the permalink has a trailing slash
-     *
-     * @return bool
-     */
-    public function permalinkHasTrainingSlash()
-    {
-        return substr($this->getSlug(), -1) === '/' || substr($this->getPermalinkStructure(), -1) === '/';
-    }
-
-    /**
-     * Retrieve the URL to the cpt page
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->url->getUrl($this->getArchiveSlug() . '/');
-    }
-
-    /**
-     * Retrieve the post collection for this post type
-     *
-     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
-     */
-    public function getPostCollection()
-    {
-        return $this->factory->create('Model\ResourceModel\Post\Collection')->addPostTypeFilter($this->getPostType());
-    }
-
+    
     /**
      * Get the archive slug for the post type
      *
      * @return string
      */
-    public function getSlug()
-    {
-        $slug = $this->getData('rewrite/slug');
-
-        if ($this->withFront()) {
-            $slug = $this->getFront() . '/' . $slug;
-        }
-
-        return $slug;
-    }
-
-    /**
-     * Get the archive slug for the post type
-     *
-     * @return string
-     */
-    /**
-     * Get the archive slug for the post type
-     *
-     * @return string
-     */
-    public function getArchiveSlug()
+    public function getArchiveSlug(): string
     {
         if (!$this->hasArchive()) {
-            return false;
+            return '';
         }
 
-        $slug = false;
+        $slug = '';
 
         if (((string)$slug = $this->getHasArchive()) !== '1') {
             // Do nothing yet
@@ -190,13 +214,11 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     * Get the URL of the archive page
-     *
      * @return string
      */
-    public function getArchiveUrl()
+    public function getArchiveUrl(): string
     {
-        return $this->hasArchive() ? $this->url->getUrl($this->getArchiveSlug() . '/') : '';
+        return $this->getUrl();
     }
 
     /**
@@ -234,22 +256,14 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
         return false;
     }
 
-    /**
-     * Get the name of the post type
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->getData('labels/name');
-    }
+
 
     /**
      * Determine whether this post type is hierarchical
      *
      * @return bool
      */
-    public function isHierarchical()
+    public function isHierarchical(): bool
     {
         return (int)$this->getData('hierarchical') === 1;
     }
@@ -290,45 +304,10 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
         if (!$this->isHierarchical()) {
             return false;
         }
-
-        $storeId = (int)$this->wpContext->getStoreManager()->getStore()->getId();
-
-        if (isset(self::$_uriCache[$storeId][$this->getPostType()])) {
-            return self::$_uriCache[$storeId][$this->getPostType()];
-        }
-
-        $resource = $this->wpContext->getResourceConnection();
-
-        if (!($db = $resource->getConnection())) {
-            return false;
-        }
-
-        if (!isset(self::$_uriCache[$storeId])) {
-            self::$_uriCache[$storeId] = [];
-        }
-
-        $select = $db->select()
-            ->from(
-                ['term' => $resource->getTable('wordpress_post')],
-                [
-                'id'      => 'ID',
-                'url_key' =>  'post_name',
-                'parent'  => 'post_parent'
-                ]
-            )
-            ->where('post_type=?', $this->getPostType())
-            ->where('post_status=?', 'publish');
-
-        return self::$_uriCache[$storeId][$this->getPostType()] = self::generateRoutesFromArray($db->fetchAll($select));
+        
+        return $this->getResource()->getHierarchicalPostNames($this);
     }
 
-    /**
-     * @return bool
-     */
-    public function hasArchive()
-    {
-        return $this->getHasArchive() && $this->getHasArchive() !== '0';
-    }
 
     /**
      * @return string
@@ -339,8 +318,6 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
     }
 
     /**
-     *
-     *
      * @return string
      */
     public function getId()
@@ -361,187 +338,8 @@ class PostType extends AbstractResourcelessModel implements ViewableInterface
      *
      * @return bool
      */
-    public function isSearchable()
+    public function isSearchable(): bool
     {
         return (int)$this->getData('exclude_from_search') === 0;
-    }
-
-    /**
-     *
-     *
-     * @return array
-     */
-    public function getBreadcrumbStructure($post)
-    {
-        $tokens  = explode('/', trim($this->getSlug(), '/'));
-        $objects = [];
-
-        foreach ($tokens as $token) {
-            if ($token === $this->getPostType() || ($this->getArchiveSlug() && trim($this->getArchiveSlug(), '/') === $token)) {
-                if (!$this->isDefault() && $this->hasArchive()) {
-                    $objects['post_type'] = $this;
-                }
-            } elseif (substr($token, 0, 1) === '%' && substr($token, -1) === '%') {
-                if ($taxonomy = $this->taxonomyManager->getTaxonomy(substr($token, 1, -1))) {
-                    if ($term = $post->getParentTerm($taxonomy->getTaxonomyType())) {
-                        $objects[$taxonomy->getTaxonomyType()] = $term;
-                    }
-                }
-            } elseif (strlen($token) > 1 && substr($token, 0, 1) !== '.') {
-                $parent = $this->factory->create('Post')->setPostType('page')->load($token, 'post_name');
-
-                if ($parent->getId()) {
-                    $objects['parent_post_' . $parent->getId()] = $parent;
-                }
-            }
-        }
-
-        if ($this->isHierarchical()) {
-            $parent = $post;
-            $buffer = [];
-
-            while (($parent = $parent->getParentPost()) !== false) {
-                $buffer['parent_post_' . $parent->getId()] = $parent;
-            }
-
-            $objects = $objects + array_reverse($buffer);
-        }
-
-        return $objects ? $objects : false;
-    }
-
-    /**
-     *
-     *
-     * @return array
-     */
-    public function getArchiveBreadcrumbStructure()
-    {
-        $crumbs = [];
-
-        if ($this->withFront() && ($front = $this->getFront())) {
-            $crumbs['front'] = [
-                'label' => ucwords($front),
-                'link'  => $this->url->getUrl($front),
-            ];
-        }
-
-        $crumbs['post_type'] = $this;
-
-        return $crumbs;
-    }
-
-    /**
-     * Generate an array of URI's based on $results
-     *
-     * @param  array $results
-     * @return array
-     */
-    public static function generateRoutesFromArray($results, $prefix = '')
-    {
-        $objects = [];
-        $byParent = [];
-
-        foreach ($results as $key => $result) {
-            if (!$result['parent']) {
-                $objects[$result['id']] = $result;
-            } else {
-                if (!isset($byParent[$result['parent']])) {
-                    $byParent[$result['parent']] = [];
-                }
-
-                $byParent[$result['parent']][$result['id']] = $result;
-            }
-        }
-
-        if (count($objects) === 0) {
-            return false;
-        }
-
-        $routes = [];
-
-        foreach ($objects as $objectId => $object) {
-            if (($children = self::createArrayTree($objectId, $byParent)) !== false) {
-                $objects[$objectId]['children'] = $children;
-            }
-
-            $routes += self::createLookupTable($objects[$objectId], $prefix);
-        }
-
-        return $routes;
-    }
-
-    /**
-     * Create a lookup table from an array tree
-     *
-     * @param  array  $node
-     * @param  string $idField
-     * @param  string $field
-     * @param  string $prefix  = ''
-     * @return array
-     */
-    protected static function createLookupTable(&$node, $prefix = '')
-    {
-        if (!isset($node['id'])) {
-            return [];
-        }
-
-        $urls = [
-            $node['id'] => ltrim($prefix . '/' . urldecode($node['url_key']), '/')
-        ];
-
-        if (isset($node['children'])) {
-            foreach ($node['children'] as $childId => $child) {
-                $urls += self::createLookupTable($child, $urls[$node['id']]);
-            }
-        }
-
-        return $urls;
-    }
-
-    /**
-     * Create an array tree. This is used for creating static URL lookup tables
-     * for categories and pages
-     *
-     * @param  int    $id
-     * @param  array  $pool
-     * @param  string $field = 'parent'
-     * @return false|array
-     */
-    protected static function createArrayTree($id, &$pool)
-    {
-        if (isset($pool[$id]) && $pool[$id]) {
-            $children = $pool[$id];
-
-            unset($pool[$id]);
-
-            foreach ($children as $childId => $child) {
-                unset($children[$childId]['parent']);
-                if (($result = self::createArrayTree($childId, $pool)) !== false) {
-                    $children[$childId]['children'] = $result;
-                }
-            }
-
-            return $children;
-        }
-
-        return false;
-    }
-
-    /**
-     *
-     *
-     */
-    public function load($modelId, $field = null)
-    {
-        return $this->factory->create('PostTypeManager')->getPostType($modelId);
-    }
-    
-    /**
-     * @return bool
-     */
-    public function isPublic()
-    {
-        return (int)$this->_getData('public') === 1;
     }
 }

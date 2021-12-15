@@ -15,7 +15,7 @@ class ListPosts extends Template implements BlockInterface
     /**
      *
      */
-    protected $collection;
+    private $collection;
 
     /**
      *

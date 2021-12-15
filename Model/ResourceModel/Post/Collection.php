@@ -1,29 +1,19 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
-use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection as AbstractMetaCollection;
-use Magento\Framework\Data\Collection\EntityFactoryInterface;
-use Psr\Log\LoggerInterface;
-use Magento\Framework\Data\Collection\Db\FetchStrategyInterface;
-use Magento\Framework\Event\ManagerInterface;
-use FishPig\WordPress\Model\OptionManager;
-use FishPig\WordPress\Model\PostTypeManager;
-use Magento\Framework\DB\Adapter\AdapterInterface;
-use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-
-class Collection extends AbstractMetaCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
     /**
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post_collection';
-
-    /**
-     * @var string
-     */
     protected $_eventObject = 'posts';
 
     /**
@@ -37,12 +27,42 @@ class Collection extends AbstractMetaCollection
     protected $postTypes = [];
 
     /**
-     * @return void
+     *
+     */
+    public function __construct(
+        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        string $modelName = null
+    ) {
+        $this->postTypeRepository = $postTypeRepository;
+        $this->permalinkResource = $permalinkResource;
+        $this->optionRepository = $optionRepository;
+        $this->customerSession = $customerSession;
+
+        parent::__construct(
+            $entityFactory, 
+            $logger, 
+            $fetchStrategy, 
+            $eventManager, 
+            $connection, 
+            $resource, 
+            $modelName
+        );
+    }
+    
+    /**
+     *
      */
     public function _construct()
     {
-        $this->_init('FishPig\WordPress\Model\Post', 'FishPig\WordPress\Model\ResourceModel\Post');
-
         $this->_map['fields']['ID'] = 'main_table.ID';
         $this->_map['fields']['post_type'] = 'main_table.post_type';
         $this->_map['fields']['post_status'] = 'main_table.post_status';
@@ -51,9 +71,7 @@ class Collection extends AbstractMetaCollection
     }
 
     /**
-     * Init collection select
      *
-     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
      */
     protected function _initSelect()
     {
@@ -61,7 +79,7 @@ class Collection extends AbstractMetaCollection
 
         $this->setOrder('main_table.menu_order', 'ASC');
         $this->setOrder('main_table.post_date', 'DESC');
-
+            
         return $this;
     }
 
@@ -74,15 +92,10 @@ class Collection extends AbstractMetaCollection
     {
         parent::_beforeLoad();
 
-        if (!$this->getFlag('skip_permalink_generation')) {
-            if ($sql = $this->getResource()->getPermalinkSqlColumn()) {
-                $this->getSelect()->columns(['permalink' => $sql]);
-            }
-        }
-
+        /*
         if (!$this->hasPostTypeFilter()) {
             if ($this->getFlag('source') instanceof \FishPig\WordPress\Model\Term) {
-                if ($postTypes = $this->postTypeManager->getPostTypes()) {
+                if ($postTypes = $this->postTypeRepository->getAll()) {
                     $supportedTypes = [];
 
                     foreach ($postTypes as $postType) {
@@ -94,7 +107,7 @@ class Collection extends AbstractMetaCollection
                     $this->addPostTypeFilter($supportedTypes);
                 }
             }
-        }
+        }*/
 
         if (count($this->postTypes) === 1) {
             if ($this->postTypes[0] === '*') {
@@ -103,11 +116,17 @@ class Collection extends AbstractMetaCollection
         }
 
         if (count($this->postTypes) === 0) {
-            $this->addFieldToFilter('post_type', ['in' => array_keys($this->postTypeManager->getPostTypes())]);
-        } else {
-            $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
+            $this->postTypes = array_keys($this->postTypeRepository->getAll());
         }
 
+        $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
+
+        if (!$this->getFlag('skip_permalink_generation')) {
+            if ($sql = $this->permalinkResource->getPermalinkSqlColumn($this->postTypes)) {
+                $this->getSelect()->columns(['permalink' => $sql]);
+            }
+        }
+        
         return $this;
     }
 
@@ -126,65 +145,12 @@ class Collection extends AbstractMetaCollection
     }
 
     /**
-     * Filters the collection by an array of post ID's and category ID's
-     * When filtering by a category ID, all posts from that category will be returned
-     * If you change the param $operator to AND, only posts that are in a category specified in
-     * $categoryIds and $postIds will be returned
-     *
-     * @param mixed  $postIds
-     * @param mixed  $categoryIds
-     * @param string $operator
+     * @param  int $userId
+     * @return self
      */
-    public function addCategoryAndPostIdFilter($postIds, $categoryIds, $operator = 'OR')
+    public function addUserIdFilter(int $userId): self
     {
-        if (!is_array($postIds)) {
-            $postIds = [$postIds];
-        }
-
-        if (!is_array($categoryIds)) {
-            $categoryIds = [$categoryIds];
-        }
-
-        if (count($categoryIds) > 0) {
-            $this->joinTermTables('category');
-        }
-
-        $readAdapter = $this->getConnection();
-
-        $postSql = $readAdapter->quoteInto("`main_table`.`ID` IN (?)", $postIds);
-        $categorySql = $readAdapter->quoteInto("`tax_category`.`term_id` IN (?)", $categoryIds);
-
-        if (count($postIds) > 0 && count($categoryIds) > 0) {
-            $this->getSelect()->where("{$postSql} {$operator} {$categorySql}");
-        } elseif (count($postIds) > 0) {
-            $this->getSelect()->where("{$postSql}");
-        } elseif (count($categoryIds) > 0) {
-            $this->getSelect()->where("{$categorySql}");
-        }
-
-        return $this;
-    }
-
-    /**
-     * Filter the collection by a category ID
-     *
-     * @param  int $categoryId
-     * @return $this
-     */
-    public function addCategoryIdFilter($categoryId)
-    {
-        return $this->addTermIdFilter($categoryId, 'category');
-    }
-
-    /**
-     * Filter the collection by a tag ID
-     *
-     * @param  int $categoryId
-     * @return $this
-     */
-    public function addTagIdFilter($tagId)
-    {
-        return $this->addTermIdFilter($tagId, 'post_tag');
+        return $this->addFieldToFilter('post_author', $userId);
     }
 
     /**
@@ -213,7 +179,7 @@ class Collection extends AbstractMetaCollection
      */
     public function addStickyPostsToCollection()
     {
-        if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
+        if (($sticky = trim($this->optionRepository->get('sticky_posts'))) !== '') {
             $stickyIds = unserialize($sticky);
 
             if (count($stickyIds) > 0) {
@@ -242,7 +208,7 @@ class Collection extends AbstractMetaCollection
      */
     public function addIsStickyPostFilter($flag = true)
     {
-        if (($sticky = trim($this->optionManager->getOption('sticky_posts'))) !== '') {
+        if (($sticky = trim($this->optionRepository->get('sticky_posts'))) !== '') {
             $stickyIds = unserialize($sticky);
 
             if (count($stickyIds) > 0) {
@@ -297,7 +263,7 @@ class Collection extends AbstractMetaCollection
     {
         $fields = ['publish', 'protected'];
 
-        if ($this->wpContext->getCustomerSession()->isLoggedIn()) {
+        if ($this->customerSession->isLoggedIn()) {
             $fields[] = 'private';
         }
 
@@ -535,5 +501,23 @@ class Collection extends AbstractMetaCollection
         $this->getSelect()->order('menu_order ' . $dir);
 
         return $this;
+    }
+    
+    /**
+     * @param  int $categoryId
+     * @return self
+     */
+    public function addCategoryIdFilter($categoryId): self
+    {
+        return $this->addTermIdFilter($categoryId, 'category');
+    }
+
+    /**
+     * @param  int $categoryId
+     * @return self
+     */
+    public function addTagIdFilter($tagId): self
+    {
+        return $this->addTermIdFilter($tagId, 'post_tag');
     }
 }

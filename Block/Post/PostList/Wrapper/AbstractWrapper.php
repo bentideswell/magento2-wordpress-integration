@@ -1,86 +1,55 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 
-use FishPig\WordPress\Block\AbstractBlock;
-use FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-abstract class AbstractWrapper extends AbstractBlock
+abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 {
     /**
-     * @var @ViewableInterface
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    protected $entity;
-
+    abstract protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection;
+    
     /**
      *
-     *
      */
-    abstract public function getEntity();
+    private $postCollection = null;
+    
+    /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $postCollectionFactory;
+
+        parent::__construct($context, $wpContext, $data);
+    }
 
     /**
-     *
-     *
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    protected function _prepareLayout()
+    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        if ($this->getEntity()) {
-            $this->getEntity()->applyPageConfigData($this->pageConfig);
+        if ($this->postCollection === null) {
+            $this->postCollection = $this->getBasePostCollection()
+                ->addIsViewableFilter()
+                ->addOrder(
+                    'post_date', 'desc'
+                );
         }
 
-        return parent::_prepareLayout();
-    }
-
-    /**
-     *
-     *
-     */
-    public function getIntroText()
-    {
-        return $this->getEntity() ? $this->getEntity()->getContent() : '';
-    }
-
-    /**
-     * Returns the collection of posts
-     *
-     * @return FishPig\WordPress\Model\ResourceModel\Post\Collection
-     */
-    public function getPostCollection()
-    {
-        if (!$this->hasPostCollection() && ($collection = $this->_getPostCollection()) !== false) {
-            $collection->addIsViewableFilter()->addOrder('post_date', 'desc');
-
-            $this->setPostCollection($collection);
-
-            $collection->setFlag('after_load_event_name', $this->_getPostCollectionEventName() . '_after_load');
-            $collection->setFlag('after_load_event_block', $this);
-        }
-
-        return $this->_getData('post_collection');
-    }
-
-    /**
-     * Retrieve the event name for before the post collection is loaded
-     *
-     * @return string
-     */
-    protected function _getPostCollectionEventName()
-    {
-        $class = get_class($this);
-
-        return 'wordpress_block_' . strtolower(substr($class, strpos($class, 'Block')+6)) . '_post_collection';
-    }
-
-    /**
-     * Generates and returns the collection of posts
-     *
-     * @return FishPig\WordPress\Model_Mysql4_Post_Collection
-     */
-    protected function _getPostCollection()
-    {
-        return $this->factory->create('Model\ResourceModel\Post\Collection');
+        return $this->postCollection;
     }
 
     /**
@@ -112,9 +81,7 @@ abstract class AbstractWrapper extends AbstractBlock
                 $this->setChild('wp.post.list', $postListBlock);
         }
 
-        if ($postListBlock && !$postListBlock->getWrapperBlock()) {
-            $postListBlock->setWrapperBlock($this);
-        }
+        $postListBlock->setPostCollection($this->getPostCollection());
 
         return $postListBlock;
     }
@@ -133,5 +100,14 @@ abstract class AbstractWrapper extends AbstractBlock
         }
 
         return $this;
+    }
+    
+    /**
+     * @deprecated since 3.0
+     * @return string
+     */
+    public function getIntroText()
+    {
+        return $this->getDescription();
     }
 }

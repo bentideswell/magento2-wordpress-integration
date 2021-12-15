@@ -1,42 +1,68 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\Meta\AbstractMeta;
-
-use \FishPig\WordPress\Api\Data\Entity\ViewableInterface;
-
-class Post extends AbstractMeta implements ViewableInterface
+class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\ViewableModelInterface
 {
     /**
      * @const string
      */
     const ENTITY = 'wordpress_post';
     const CACHE_TAG = 'wordpress_post';
-    const POST_TYPE_CONTENT_BLOCK = 'fp_content_block';
 
     /**
-     * Event data
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post';
     protected $_eventObject = 'post';
 
     /**
-     *
+     * @var PostType
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Post');
-
-        return parent::_construct();
-    }
+    private $typeInstance = null;
 
     /**
      *
+     */
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Model\PostRepository $postRepository,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
+        \FishPig\WordPress\Model\UserRepository $userRepository,
+        \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
+        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
+        \FishPig\WordPress\Model\ImageFactory $imageFactory,
+        \FishPig\WordPress\Helper\FrontPage $frontPage,
+        \FishPig\WordPress\Helper\Date $dateHelper,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->postTypeRepository = $postTypeRepository;
+        $this->postRepository = $postRepository;
+        $this->termRepository = $termRepository;
+        $this->userRepository = $userRepository;
+        $this->shortcodeFactory = $shortcodeFactory;
+        $this->termCollectionFactory = $termCollectionFactory;
+        $this->imageFactory = $imageFactory;
+        $this->dateHelper = $dateHelper;
+        $this->frontPage = $frontPage;
+        
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
+    }
+
+    /**
+     * @return string
      */
     public function getName()
     {
@@ -44,89 +70,38 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     *
+     * @param  string $type
+     * @return bool
      */
-    public function getMetaDescription()
-    {
-        if ($this->hasPostExcerpt()) {
-            return $this->getData('post_excerpt');
-        }
-
-        if ($teaser = $this->_getPostTeaser(false)) {
-            return $teaser;
-        }
-
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getPageTitle()
-    {
-        return sprintf('%s | %s', $this->getName(), $this->getBlogName());
-    }
-
-    /**
-     * @return string
-     */
-    public function getMetaKeywords()
-    {
-        return '';
-    }
-
-    /**
-     * @return string
-     */
-    public function getRobots()
-    {
-        return (int)$this->optionManager->getOption('blog_public') === 0
-            ? 'noindex,nofollow'
-            : 'index,follow';
-    }
-
-    /**
-     * @return string
-     */
-    public function getCanonicalUrl()
-    {
-        return $this->getUrl();
-    }
-
-    /**
-     *
-     */
-    public function isType($type)
+    public function isType(string $type): bool
     {
         return $this->getPostType() === $type;
     }
 
     /**
-     *
+     * @return \FishPig\WordPress\Model\PostType
      */
-    public function getTypeInstance()
+    public function getTypeInstance(): \FishPig\WordPress\Model\PostType
     {
-        if (!$this->hasTypeInstance() && $this->getPostType()) {
-            if ($this->getPostType() === 'revision') {
-                if ($this->getParentPost()) {
-                    $this->setTypeInstance(
-                        $this->getParentPost()->getTypeInstance()
-                    );
-                }
-            } elseif ($typeInstance = $this->postTypeManager->getPostType($this->getPostType())) {
-                $this->setTypeInstance($typeInstance);
-            } else {
-                $this->setTypeInstance($this->postTypeManager->getPostType('post'));
-            }
+        if ($this->typeInstance !== null && $this->typeInstance->getPostType() === $this->getPostType()) {
+            return $this->typeInstance;
         }
 
-        return $this->_getData('type_instance');
+        $this->typeInstance = null;
+
+        if ($this->getPostType() === 'revision') {
+            if ($this->getParentPost()) {
+                $this->typeInstance = $this->getParentPost()->getTypeInstance();
+            }
+        } else {
+            $this->typeInstance = $this->postTypeRepository->get($this->getPostType());
+        }
+
+        return $this->typeInstance;
     }
 
     /**
-     * Set the categories after loading
-     *
-     * @return $this
+     * @return self
      */
     protected function _afterLoad()
     {
@@ -140,7 +115,7 @@ class Post extends AbstractMeta implements ViewableInterface
     /**
      * @return string
      */
-    public function getGuid()
+    public function getGuid(): string
     {
         if ($this->getPostType() === 'page') {
             return $this->url->getUrl() . '?page_id=' . $this->getId();
@@ -230,7 +205,10 @@ class Post extends AbstractMeta implements ViewableInterface
                 $excerpt .= sprintf(' <a href="%s" class="read-more">%s</a>', $this->getUrl(), $anchor);
             }
 
-            $excerpt = strip_tags($this->formatContentString($excerpt), '<a><img><strong>');
+            $excerpt = strip_tags(
+                $this->shortcodeFactory->create()->setShortcode($excerpt)->setPost($this)->toHtml(),
+                '<a><img><strong>'
+            );
 
             return $excerpt;
         }
@@ -250,20 +228,16 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Get the parent term
-     * This is the term with the taxonomy as $taxonomy with the lowest term_id
-     *
      * @param  string $taxonomy
      * @return \FishPig\WordPress\Model\Term
      */
     public function getParentTerm($taxonomy)
     {
-        $terms = $this->getTermCollection($taxonomy)
-            ->setPageSize(1)
-            ->setCurPage(1)
-            ->load();
-
-        return count($terms) > 0 ? $terms->getFirstItem() : false;
+        if ($termId = $this->getResource()->getParentTermId((int)$this->getId(), $taxonomy)) {
+            return $this->termRepository->get($termId);
+        }
+        
+        return false;
     }
 
     /**
@@ -274,10 +248,12 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function getTermCollection($taxonomy)
     {
-        return $this->factory->create('FishPig\WordPress\Model\Term')
-            ->getCollection()
-            ->addTaxonomyFilter($taxonomy)
-            ->addPostIdFilter($this->getId());
+        return $this->termCollectionFactory->create()
+            ->addTaxonomyFilter(
+                $taxonomy
+            )->addPostIdFilter(
+                $this->getId()
+            );
     }
 
     /**
@@ -398,33 +374,23 @@ class Post extends AbstractMeta implements ViewableInterface
         if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
             if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
                 if (strpos($renderedContent, '[') !== false) {
-                    $renderedContent = $this->shortcodeManager->renderShortcode($renderedContent, $this);
+                    $renderedContent = $this->shortcodeFactory->create()->setShortcode($renderedContent)->setPost($this)->toHtml();
                 }
 
-                return $renderedContent;
+#                return $renderedContent;
             }
         }
 
         $key = '__processed_post_content';
 
         if (!$this->hasData($key)) {
-            $content = $this->formatContentString($content);
-
-            $this->setData($key, $content);
+            $this->setData(
+                $key, 
+                $this->shortcodeFactory->create()->setShortcode($content)->setPost($this)->toHtml()
+            );
         }
 
         return $this->getData($key);
-    }
-
-    /**
-     *
-     */
-    protected function formatContentString($postContent)
-    {
-        $postContent = $this->shortcodeManager->addParagraphTagsToString($postContent);
-        $postContent = $this->shortcodeManager->renderShortcode($postContent, $this);
-
-        return $postContent;
     }
 
     /**
@@ -452,8 +418,15 @@ class Post extends AbstractMeta implements ViewableInterface
     public function getImages()
     {
         if (!$this->hasData('images')) {
+            
+            
+
+$e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exit;
             $this->setImages(
-                $this->factory->create('Image')->getCollection()->setParent($this->getData('ID'))
+                $this->imageFactory->create()->getCollection(
+                    )->setParent(
+                        (int)$this->getData('ID')
+                    )
             );
         }
 
@@ -469,7 +442,13 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function getImage()
     {
-        return $this->getResource()->getFeaturedImage($this);
+        if ($imageId = (int)$this->getMetaValue('_thumbnail_id')) {
+            $image = $this->imageFactory->create()->load($imageId);
+
+            return $image->getId() ? $image : false;
+        }
+        
+        return false;
     }
 
     /**
@@ -491,13 +470,7 @@ class Post extends AbstractMeta implements ViewableInterface
      */
     public function getUser()
     {
-        if (!$this->hasUser()) {
-            $this->setUser(
-                $this->factory->create('User')->load($this->getUserId())
-            );
-        }
-
-        return $this->_getData('user');
+        return $this->userRepository->get($this->getUserId());
     }
 
     /**
@@ -520,7 +493,7 @@ class Post extends AbstractMeta implements ViewableInterface
             $date = date('Y-m-d H:i:s');
         }
 
-        return $this->wpContext->getDateHelper()->formatDate($date, $format);
+        return $this->dateHelper->formatDate($date, $format);
     }
 
     /**
@@ -535,7 +508,7 @@ class Post extends AbstractMeta implements ViewableInterface
             $date = date('Y-m-d H:i:s');
         }
 
-        return $this->wpContext->getDateHelper()->formatDate($date, $format);
+        return $this->dateHelper->formatDate($date, $format);
     }
 
     /**
@@ -696,13 +669,16 @@ class Post extends AbstractMeta implements ViewableInterface
         if (!$this->hasParentPost()) {
             $this->setParentPost(false);
 
-            if ($this->getParentId()) {
-                $parent = $this->factory->create('Post')
-                    ->setPostType($this->getPostType() === 'revision' ? '*' : $this->getPostType())
-                    ->load($this->getParentId());
-
-                if ($parent->getId()) {
-                    $this->setParentPost($parent);
+            if ($parentId = (int)$this->getParentId()) {
+                try {
+                    $this->setParentPost(
+                        $this->postRepository->getWithType(
+                            $parentId,
+                            $this->getPostType() === 'revision' ? '*' : $this->getPostType()
+                        )
+                    );
+                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                    $this->setParentPost(false);
                 }
             }
         }
@@ -767,49 +743,23 @@ class Post extends AbstractMeta implements ViewableInterface
         return $this->getChildrenPosts();
     }
 
-    /**
-     * @return string
-     */
-    public function getMetaTableAlias()
-    {
-        return 'wordpress_post_meta';
-    }
 
     /**
      *
-     *
-     * @return string
+     * @return bool
      */
-    public function getMetaTableObjectField()
+    public function isFrontPage(): bool
     {
-        return 'post_id';
+        return $this->isType('page') && (int)$this->getId() === $this->frontPage->getFrontPageId();
     }
 
     /**
      *
      * @return bool
      */
-    public function isFrontPage()
+    public function isPostsPage(): bool
     {
-        return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getFrontPageId();
-    }
-
-    /**
-     *
-     * @return bool
-     */
-    public function isPageForPosts()
-    {
-        return $this->isType('page') && (int)$this->getId() === (int)$this->_getHomepageModel()->getPageForPostsId();
-    }
-
-    /**
-     *
-     * @return \FishPig\WordPress\Model\Homepage
-     */
-    protected function _getHomepageModel()
-    {
-        return $this->factory->get('Homepage');
+        return $this->isType('page') && (int)$this->getId() === $this->frontPage->getPostsPageId();
     }
 
     /**
@@ -822,11 +772,14 @@ class Post extends AbstractMeta implements ViewableInterface
         if (!$this->hasPostFormat()) {
             $this->setPostFormat('');
 
-            $formats = $this->factory->create('Term')->getCollection()
-                ->addTaxonomyFilter('post_format')
-                ->setPageSize(1)
-                ->addObjectIdFilter($this->getId())
-                ->load();
+            $formats = $this->termCollectionFactory->create()
+                ->addTaxonomyFilter(
+                    'post_format'
+                )->setPageSize(
+                    1
+                )->addObjectIdFilter(
+                    $this->getId()
+                )->load();
 
             if (count($formats) > 0) {
                 $this->setPostFormat(
@@ -860,16 +813,6 @@ class Post extends AbstractMeta implements ViewableInterface
     }
 
     /**
-     * Return cache identities
-     *
-     * @return string[]
-     */
-    public function getIdentities()
-    {
-        return [self::CACHE_TAG . '_' . $this->getId()];
-    }
-
-    /**
      *
      *
      * @return
@@ -883,30 +826,9 @@ class Post extends AbstractMeta implements ViewableInterface
 
     /**
      *
-     *
      */
-    public function applyPageConfigData($pageConfig)
+    public function isPublic(): bool
     {
-        parent::applyPageConfigData($pageConfig);
-
-        if (!$pageConfig) {
-            return $this;
-        }
-
-        if ($this->isFrontPage()) {
-            $pageConfig->addBodyClass('wordpress-frontpage');
-        } elseif ($this->isPageForPosts()) {
-            $pageConfig->addBodyClass('wordpress-post-list');
-        }
-
-        return $this;
-    }
-    
-    /**
-     *
-     */
-    public function isContentBlock(): bool
-    {
-        return $this->getPostType() === self::POST_TYPE_CONTENT_BLOCK;
+        return true;
     }
 }

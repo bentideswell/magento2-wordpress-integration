@@ -5,7 +5,7 @@
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
 ?>
-<?php if ($text = $block->getIntroText()): ?>
+<?php if ($text = $block->getDescription()): ?>
     <p class="post-list-description"><?= $block->escapeHtml($text) ?></p>
 <?php endif; ?>
 <?php if ($postList = trim($block->getPostListHtml())): ?>

@@ -1,23 +1,44 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Post;
 
-use FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
 use FishPig\WordPress\Model\ResourceModel\Post\Collection as PostCollection;
+use FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory as PostCollectionFactory;
 
 class ListPost extends \FishPig\WordPress\Block\Post
 {
     /**
-     * Cache for post collection
-     *
+     * @var
+     */
+    private $postCollectionFactory;
+
+    /**
      * @var PostCollection
      */
-    protected $_postCollection = null;
+    private $postCollection = null;
 
+    /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $postCollectionFactory;
+
+        parent::__construct($context, $wpContext, $data);
+    }
+    
     /**
      * Returns the collection of posts
      *
@@ -25,45 +46,34 @@ class ListPost extends \FishPig\WordPress\Block\Post
      */
     public function getPosts()
     {
-        if ($this->_postCollection === null) {
-            if ($this->getWrapperBlock()) {
-                if ($this->_postCollection = $this->getWrapperBlock()->getPostCollection()) {
-                    if ($this->getPostType()) {
-                        $this->_postCollection->addPostTypeFilter($this->getPostType());
-                    }
-                }
-            } else {
-                $this->_postCollection = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection');
-            }
-
-            if ($this->_postCollection && ($pager = $this->getChildBlock('pager'))) {
-                $pager->setPostListBlock($this)->setCollection($this->_postCollection);
-            }
+        if ($this->postCollection === null) {
+            $this->setPostCollection($this->postCollectionFactory->create());
         }
 
-        return $this->_postCollection;
+        return $this->postCollection;
     }
 
     /**
-     *
+     * @param  PostCollection $collection
+     * @return self
      */
-    public function setPostCollection($collection)
+    public function setPostCollection(PostCollection $collection): self
     {
-        $this->_postCollection = $collection;
+        if ($this->postCollection !== null) {
+            throw new \Exception('The post collection is already set in this block.');
+        }
+
+        $this->postCollection = $collection;
         
-        return $this;
-    }
+        if ($pager = $this->getChildBlock('pager')) {
+            $pager->setPostListBlock(
+                $this
+            )->setCollection(
+                $this->postCollection
+            );
+        }
 
-    /**
-     * Sets the parent block of this block
-     * This block can be used to auto generate the post list
-     *
-     * @param  AbstractWrapper $wrapper
-     * @return $this
-     */
-    public function setWrapperBlock(AbstractWrapper $wrapper)
-    {
-        return $this->setData('wrapper_block', $wrapper);
+        return $this;
     }
 
     /**
@@ -85,12 +95,9 @@ class ListPost extends \FishPig\WordPress\Block\Post
     public function renderPost(\FishPig\WordPress\Model\Post $post)
     {
         // Create post block
-        $postBlock = $this->getLayout()->createBlock('FishPig\WordPress\Block\Post')->setPost($post);
+        $postBlock = $this->getLayout()->createBlock(\FishPig\WordPress\Block\Post::class)->setPost($post);
 
-        $vendors = [
-          $this->getCustomBlogThemeVendor(),
-          'FishPig_WordPress',
-        ];
+        $vendors = ['FishPig_WordPress'];
 
         // First try post type specific template then fall back to default
         $templates = [
@@ -121,14 +128,6 @@ class ListPost extends \FishPig\WordPress\Block\Post
 
         // Get HTML and return
         return $postBlock->toHtml();
-    }
-
-    /**
-     * @return
-     */
-    public function getCustomBlogThemeVendor()
-    {
-        return false;
     }
 
     /**

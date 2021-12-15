@@ -3,14 +3,17 @@
 	<default>
 		<wordpress>
 			<setup>
-				<enabled>1</enabled>
-				<path>wp</path>
-				<theme_integration>1</theme_integration>
-				<ignore_store_code>0</ignore_store_code>
+                <mode>local</mode>
+    			<theme_integration>1</theme_integration>
+    			<path>wp</path>
 			</setup>
-			<xmlsitemap>
-  			<enabled>1</enabled>
-			</xmlsitemap>
+			<mode_external_db>
+    			<table_prefix>wp_</table_prefix>
+    			<charset>utf8</charset>
+			</mode_external_db>
+            <xmlsitemap>
+                <enabled>1</enabled>
+            </xmlsitemap>
 		</wordpress>
 	</default>
 </config>

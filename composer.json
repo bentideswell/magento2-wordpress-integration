@@ -1,7 +1,7 @@
 {
     "name": "fishpig/magento2-wordpress-integration",
     "description": "Integrate WordPress into Magento 2 using this free Magento 2 module.",
-    "version": "2.0.24.2",
+    "version": "3.0.0",
     "require": {
         "php": ">=7.0",
         "magento/framework": "*",
@@ -10,7 +10,7 @@
         "magento/module-sitemap": "^100.3"
     },
     "suggest": {
-        "fishpig/magento2-wordpress-integration-yoastseo": "*"
+        "fishpig/magento2-wordpress-integration-yoastseo": "^3.0"
     },
     "type": "magento2-module",
     "autoload": {

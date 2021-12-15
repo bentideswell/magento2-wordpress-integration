@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!--
+    /**
+     * Router
+     */
+    -->
     <type name="Magento\Framework\App\RouterList">
         <arguments>
             <argument name="routerList" xsi:type="array">
@@ -11,6 +16,57 @@
             </argument>
         </arguments>
     </type>
+    <type name="FishPig\WordPress\Controller\Router">
+        <arguments>
+            <argument name="routerPool" xsi:type="array">
+                <item name="homepage" xsi:type="object" sortOrder="10">FishPig\WordPress\Controller\Router\HomepageRouter</item>
+                <item name="simple" xsi:type="object" sortOrder="20">FishPig\WordPress\Controller\Router\SimpleRouter</item>
+                <item name="post" xsi:type="object" sortOrder="30">FishPig\WordPress\Controller\Router\PostRouter</item>
+                <item name="term" xsi:type="object" sortOrder="40">FishPig\WordPress\Controller\Router\TermRouter</item>
+            </argument>
+        </arguments>
+    </type>
+    <!--
+    /**
+     * Controllers
+     */
+    -->
+    <type name="FishPig\WordPress\Controller\Post\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Post\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Post\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\PostType\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\PostType\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\PostType\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\Term\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Term\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Term\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\User\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\User\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\User\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\Archive\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Archive\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Archive\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Controller\Search\View">
+        <arguments>
+            <argument name="seoMetaDataProvider" xsi:type="object">FishPig\WordPress\Controller\Search\View\SeoMetaDataProvider</argument>
+            <argument name="breadcrumbsDataProvider" xsi:type="object">FishPig\WordPress\Controller\Search\View\BreadcrumbsDataProvider</argument>
+        </arguments>
+    </type>
     <!-- Inject any required assets -->
     <type name="Magento\Framework\Controller\ResultInterface">
         <plugin name="result-fishpig-wordpress-plugin" type="FishPig\WordPress\Plugin\Magento\Framework\Controller\ResultPlugin" sortOrder="40"/>
@@ -19,5 +75,31 @@
     </type>
     <type name="Magento\Framework\App\PageCache\Identifier">
         <plugin name="identifier-builtin-cache" type="FishPig\WordPress\Plugin\Magento\Framework\App\PageCache\IdentifierPlugin"/>
+    </type>
+    <!--
+    /**
+     * Store Switching
+     */
+    -->
+    <type name="Magento\Store\ViewModel\SwitcherUrlProvider">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Store\ViewModel\SwitcherUrlProviderPlugin"/>
+    </type>
+    <type name="Magento\Store\Block\Switcher">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Store\Block\SwitcherPlugin"/>
+    </type>
+    <!--
+    /**
+     * CSP
+     */
+    -->
+    <type name="FishPig\WordPress\Model\Csp\WhitelistPolicyCollector">
+        <arguments>
+            <argument name="policyGeneratorPool" xsi:type="array">
+                <item name="default" xsi:type="object">FishPig\WordPress\Model\Csp\WhitelistPolicyGenerator</item>
+            </argument>
+        </arguments>
+    </type>
+    <type name="Magento\Csp\Model\Collector\CspWhitelistXmlCollector">
+        <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Csp\Model\Collector\CspWhitelistXmlCollectorPlugin"/>
     </type>
 </config>

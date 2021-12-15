@@ -1,32 +1,27 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel;
 
-class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
 {
-
     /**
-     * Determine whether there is a term order field
-     *
      * @static bool
      */
-    protected static $_tableHasTermOrder = null;
+    protected $useTermOrderField = null;
 
     public function _construct()
     {
-        $this->_init('wordpress_term', 'term_id');
+        $this->_init('terms', 'term_id');
     }
 
     /**
-     * Custom load SQL to combine required tables
      *
-     * @param string                   $field
-     * @param string|int               $value
-     * @param Mage_Core_Model_Abstract $object
      */
     protected function _getLoadSelect($field, $value, $object)
     {
@@ -65,21 +60,21 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
      *
      * @return bool
      */
-    public function tableHasTermOrderField()
+    public function tableHasTermOrderField(): bool
     {
-        if (!is_null(self::$_tableHasTermOrder)) {
-            return self::$_tableHasTermOrder;
+        if ($this->useTermOrderField !== null) {
+            return $this->useTermOrderField;
         }
 
         try {
-            self::$_tableHasTermOrder = $this->getConnection()
-                ->fetchOne('SHOW COLUMNS FROM ' . $this->getMainTable() . ' WHERE Field = \'term_order\'')
-                !== false;
+            $this->useTermOrderField = $this->getConnection()->fetchOne(
+                'SHOW COLUMNS FROM ' . $this->getMainTable() . ' WHERE Field = \'term_order\''
+            ) !== false;
         } catch (Exception $e) {
-            self::$_tableHasTermOrder = false;
+            $this->useTermOrderField = false;
         }
 
-        return self::$_tableHasTermOrder;
+        return $this->useTermOrderField;
     }
 
     /**
@@ -89,7 +84,7 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
      * @param  int $parentId
      * @return array
      */
-    public function getChildIds($parentId)
+    public function getChildIds($parentId): array
     {
         $select = $this->getConnection()
             ->select()

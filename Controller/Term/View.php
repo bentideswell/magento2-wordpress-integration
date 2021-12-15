@@ -1,92 +1,70 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\Term;
 
-use FishPig\WordPress\Controller\Action;
-
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
-   
     /**
-     *
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * @param \FishPig\WordPress\Model\PostRepository $postRepository,
+     * @param \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \Magento\Customer\Model\Session $customerSession
      */
-    protected function _getEntity()
-    {
-        $object = $this->factory->create('Term')->load((int)$this->getRequest()->getParam('id'));
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
+        \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+    ) {
+        $this->termRepository = $termRepository;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
 
-        return $object->getId() ? $object : false;
+        parent::__construct($context, $wpContext);
     }
 
     /**
-     * Get the blog breadcrumbs
      *
-     * @return array
      */
-    protected function _getBreadcrumbs()
+    public function execute()
     {
-        $crumbs = parent::_getBreadcrumbs();
-        $term = $this->_getEntity();
+        $request = $this->getRequest();
 
-        if ($taxonomy = $term->getTaxonomyInstance()) {
-            $postTypes = $this->factory->get('PostTypeManager')->getPostTypes();
+        // This will throw Exception is post does not exist
+        $term = $this->termRepository->get(
+            (int)$request->getParam('id')
+        );
 
-            if (count($postTypes) > 2) {
-                foreach ($postTypes as $postType) {
-                    if ($postType->hasArchive() && $postType->getArchiveSlug() === $taxonomy->getSlug()) {
-                        $crumbs['post_type_archive_' . $postType->getPostType()] = [
-                            'label' => __($postType->getName()),
-                            'title' => __($postType->getName()),
-                            'link' => $postType->getUrl(),
-                        ];
+        $this->registry->register($term::ENTITY, $term);
 
-                        break;
-                    }
-                }
-            }
+        // We got here, we must be good.
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
+        );
 
-            if ($taxonomy->isHierarchical()) {
-                $buffer = $term;
-
-                while ($buffer->getParentTerm()) {
-                    $buffer = $buffer->getParentTerm();
-
-                    $crumbs['term_' . $buffer->getId()] = [
-                        'label' => __($buffer->getName()),
-                        'title' => __($buffer->getName()),
-                        'link' => $buffer->getUrl(),
-                    ];
-                }
-            }
-        }
-
-        $crumbs['term'] = [
-            'label' => __($term->getName()),
-            'title' => __($term->getName())
-        ];
-
-        return $crumbs;
-    }
-
-    /**
-     * @return array
-     */
-    public function getLayoutHandles()
-    {
-        if (!$this->_getEntity()) {
-            return [];
-        }
-
-        $taxonomyType = $this->_getEntity()->getTaxonomyType();
-
-        return array_merge(
-            parent::getLayoutHandles(),
+        $this->addLayoutHandles(
+            $resultPage,
             [
-               'wordpress_term_view',
-                'wordpress_' . $taxonomyType . '_view',
-                'wordpress_' . $taxonomyType . '_view_' . $this->_getEntity()->getId(),
+                'wordpress_term_view',
+                'wordpress_' . $term->getTaxonomy() . '_view',
+                'wordpress_' . $term->getTaxonomy() . '_view_' . $term->getId(),
             ]
         );
+
+        $this->seoMetaDataProvider->addMetaData($resultPage, $term);
+
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($term)
+        );
+
+        return $resultPage;
     }
 }

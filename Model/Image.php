@@ -1,155 +1,113 @@
 <?php
 /**
- *
- *
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use FishPig\WordPress\Model\Post\Attachment\AbstractAttachmentModel;
-
-class Image extends AbstractAttachmentModel
+class Image extends \FishPig\WordPress\Model\Post\Attachment
 {
     /**
-     *
+     * @param  string $code
+     * @return string
      */
-    public function _construct()
+    public function getImageUrl($codes): string
     {
-        parent::_construct();
-
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Image');
+        $codes = (array)$codes;
+        
+        foreach ($codes as $code) {
+            if ($imageFile = $this->getImageByCode($code, 'file')) {
+                return $this->url->getUploadUrl() . dirname($this->getFile()) . '/' . $imageFile;
+            }
+        }
+        
+        return '';
+    }
+    
+    /**
+     * @return array
+     */
+    public function getSizes(): array
+    {
+        return $this->getData('sizes') ?? [];
     }
 
     /**
-     * Retrieve the thumbnail image URL
-     *
+     * @param  string $code
+     * @param  string|null $field = null
+     * @return mixed
+     */
+    private function getImageByCode(string $code, $field = null)
+    {
+        $sizes = $this->getSizes();
+        
+        if (!isset($sizes[$code])) {
+            return false;
+        }
+        
+        if ($field === null) {
+            return $sizes[$code];
+        }
+        
+        return $sizes[$code][$field];
+    }
+    
+    /**
+     * This allows you to access image URLs using nice methods:
+     * $this->getMediumUrl() calls $this->getImageUrl('medium')
+     */
+    public function __call($method, $args)
+    {
+        if (strlen($method) > 6) {
+            if (strpos($method, 'get') === 0) {
+                if (substr($method, -3) === 'Url') {
+                    $imageCode = $this->_underscore(substr($method, 3, -3));
+                } elseif (substr($method, -5) === 'Image') {
+                    $imageCode = $this->_underscore(substr($method, 3, -5));   
+                }
+                
+                if (!empty($imageCode)) {
+                    $sizes = $this->getSizes();
+            
+                    if (isset($sizes[$imageCode])) {
+                        return $this->getImageUrl($imageCode);
+                    } else {
+                        $imageCode = str_replace('_', '-', $imageCode);
+
+                        if (isset($sizes[$imageCode])) {
+                            return $this->getImageUrl($imageCode);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return parent::__call($method, $args);
+    }
+    
+    /**
      * @return string
      */
-    public function getThumbnailImage()
+    public function getFullSizeImage(): string
     {
-        return $this->_getImagePath('thumbnail');
+        return $this->getData('guid');
     }
 
     /**
-     * Retrieve the medium image URL
-     *
      * @return string
      */
-    public function getMediumImage()
-    {
-        return $this->_getImagePath('medium');
-    }
-
-    /**
-     * Retrieve the large image URL
-     *
-     * @return string
-     */
-    public function getLargeImage()
-    {
-        return $this->_getImagePath('large');
-    }
-
-    /**
-     * Retrieve the fullsize image URL
-     *
-     * @return string
-     */
-    public function getFullSizeImage()
-    {
-        return $this->_getImagePath();
-    }
-
-    /**
-     * Retrieve the post thumbnail image URL
-     *
-     * @return string
-     */
-    public function getPostThumbnailImage()
-    {
-        return $this->_getImagePath('post-thumbnail');
-    }
-
-    /**
-     * Retrieve any available image URL
-     *
-     * @return string
-     */
-    public function getAvailableImage()
+    public function getAvailableImage(): string
     {
         if ($sizes = $this->getSizes()) {
             foreach ($sizes as $type => $data) {
-                return $this->_getImagePath($type);
+                return $this->getImageUrl($type);
             }
         }
 
-        return $this->_getImagePath();
-    }
-
-    /**
-     * Retrieve the an image URL by type
-     *
-     * @param  string $type = 'thumbnail'
-     * @return string
-     */
-    public function getImageByType($type = 'thumbnail')
-    {
-        return $this->_getImagePath($type);
-    }
-
-    /**
-     * Retrieve the an image URL by type
-     *
-     * @param  string $type = 'thumbnail'
-     * @return string
-     */
-    protected function _getImagePath($type = null)
-    {
-        $filename = null;
-
-        if ($type == null || $type == 'full') {
-            $filename = basename($this->getFile());
-        } else {
-            $sizes = $this->getSizes();
-
-            if (isset($sizes[$type]['file'])) {
-                $filename = $sizes[$type]['file'];
-            }
-        }
-
-        if (!$filename) {
-            return null;
-        }
-
-        return $this->_getThisImageUrl().$filename;
-    }
-
-    /**
-     * Retrieve the URL to the folder that the image is stored in
-     *
-     * @return string
-     */
-    protected function _getThisImageUrl()
-    {
-        return $this->getFileUploadUrl() . (strpos($this->getFile(), '/') !== false ? dirname($this->getFile())  . '/' :  '');
-    }
-
-    /**
-     * Retrieve the upload URL
-     *
-     * @return string
-     */
-    public function getFileUploadUrl()
-    {
-        return $this->url->getFileUploadUrl();
-    }
-
-    /**
-     *
-     */
-    public function getFileUploadPath()
-    {
-        return $this->wpContext->getDirectoryList()->getWpContentDir() . DIRECTORY_SEPARATOR . 'uploads';
+        return '';
     }
 
     /**
@@ -191,72 +149,14 @@ class Image extends AbstractAttachmentModel
     {
         return $this->_getData('post_excerpt');
     }
-
+    
     /**
-     * Required for interface
-     *
+     * @deprecated since 2.0
+     * @param  string $type = 'thumbnail'
      * @return string
      */
-    public function getContent()
+    public function getImageByType($type = 'thumbnail')
     {
-        return $this->getDescription();
-    }
-
-    /**
-     *
-     * @return string
-     */
-    public function getUrl()
-    {
-        return $this->getFullSizeImage();
-    }
-
-    /**
-     *
-     * @return false
-     */
-    public function getNextPost()
-    {
-        return false;
-    }
-
-    /**
-     *
-     * @return false
-     */
-    public function getPreviousPost()
-    {
-        return false;
-    }
-
-    /**
-     * @return bool
-     */
-    public function exists()
-    {
-        return ($localFile = $this->getLocalFile()) && is_file($localFile);
-    }
-
-    /**
-     * @return string
-     */
-    public function getLocalFile()
-    {
-        return $this->getFile() ? $this->getFileUploadPath() . DIRECTORY_SEPARATOR . $this->getFile() : false;
-    }
-
-    /**
-     * @return ImageResizer
-     */
-    public function getResizer()
-    {
-        if (!is_file($this->getLocalFile())) {
-            return false;
-        }
-
-        return \Magento\Framework\App\ObjectManager::getInstance()
-            ->get('FishPig\WordPress\Model\ImageResizerFactory')
-            ->create()
-            ->setImage($this->getLocalFile());
+        return $this->getImageUrl($type);
     }
 }

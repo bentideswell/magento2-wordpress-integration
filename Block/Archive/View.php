@@ -1,9 +1,11 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Archive;
 
 use \FishPig\WordPress\Model\Archive;
@@ -11,68 +13,27 @@ use \FishPig\WordPress\Model\Archive;
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
     /**
-     * @return \FishPig\WordPress\Model\Archive
+     * @var Archive
      */
-    public function getEntity()
-    {
-        return $this->getArchive();
-    }
+    private $archive = null;
 
     /**
-     * Caches and returns the archive model
-     *
-     * @return FishPig\WordPress\Model_Archive
+     * @return Archive
      */
-    public function getArchive()
+    public function getArchive(): ?Archive
     {
-        if (!$this->hasArchive()) {
-            $this->setArchive($this->registry->registry('wordpress_archive'));
+        if ($this->archive === null) {
+            $this->archive = $this->registry->registry(Archive::ENTITY);
         }
-
-        return $this->_getData('archive');
+        
+        return $this->archive;
     }
 
     /**
-     * Retrieve the Archive ID
-     *
-     * @return false|int
+     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    public function getArchiveId()
+    protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        if ($archive = $this->getArchive()) {
-            return $archive->getId();
-        }
-
-        return false;
-    }
-
-    /**
-     * Generates and returns the collection of posts
-     *
-     * @return FishPig\WordPress\Model_Mysql4_Post_Collection
-     */
-    protected function _getPostCollection()
-    {
-        $postCollection = parent::_getPostCollection()->addPostTypeFilter('post');
-
-        if ($this->getArchive()) {
-            $postCollection->addArchiveDateFilter($this->getArchiveId(), $this->getArchive()->getIsDaily());
-        } else {
-            $postCollection->forceEmpty();
-        }
-
-        return $postCollection;
-    }
-
-    /**
-     * Split a date by spaces and translate
-     *
-     * @param  string $date
-     * @param  string $splitter = ' '
-     * @return string
-     */
-    public function translateDate($date, $splitter = ' ')
-    {
-        return $this->wpContext->getDateHelper()->translateDate($date, $splitter);
+        return $this->getArchive()->getPostCollection();
     }
 }

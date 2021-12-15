@@ -4,24 +4,19 @@
  */
 namespace FishPig\WordPress\Block;
 
-use FishPig\WordPress\Block\AbstractBlock;
 use Magento\Framework\DataObject\IdentityInterface;
 
-class Post extends AbstractBlock implements IdentityInterface
+class Post extends \FishPig\WordPress\Block\AbstractBlock implements IdentityInterface
 {
     /**
-     * Retrieve the current post object
-     *
-     * @return null|\FishPig\WordPress\Model\Post
+     * @return ?\FishPig\WordPress\Model\Post
      */
     public function getPost()
     {
-        return $this->_getData('post') ? $this->_getData('post') : $this->registry->registry('wordpress_post');
+        return $this->_getData('post') ?? $this->registry->registry('wordpress_post');
     }
 
     /**
-     * Returns the ID of the currently loaded post
-     *
      * @return int|false
      */
     public function getPostId()
@@ -37,20 +32,6 @@ class Post extends AbstractBlock implements IdentityInterface
     public function canComment()
     {
         return $this->getPost() && $this->getPost()->getCommentStatus() === 'open';
-    }
-
-    /**
-     * If post view, setup the post with child blocks
-     *
-     * @return $this
-     */
-    protected function _beforeToHtmlIgnore()
-    {
-        if ($this->getPost() && $this->_getBlockForPostPrepare() !== false) {
-            $this->_prepareChildBlocks($this->_getBlockForPostPrepare());
-        }
-
-        return parent::_beforeToHtml();
     }
 
     /**
@@ -83,17 +64,6 @@ class Post extends AbstractBlock implements IdentityInterface
             }
         }
 
-        return $this;
-    }
-
-    /**
-     * Retrieve the block used to prepare the post
-     * This should be the root post block
-     *
-     * @return FishPig\WordPress\Block_Post_Abstract
-     */
-    protected function _getBlockForPostPrepare()
-    {
         return $this;
     }
 

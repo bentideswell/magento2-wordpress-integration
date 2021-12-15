@@ -1,17 +1,20 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Menu;
 
-use \FishPig\WordPress\Model\ResourceModel\Post;
-
-class Item extends Post
+class Item extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
 {
+    /**
+     * @return void
+     */
     public function _construct()
     {
-        $this->_init('wordpress_menu_item', 'ID');
+        $this->_init('posts', 'ID');
     }
 }

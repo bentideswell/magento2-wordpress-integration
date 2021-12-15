@@ -1,23 +1,33 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel;
 
-class Archive extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
+class Archive extends AbstractResourceModel
 {
     /**
-     * Set the table and primary key
-     *
      * @return void
      */
     public function _construct()
     {
-        $this->_init('wordpress_post', 'ID');
+        $this->_init('posts', 'ID');
     }
 
+    /**
+     * @return array
+     */
+    public function getDatesForWidget()
+    {
+        return $this->getConnection()->fetchAll(
+            $this->getDatesForWidgetSelect()
+        );
+    }
+    
     /**
      * @return \Magento\Framework\DB\Select
      */
@@ -40,13 +50,5 @@ class Archive extends \FishPig\WordPress\Model\ResourceModel\AbstractResource
                 )->order(
                     'archive_date DESC'
                 );
-    }
-    
-    /**
-     * @return array
-     */
-    public function getDatesForWidget()
-    {
-        return $this->getConnection()->fetchAll($this->getDatesForWidgetSelect());
     }
 }

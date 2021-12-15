@@ -1,17 +1,14 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel;
 
-use \FishPig\WordPress\Model\ResourceModel\Term;
-
-class Menu extends Term
+class Menu extends \FishPig\WordPress\Model\ResourceModel\Term
 {
-    public function _construct()
-    {
-        $this->_init('wordpress_menu', 'term_id');
-    }
+
 }

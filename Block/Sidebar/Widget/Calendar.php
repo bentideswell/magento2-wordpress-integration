@@ -7,6 +7,26 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Calendar extends AbstractWidget
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        \FishPig\WordPress\Model\ResourceModel\Post $postResource,
+        \FishPig\WordPress\Helper\Date $dateHelper,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $postCollectionFactory;
+        $this->postResource = $postResource;
+        $this->dateHelper = $dateHelper;
+        
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Retrieve the default title
      *
      * @return null
@@ -37,7 +57,7 @@ class Calendar extends AbstractWidget
      */
     protected function _getPostDateDataAsArray()
     {
-        $days = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post')->getPostsOnDayByYearMonth($this->getYear() . '-' . $this->getMonth() . '-%');
+        $days = $this->postResource->getPostsOnDayByYearMonth($this->getYear() . '-' . $this->getMonth() . '-%');
 
         $itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 
@@ -109,7 +129,7 @@ class Calendar extends AbstractWidget
         $this->setMonth(date('m'));
         $this->setDaysInMonth(date('t'));
 
-        $this->setDefaultTitle($this->wpContext->getDateHelper()->formatDate(date('Y-m-d 00:00:00', time()), 'F Y'));
+        $this->setDefaultTitle($this->dateHelper->formatDate(date('Y-m-d 00:00:00', time()), 'F Y'));
 
         return $this;
     }
@@ -121,7 +141,7 @@ class Calendar extends AbstractWidget
      */
     protected function _initPreviousNextLinks()
     {
-        $posts = $this->factory->create('Model\ResourceModel\Post\Collection')
+        $posts = $this->postCollectionFactory->create()
             ->addIsViewableFilter()
             ->setOrderByPostDate('desc')
             ->addFieldToFilter('post_date', ['lteq' => $this->getYear() . '-' . $this->getMonth() . '-01 00:00:00'])
@@ -138,7 +158,7 @@ class Calendar extends AbstractWidget
 
         $dateString = date('Y-m-d', strtotime('+1 month', strtotime($this->getYear() . '-' . $this->getMonth() . '-01')));
 
-        $posts = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Collection')
+        $posts = $this->postCollectionFactory->create()
             ->addIsViewableFilter()
             ->setOrderByPostDate('asc')
             ->addFieldToFilter('post_date', ['gteq' => $dateString])

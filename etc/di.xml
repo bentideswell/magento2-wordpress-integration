@@ -1,5 +1,321 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="FishPig\WordPress\Model\UrlInterface" type="FishPig\WordPress\App\Url"/>
+    <preference for="FishPig\WordPress\Model\NetworkInterface" type="FishPig\WordPress\App\Network"/>
+    <!--
+    /**
+     * Integration Tests
+     */
+    -->
+	<type name="FishPig\WordPress\App\Integration\Tests">
+		<arguments>
+			<argument name="integrationTestPool" xsi:type="array">
+				<item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ModeTest</item>
+				<item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>				
+				<item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
+				<item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
+				<item name="yoast" xsi:type="object">FishPig\WordPress\App\Integration\Test\YoastTest</item>
+			</argument>
+		</arguments>
+	</type>
+	
+    <type name="FishPig\WordPress\App\Integration\Test\ModeTestResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Test\LocalModeTest</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Test\ExternalModeTest</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * @Path Resolver
+     */
+    -->
+    <type name="FishPig\WordPress\App\DirectoryList\PathResolver">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Local\PathResolver</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Local\PathResolver</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Database
+     */
+    -->
+    <type name="FishPig\WordPress\App\ResourceConnection\ConfigRetriever">
+		<arguments>
+			<argument name="objects" xsi:type="array">
+				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Mode\Local\WPConfig</item>
+				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Mode\External\Config</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Theme
+     */
+    -->
+    <type name="FishPig\WordPress\App\Theme\FileCollector">
+		<arguments>
+			<argument name="modules" xsi:type="array">
+				<item name="FishPig_WordPress" xsi:type="string">FishPig_WordPress</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Post Type
+     */
+    -->
+    <type name="FishPig\WordPress\App\PostType">
+		<arguments>
+			<argument name="dataRetrievers" xsi:type="array">
+				<item name="default" xsi:type="object">FishPig\WordPress\App\PostType\DataRetriever</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Taxonomy
+     */
+    -->
+    <type name="FishPig\WordPress\App\Taxonomy">
+		<arguments>
+			<argument name="dataRetrievers" xsi:type="array">
+				<item name="default" xsi:type="object">FishPig\WordPress\App\Taxonomy\DataRetriever</item>
+			</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Repositories
+     */
+    -->
+    <type name="FishPig\WordPress\Model\PostRepository">
+		<arguments>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\PostFactory</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\TermRepository">
+		<arguments>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TermFactory</argument>
+			<argument name="idFieldName" xsi:type="string">term_id</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\UserRepository">
+		<arguments>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\UserFactory</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\PostTypeRepository">
+		<arguments>
+			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\PostType</argument>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\PostTypeFactory</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\TaxonomyRepository">
+		<arguments>
+			<argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Taxonomy</argument>
+			<argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TaxonomyFactory</argument>
+		</arguments>
+    </type>   
+    <!--
+    /**
+     * Models
+     */
+    -->
+    <type name="FishPig\WordPress\Model\Post">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <virtualType name="FishPig\WordPress\Model\Post\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string">postmeta</argument>
+            <argument name="objectField" xsi:type="string">post_id</argument>
+        </arguments>
+    </virtualType>
+    <type name="FishPig\WordPress\Model\Post\Attachment">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\Attachment\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <virtualType name="FishPig\WordPress\Model\Post\Attachment\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string">postmeta</argument>
+            <argument name="objectField" xsi:type="string">post_id</argument>
+        </arguments>
+    </virtualType>
+    <type name="FishPig\WordPress\Model\Post\Comment">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\Comment\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <virtualType name="FishPig\WordPress\Model\Post\Comment\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string">commentmeta</argument>
+            <argument name="objectField" xsi:type="string">comment_id</argument>
+        </arguments>
+    </virtualType>
+    <type name="FishPig\WordPress\Model\Term">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term\Collection</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\User">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\User\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <virtualType name="FishPig\WordPress\Model\User\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string">usermeta</argument>
+            <argument name="objectField" xsi:type="string">user_id</argument>
+            <argument name="useKeyPrefix" xsi:type="boolean">true</argument>
+        </arguments>
+    </virtualType>
+    <type name="FishPig\WordPress\Model\Archive">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Archive</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\Menu">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu</argument>
+			<!--<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Collection</argument>-->
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\Menu\Item">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item</argument>
+			<argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection</argument>
+			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\MetaDataProvider</argument>
+		</arguments>
+    </type>
+    <!--
+    /**
+     * Resource Models
+     */
+    -->
+    <!--
+    /**
+     * Collections
+     */
+    -->
+    <type name="FishPig\WordPress\Model\ResourceModel\Post\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post\Attachment</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post\Comment</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Term\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Term</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\User\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\User</argument>
+		</arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection">
+		<arguments>
+			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item</argument>
+			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Menu\Item</argument>
+		</arguments>
+    </type>
+
+    <!--
+    /**
+     * CLI
+     */
+    -->
+	<type name="Magento\Framework\Console\CommandList">
+		<arguments>
+			<argument name="commands" xsi:type="array">
+				<item name="fishpig-wordpress-build-theme" xsi:type="object">FishPig\WordPress\Console\Command\BuildThemePackageCommand</item>
+				<item name="fishpig-wordpress-debug" xsi:type="object">FishPig\WordPress\Console\Command\DebugCommand</item>
+				
+			</argument>
+		</arguments>
+	</type>
+    <!--
+    /**
+     * Logger
+     */
+    -->
+	<type name="FishPig\WordPress\App\Logger\Handler">
+		<arguments>
+			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+			<argument name="fileName" xsi:type="string">/var/log/wordpress.log</argument>
+		</arguments>
+	</type>
+	<type name="FishPig\WordPress\App\Logger">
+		<arguments>
+			<argument name="name" xsi:type="string">FishPig_WordPress</argument>
+			<argument name="handlers"  xsi:type="array">
+				<item name="system" xsi:type="object">FishPig\WordPress\App\Logger\Handler</item>
+			</argument>
+		</arguments>
+	</type>
+	<type name="FishPig\WordPress\App\HTTP\RequestManager\Logger\Handler">
+		<arguments>
+			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+			<argument name="fileName" xsi:type="string">/var/log/wordpress-http-requests.log</argument>
+		</arguments>
+	</type>
+	<type name="FishPig\WordPress\App\HTTP\RequestManager\Logger">
+		<arguments>
+			<argument name="name" xsi:type="string">FishPig_WordPress</argument>
+			<argument name="handlers"  xsi:type="array">
+				<item name="system" xsi:type="object">FishPig\WordPress\App\HTTP\RequestManager\Logger\Handler</item>
+			</argument>
+		</arguments>
+	</type>
+	<!--
+    	
+    -->
+    <type name="FishPig\WordPress\App\HTTP\RequestManager">
+        <arguments>
+            <argument name="httpClientFactory" xsi:type="object">FishPig\WordPress\App\HTTP\ClientFactory</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\App\HTTP\ClientFactory">
+        <arguments>
+            <argument name="instanceName" xsi:type="string">FishPig\WordPress\App\HTTP\Client\Curl</argument>
+        </arguments>        
+    </type>
+    <!--
+    /**
+     * Review and Remove
+     */
+    -->
 	<!-- Setup dynamic router -->
 	<type name="Magento\Framework\App\Router\ActionList">
 		<plugin name="FishPig_WordPress" type="FishPig\WordPress\Plugin\Magento\Framework\App\Router\ActionListPlugin" sortOrder="10" disabled="false"/>
@@ -8,34 +324,19 @@
 	<type name="Magento\Sitemap\Model\ItemProvider\Composite">
 		<arguments>
 			<argument name="itemProviders" xsi:type="array">
-				<item name="wordpressPostProvider" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\Post</item>
+				<item name="fishpig-wordpress-post" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider</item>
 			</argument>
 		</arguments>
 	</type>
-	<!-- Factory -->
-	<type name="FishPig\WordPress\Model\Factory">
+	<type name="FishPig\WordPress\Model\Sitemap\ItemProvider">
 		<arguments>
-			<argument name="factories" xsi:type="array">
-				<item name="post" xsi:type="object">FishPig\WordPress\Model\PostFactory</item>
-				<item name="postType" xsi:type="object">FishPig\WordPress\Model\PostTypeFactory</item>
-			</argument>
-		</arguments>
-	</type>
-	<!-- Integration Manager -->
-	<type name="FishPig\WordPress\Model\IntegrationManager">
-		<arguments>
-			<argument name="integrationTests" xsi:type="array">
-				<item name="path"  xsi:type="object">FishPig\WordPress\Model\Integration\PathTest</item>
-				<item name="network"  xsi:type="object">FishPig\WordPress\Model\Integration\NetworkTest</item>
-				<item name="url"   xsi:type="object">FishPig\WordPress\Model\Integration\UrlTest</item>
-				<item name="theme" xsi:type="object">FishPig\WordPress\Model\Integration\ThemeTest</item>
-				<item name="permalink" xsi:type="object">FishPig\WordPress\Model\Integration\PermalinkTest</item>
-				<item name="core"  xsi:type="object">FishPig\WordPress\Model\Integration\CoreTest</item>
+			<argument name="itemProviders" xsi:type="array">
+				<item name="post" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\PostItemProvider</item>
 			</argument>
 		</arguments>
 	</type>
 	<!-- Widgets -->
-	<type name="FishPig\WordPress\Model\WidgetManager">
+	<type name="FishPig\WordPress\Model\WidgetRepository">
 		<arguments>
 			<argument name="widgets" xsi:type="array">
 				<item name="search" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Search</item>
@@ -54,55 +355,4 @@
 			</argument>
 		</arguments>
 	</type>
-	<!-- Theme Source Modules -->
-	<type name="FishPig\WordPress\Model\Theme">
-		<arguments>
-			<argument name="themeSourceModules" xsi:type="array">
-				<item name="FishPig_WordPress" xsi:type="string">style.css</item>
-			</argument>
-		</arguments>
-	</type>
-	<!-- WordPress logger - var/log/wordpress.log -->
-	<type name="FishPig\WordPress\Model\Logger\Handler">
-		<arguments>
-			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-		</arguments>
-	</type>
-	<type name="FishPig\WordPress\Model\Logger">
-		<arguments>
-			<argument name="name" xsi:type="string">FishPig_WordPress</argument>
-			<argument name="handlers"  xsi:type="array">
-				<item name="system" xsi:type="object">FishPig\WordPress\Model\Logger\Handler</item>
-			</argument>
-		</arguments>
-	</type>
-    <type name="FishPig\WordPress\Model\CacheInvalidator">
-        <arguments>
-            <argument name="factories" xsi:type="array">
-                <item name="wordpress_post" xsi:type="object">FishPig\WordPress\Model\PostFactory</item>
-                <!--<item name="wordpress_term" xsi:type="object">FishPig\WordPress\Model\TermFactory</item>-->
-            </argument>
-        </arguments>
-    </type>
-	<type name="Magento\Framework\Console\CommandList">
-		<arguments>
-			<argument name="commands" xsi:type="array">
-				<item name="fishpig-wordpress-debug" xsi:type="object">FishPig\WordPress\Console\Command\DebugCommand</item>
-			</argument>
-		</arguments>
-	</type>
-	<!-- etc/wordpress_core.xml -->
-    <virtualType name="WordPressCoreConfigReader" type="Magento\Framework\Config\Reader\Filesystem">
-        <arguments>
-            <argument name="converter" xsi:type="object">FishPig\WordPress\Model\Config\Core\Converter</argument>
-            <argument name="schemaLocator" xsi:type="object">FishPig\WordPress\Model\Config\Core\SchemaLocator</argument>
-            <argument name="fileName" xsi:type="string">wordpress_core.xml</argument>
-        </arguments>
-    </virtualType>
-    <type name="FishPig\WordPress\Model\Config\Core">
-        <arguments>
-            <argument name="reader" xsi:type="object">WordPressCoreConfigReader</argument>
-            <argument name="cacheId" xsi:type="string">fishpig_wordpress_core_config</argument>
-        </arguments>
-    </type>
 </config>

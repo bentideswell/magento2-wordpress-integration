@@ -1,45 +1,54 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\ResourceModel\Post\Comment;
 
-use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractCollection;
 use FishPig\WordPress\Model\Post;
 
-class Collection extends AbstractCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
 {
     /**
-     * Name prefix of events that are dispatched by model
-     *
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post_comment_collection';
-
-    /**
-     * Name of event parameter
-     *
-     * @var string
-     */
     protected $_eventObject = 'post_comments';
 
     /**
      * @var Post
      */
-    protected $post;
+    private $post;
 
     /**
-     * Set the resource
      *
-     * @return void
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\Post\Comment', 'FishPig\WordPress\Model\ResourceModel\Post\Comment');
+    public function __construct(
+        \Magento\Framework\Data\Collection\EntityFactoryInterface $entityFactory,
+        \Psr\Log\LoggerInterface $logger,
+        \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
+        \Magento\Framework\Event\ManagerInterface $eventManager,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        string $modelName = null
+    ) {
+        $this->optionRepository = $optionRepository;
 
-        return parent::_construct();
+        parent::__construct(
+            $entityFactory, 
+            $logger, 
+            $fetchStrategy, 
+            $eventManager, 
+            $connection, 
+            $resource, 
+            $modelName
+        );
     }
-
+    
     /**
      * Order the comments by date
      *
@@ -49,7 +58,7 @@ class Collection extends AbstractCollection
     public function addOrderByDate($dir = null)
     {
         if (is_null($dir)) {
-            $dir = $this->optionManager->getOption('comment_order');
+            $dir = $this->optionRepository->getOption('comment_order');
             $dir = in_array($dir, ['asc', 'desc']) ? $dir : 'asc';
         }
 
@@ -75,9 +84,7 @@ class Collection extends AbstractCollection
     public function setPost(Post $post)
     {
         $this->post = $post;
-        $this->addPostIdFilter($this->post->getId());
-
-        return $this;
+        return $this->addPostIdFilter($this->post->getId());
     }
 
     /**

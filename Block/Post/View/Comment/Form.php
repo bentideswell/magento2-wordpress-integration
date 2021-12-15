@@ -9,6 +9,22 @@ use FishPig\WordPress\Block\AbstractBlock;
 class Form extends AbstractBlock
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \Magento\Customer\Model\Session $customerSession,
+        array $data = []
+    ) {
+        $this->customerSession = $customerSession;
+
+        parent::__construct($context, $wpContext, $data);
+    }
+
+    /**
      * Ensure a valid template is set
      *
      * @return $this
@@ -33,17 +49,11 @@ class Form extends AbstractBlock
     }
 
     /**
-     * Determine whether the customer needs to login before commenting
-     *
      * @return bool
      */
-    public function customerMustLogin()
+    public function customerMustLogin(): bool
     {
-        if ($this->optionManager->getOption('comment_registration')) {
-            return !$this->wpContext->getCustomerSession()->isLoggedIn();
-        }
-
-        return false;
+        return $this->optionRepository->get('comment_registration') && !$this->isCustomerLoggedIn();
     }
 
     /**
@@ -74,7 +84,7 @@ class Form extends AbstractBlock
      */
     public function isCustomerLoggedIn()
     {
-        return $this->wpContext->getCustomerSession()->isLoggedIn();
+        return $this->customerSession->isLoggedIn();
     }
 
     /**

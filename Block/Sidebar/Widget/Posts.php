@@ -16,6 +16,22 @@ class Posts extends AbstractWidget
     protected $collection = null;
 
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $postCollectionFactory;
+
+        parent::__construct($context, $wpContext, $data);
+    }
+        
+    /**
      * Set the posts collection
      */
     protected function _beforeToHtml()
@@ -67,7 +83,7 @@ class Posts extends AbstractWidget
     protected function _getPostCollection()
     {
         if (is_null($this->collection)) {
-            $collection = $this->factory->create('Model\ResourceModel\Post\Collection')
+            $collection = $this->postCollectionFactory->create()
                 ->setOrderByPostDate()
                 ->addIsViewableFilter()
                 ->setPageSize($this->getNumber())
@@ -125,10 +141,11 @@ class Posts extends AbstractWidget
         if (!$this->hasCategory()) {
             $this->setCategory(false);
             if ($this->getCategoryId()) {
-                $category = $this->factory->create('Term')->setTaxonomy('category')->load($this->getCategoryId());
-
-                if ($category->getId()) {
+                try {
+                    $category = $this->termRepository->getWithTaxonomy((int)$this->getCategoryId(), 'category');
                     $this->setCategory($category)->setCategoryId($category->getId());
+                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                    $this->setCategory(false);
                 }
             }
         }

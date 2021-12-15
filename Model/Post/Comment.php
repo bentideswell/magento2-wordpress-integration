@@ -1,26 +1,24 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model\Post;
 
-class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
+use FishPig\WordPress\Model\Post;
+
+class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
      * @const string
      */
     const ENTITY = 'wordpress_post_comment';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_post_comment';
 
     /**
-     * Base URL used for Gravatar images
-     *
      * @var const string
      */
     const GRAVATAR_BASE_URL = 'http://www.gravatar.com/avatar/';
@@ -29,28 +27,43 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
     /**
      *
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Post\Comment');
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \FishPig\WordPress\Helper\Date $dateHelper,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
+        $this->optionRepository = $optionRepository;
+        $this->dateHelper = $dateHelper;
 
-        return parent::_construct();
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
-
+    
     /**
      * Retrieve the post that this comment is associated to
      *
-     * @return \FishPig\WordPress\Model\Post
+     * @return Post|false
      */
     public function getPost()
     {
         if (!$this->hasPost()) {
             $this->setPost(false);
 
-            $posts = $this->getPostCollection()
-                ->addPostTypeFilter(['post', 'page'])
-                ->addFieldToFilter('ID', $this->getData('comment_post_ID'))
-                ->setPageSize(1)
-                ->load();
+            $posts = $this->postCollectionFactory->create(
+                )->addPostTypeFilter(
+                    ['post', 'page']
+                )->addFieldToFilter(
+                    'ID', 
+                    $this->getData('comment_post_ID')
+                )->setPageSize(
+                    1
+                )->load();
 
             if (count($posts) > 0) {
                 $this->setPost($posts->getFirstItem());
@@ -68,7 +81,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
      */
     public function getCommentDate($format = null)
     {
-        return $this->wpContext->getDateHelper()->formatDate($this->getData('comment_date'), $format);
+        return $this->dateHelper->formatDate($this->getData('comment_date'), $format);
     }
 
     /**
@@ -79,7 +92,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
      */
     public function getCommentTime($format = null)
     {
-        return $this->wpContext->getDateHelper()->formatTime($this->getData('comment_date'), $format);
+        return $this->dateHelper->formatTime($this->getData('comment_date'), $format);
     }
 
     /**
@@ -121,13 +134,13 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
             if ($post = $this->getPost()) {
                 $pageId = '';
 
-                if ($this->optionManager->getOption('page_comments')) {
+                if ($this->optionRepository->get('page_comments')) {
                     $pageId = '/comment-page-' . $this->getCommentPageId();
                 }
 
                 $fragment = '#comment-' . $this->getId();
 
-                if ($post->getTypeInstance()->permalinkHasTrainingSlash()) {
+                if (substr($post->getUrl(), -1) === '/') {
                     $fragment = '/' . $fragment;
                 }
 
@@ -149,7 +162,7 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
             $this->setCommentPageId(1);
             if ($post = $this->getPost()) {
                 $totalComments = count($post->getComments());
-                $commentsPerPage = $this->optionManager->getOption('comments_per_page', 50);
+                $commentsPerPage = $this->optionRepository->get('comments_per_page', 50);
 
                 if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
                     $it = 0;
@@ -193,14 +206,12 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasGravatarUrl()) {
-            $config = $this->optionManager;
-
-            if ($config->getOption('show_avatars')) {
+            if ($this->optionRepository->get('show_avatars')) {
                 if ($this->getCommentAuthorEmail()) {
                     $params = [
-                        'r' => $config->getOption('avatar_rating'),
+                        'r' => $this->optionRepository->get('avatar_rating'),
                         's' => (int)$size,
-                        'd' => $config->getOption('avatar_default'),
+                        'd' => $this->optionRepository->get('avatar_default'),
                         'v' => 45345
                     ];
 
@@ -257,25 +268,5 @@ class Comment extends \FishPig\WordPress\Model\Meta\AbstractMeta
     public function getPostTitle() : string
     {
         return $this->getPost() ? $this->getPost()->getPostTitle() : '';
-    }
-    
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getMetaTableAlias()
-    {
-        return 'wordpress_post_comment_meta';
-    }
-
-    /**
-     *
-     *
-     * @return string
-     */
-    public function getMetaTableObjectField()
-    {
-        return 'comment_id';
     }
 }

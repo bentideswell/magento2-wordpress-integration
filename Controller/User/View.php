@@ -1,50 +1,63 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Controller\User;
 
-use FishPig\WordPress\Controller\Action;
-
-class View extends Action
+class View extends \FishPig\WordPress\Controller\Action
 {
-  
     /**
-     * @return
+     * @param \Magento\Framework\App\Action\Context $context
+     * @param \FishPig\WordPress\Controller\Action\Context $wpContext
+     * @param \FishPig\WordPress\Model\PostRepository $postRepository,
+     * @param \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider
+     * @param \Magento\Customer\Model\Session $customerSession
      */
-    protected function _getEntity()
-    {
-        $object = $this->factory->create('User')->load(
-            $this->getRequest()->getParam('author'),
-            'user_nicename'
-        );
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \FishPig\WordPress\Controller\Action\Context $wpContext,
+        \FishPig\WordPress\Model\UserRepository $userRepository,
+        \FishPig\WordPress\Api\Controller\Action\SeoMetaDataProviderInterface $seoMetaDataProvider,
+        \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface $breadcrumbsDataProvider
+    ) {
+        $this->userRepository = $userRepository;
+        $this->seoMetaDataProvider = $seoMetaDataProvider;
+        $this->breadcrumbsDataProvider = $breadcrumbsDataProvider;
 
-        return $object->getId() ? $object : false;
+        parent::__construct($context, $wpContext);
     }
-
+    
     /**
-     * Get the blog breadcrumbs
      *
-     * @return array
      */
-    protected function _getBreadcrumbs()
+    public function execute()
     {
-        return array_merge(
-            parent::_getBreadcrumbs(),
-            [
-                'archives' => [
-                    'label' => __($this->_getEntity()->getName()),
-                    'title' => __($this->_getEntity()->getName())
-                ]
-            ]
-        );
-    }
+        $request = $this->getRequest();
 
-    /**
-     * @return array
-     */
-    public function getLayoutHandles()
-    {
-        return array_merge(parent::getLayoutHandles(), ['wordpress_user_view']);
+        // This will throw Exception is post does not exist
+        $user = $this->userRepository->getByNicename(
+            $request->getParam('author')
+        );
+
+        $this->registry->register($user::ENTITY, $user);
+
+        // We got here, we must be good.
+        $resultPage = $this->resultFactory->create(
+            \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
+        );
+
+        $this->addLayoutHandles($resultPage, ['wordpress_user_view']);
+
+        $this->seoMetaDataProvider->addMetaData($resultPage, $user);
+        
+        $this->addBreadcrumbs(
+            $this->breadcrumbsDataProvider->getData($user)
+        );
+
+        return $resultPage;
     }
 }

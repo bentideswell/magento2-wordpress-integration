@@ -1,28 +1,30 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Helper;
 
-use Magento\Framework\App\Helper\AbstractHelper;
-use Magento\Framework\App\Helper\Context;
-use FishPig\WordPress\Model\OptionManager;
-
-class Date extends AbstractHelper
+class Date extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     * @Var OptionManager
+     * @var \FishPig\WordPress\App\Option
      */
-    protected $optionManager;
+    private $option;
 
     /**
      *
      */
-    public function __construct(Context $context, OptionManager $optionManager)
-    {
+    public function __construct(
+        \Magento\Framework\App\Helper\Context $context, 
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
+    ) {
         parent::__construct($context);
 
-        $this->optionManager = $optionManager;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -85,11 +87,7 @@ class Date extends AbstractHelper
      */
     public function getDefaultDateFormat()
     {
-        if ($format = $this->optionManager->getOption('date_format')) {
-            return $format;
-        }
-
-        return 'F jS, Y';
+        return $this->optionRepository->get('date_format', 'F jS, Y');
     }
 
     /**
@@ -97,10 +95,6 @@ class Date extends AbstractHelper
      */
     public function getDefaultTimeFormat()
     {
-        if ($format = $this->optionManager->getOption('time_format')) {
-            return $format;
-        }
-
-        return 'g:ia';
+        return $this->optionRepository->get('time_format', 'g:ia');
     }
 }

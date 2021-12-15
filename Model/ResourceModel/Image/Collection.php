@@ -8,15 +8,8 @@ namespace FishPig\WordPress\Model\ResourceModel\Image;
 
 use FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection\AbstractAttachmentCollection;
 
-class Collection extends AbstractAttachmentCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection
 {
-    public function _construct()
-    {
-        parent::_construct();
-
-        $this->_init('FishPig\WordPress\Model\Image', 'FishPig\WordPress\Model\ResourceModel\Image');
-    }
-
     /**
      * Load an image
      * Ensure that only images are returned

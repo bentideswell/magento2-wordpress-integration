@@ -1,73 +1,74 @@
 <?php
 /**
- * @category FishPig
- * @package  FishPig_WordPress
- * @author   Ben Tideswell <help@fishpig.co.uk>
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Model;
 
-use \FishPig\WordPress\Model\Term;
-
-class Menu extends Term
+class Menu extends \FishPig\WordPress\Model\Term
 {
     /**
      * @const string
      */
     const ENTITY = 'wordpress_menu';
-
-    /**
-     * @const string
-     */
     const CACHE_TAG = 'wordpress_menu';
 
     /**
      * @var string
      */
-    protected $_eventPrefix      = 'wordpress_menu';
-    protected $_eventObject      = 'menu';
+    protected $_eventPrefix = 'wordpress_menu';
+    protected $_eventObject = 'menu';
 
     /**
-     * Cache to stop menu being generated multiple times
-     *
      * @var array
      */
-    protected $_menuCache     = null;
-
+    private $menuCache = null;
+    
     /**
      *
      */
-    public function _construct()
-    {
-        $this->_init('FishPig\WordPress\Model\ResourceModel\Menu');
-
-        return parent::_construct();
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+        \FishPig\WordPress\Model\TermRepository $termRepository,
+        \FishPig\WordPress\Model\ResourceModel\Menu\Item\CollectionFactory $menuItemCollectionFactory,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->menuItemCollectionFactory = $menuItemCollectionFactory;
+        parent::__construct($context, $registry, $wpContext, $taxonomyRepository, $termRepository, $resource, $resourceCollection, $data);
     }
+
 
     /**
      * Gets a simple array of the menu
      * For the actual menu item objects, use getMenuTreeObjects
      *
-     * @return array|false
+     * @return array
      */
-    public function getMenuTreeArray()
+    public function getMenuTreeArray(): array
     {
-        if ($tree = $this->getMenuTreeObjects()) {
-            $menu = [];
+        $menu = [];
 
+        if ($tree = $this->getMenuTreeObjects()) {
             foreach ($tree as $node) {
                 $menu[] = $this->_getMenuTreeArray($node);
             }
-
-            return $menu;
         }
-
-        return false;
+        
+        return $menu;
     }
 
     /**
      *
      */
-    protected function _getMenuTreeArray($node)
+    private function _getMenuTreeArray($node)
     {
         $data = [
             'id' => 'wp-' . $node->getId(),
@@ -97,27 +98,27 @@ class Menu extends Term
      */
     public function getMenuTreeObjects()
     {
-        if (null !== $this->_menuCache) {
-            return $this->_menuCache;
+        if (null !== $this->menuCache) {
+            return $this->menuCache;
         }
 
-        $this->_menuCache = false;
+        $this->menuCache = false;
 
         $items = $this->getMenuItems();
 
         if (count($items) > 0) {
             foreach ($items as $item) {
-                $this->_menuCache[] = $this->_getMenuTreeObjects($item);
+                $this->menuCache[] = $this->_getMenuTreeObjects($item);
             }
         }
 
-        return $this->_menuCache;
+        return $this->menuCache;
     }
 
     /**
      *
      */
-    protected function _getMenuTreeObjects($item)
+    private function _getMenuTreeObjects($item)
     {
         $children = $item->getChildrenItems();
 
@@ -133,32 +134,20 @@ class Menu extends Term
     /**
      * Retrieve the root menu items
      *
-     * @return FishPig_Wordpress_Model_Resource_Menu_Item_Collection
+     * @return \FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection
      */
     public function getMenuItems()
     {
-        return $this->_getObjectResourceModel()
-            ->addIsViewableFilter()
-            ->addTermIdFilter($this->getId(), $this->getTaxonomy());
+        return $this->menuItemCollectionFactory->create()
+            ->addParentItemIdFilter()
+            ->addMenuFilter($this);
     }
 
     /**
-     * Retrieve the taxonomy type
-     *
      * @return string
      */
-    public function getTaxonomy()
+    public function getTaxonomy(): string
     {
         return 'nav_menu';
-    }
-
-    /**
-     * Retrieve the object resource model
-     *
-     * @return FishPig_Wordpress_Model_Resource_Post_Collection
-     */
-    protected function _getObjectResourceModel()
-    {
-        return $this->factory->create('FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection')->addParentItemIdFilter(0);
     }
 }

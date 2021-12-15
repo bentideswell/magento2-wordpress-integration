@@ -1,32 +1,37 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\User;
 
-use FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper;
-use FishPig\WordPress\Model\User;
-
-class View extends AbstractWrapper
+class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
     /**
-     * Caches and returns the current category
-     *
-     * @return \FishPig\WordPress\Model\User
+     * @var \FishPig\WordPress\Model\User
      */
-    public function getEntity()
+    private $user = null;
+    
+    /**
+     * @return \FishPig\WordPress\Model\User|false
+     */
+    public function getUser()
     {
-        return $this->registry->registry(User::ENTITY);
+        if ($this->user === null) {
+            $this->user = $this->registry->registry(\FishPig\WordPress\Model\User::ENTITY) ?? false;
+        }
+        
+        return $this->user;
     }
 
     /**
-     * Generates and returns the collection of posts
-     *
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
-    protected function _getPostCollection()
+    protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        return parent::_getPostCollection()
-            ->addFieldToFilter('post_author', $this->getEntity() ? $this->getEntity()->getId() : 0);
+        return $this->getUser()->getPostCollection();
     }
 }

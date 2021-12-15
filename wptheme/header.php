@@ -7,7 +7,7 @@
 <html <?php language_attributes() ?>>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
-<!--WP-HEAD--><?php wp_head() ?><!--/WP-HEAD-->
+<?php wp_head() ?>
 </head>
 <body <?php body_class() ?>>
-    <!--WP-BODY-->
+    <fishpig:body>
