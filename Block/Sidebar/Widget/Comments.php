@@ -9,6 +9,21 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Comments extends AbstractWidget
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\Comment\CollectionFactory $commentCollectionFactory,
+        array $data = []
+    ) {
+        $this->commentCollectionFactory = $commentCollectionFactory;
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Retrieve the recent comments collection
      *
      * @return FishPig\WordPress\Model_Mysql4_Post_Comment_Collection
@@ -16,7 +31,7 @@ class Comments extends AbstractWidget
     public function getComments()
     {
         if (!$this->hasComments()) {
-            $comments = $this->factory->create('FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection')
+            $comments = $this->commentCollectionFactory->create()
                 ->addCommentApprovedFilter()
                 ->addOrderByDate('desc');
 

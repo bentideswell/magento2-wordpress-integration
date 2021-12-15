@@ -9,6 +9,21 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class NavMenu extends AbstractWidget
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\MenuFactory $menuFactory,
+        array $data = []
+    ) {
+        $this->menuFactory = $menuFactory;
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Get the menu model for the current widget
      *
      * @return FishPig\WordPress\Model_Menu
@@ -18,7 +33,7 @@ class NavMenu extends AbstractWidget
         if (!$this->hasMenu()) {
             $this->setMenu(false);
 
-            $menu = $this->factory->create('Menu')->load($this->_getData('nav_menu'));
+            $menu = $this->menuFactory->create()->load($this->_getData('nav_menu'));
 
             if ($menu->getId()) {
                 $this->setMenu($menu);

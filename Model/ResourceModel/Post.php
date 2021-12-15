@@ -142,30 +142,6 @@ class Post extends AbstractResourceModel
     }
 
     /**
-     * Retrieve the featured image for the post
-     *
-     * @param  \FishPig\WordPress\Model\Post $post
-     * @return \FishPig\WordPress\Model\Image $image
-     */
-    public function getFeaturedImage(\FishPig\WordPress\Model\Post $post)
-    {
-        if ($images = $post->getImages()) {
-            $select = $this->getConnection()
-                ->select()
-                ->from($this->getTable('wordpress_post_meta'), 'meta_value')
-                ->where('post_id=?', $post->getId())
-                ->where('meta_key=?', '_thumbnail_id')
-                ->limit(1);
-
-            if (($imageId = $this->getConnection()->fetchOne($select)) !== false) {
-                return $this->factory->create('Image')->load($imageId);
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * ToDo: improve this
      */
     public function getPostsOnDayByYearMonth($dateStr)

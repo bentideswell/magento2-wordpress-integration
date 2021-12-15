@@ -9,6 +9,21 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Cloud extends AbstractWidget
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Term\CollectionFactory $termCollectionFactory,
+        array $data = []
+    ) {
+        $this->termCollectionFactory = $termCollectionFactory;
+        parent::__construct($context, $wpContext, $data);
+    }
+        
+    /**
      * Retrieve a collection of tags
      *
      * @return FishPig\WordPress\Model_Mysql4_Post_Tag_Collection
@@ -21,7 +36,7 @@ class Cloud extends AbstractWidget
 
         $this->setTags(false);
 
-        $tags = $this->factory->create('Model\ResourceModel\Term\Collection')
+        $tags = $this->termCollectionFactory->create()
             ->addCloudFilter($this->getTaxonomy())
             ->setOrderByName()
             ->load();

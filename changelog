@@ -5,6 +5,10 @@
 - Add a URL generator/crawler to the test suite (local dev)
 - Reintroduce wordpress/find
 
+## [3.0.5] - 2021-12-15
+### [Fixed]
+- Updated reference to old factory class to individual factory classes. This fixes some compilation errors.
+
 ## [3.0.4] - 2021-12-15
 ### [Changed]
 - Updated references to FishPig\WordPress\Model\Url to FishPig\WordPress\Model\UrlInterface

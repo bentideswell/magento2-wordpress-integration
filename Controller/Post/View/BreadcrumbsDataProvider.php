@@ -64,7 +64,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
                 }
             } elseif ($postType->isHierarchical() && strlen($slugPart) > 1 && substr($slugPart, 0, 1) !== '.') {
                 echo __LINE__ . '::' . __METHOD__;exit;
-                $parent = $this->factory->create('Post')->setPostType('page')->load($slugPart, 'post_name');
+//                $parent = $this->factory->create('Post')->setPostType('page')->load($slugPart, 'post_name');
 
                 if ($parent->getId()) {
                     $objects['parent_post_' . $parent->getId()] = $parent;
