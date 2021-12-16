@@ -3,6 +3,15 @@
 ## [Unreleased]
 - Auto update/install theme when using Local integration mode.
 
+## [3.0.10] - 2021-12-16
+### [Added]
+- Added cli_commands.php to the composer.json autoload section. This is the mechanism for loading the legacy autoloader
+  when using Composer to install the modules.
+
+## [3.0.9] - 2021-12-16
+### [Fixed]
+- Code improvements for the new v3 branch.
+
 ## [3.0.8] - 2021-12-16
 ### [Fixed]
 - Automatic theme installation/upgrade is now fixed in local integration mode. An exception is only raised if permissions
