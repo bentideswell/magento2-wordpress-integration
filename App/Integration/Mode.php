@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Integration;
 
+use FishPig\WordPress\App\Integration\Exception\InvalidModeException;
+
 class Mode
 {
     /**#@+
@@ -76,11 +78,11 @@ class Mode
     /**
      * @return $this
      */
-    public function requireLocalMode(): self
+    public function requireLocalMode($msg = null): self
     {
         if (!$this->isLocalMode()) {
-            throw new \Exception(
-                'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_LOCAL . '.'
+            throw new InvalidModeException(
+                $msg ?? 'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_LOCAL . '.'
             );
         }
         
@@ -90,11 +92,11 @@ class Mode
     /**
      * @return $this
      */
-    public function requireExternalMode(): self
+    public function requireExternalMode($msg = null): self
     {
         if (!$this->isExternalMode()) {
-            throw new \Exception(
-                'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_LOCAL . '.'
+            throw new InvalidModeException(
+                $msg ?? 'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_EXTERNAL . '.'
             );
         }
         

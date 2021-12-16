@@ -19,7 +19,6 @@ if (!defined('FISHPIG_SKIP_LEGACY_AUTOLOAD')) {
             'FishPig\WordPress\Model\Factory',
             'FishPig\WordPress\Model\Homepage',
             'FishPig\WordPress\Model\IntegrationManager',
-            'FishPig\WordPress\Model\ImageResizer',
             'FishPig\WordPress\Model\Logger',
             'FishPig\WordPress\Model\Logger\Handler',
             'FishPig\WordPress\Model\OptionManager',

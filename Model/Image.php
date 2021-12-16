@@ -11,6 +11,28 @@ namespace FishPig\WordPress\Model;
 class Image extends \FishPig\WordPress\Model\Post\Attachment
 {
     /**
+     * @var
+     */
+    private $resizer = null;
+
+    /**
+     *
+     */
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \FishPig\WordPress\Model\ImageResizerFactory $imageResizerFactory,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->imageResizerFactory = $imageResizerFactory;
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
+    }
+    
+    /**
      * @param  string $code
      * @return string
      */
@@ -158,5 +180,24 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
     public function getImageByType($type = 'thumbnail')
     {
         return $this->getImageUrl($type);
+    }
+
+    /**
+     * Image resizing is only available in local integration mode
+     * When integrating an external WP, physical files are not available for resize
+     *
+     * @return \FishPig\WordPress\Model\ImageResizer
+     */
+    public function getResizer()
+    {
+        if ($this->resizer === null) {
+            try {
+                $this->resizer = $this->imageResizerFactory->create()->setImage($this);
+            } catch (\FishPig\WordPress\App\Integration\Exception\InvalidModeException $modeException) {
+                $this->resizer = false;
+            }
+        }
+        
+        return $this->resizer;
     }
 }

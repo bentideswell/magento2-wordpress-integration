@@ -2,21 +2,17 @@
 
 ## [Unreleased]
 - Auto update/install theme when using Local integration mode.
-- Add a URL generator/crawler to the test suite (local dev)
-- Reintroduce wordpress/find
 
-## [3.0.6] - 2021-12-16
+## [3.0.7] - 2021-12-16
 ### [Fixed]
 - Updated references to legacy classes to the new implementations.
+- Fixed resizing images when in local mode. Images cannot be resized in External integration mode as the images live
+  on the external server so cannot be resized by Magento. To resize images in external mode, create new image sizes in
+  in WordPress and these will be available in Magento automatically.
 
 ## [3.0.3] - 2021-12-15
 ### [Fixed]
 - PHP URL class error in HeadAdditional block
-
-## [3.0.2] - 2021-12-15
-### [Added]
-- Fallback for image resizer model, which is no longer included in the module as it's not possible to resize images in Magento anymore.
-  Instead, you should change the image sizes (or create new sizes) in WordPress and this data will be available in Magento.
   
 ## [3.0.1] - 2021-12-15
 ### [Changed]
