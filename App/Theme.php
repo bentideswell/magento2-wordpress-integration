@@ -55,7 +55,7 @@ class Theme
     /**
      * @return string
      */
-    private function getRemoteHash(): string
+    public function getRemoteHash(): string
     {
         return $this->remoteHashProvider->getHash();
     }

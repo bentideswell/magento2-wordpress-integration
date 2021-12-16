@@ -14,9 +14,9 @@ class SiteUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -24,6 +24,6 @@ class SiteUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
      */
     public function getUrl(): string
     {
-        return $this->option->get('siteurl');
+        return $this->optionRepository->get('siteurl');
     }
 }

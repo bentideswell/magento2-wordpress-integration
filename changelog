@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Auto update/install theme when using Local integration mode.
 
+## [3.0.8] - 2021-12-16
+### [Fixed]
+- Automatic theme installation/upgrade is now fixed in local integration mode. An exception is only raised if permissions
+  do not allow for the automatic update to take place.
+
 ## [3.0.7] - 2021-12-16
 ### [Fixed]
 - Updated references to legacy classes to the new implementations.

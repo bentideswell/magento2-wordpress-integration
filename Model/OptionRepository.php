@@ -11,12 +11,17 @@ namespace FishPig\WordPress\Model;
 class OptionRepository
 {
     /**
-     * @var \FishPig\WordPress\Model\Option
+     * @var \FishPig\WordPress\App\Option
      */
     private $dataSource = null;
 
     /**
-     * @param  \FishPig\WordPress\Model\Option $dataSource
+     * @var array
+     */
+    private $cache = [];
+    
+    /**
+     * @param \FishPig\WordPress\App\Option $dataSource
      */
     public function __construct(
         \FishPig\WordPress\App\Option $dataSource
@@ -25,15 +30,35 @@ class OptionRepository
     }
 
     /**
-     * @param  int $id
-     * @param  array|string $taxonomies
-     * @return FishPig\WordPress\Model\Term
+     * @param  string $key
+     * @param  mixed  $default = null
+     * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, $default = null)
     {
-        return $this->dataSource->get($key, $default);
+        if (!isset($this->cache[$key])) {
+            $this->cache[$key] = $this->dataSource->get($key) ?: $default;
+        }
+
+        return $this->cache[$key];
     }
 
+    /**
+     * @param  string $key
+     * @param  mixed  $value
+     * @return void
+     */
+    public function set(string $key, $value): void
+    {
+        $this->dataSource->set($key, $value);
+
+        if (isset($this->cache[$key]) && $value === null) {
+            unset($this->cache[$key]);
+        } else {
+            $this->cache[$key] = $value;
+        }
+    }
+    
     /**
      * @return []
      */

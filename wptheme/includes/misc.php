@@ -1,11 +1,16 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
 namespace FishPig\WordPress\X;
 
 class Misc
 {
+    /**
+     *
+     */
     public function __construct()
     {
         add_action('save_post', function($post_id) {

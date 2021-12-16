@@ -11,12 +11,7 @@ namespace FishPig\WordPress\App;
 class Option
 {
     /**
-     * @var []
-     */
-    private $cache = [];
-
-    /**
-     *
+     * @param \FishPig\WordPress\App\ResourceConnection $resourceConnection
      */
     public function __construct(
         \FishPig\WordPress\App\ResourceConnection $resourceConnection
@@ -25,28 +20,19 @@ class Option
     }
 
     /**
+     * @param  string $key
      * @return mixed
      */
-    public function get(string $key, $default = null)
+    public function get(string $key)
     {
-        if (!isset($this->cache[$key])) {
-            $this->cache[$key] = $default;
+        $db = $this->resourceConnection->getConnection();
 
-            $db = $this->resourceConnection->getConnection();
-
-            $value = $db->fetchOne(
-                $db->select()
-                    ->from($this->getOptionsTable(), 'option_value')
-                    ->where('option_name=?', $key)
-                    ->limit(1)
-            );
-
-            if ($value !== false) {
-                $this->cache[$key] = $value;
-            }
-        }
-
-        return $this->cache[$key];
+        return $db->fetchOne(
+            $db->select()
+                ->from($this->getOptionsTable(), 'option_value')
+                ->where('option_name=?', $key)
+                ->limit(1)
+        );
     }
 
     /**
@@ -61,8 +47,6 @@ class Option
         if ($value === null) {
             // Delete existing value
             $db->delete($this->getOptionsTable(), $db->quoteInto('option_name=?', $key));
-            
-            unset($this->cache[$key]);
         } else {
             if (is_array($value)) {
                 $value = serialize($value);
@@ -83,8 +67,6 @@ class Option
                     $db->quoteInto('option_name=?', $key)
                 );
             }
-            
-            $this->cache[$key] = $value;
         }
     }
     

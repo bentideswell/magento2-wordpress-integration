@@ -47,7 +47,7 @@ class PackageBuilder
             . '/fishpig-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
 
         if (is_file($file)) {
-//            return $file;
+            return $file;
         }
 
         $files = $this->fileCollector->getFiles();
