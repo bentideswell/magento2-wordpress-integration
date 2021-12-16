@@ -14,9 +14,11 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      * @param \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository
      */
     public function __construct(
-        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository
+        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+        \FishPig\WordPress\App\Logger $logger
     ) {
         $this->taxonomyRepository = $taxonomyRepository;
+        $this->logger = $logger;
     }
 
     /**
@@ -63,12 +65,15 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
                     /**/
                 }
             } elseif ($postType->isHierarchical() && strlen($slugPart) > 1 && substr($slugPart, 0, 1) !== '.') {
-                echo __LINE__ . '::' . __METHOD__;exit;
-//                $parent = $this->factory->create('Post')->setPostType('page')->load($slugPart, 'post_name');
+                $this->logger->debug('Post breadcrumbs data provider error on line 68. Slug = ' . $postType->getSlug());
+                continue;
+                
+                /*
+                $parent = $this->factory->create('Post')->setPostType('page')->load($slugPart, 'post_name');
 
                 if ($parent->getId()) {
                     $objects['parent_post_' . $parent->getId()] = $parent;
-                }
+                }*/
             }
         }
 

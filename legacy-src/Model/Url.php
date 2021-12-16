@@ -82,9 +82,7 @@ class Url
      */
     public function getFileUploadUrl()
     {
-        echo __METHOD__ . '<br/>' . PHP_EOL;
-        echo 'Move this to Image model';
-        exit;
+        return '';
         $url = $this->optionManager->getOption('fileupload_url');
 
         if (!$url) {

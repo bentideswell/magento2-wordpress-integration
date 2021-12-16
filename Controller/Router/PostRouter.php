@@ -45,8 +45,7 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
                 ['post_type' => 'post']
             );
         } elseif ($this->frontPage->getFrontPageId() === $postId) {
-            echo __METHOD__;
-            exit;
+
         }
         
         // Allows for cache invalidation

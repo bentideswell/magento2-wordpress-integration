@@ -418,10 +418,6 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     public function getImages()
     {
         if (!$this->hasData('images')) {
-            
-            
-
-$e = new \Exception((string)__LINE__); echo '<pre>' . $e->getTraceAsString();exit;
             $this->setImages(
                 $this->imageFactory->create()->getCollection(
                     )->setParent(

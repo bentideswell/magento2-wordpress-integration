@@ -31,6 +31,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         \Magento\Framework\App\ProductMetadataInterface $productMetadata,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
+        \FishPig\WordPress\App\Logger $logger,
         string $name = null
     ) {
         $this->fullModuleList = $fullModuleList;
@@ -39,7 +40,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         $this->productMetadata = $productMetadata;
         $this->storeManager = $storeManager;
         $this->resourceConnection = $resourceConnection;
-
+        $this->logger = $logger;
         parent::__construct($name);
     }
 
@@ -80,7 +81,9 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         ];
         
         if ($format === self::FORMAT_ARRAY) {
-            $output->writeLn(print_r($debug, true));
+            $output->writeLn(
+                print_r($debug, true) // phpcs:ignore
+            );
         } else {
             $output->writeLn(json_encode($debug, JSON_UNESCAPED_SLASHES));
         }
@@ -215,7 +218,8 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
                 return false;
             }
         } catch (\Exception $e) {
-            exit($e);
+            $this->logger->error($e);
+            return false;
         }
         
         return false;        

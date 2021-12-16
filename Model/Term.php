@@ -171,7 +171,6 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
      */
     public function getTaxonomyLabel()
     {
-        echo __METHOD__;exit;
         return $this->getName();
     }
     
@@ -181,8 +180,6 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
      */
     public function getTaxonomyType()
     {
-        throw new \Exception(__METHOD__);
-
         return $this->getTaxonomy();
     }
     

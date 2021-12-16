@@ -11,6 +11,15 @@ namespace FishPig\WordPress\Model;
 class Theme
 {
     /**
+     * @param \FishPig\WordPress\Model\Config $config
+     */
+    public function __construct(
+        \FishPig\WordPress\Model\Config $config
+    ) {
+        $this->config = $config;
+    }
+
+    /**
      * @return $this
      */
     public function validate()
@@ -18,14 +27,12 @@ class Theme
         return $this;
     }
 
-
     /**
      * @return bool
      */
     public function isActive()
     {
-
-
+        return true;
     }
 
     /**
@@ -33,12 +40,6 @@ class Theme
      */
     public function isThemeIntegrated()
     {
-        echo __METHOD__;
-        exit;
-        return (int)$this->scopeConfig->getValue(
-            'wordpress/setup/theme_integration',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            (int)$this->storeManager->getStore()->getId()
-        ) === 1;
+        return $this->config->isThemeIntegrationEnabled();
     }
 }

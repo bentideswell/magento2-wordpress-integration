@@ -41,12 +41,3 @@ ol.comment-list  { list-style: none; padding: 0; margin: 0; }
 .shortcode-product .products { text-align: left; list-style: none; }
 .shortcode-product .products > li { display: inline-block; width: 24%; text-align: center; }
 
-body.template-full-width main.page-main,
-body.elementor-template-full-width main.page-main {
-    width: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    max-width: inherit;
-    padding-left: 0;
-    padding-right: 0;
-}

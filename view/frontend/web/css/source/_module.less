@@ -33,6 +33,31 @@
     .post-list.grid {
         & li { display: block; width: 100%; overflow: hidden; }
     }
+    
+    body {
+        &.template-full-width,
+        &.elementor-template-full-width {
+            & main.page-main {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+                max-width: inherit;
+                padding-left: 0;
+                padding-right: 0;
+            }
+            
+            & .columns {
+                & > .sidebar {
+                    display: none;
+                }
+                
+                & > .column.main {
+                    width: 100%;
+                    float: none;
+                }
+            }
+        }
+    }
 }
 
 .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__s) {

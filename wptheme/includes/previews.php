@@ -15,7 +15,7 @@ class Previews
                     if (preg_match('/^.*(\/index.php\/)(.*)(\?.*)$/', $_SERVER['REQUEST_URI'], $m)) {
                         if ($m[2]) {
                             wp_redirect(get_site_url() . $m[1] . $m[3], 302, 'FishPig Preview');
-                            exit;
+                            exit; // phpcs:ignore
                         }
                     }
                 }

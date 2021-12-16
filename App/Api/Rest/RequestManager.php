@@ -84,11 +84,9 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         try {
             return $this->serializer->unserialize($str);
         } catch (\Exception $e) {
-            
-            echo $str;exit;
             if (strpos($str, 'Fatal error') !== false) {
-                if (preg_match('/<b>Fatal error<\/b>:(.*)\n/Uis', $str, $m)) {
-                    throw new \Exception(trim($m[1]));
+                if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
+                    throw new \Exception(trim($m[2]));
                 }
                 
                 throw new \Exception('A fatal PHP error occurred in WordPress.');

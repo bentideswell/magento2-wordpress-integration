@@ -11,18 +11,10 @@ namespace FishPig\WordPress\Model;
 class Factory
 {
     /**
-     * @var array
-     */
-    protected $factories = [];
-
-    /**
      *
      */
     public function __construct(array $factories = [])
     {
-        foreach ($factories as $factory) {
-            $this->factories[get_class($factory)] = $factory;
-        }
     }
 
     /**
@@ -33,17 +25,6 @@ class Factory
      */
     public function create($type, array $args = [])
     {
-        $e = new \Exception($type);
-        
-        if (php_sapi_name() === 'cli') {
-            echo $e->getMessage() . "\n\n" . $e->getTraceAsString();
-            exit(1);
-        }
-        
-        echo '<h2>' . $e->getMessage() . "</h2><br/><br/><pre>" . $e->getTraceAsString();
-        exit(1);
-
-
         if ($className = $this->getClassNameFromType($type)) {
             return $this->getObjectManager()->create($className, $args);
         }
