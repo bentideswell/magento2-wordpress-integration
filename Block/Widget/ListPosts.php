@@ -1,16 +1,14 @@
 <?php
 /**
- *
+ * @package FishPig_WordPress
+ * @author  Ben Tideswell (ben@fishpig.com)
+ * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
+declare(strict_types=1);
+
 namespace FishPig\WordPress\Block\Widget;
 
-use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Element\Template\Context;
-use Magento\Widget\Block\BlockInterface;
-use FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory;
-use FishPig\WordPress\Model\IntegrationManager;
-
-class ListPosts extends Template implements BlockInterface
+class ListPosts extends \Magento\Framework\View\Element\Template implements \Magento\Widget\Block\BlockInterface
 {
     /**
      *
@@ -21,9 +19,9 @@ class ListPosts extends Template implements BlockInterface
      *
      */
     public function __construct(
-        Context $context,
-        CollectionFactory $collectionFactory,
-        IntegrationManager $integrationManager,
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory,
+        \FishPig\WordPress\App\Integration\Tests $integrationManager,
         array $data = []
     ) {
         $this->collectionFactory = $collectionFactory;

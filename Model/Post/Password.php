@@ -4,16 +4,15 @@
  */
 namespace FishPig\WordPress\Model\Post;
 
-use FishPig\WordPress\Model\OptionManager;
-
+/* ToDo: check */
 class Password
 {
     /**
      *
      */
-    public function __construct(OptionManager $optionManager)
+    public function __construct(\FishPig\WordPress\Model\OptionRepository $optionRepository)
     {
-        $this->optionManager = $optionManager;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -41,9 +40,9 @@ class Password
      */
     private function getCookieName() : string
     {
-        if (!($siteUrl = $this->optionManager->getSiteOption('siteurl'))) {
-            $siteUrl = $this->optionManager->getOption('siteurl');
-        }
+//        if (!($siteUrl = $this->optionRepository->getSiteOption('siteurl'))) {
+            $siteUrl = $this->optionRepository->get('siteurl');
+//        }
         
         return 'wp-postpass_' . md5($siteUrl);
     }

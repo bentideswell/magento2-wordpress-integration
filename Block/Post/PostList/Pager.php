@@ -39,7 +39,7 @@ class Pager extends \Magento\Theme\Block\Html\Pager
 
         $this->setPageVarName('page');
 
-        $baseLimit = $this->optionRepository->getOption('posts_per_page', 10);
+        $baseLimit = $this->optionRepository->get('posts_per_page', 10);
 
         $this->setDefaultLimit($baseLimit);
         $this->setLimit($baseLimit);

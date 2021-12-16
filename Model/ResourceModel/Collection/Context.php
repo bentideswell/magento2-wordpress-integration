@@ -8,9 +8,6 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model\ResourceModel\Collection;
 
-use FishPig\WordPress\App\Logger;
-use FishPig\WordPress\App\Option;
-
 class Context
 {
     /**
@@ -21,32 +18,40 @@ class Context
     /**
      * @var Option
      */
-    private $option;
+    private $optionRepository;
     
     /**
      * @param Registry
      */
     public function __construct(
-        Logger $logger,
-        Option $option
+        \FishPig\WordPress\App\Logger $logger,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
         $this->logger = $logger;
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
      * @return Logger
      */
-    public function getLogger(): Logger
+    public function getLogger(): \FishPig\WordPress\App\Logger
     {
         return $this->logger;
     }
     
     /**
-     * @return Option
+     * @return \FishPig\WordPress\Model\OptionRepository
      */
-    public function getOption(): Option
+    public function getOptionRepository(): \FishPig\WordPress\Model\OptionRepository
     {
-        return $this->option;
+        return $this->optionRepository;
+    }
+    
+    /**
+     * @return \FishPig\WordPress\Model\OptionRepository
+     */
+    public function getOption(): \FishPig\WordPress\Model\OptionRepository
+    {
+        return $this->getOptionRepository();
     }
 }

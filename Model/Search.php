@@ -80,7 +80,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
         $extra = rtrim('?' . implode('&', $extra), '?');
 
         return $this->url->getHomeUrlWithFront(
-            'search/' . urlencode($this->getSearchTerm()) . '/' . $extra
+            'search/' . urlencode(strtolower($this->getSearchTerm())) . '/' . $extra
         );
     }
 

@@ -12,13 +12,12 @@ class Index extends \Magento\Framework\App\Action\Action
     public function __construct(
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\App\Integration\Tests $integrationTests,
-//        \FishPig\WordPress\Model\Homepage $wpHomepage,
-        \FishPig\WordPress\Model\UrlInterface $wpUrl
+        \FishPig\WordPress\Helper\FrontPage $frontPageHelper,
+        \FishPig\WordPress\Model\UrlInterface $url
     ) {
         $this->integrationTests = $integrationTests;
-//        $this->wpHomepage = $wpHomepage;
-        $this->wpUrl = $wpUrl;
-        
+        $this->frontPageHelper = $frontPageHelper;
+        $this->url = $url;
         parent::__construct($context);
     }
     
@@ -28,14 +27,19 @@ class Index extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         if ($this->integrationTests->runTests() === false) {
+            $this->messageManager->addError(__('Integration tests failed.'));
             return $this->_forward('noRoute');
         }
 
-//        if ($defaultPostArchiveUrl = $this->wpHomepage->getUrl()) {
-//            return $this->redirectTo($defaultPostArchiveUrl);
-//        }
+        if ($frontPage = $this->frontPageHelper->getFrontPage()) {
+            $this->redirectTo($frontPage->getUrl());
+        }
+        
+        if ($postsPage = $this->frontPageHelper->getPostsPage()) {
+            $this->redirectTo($postsPage->getUrl());
+        }
             
-        return $this->redirectTo($this->wpUrl->getHomeUrl());
+        return $this->redirectTo($this->url->getHomeUrl());
     }
     
     /**
