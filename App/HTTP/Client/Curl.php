@@ -58,6 +58,7 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
 
     /**
      * Stop CURLOPT_RETURNTRANSFER being set on HEAD requests
+     * Also set NOBODY when it's a HEAD method and stop the CUSTOMREQUEST being set
      *
      * @param  string $name
      * @param  mixed $value
@@ -67,6 +68,8 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     {
         if ($name === CURLOPT_RETURNTRANSFER && $this->isHeadRequest) {
             $value = false;
+        } elseif ($name === CURLOPT_CUSTOMREQUEST && $value === 'HEAD') {
+            return $this->curlOption(CURLOPT_NOBODY, true);
         }
 
         parent::curlOption($name, $value);
@@ -95,10 +98,6 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
      */
     public function getStatus()
     {
-        if ($this->realStatusCode !== 0) {
-            return $this->realStatusCode; 
-        }
-        
-        return parent::getStatus();
+        return $this->realStatusCode !== 0 ? $this->realStatusCode : parent::getStatus();
     }
 }

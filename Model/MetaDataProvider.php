@@ -69,7 +69,10 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
      */
     private function getMetaTable(): string
     {
-        return $this->resourceConnection->getTable($this->tableName);
+        return $this->resourceConnection->getTable(
+            $this->tableName,
+            !$this->useKeyPrefix
+        );
     }
 
     /**

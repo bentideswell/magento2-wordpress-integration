@@ -70,6 +70,9 @@ class Permalink
                             'post_name IN (?)', explode('/', $pathInfo)
                         )->where(
                             'post_type = ?', $postType->getPostType()
+                        )->where(
+                            'post_status IN (?)', 
+                            ['publish', 'protected', 'private']
                         )
                     )
                 );
@@ -77,13 +80,13 @@ class Permalink
                 if (($filters = $this->getPostTypeFilters($postType, $pathInfo)) === false) {
                     continue;
                 }
-    
+
                 $select = $this->getConnection()->select()
                     ->from(
                         ['main_table' => $this->resourceConnection->getTable('posts')],
                         [
                             'id' => 'ID', 
-                            'permalink' => $this->getPermalinkSqlColumn()
+                            'permalink' => $this->getPermalinkSqlColumn($postType->getPostType())
                         ]
                     )->where(
                         'post_type = ?', 
@@ -100,7 +103,7 @@ class Permalink
                         $select->where($fields[$field] . ' = ?', urlencode($value));
                     }
                 }
-                
+
                 $routes = $this->getConnection()->fetchPairs($select);
             }
             
@@ -282,8 +285,12 @@ class Permalink
      * @param  array $requiredPostTypes = null
      * @return string|\Zend_Db_Expr
      */
-    public function getPermalinkSqlColumn(array $requiredPostTypes = null)
+    public function getPermalinkSqlColumn($requiredPostTypes = null)
     {
+        if ($requiredPostTypes) {
+            $requiredPostTypes = (array)$requiredPostTypes;
+        }
+
         $postTypes = $this->postTypeRepository->getAll();
         $sqlColumns = [];
         $fields = $this->getPermalinkSqlFields();

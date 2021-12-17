@@ -44,6 +44,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         \FishPig\WordPress\Model\ImageFactory $imageFactory,
         \FishPig\WordPress\Helper\FrontPage $frontPage,
         \FishPig\WordPress\Helper\Date $dateHelper,
+        \FishPig\WordPress\Model\Post\PasswordManager $passwordManager,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -57,6 +58,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         $this->imageFactory = $imageFactory;
         $this->dateHelper = $dateHelper;
         $this->frontPage = $frontPage;
+        $this->passwordManager = $passwordManager;
         
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
@@ -557,20 +559,11 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     }
 
     /**
-     * Determine whether the current user can view the post/page
-     * If visibility is protected and user has supplied wrong password, return false
-     *
      * @return bool
      */
-    public function isViewableForVisitor()
+    public function isViewableForVisitor(): bool
     {
-        if ($this->getPostPassword() === '') {
-            return true;
-        }
-
-        return \Magento\Framework\App\ObjectManager::getInstance()
-            ->get(\FishPig\WordPress\Model\Post\Password::class)
-            ->doesPasswordMatch($this->getPostPassword());
+        return $this->passwordManager->isPostUnlocked($this);
     }
 
     /**

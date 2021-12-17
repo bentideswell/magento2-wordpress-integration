@@ -80,17 +80,21 @@ class Post extends \FishPig\WordPress\Block\AbstractBlock implements IdentityInt
     /**
      *
      */
-    public function getPasswordProtectHtml($post = null)
+    public function getPasswordProtectHtml(\FishPig\WordPress\Model\Post $post = null)
     {
-        if (is_null($post)) {
-            $post = $this->getPost();
-        }
-
         return $this->getLayout()
             ->createBlock(self::class)
             ->setTemplate('FishPig_WordPress::post/protected.phtml')
             ->setEntityType('post')
-            ->setPost($post)
+            ->setPost($post ?: $this->getPost())
             ->toHtml();
+    }
+    
+    /**
+     * @return string
+     */
+    public function getPasswordFormAction(): string
+    {
+        return $this->getUrl('wordpress/post/password');
     }
 }

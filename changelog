@@ -1,7 +1,12 @@
 # Changelog
 
 ## [Unreleased]
-- Auto update/install theme when using Local integration mode.
+
+## [3.0.11] - 2021-12-17
+### [Fixed]
+- Fixed HTTP HEAD request bug when using CloudFlare. This broke the UrlValidation model in PSW.
+- The usermeta was adding the blog_id as a table prefix, which is invalid for this table.
+- Post password implementation was broke due to cookies no longer being shared so this has been updated for new the system.
 
 ## [3.0.10] - 2021-12-16
 ### [Added]

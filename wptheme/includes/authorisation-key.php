@@ -65,7 +65,7 @@ class AuthorisationKey
      */
     static public function isRestRequestAuthorised(\WP_REST_Request $request): bool
     {
-        return self::isKeyValid($request->get_header(self::KEY_HEADER_NAME));
+        return self::isKeyValid($request->get_header(self::KEY_HEADER_NAME) ?: '');
     }
     
     /**
