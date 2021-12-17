@@ -4,7 +4,6 @@
  */
 namespace FishPig\WordPress\Model\Post;
 
-/* ToDo: check */
 class PasswordManager
 {
     /**
@@ -16,13 +15,13 @@ class PasswordManager
      *
      */
     public function __construct(
-        \FishPig\WordPress\Model\Session $session,
         \FishPig\WordPress\Model\UrlInterface $url,
-        \Magento\Framework\App\DeploymentConfig $deploymentConfig
+        \Magento\Framework\App\DeploymentConfig $deploymentConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
-        $this->session = $session;
         $this->url = $url;
         $this->deploymentConfig = $deploymentConfig;
+        $this->storeManager = $storeManager;
     }
 
     public function isPostUnlocked(\FishPig\WordPress\Model\Post $post): bool
@@ -30,37 +29,44 @@ class PasswordManager
         if (!($postPassword = $post->getPostPassword())) {
             return true;
         }
-        
-        $submittedHash = $this->session->getData($this->getSessionKey($post));
+
+        $submittedHash = $this->getPostPassword();
         $expectedHash = $this->hashPassword($postPassword);
 
         return $submittedHash === $expectedHash;
     }
     
     /**
-     * @param  \FishPig\WordPress\Model\Post $post
      * @param  ?string $password = null
      * @return void
      */
-    public function setPostPassword(\FishPig\WordPress\Model\Post $post, ?string $password = null): void
+    public function setPostPassword(?string $password = null): void
     {
+        $sessionKey = $this->getSessionKey();
         if ($password === null) {
-            $this->session->unsetData($this->getSessionKey($post));
+            unset($_COOKIE[$sessionKey]);
         } else {
-            $this->session->setData(
-                $this->getSessionKey($post), 
-                $this->hashPassword($password)
-            );
+            $_COOKIE[$sessionKey] = $this->hashPassword($password);
         }
+    }
+    
+    /**
+     * @param  \FishPig\WordPress\Model\Post $post
+     * @return string|false
+     */
+    public function getPostPassword()
+    {
+        $sessionKey = $this->getSessionKey();
+        return !empty($_COOKIE[$sessionKey]) ? $_COOKIE[$sessionKey] : false;
     }
     
     /**
      * @param  \FishPig\WordPress\Model\Post $post
      * @return string
      */
-    private function getSessionKey(\FishPig\WordPress\Model\Post $post): string
+    private function getSessionKey(): string
     {
-        return self::PASSWORD_STORE_KEY_PREFIX . $post->getId();
+        return self::PASSWORD_STORE_KEY_PREFIX . $this->storeManager->getStore()->getId();
     }
     
     /**
@@ -69,7 +75,7 @@ class PasswordManager
      */
     private function hashPassword(string $password): string
     {
-        return md5(
+        return md5( // phpcs:ignore
             $this->deploymentConfig->get('crypt/key') . $this->url->getSiteUrl() . $password
         ); // md5() here is not for cryptographic use.
     }

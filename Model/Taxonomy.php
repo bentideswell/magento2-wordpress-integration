@@ -44,6 +44,14 @@ class Taxonomy extends \Magento\Framework\DataObject
     }
 
     /**
+     * @return string
+     */
+    public function getSingularName()
+    {
+        return $this->getData('labels/singular_name') ?: $this->getName();
+    }
+    
+    /**
      * @return bool
      */
     public function isHierarchical(): bool

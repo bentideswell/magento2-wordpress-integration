@@ -25,6 +25,11 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
     const GRAVATAR_BASE_URL_SECURE = 'https://secure.gravatar.com/avatar/';
 
     /**
+     * @var \FishPig\WordPress\Model\Post
+     */
+    private $post = null;
+
+    /**
      *
      */
     public function __construct(
@@ -32,6 +37,7 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
@@ -39,6 +45,7 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
         array $data = []
     ) {
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
+        $this->postRepository = $postRepository;
         $this->optionRepository = $optionRepository;
         $this->dateHelper = $dateHelper;
 
@@ -52,25 +59,11 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
      */
     public function getPost()
     {
-        if (!$this->hasPost()) {
-            $this->setPost(false);
-
-            $posts = $this->postCollectionFactory->create(
-                )->addPostTypeFilter(
-                    ['post', 'page']
-                )->addFieldToFilter(
-                    'ID', 
-                    $this->getData('comment_post_ID')
-                )->setPageSize(
-                    1
-                )->load();
-
-            if (count($posts) > 0) {
-                $this->setPost($posts->getFirstItem());
-            }
+        if ($this->post === null) {
+            $this->post = $this->postRepository->get((int)$this->getData('comment_post_ID'));
         }
-
-        return $this->getData('post');
+        
+        return $this->post;
     }
 
     /**

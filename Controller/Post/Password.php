@@ -37,7 +37,6 @@ class Password extends \Magento\Framework\App\Action\Action
         }
 
         $this->postPasswordManager->setPostPassword(
-            $post,
             $this->getRequest()->getPost('post_password', null)
         );
         

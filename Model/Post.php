@@ -37,6 +37,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\PostRepository $postRepository,
+        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
         \FishPig\WordPress\Model\UserRepository $userRepository,
         \FishPig\WordPress\Block\ShortcodeFactory $shortcodeFactory,
@@ -52,6 +53,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         $this->postTypeRepository = $postTypeRepository;
         $this->postRepository = $postRepository;
         $this->termRepository = $termRepository;
+        $this->taxonomyRepository = $taxonomyRepository;
         $this->userRepository = $userRepository;
         $this->shortcodeFactory = $shortcodeFactory;
         $this->termCollectionFactory = $termCollectionFactory;
@@ -235,8 +237,10 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      */
     public function getParentTerm($taxonomy)
     {
-        if ($termId = $this->getResource()->getParentTermId((int)$this->getId(), $taxonomy)) {
-            return $this->termRepository->get($termId);
+        if ($this->getSupportedTaxonomy($taxonomy)) {
+            if ($termId = $this->getResource()->getParentTermId((int)$this->getId(), $taxonomy)) {
+                return $this->termRepository->get($termId);
+            }
         }
         
         return false;
@@ -256,6 +260,25 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
             )->addPostIdFilter(
                 $this->getId()
             );
+    }
+
+    /**
+     * @param  ?string $taxonomy = null
+     * @return \FishPig\WordPress\Model\Taxonomy|false
+     */
+    public function getSupportedTaxonomy(?string $taxonomy = null)
+    {
+        if ($supportedTaxonomies = $this->getTypeInstance()->getData('taxonomies')) {
+            if ($taxonomy !== null) {
+                if (in_array($taxonomy, $supportedTaxonomies)) {
+                    return $this->taxonomyRepository->get($taxonomy);
+                }
+            } elseif ($taxonomy = array_shift($supportedTaxonomies)) {
+                return $this->taxonomyRepository->get($taxonomy);
+            }
+        }
+        
+        return false;
     }
 
     /**
@@ -373,15 +396,15 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     {
         $content = $this->getData('post_content');
 
-        if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
+        /*if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
             if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
                 if (strpos($renderedContent, '[') !== false) {
                     $renderedContent = $this->shortcodeFactory->create()->setShortcode($renderedContent)->setPost($this)->toHtml();
                 }
 
-#                return $renderedContent;
+                return $renderedContent;
             }
-        }
+        }*/
 
         $key = '__processed_post_content';
 
@@ -802,14 +825,10 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     }
 
     /**
-     *
-     *
-     * @return
+     * @deprecated since 3.0
      */
-    public function setAsGlobal()
+    public function setAsGlobal(): self
     {
-        $GLOBALS['post'] = json_decode(json_encode(['ID' => $this->getId()]));
-
         return $this;
     }
 

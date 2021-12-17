@@ -97,25 +97,6 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
     }
 
     /**
-     * @param  string $email
-     * @return $this
-     */
-    public function loadByEmail($email)
-    {
-        return $this->load($email, 'user_email');
-    }
-
-    /**
-     * Load the WordPress user model associated with the current logged in customer
-     *
-     * @return \FishPig\WordPress\Model\User
-     */
-    public function loadCurrentLoggedInUser()
-    {
-        return $this;
-    }
-
-    /**
      * Retrieve the table prefix
      * This is also used to prefix some fields (roles)
      *
@@ -140,19 +121,6 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
         }
 
         return false;
-    }
-
-    /**
-     * Set the user's role
-     *
-     * @param  string $role
-     * @return $this
-     */
-    public function setRole($role)
-    {
-        $this->setMetaValue($this->getTablePrefix() . 'capabilities', serialize([$role => '1']));
-
-        return $this;
     }
 
     /**

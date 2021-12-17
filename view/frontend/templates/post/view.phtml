@@ -22,14 +22,15 @@
             </div>
             <div class="post-meta">
                 <?php
-                /**
-                 * If using a custom post type, change 'category' below to any custom taxonomy
-                 */
-                 ?>
-                <?php if ($categoryString = $post->getTermCollectionAsString('category')): ?>
-                    <div class="post-categories post-meta-item">
-                        <strong><?= __('Categories') ?>:</strong> <?= $categoryString ?>
-                    </div>
+                    // Try to get category taxonomy but if not available for this post type, get first available taxonomy
+                    // Then display this taxonomy as a string or links
+                    // You can change 'category' to any custom taxonomy this post type supports            
+                    if ($taxonomy = $post->getSupportedTaxonomy('category') ?: $post->getSupportedTaxonomy(null)): ?>
+                    <?php if ($categoryString = $post->getTermCollectionAsString($taxonomy->getTaxonomy())): ?>
+                        <div class="post-categories post-meta-item">
+                            <strong><?= $block->escapeHtml(__($taxonomy->getName())) ?>:</strong> <?= $categoryString ?>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
                 <?php if ($tagString = $post->getTermCollectionAsString('post_tag')): ?>
                     <div class="post-tags post-meta-item">

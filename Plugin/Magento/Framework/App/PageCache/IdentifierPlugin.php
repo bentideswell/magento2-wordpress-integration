@@ -4,27 +4,27 @@
  */
 namespace FishPig\WordPress\Plugin\Magento\Framework\App\PageCache;
 
-use Magento\Framework\App\PageCache\Identifier;
-use Magento\Framework\App\RequestInterface;
-use FishPig\WordPress\Model\Post\Password as PostPassword;
-
 class IdentifierPlugin
 {
     /**
      *
      */
-    public function __construct(RequestInterface $request, PostPassword $postPassword)
-    {
+    public function __construct(
+        \Magento\Framework\App\RequestInterface $request,
+        \FishPig\WordPress\Model\Post\PasswordManager $postPasswordManager,
+        \Magento\Framework\Registry $registry
+    ) {
         $this->request = $request;
-        $this->postPassword = $postPassword;
+        $this->postPasswordManager = $postPasswordManager;
+        $this->registry = $registry;
     }
     
     /**
      *
      */
-    public function afterGetValue(Identifier $subject, $value)
+    public function afterGetValue(\Magento\Framework\App\PageCache\Identifier $subject, $value)
     {
-        if ($pass = $this->postPassword->getPassword()) {
+        if ($pass = $this->postPasswordManager->getPostPassword()) {
             $value = sha1($value . $pass);
         }
 

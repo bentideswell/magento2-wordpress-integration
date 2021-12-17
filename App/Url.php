@@ -220,6 +220,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     {
         return $this->magentoUrl->getCurrentUrl($withQuery);
     }
+
     /**
      * @deprecated
      */

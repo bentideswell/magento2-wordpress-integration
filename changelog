@@ -2,6 +2,15 @@
 
 ## [Unreleased]
 
+## [3.0.13] - 2021-12-17
+### [Changed]
+- Cleaned up code.
+### [Added]
+- Ability to auto switch taxonomy when displaying categories on post view. This will select a different taxonomy if
+  its a post type that doesn't support the category taxonomy.
+### [Fixed]
+- Compiler error for PostPassword.
+
 ## [3.0.12] - 2021-12-17
 ### [Changed]
 - Improved CSS for post grids. Removed negative margins.

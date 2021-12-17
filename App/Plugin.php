@@ -22,18 +22,12 @@ class Plugin
     }
 
     /**
-     * @param  string $name
+     * @param  string $plugin
      * @return bool
      */
-    public function isEnabled(string $name): bool
+    public function isEnabled(string $plugin): bool
     {
-        foreach ($this->getActivePlugins() as $a => $b) {
-            if (strpos($a . '-' . $b, $name) !== false) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($plugin, $this->getActivePlugins());
     }
 
     /**
