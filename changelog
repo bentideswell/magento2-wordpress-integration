@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.0.12] - 2021-12-17
+### [Changed]
+- Improved CSS for post grids. Removed negative margins.
+
 ## [3.0.11] - 2021-12-17
 ### [Fixed]
 - Fixed HTTP HEAD request bug when using CloudFlare. This broke the UrlValidation model in PSW.

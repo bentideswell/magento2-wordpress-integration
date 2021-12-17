@@ -12,7 +12,9 @@
                     <div class="post-image">
                         <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getName()) ?>">
                             <?php if ($image = $post->getImage()): ?>
-                                <?php $imageUrl = $image->getImageUrl(['large', 'medium']) ?>
+                                <?php $imageUrl = $image->getResizer() // Resizing only available in local integration mode
+                                        ? $image->getResizer()->constrainOnly(true)->keepFrame(false)->keepAspectRatio(true)->resize(600, null) 
+                                        : $image->getImageUrl(['large', 'medium']) ?>
                                 <img src="<?= $block->escapeUrl($imageUrl) ?>" alt="<?= $block->escapeHtml($post->getName()) ?>"/>
                             <?php else: ?>
                                 <span class="empty"></span>
