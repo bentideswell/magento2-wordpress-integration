@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.0.15] - 2021-12-17
+### [Changed]
+- Changed post password system to cookie based system rather than session to match WP. This also now works with the FPC.
+
 ## [3.0.14] - 2021-12-17
 ### [Changed]
 - Cleaned up code.

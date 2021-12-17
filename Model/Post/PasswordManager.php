@@ -17,11 +17,15 @@ class PasswordManager
     public function __construct(
         \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\App\DeploymentConfig $deploymentConfig,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Stdlib\CookieManagerInterface $cookieManager,
+        \Magento\Framework\Stdlib\Cookie\CookieMetadataFactory $cookieMetadataFactory
     ) {
         $this->url = $url;
         $this->deploymentConfig = $deploymentConfig;
         $this->storeManager = $storeManager;
+        $this->cookieManager = $cookieManager;
+        $this->cookieMetadataFactory = $cookieMetadataFactory;
     }
 
     public function isPostUnlocked(\FishPig\WordPress\Model\Post $post): bool
@@ -30,10 +34,7 @@ class PasswordManager
             return true;
         }
 
-        $submittedHash = $this->getPostPassword();
-        $expectedHash = $this->hashPassword($postPassword);
-
-        return $submittedHash === $expectedHash;
+        return $this->getPostPassword() === $this->hashPassword($postPassword);
     }
     
     /**
@@ -42,11 +43,17 @@ class PasswordManager
      */
     public function setPostPassword(?string $password = null): void
     {
-        $sessionKey = $this->getSessionKey();
         if ($password === null) {
-            unset($_COOKIE[$sessionKey]);
+            $this->cookieManager->deleteCookie($this->getSessionKey());
         } else {
-            $_COOKIE[$sessionKey] = $this->hashPassword($password);
+            $this->cookieManager->setPublicCookie(
+                $this->getSessionKey(),
+                $this->hashPassword($password),
+                $this->cookieMetadataFactory->createPublicCookieMetadata()
+                    ->setDurationOneYear()
+                    ->setPath('/')
+                    ->setHttpOnly(true)
+            );
         }
     }
     
@@ -56,8 +63,7 @@ class PasswordManager
      */
     public function getPostPassword()
     {
-        $sessionKey = $this->getSessionKey();
-        return !empty($_COOKIE[$sessionKey]) ? $_COOKIE[$sessionKey] : false;
+        return $this->cookieManager->getCookie($this->getSessionKey());
     }
     
     /**
