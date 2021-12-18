@@ -36,10 +36,10 @@ class AuthorisationKey
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Framework\App\DeploymentConfig $deploymentConfig
     ) {
-        $this->option = $option;
+        $this->optionRepository = $optionRepository;
         $this->deploymentConfig = $deploymentConfig;
     }
     
@@ -48,19 +48,19 @@ class AuthorisationKey
      */
     public function getKey(): string
     {
-        $key = $this->option->get(self::KEY_OPTION_NAME);
-        
+        $key = $this->optionRepository->get(self::KEY_OPTION_NAME);
+
         if ($key && $this->isValidKey($key)) {
             return $key;
         }
         
         if ($key) {
-            $this->option->set(self::PREVIOUS_KEY_OPTION_NAME, $key);
+            $this->optionRepository->set(self::PREVIOUS_KEY_OPTION_NAME, $key);
         }
         
         $newKey = $this->generateKey();
 
-        $this->option->set(self::KEY_OPTION_NAME, $newKey);
+        $this->optionRepository->set(self::KEY_OPTION_NAME, $newKey);
         
         return $newKey;
     }

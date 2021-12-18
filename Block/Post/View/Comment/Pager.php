@@ -38,7 +38,7 @@ class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager
 
     /**
      * Returns the available limits for the pager
-     * As Wordpress uses a fixed page size limit, this returns only 1 limit (the value set in WP admin)
+     * As WordPress uses a fixed page size limit, this returns only 1 limit (the value set in WP admin)
      * This effectively hides the 'Show 4/Show 10' drop down
      *
      * @return array

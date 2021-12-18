@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Http;
+namespace FishPig\WordPress\App\HTTP;
 
 class InvalidStatusException extends \FishPig\WordPress\App\Exception
 {

@@ -71,7 +71,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
      */
     private function getBase(string $key, string $default): string
     {
-        if ($base = trim($this->option->get($key), '/')) {
+        if ($base = trim((string)$this->option->get($key), '/')) {
             return $base;
         }
         

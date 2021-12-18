@@ -127,7 +127,7 @@ class Post extends AbstractResourceModel
      * @param  \FishPig\WordPress\Model\Post $post
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection
      */
-    public function getPostComments(\FishPig\Wordpress\Model\Post $post)
+    public function getPostComments(\FishPig\WordPress\Model\Post $post)
     {
         return $this->commentCollectionFactory->create()
             ->setPost(

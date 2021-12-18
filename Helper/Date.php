@@ -28,7 +28,7 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Formats a Wordpress date string
+     * Formats a WordPress date string
      *
      * @return
      */
@@ -53,7 +53,7 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     /**
-     * Formats a Wordpress date string
+     * Formats a WordPress date string
      */
     public function formatTime($time, $format = null)
     {

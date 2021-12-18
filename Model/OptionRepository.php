@@ -37,7 +37,7 @@ class OptionRepository
     public function get(string $key, $default = null)
     {
         if (!isset($this->cache[$key])) {
-            $this->cache[$key] = $this->dataSource->get($key) ?: $default;
+            $this->cache[$key] = $this->dataSource->get($key) ?? $default;
         }
 
         return $this->cache[$key];

@@ -2,6 +2,14 @@
 
 ## [Unreleased]
 
+## [3.0.16] - 2021-12-18
+### [Fixed]
+- Case issues with HTTP/Http and a few old WordPress/Wordpress issues.
+### [Changed]
+- Return type of OptionRepository::get from false to null when option doesn't exist.
+### [Added]
+- IP address to request log to help with debugging.
+
 ## [3.0.15] - 2021-12-17
 ### [Changed]
 - Changed post password system to cookie based system rather than session to match WP. This also now works with the FPC.

@@ -32,7 +32,7 @@ class Option
                 ->from($this->getOptionsTable(), 'option_value')
                 ->where('option_name=?', $key)
                 ->limit(1)
-        );
+        ) ?: null;
     }
 
     /**

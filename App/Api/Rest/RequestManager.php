@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Api\Rest;
 
-use FishPig\WordPress\App\Http\InvalidStatusException;
-use FishPig\WordPress\App\Http\InvalidResponseBodyException;
+use FishPig\WordPress\App\HTTP\InvalidStatusException;
+use FishPig\WordPress\App\HTTP\InvalidResponseBodyException;
 
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
 {
