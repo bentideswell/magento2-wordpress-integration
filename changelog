@@ -2,9 +2,12 @@
 
 ## [Unreleased]
 
+## [3.0.17] - 2021-12-18
+### [Fixed]
+- Remote address missing when accessing via the CLI caused a type error.
 ## [3.0.16] - 2021-12-18
 ### [Fixed]
-- Case issues with HTTP/Http and a few old WordPress/Wordpress issues.
+- Case issues with some class names.
 ### [Changed]
 - Return type of OptionRepository::get from false to null when option doesn't exist.
 ### [Added]

@@ -40,7 +40,7 @@ class Logger extends \Monolog\Logger
                 self::LOG_SPACER,
                 array_merge(
                     [
-                        'remote_addr' => str_pad($this->remoteAddress->getRemoteAddress(), 15, ' ', STR_PAD_LEFT),
+                        'remote_addr' => str_pad($this->remoteAddress->getRemoteAddress() ?: '--', 15, ' ', STR_PAD_LEFT),
                         'date' => date('Y/m/d H:i:s')
                     ],
                     array_values(
