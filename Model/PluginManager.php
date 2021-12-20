@@ -28,8 +28,8 @@ class PluginManager
      * @param  string $name
      * @return bool
      */
-    public function isEnabled($name): bool
+    public function isEnabled(string $pluginName): bool
     {
-        return $this->dataSource->isEnabled($name);
+        return in_array($pluginName, $this->dataSource->getActivePlugins());
     }
 }

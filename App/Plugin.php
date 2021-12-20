@@ -14,20 +14,9 @@ class Plugin
      * @return void
      */
     public function __construct(
-        \FishPig\WordPress\Model\OptionRepository $optionRepository,
-        \FishPig\WordPress\Model\NetworkInterface $network
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
         $this->optionRepository = $optionRepository;
-        $this->network = $network;
-    }
-
-    /**
-     * @param  string $plugin
-     * @return bool
-     */
-    public function isEnabled(string $plugin): bool
-    {
-        return in_array($plugin, $this->getActivePlugins());
     }
 
     /**

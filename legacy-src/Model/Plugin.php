@@ -11,15 +11,15 @@ namespace FishPig\WordPress\Model;
 class Plugin
 {
     /**
-     * @param \FishPig\WordPress\App\Plugin $plugin
-     * @param \FishPig\WordPress\App\Option $option
+     * @param \FishPig\WordPress\Model\PluginManager $pluginManager
+     * @param \FishPig\WordPress\Model\OptionRepository $optionRepository
      */
     public function __construct(
-        \FishPig\WordPress\App\Plugin $plugin,
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\PluginManager $pluginManager,
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
-        $this->plugin = $plugin;
-        $this->option = $option;
+        $this->pluginManager = $pluginManager;
+        $this->optionRepository = $optionRepository;
     }
 
     /**
@@ -45,7 +45,7 @@ class Plugin
      */
     public function isEnabled($name): bool
     {
-        return $this->plugin->isEnabled($name);
+        return $this->pluginManager->isEnabled($name);
     }
 
     /**
@@ -55,9 +55,7 @@ class Plugin
      */
     public function getOption($plugin, $key = null)
     {
-        $options = $this->option->getOption($plugin);
-
-        if (($data = @unserialize($options)) !== false) {
+        if ($data = $this->optionRepository->getUnserialized($plugin)) {
             if (is_null($key)) {
                 return $data;
             }
@@ -67,6 +65,6 @@ class Plugin
                 : null;
         }
 
-        return $options;
+        return false;
     }
 }
