@@ -13,6 +13,7 @@
 				<item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ModeTest</item>
 				<item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>				
 				<item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
+				<item name="api" xsi:type="object">FishPig\WordPress\App\Integration\Test\ApiTest</item>
 				<item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
 				<item name="yoast" xsi:type="object">FishPig\WordPress\App\Integration\Test\YoastTest</item>
 			</argument>
