@@ -63,15 +63,12 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
         $cacheKey = (int)$store->getId() . '-' . (int)$withQuery;
 
         if (!isset($this->currentUrl[$cacheKey])) {
-            $storeUrl = $store->getCurrentUrl(false);            
+            $storeUrl = $store->getCurrentUrl(false);
             
             if ($withQuery) {
-
-                
                 if (strpos($storeUrl, '___store=') !== false) {
                     if (($pos = strpos($storeUrl, '?')) !== false) {
                         $qs = substr($storeUrl, $pos+1);
-                        
 
                         if ($qs) {
                             parse_str($qs, $qsParsed);
@@ -104,7 +101,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
                 }
             }
         }
-        
+
         return $this->currentUrl[$cacheKey];
     }
     
