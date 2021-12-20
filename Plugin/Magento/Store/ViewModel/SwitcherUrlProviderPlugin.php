@@ -25,11 +25,11 @@ class SwitcherUrlProviderPlugin
      * @param \FishPig\WordPress\App\Logger $logger
      */
     public function __construct(
-        \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null,
-        \FishPig\WordPress\App\Logger $logger
+        \FishPig\WordPress\App\Logger $logger,
+        \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
     ) {        
-        $this->storeSwitcherUrlProvider = $storeSwitcherUrlProvider;
         $this->logger = $logger;
+        $this->storeSwitcherUrlProvider = $storeSwitcherUrlProvider;
     }
 
     /**

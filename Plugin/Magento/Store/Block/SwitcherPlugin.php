@@ -37,11 +37,15 @@ class SwitcherPlugin
         $data = []
     ) {
         $originalResult = $callback($store, $data);
+     
+        if ($this->storeSwitcherUrlProvider === null) {
+            return $originalResult;
+        }
+
+        $redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store);
         
-        if ($this->storeSwitcherUrlProvider !== null) {
-            if (!($redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store))) {
-                return $originalResult;
-            }
+        if (!$redirectUrl) {
+            return $originalResult;
         }
 
         $json = json_decode($originalResult, true);

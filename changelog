@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.0.22] - 2021-12-21
+### [Fixed]
+- Fixed 'Undefined variable: redirectUrl in Plugin/Magento/Store/Block/SwitcherPlugin.php' notice.
+
 ## [3.0.21] - 2021-12-21
 ### [Added]
 - API request logger now include current URL for each log. This will help with debugging.
