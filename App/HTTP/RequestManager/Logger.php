@@ -11,59 +11,17 @@ namespace FishPig\WordPress\App\HTTP\RequestManager;
 class Logger extends \Monolog\Logger
 {
     /**
-     * @const string
-     */
-    const LOG_SPACER = '   ';
-
-    public function __construct(
-        $name, 
-        \FishPig\WordPress\Model\UrlInterface $url,
-        array $handlers = array(), 
-        array $processors = array()
-    ) {
-        $this->url=$url;
-        parent::__construct($name, $handlers, $processors);
-    }
-    /**
      * @param  array $requestData
      * @return void
      */
     public function logApiRequest(array $requestData): void
     {
-        $logMsg = implode(
-            self::LOG_SPACER,
-            array_merge(
-                [
-                    'remote_addr' => str_pad($this->getRemoteAddress() ?: '--', 15, ' ', STR_PAD_LEFT),
-                    'date' => date('Y/m/d H:i:s')
-                ],
-                array_values(
-                    array_filter($requestData)
-                )
-            )
-        ) . "\n" . str_repeat(' ', 53) . $this->url->getCurrentUrl() . "\n";
+        $requestData = array_map(function($v, $i) {
+            return str_pad($i, 8, ' ', STR_PAD_LEFT) . ':  ' . $v;
+        }, $requestData, array_keys($requestData));
 
-        $this->addRecord(self::INFO, $logMsg);
-    }
-    
-    /**
-     * @return string|false
-     */
-    private function getRemoteAddress()
-    {
-        $headers = [
-            'HTTP_CF_CONNECTING_IP',
-            'HTTP_CLIENT_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'REMOTE_ADDR',
-        ];
+        $logMsg = implode("\n", $requestData);
 
-        foreach ($headers as $header) {
-            if (!empty($_SERVER[$header])) {
-                return $_SERVER[$header];
-            }
-        }
-
-        return false;
+        $this->addRecord(self::INFO, $logMsg . "\n" . str_repeat('-', 90));
     }
 }

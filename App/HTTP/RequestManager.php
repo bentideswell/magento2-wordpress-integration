@@ -75,11 +75,14 @@ class RequestManager
             $this->cache[$cacheKey] = $client = $this->httpClientFactory->create();
             
             $logData = [
-                'method' => str_pad($method, 4),
-                'status' => '',
-                'url' => $url
+                'Date' => date('Y/m/d H:i:s'),
+                'Method' => str_pad($method, 4),
+                'Status' => '',
+                'URL' => $url,
+                'IP' => $this->getRemoteAddress(),
+                'Current' => $this->url->getCurrentUrl()
             ];
-            
+
             try {
                 if ($args === null) {
                     $client->$method($url);
@@ -87,10 +90,10 @@ class RequestManager
                     $client->$method($url, $args);
                 }
 
-                $logData['status'] = $client->getStatus();
+                $logData['Status'] = $client->getStatus();
                 $this->requestLogger->logApiRequest($logData);
             } catch (\Exception $e) {
-                $logData['status'] = $client->getStatus();
+                $logData['Status'] = $client->getStatus();
                 $logData[] = $e->getMessage();
                 
                 $this->requestLogger->logApiRequest($logData);
@@ -101,5 +104,26 @@ class RequestManager
         
         
         return $this->cache[$cacheKey];
+    }
+    
+    /**
+     * @return string|false
+     */
+    private function getRemoteAddress()
+    {
+        $headers = [
+            'HTTP_CF_CONNECTING_IP',
+            'HTTP_CLIENT_IP',
+            'HTTP_X_FORWARDED_FOR',
+            'REMOTE_ADDR',
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                return $_SERVER[$header];
+            }
+        }
+
+        return false;
     }
 }
