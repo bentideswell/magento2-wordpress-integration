@@ -21,8 +21,15 @@ class AssetProvider implements AssetProviderInterface
      *
      */
     public function __construct(
+        \FishPig\WordPress\App\Integration\Mode $appMode,
         array $assetProviders = []
     ) {
+        $this->appMode = $appMode;
+        
+        if ($this->appMode->isDisabled()) {
+            return;
+        }
+
         foreach ($assetProviders as $assetProviderId => $assetProvider) {
             if ($assetProvider instanceof AssetProviderInterface) {
                 $this->assetProviderPool[$assetProviderId] = $assetProvider;
@@ -48,6 +55,10 @@ class AssetProvider implements AssetProviderInterface
         \Magento\Framework\App\ResponseInterface $response
     ): void
     {
+        if ($this->appMode->isDisabled()) {
+            return;
+        }
+
         foreach ($this->assetProviderPool as $assetProvider) {
             $assetProvider->provideAssets($request, $response);
         }

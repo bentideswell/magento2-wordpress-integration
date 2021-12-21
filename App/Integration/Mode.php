@@ -29,9 +29,11 @@ class Mode
      * @return void
      */
     public function __construct(
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->scopeConfig = $scopeConfig;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -39,7 +41,11 @@ class Mode
      */
     public function getMode(): ?string
     {
-        return (string)$this->scopeConfig->getValue('wordpress/setup/mode');
+        return (string)$this->scopeConfig->getValue(
+            'wordpress/setup/mode',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $this->storeManager->getStore()->getId()
+        );
     }
 
     /**

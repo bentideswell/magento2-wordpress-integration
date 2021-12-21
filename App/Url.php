@@ -175,6 +175,25 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     }
 
     /**
+     * @param  string ...$urls
+     * @return bool
+     */
+    public function doUrlProtocolsMatch(string ...$urls): bool
+    {
+        $protocol = false;
+        
+        foreach ($urls as $url) {
+            if (false === $protocol) {
+                $protocol = substr($url, 0, strpos($url, '://')+3);
+            } elseif (strpos($url, $protocol) !== 0) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
      * @return string
      */
     public function getBlogRoute(): string

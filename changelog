@@ -1,6 +1,11 @@
 # Changelog
 
 ## [Unreleased]
+- Add https://secure.gravatar.com to CSP whitelist
+
+## [3.0.27] - 2021-12-21
+### [Fixed]
+- Module can now be disabled properly on a per store basis.
 
 ## [3.0.26] - 2021-12-21
 ### [Added]

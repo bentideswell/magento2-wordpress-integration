@@ -32,9 +32,11 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
      */
     public function __construct(
         \FishPig\WordPress\App\HTTP\AuthorisationKey $authorisationKey,
+        \FishPig\WordPress\App\Integration\Mode $appMode,
         $sslVersion = null
     ) {
         $this->authorisationKey = $authorisationKey;
+        $this->appMode = $appMode;
         parent::__construct($sslVersion);
         
         $this->setOption(CURLOPT_SSL_VERIFYHOST, false);
@@ -45,6 +47,14 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
             \FishPig\WordPress\App\HTTP\AuthorisationKey::HTTP_HEADER_NAME, 
             $this->authorisationKey->getKey()
         );
+        
+        if ($this->appMode->isLocalMode()) {
+            if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+                // If in local mode and HTTP auth details present then include them in the WP HTTP requests 
+                // as it's safe to assume that WP is covered by the same http auth
+                $this->addHeader('Authorization', $_SERVER['HTTP_AUTHORIZATION']);
+            }
+        }
     }
             
     /**

@@ -70,6 +70,12 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 
             $this->validateBlogRouteAgainstFrontNames($magentoUrl, $homeUrl);
         }
+        
+        if (!$this->url->doUrlProtocolsMatch($magentoUrl, $homeUrl, $siteUrl)) {
+            throw new IntegrationFatalException(
+                'URL Protocol Mismatch. Your WordPress URLs do not use the same URL protocol as Magento. It is recommended to use https:// for all URLs but what ever you choose, all Magento and WordPress URLs must use the same protocol.'
+            );
+        }
     }
 
     /**

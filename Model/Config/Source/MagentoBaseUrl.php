@@ -69,4 +69,12 @@ class MagentoBaseUrl
 
         return $this->options[$storeId];
     }
+    
+    /**
+     * @return bool
+     */
+    public function isEnabled(): bool
+    {
+        return count($this->options) > 1;
+    }
 }

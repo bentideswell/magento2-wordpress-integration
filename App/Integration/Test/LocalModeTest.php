@@ -32,7 +32,7 @@ class LocalModeTest implements \FishPig\WordPress\Api\App\Integration\TestInterf
                 __('Invalid mode')
             );
         }
-        
+
         $this->resourceConnection->isConnected();
     }
 }

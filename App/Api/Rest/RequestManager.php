@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Api\Rest;
 
-use FishPig\WordPress\App\Api\Rest\InvalidStatusException;
+use FishPig\WordPress\App\HTTP\InvalidStatusException;
 use FishPig\WordPress\App\HTTP\CurlException;
 use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 
@@ -93,16 +93,11 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     private function parseJson($str)
     {
         try {
-            if (trim($str) === 'File not found.') {
-                throw new \FishPig\WordPress\App\Integration\Exception\IntegrationFatalException(
-                    'Invalid response from WordPress API.'
-                );
-            }
-
             return $this->serializer->unserialize($str);
         } catch (\InvalidArgumentException $e) {
             $this->throwPhpErrorMessageFromString($str);
-            throw $e;
+
+            return false;
         } catch (\Exception $e) {
             $this->throwPhpErrorMessageFromString($str);
             throw $e;

@@ -17,8 +17,10 @@ class CspWhitelistXmlCollectorPlugin
      * @param  \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $whitelistPolicyCollector
      */
     public function __construct(
+        \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $whitelistPolicyCollector
     ) {
+        $this->appMode = $appMode;
         $this->whitelistPolicyCollector = $whitelistPolicyCollector;
     }
     
@@ -29,6 +31,10 @@ class CspWhitelistXmlCollectorPlugin
      */
     public function afterCollect(CspWhitelistXmlCollector $cspWhitelistXmlCollector, $defaultPolicies = []): array
     {
+        if ($this->appMode->isDisabled()) {
+            return $defaultPolicies;
+        }
+
         if ($newPolicies = $this->whitelistPolicyCollector->collect()) {
             $defaultPolicies += $newPolicies;                   
         }

@@ -25,10 +25,12 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
      */
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \FishPig\WordPress\Model\Config\Source\MagentoBaseUrl $magentoBaseUrlSource
     ) {
         $this->storeManager = $storeManager;
         $this->scopeConfig = $scopeConfig;
+        $this->magentoBaseUrlSource = $magentoBaseUrlSource;
     }
     
     /**
@@ -140,8 +142,9 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
      */
     private function isCustomBaseUrl(): bool
     {
-        return (string)$this->scopeConfig->getValue(
-            'wordpress/setup/custom_base_url'
-        ) === \FishPig\WordPress\Model\Config\Source\MagentoBaseUrl::URL_USE_BASE;
+        return $this->magentoBaseUrlSource->isEnabled()
+            && (string)$this->scopeConfig->getValue(
+                'wordpress/setup/custom_base_url'
+            ) === \FishPig\WordPress\Model\Config\Source\MagentoBaseUrl::URL_USE_BASE;
     }
 }

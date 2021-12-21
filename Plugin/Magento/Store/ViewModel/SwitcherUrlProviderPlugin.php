@@ -25,10 +25,14 @@ class SwitcherUrlProviderPlugin
      * @param \FishPig\WordPress\App\Logger $logger
      */
     public function __construct(
+        \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\Logger $logger,
+        \Magento\Store\Model\App\Emulation $emulation,
         \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
-    ) {        
+    ) {
+        $this->appMode = $appMode;
         $this->logger = $logger;
+        $this->emulation = $emulation;
         $this->storeSwitcherUrlProvider = $storeSwitcherUrlProvider;
     }
 
@@ -40,16 +44,23 @@ class SwitcherUrlProviderPlugin
         \Closure $callback, 
         \Magento\Store\Model\Store $store
     ) {
-        if ($this->storeSwitcherUrlProvider !== null) {
-            try{
-                if ($redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store)) {
-                    return $redirectUrl;
+
+        try {
+            $this->emulation->startEnvironmentEmulation($store->getId(), 'frontend');
+
+            if (!$this->appMode->isDisabled() && $this->storeSwitcherUrlProvider !== null) {
+                try{
+                    if ($redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store)) {
+                        return $redirectUrl;
+                    }
+                } catch (\Exception $e) {
+                    $this->logger->error($e);
                 }
-            } catch (\Exception $e) {
-                $this->logger->error($e);
             }
+        } finally {
+            $this->emulation->stopEnvironmentEmulation();
         }
-        
+
         return $callback($store);
     }
 }
