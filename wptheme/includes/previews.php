@@ -34,7 +34,7 @@ class Previews
         if (\FishPig\WordPress\X\AuthorisationKey::isAuthorised()) {
             // All code here is only executed for AJAX requests from Magento
             // And will have the secret key present as a HTTP header
-            
+
             // Force draft posts to appear as published
             add_filter(
                 'get_post_status', 
@@ -42,15 +42,17 @@ class Previews
                     if (is_preview() && $post_status === 'draft') {
                         return 'publish';
                     }
-                    
+
                     return $post_status;
                 },
                 100,
                 2
             );
 
-            $_GET['preview_nonce'] = wp_create_nonce('post_preview_' . (int)$_GET['preview_id']);
-            
+            if (!empty($_GET['preview_id'])) {
+                $_GET['preview_nonce'] = wp_create_nonce('post_preview_' . (int)$_GET['preview_id']);
+            }
+
             // Display password protected post content
             // Password protection is implemented in Magento
             add_filter(

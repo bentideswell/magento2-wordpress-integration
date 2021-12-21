@@ -12,6 +12,9 @@ define('FISHPIG_THEME_OPTION_NAME', 'fishpig-theme-hash');
 define('FISHPIG_THEME_HASH', '{REMOTE_HASH}');
 define('FISHPIG_CLASS_PREFIX', 'FishPig\WordPress\X\\');
 
+// Turn of deprecated errors
+error_reporting(error_reporting() & ~E_DEPRECATED);
+
 /**
  * Register the autoloader for FishPig theme classes
  * All classes are prefixed with FishPig\WordPress\X

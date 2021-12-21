@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.0.28] - 2021-12-21
+### [Fixed]
+- Issue in includes/previews.php in the WP theme when preview_id wasn't passed in the URL
+
 ## [3.0.27] - 2021-12-21
 ### [Fixed]
 - Module can now be disabled properly on a per store basis.
