@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\HTTP\Client;
 
+use FishPig\WordPress\App\HTTP\CurlException;
+
 class Curl extends \Magento\Framework\HTTP\Client\Curl
 {
     /**
@@ -99,5 +101,22 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     public function getStatus()
     {
         return $this->realStatusCode !== 0 ? $this->realStatusCode : parent::getStatus();
+    }
+    
+    /**
+     * @param  string $string
+     * @return void
+     */
+    public function doError($string)
+    {
+        $errNo = curl_errno($this->_ch);
+
+        curl_close($this->_ch);
+
+        if ($string === '') {
+            $string = CurlException::getErrorMessageFromCode($errNo);
+        }
+        
+        throw new CurlException($string, $errNo);
     }
 }

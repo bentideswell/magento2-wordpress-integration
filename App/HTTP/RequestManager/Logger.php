@@ -16,8 +16,12 @@ class Logger extends \Monolog\Logger
      */
     public function logApiRequest(array $requestData): void
     {
+        $requestData = array_filter($requestData, function($x) {
+            return (string)$x !== '';
+        });
+
         $requestData = array_map(function($v, $i) {
-            return str_pad($i, 8, ' ', STR_PAD_LEFT) . ':  ' . $v;
+            return str_pad((string)$i, 8, ' ', STR_PAD_LEFT) . ':  ' . $v;
         }, $requestData, array_keys($requestData));
 
         $logMsg = implode("\n", $requestData);

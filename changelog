@@ -2,19 +2,23 @@
 
 ## [Unreleased]
 
-## [3.0.23] - 2021-12-21
+## [3.0.24] - 2021-12-21
+### [Added]
+- Better exception messages when the API connection fails.
+
+## [3.0.23] - 2021-12-20
 ### [Added]
 - Added API check to integration tests.
 
-## [3.0.22] - 2021-12-21
+## [3.0.22] - 2021-12-20
 ### [Fixed]
 - Fixed 'Undefined variable: redirectUrl in Plugin/Magento/Store/Block/SwitcherPlugin.php' notice.
 
-## [3.0.21] - 2021-12-21
+## [3.0.21] - 2021-12-20
 ### [Added]
 - API request logger now include current URL for each log. This will help with debugging.
 
-## [3.0.19] - 2021-12-21
+## [3.0.19] - 2021-12-20
 ### [Changed]
 - PluginManager data source no longer includes isEnabled. This has been moved to the PluginManager model.
 

@@ -78,6 +78,7 @@ class RequestManager
                 'Date' => date('Y/m/d H:i:s'),
                 'Method' => str_pad($method, 4),
                 'Status' => '',
+                'Error' => '',
                 'URL' => $url,
                 'IP' => $this->getRemoteAddress(),
                 'Current' => $this->url->getCurrentUrl()
@@ -94,10 +95,10 @@ class RequestManager
                 $this->requestLogger->logApiRequest($logData);
             } catch (\Exception $e) {
                 $logData['Status'] = $client->getStatus();
-                $logData[] = $e->getMessage();
+                $logData['Error'] = $e->getMessage();
                 
                 $this->requestLogger->logApiRequest($logData);
-                
+
                 throw $e;
             }
         }

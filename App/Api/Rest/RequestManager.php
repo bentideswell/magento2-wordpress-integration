@@ -8,8 +8,9 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Api\Rest;
 
-use FishPig\WordPress\App\HTTP\InvalidStatusException;
-use FishPig\WordPress\App\HTTP\InvalidResponseBodyException;
+use FishPig\WordPress\App\Api\Rest\InvalidStatusException;
+use FishPig\WordPress\App\HTTP\CurlException;
+use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
 {
@@ -36,8 +37,18 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         if ($url === null) {
             throw new \Exception('Invalid URL given.');
         }
-
-        return parent::get($this->url->getRestUrl($url));
+        
+        try {
+            return parent::get($this->url->getRestUrl($url));
+        } catch (CurlException $e) {
+            throw new IntegrationFatalException(
+                sprintf(
+                    'Unable to connect to the WordPress API. Curl Error (%d): %s',
+                    $e->getCode(),
+                    $e->getMessage()
+                )
+            );
+        }
     } 
     
     /**
@@ -83,16 +94,25 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     {
         try {
             return $this->serializer->unserialize($str);
-        } catch (\Exception $e) {
-            if (strpos($str, 'Fatal error') !== false) {
-                if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
-                    throw new \Exception(trim($m[2]));
-                }
-                
-                throw new \Exception('A fatal PHP error occurred in WordPress.');
-            }
-            
+        } catch (\InvalidArgumentException $e) {
+            $this->throwPhpErrorMessageFromString($str);
             throw $e;
+        } catch (\Exception $e) {
+            $this->throwPhpErrorMessageFromString($str);
+            throw $e;
+        }
+    }
+    
+    /**
+     * @param  string $str
+     * @return void
+     */
+    private function throwPhpErrorMessageFromString($str): void
+    {
+        if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
+            
+            echo $m[2];exxit;
+            throw new \Exception(trim($m[2]));
         }
     }
 }

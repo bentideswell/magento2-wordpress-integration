@@ -30,7 +30,7 @@ class ApiTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     {
         try {
             $data = $this->integrationDataRetriever->getData();
-            
+
             if (!$data || !is_array($data)) {
                 throw new IntegrationFatalException(
                     'Unable to contact the WordPress API.'
