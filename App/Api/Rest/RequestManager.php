@@ -93,6 +93,12 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     private function parseJson($str)
     {
         try {
+            if (trim($str) === 'File not found.') {
+                throw new \FishPig\WordPress\App\Integration\Exception\IntegrationFatalException(
+                    'Invalid response from WordPress API.'
+                );
+            }
+
             return $this->serializer->unserialize($str);
         } catch (\InvalidArgumentException $e) {
             $this->throwPhpErrorMessageFromString($str);
@@ -110,8 +116,6 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     private function throwPhpErrorMessageFromString($str): void
     {
         if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
-            
-            echo $m[2];exxit;
             throw new \Exception(trim($m[2]));
         }
     }

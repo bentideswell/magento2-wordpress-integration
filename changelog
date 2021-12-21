@@ -2,7 +2,7 @@
 
 ## [Unreleased]
 
-## [3.0.25] - 2021-12-21
+## [3.0.26] - 2021-12-21
 ### [Added]
 - Better exception messages when the API connection fails.
 
