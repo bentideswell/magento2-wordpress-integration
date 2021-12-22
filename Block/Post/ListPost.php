@@ -60,7 +60,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
     public function setPostCollection(PostCollection $collection): self
     {
         if ($this->postCollection !== null) {
-            throw new \Exception('The post collection is already set in this block.');
+            throw new \FishPig\WordPress\App\Exception('The post collection is already set in this block.');
         }
 
         $this->postCollection = $collection;

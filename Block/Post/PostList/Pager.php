@@ -72,7 +72,9 @@ class Pager extends \Magento\Theme\Block\Html\Pager
         $pagerUrl = parent::getPagerUrl($params);
 
         if (($pos = strpos($pagerUrl, '?')) !== false) {
-            $pagerUrl = rtrim(rtrim(substr($pagerUrl, 0, $pos), '/') . $slug, '/') . $this->getTrailingSlash() . substr($pagerUrl, $pos);
+            $pagerUrl = rtrim(rtrim(substr($pagerUrl, 0, $pos), '/') . $slug, '/')
+                        . $this->getTrailingSlash()
+                        . substr($pagerUrl, $pos);
         } else {
             $pagerUrl = rtrim(rtrim($pagerUrl, '/') . $slug, '/') . $this->getTrailingSlash();
         }

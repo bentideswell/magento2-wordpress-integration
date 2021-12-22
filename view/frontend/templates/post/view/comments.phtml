@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php $post = $block->getPost() ?>
 <?php $comments = $block->getComments() ?>
@@ -32,7 +33,7 @@
                     <div class="comment-entry"><?= $block->escapeHtml($block->getCommentContent($comment)) ?></div>
                     <?php if ($block->canComment()): ?>
                         <div class="reply">
-                            <a href="#respond" onclick="document.getElementById('comment_parent').value=<?= (int)$comment->getId() ?>;" class="comment-reply-link"><?= __('Reply') ?></a> <span>&darr;</span>
+                            <a href="#respond" onclick="document.getElementById('comment_parent').value=<?= (int)$comment->getId() ?>;" class="comment-reply-link"><?= $block->escapeHtml(__('Reply')) ?></a> <span>&darr;</span>
                         </div>
                     <?php endif; ?>
                 </div>

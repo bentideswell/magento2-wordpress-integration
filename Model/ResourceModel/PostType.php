@@ -55,9 +55,11 @@ class PostType
                 'parent'  => 'post_parent'
             ]
         )->where(
-            'post_type=?', $postType->getPostType()
+            'post_type=?',
+            $postType->getPostType()
         )->where(
-            'post_status=?', 'publish'
+            'post_status=?',
+            'publish'
         );
 
         if ($routes = $db->fetchAll($select)) {

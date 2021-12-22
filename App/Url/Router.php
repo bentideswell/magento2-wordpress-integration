@@ -49,7 +49,11 @@ class Router
     {
         if (($alias = $this->getUrlAlias($request)) !== false) {
             if ($blogRoute = $this->url->getBlogRoute()) {
-                return strpos($alias . '/', $blogRoute .'/') === 0 ? ltrim(substr($alias, strlen($blogRoute)), '/') : false;
+                if (strpos($alias . '/', $blogRoute .'/') === 0) {
+                    return ltrim(substr($alias, strlen($blogRoute)), '/');
+                }
+                
+                return false;
             }
 
             return $alias;
@@ -65,6 +69,7 @@ class Router
     public function getUrlAlias(RequestInterface $request)
     {
         $pathInfo = $this->getPathInfo($request);
+        // phpcs:ignore -- not cryptographic
         $cacheKey = md5('alias:' . $pathInfo);
         
         if (isset($this->cache[$cacheKey])) {
@@ -123,6 +128,7 @@ class Router
     {
         $pathInfo = strtolower(trim($request->getOriginalPathInfo(), '/'));
 
+        // phpcs:ignore -- parse_url
         if ($magentoUrlPath = parse_url($this->url->getMagentoUrl(), PHP_URL_PATH)) {
             $magentoUrlPath = ltrim($magentoUrlPath, '/');
 

@@ -38,6 +38,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Customer\Model\Session $customerSession,
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
         string $modelName = null
@@ -46,14 +47,14 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $this->permalinkResource = $permalinkResource;
         $this->optionRepository = $optionRepository;
         $this->customerSession = $customerSession;
-
+        $this->serializer = $serializer;
         parent::__construct(
-            $entityFactory, 
-            $logger, 
-            $fetchStrategy, 
-            $eventManager, 
-            $connection, 
-            $resource, 
+            $entityFactory,
+            $logger,
+            $fetchStrategy,
+            $eventManager,
+            $connection,
+            $resource,
             $modelName
         );
     }
@@ -162,9 +163,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     public function addArchiveDateFilter($archiveDate, $isDaily = false)
     {
         if ($isDaily) {
-            $this->getSelect()->where("`main_table`.`post_date` LIKE ?", str_replace("/", "-", $archiveDate)." %");
+            $this->getSelect()->where("main_table.post_date LIKE ?", str_replace("/", "-", $archiveDate)." %");
         } else {
-            $this->getSelect()->where("`main_table`.`post_date` LIKE ?", str_replace("/", "-", $archiveDate)."-%");
+            $this->getSelect()->where("main_table.post_date LIKE ?", str_replace("/", "-", $archiveDate)."-%");
         }
 
         return $this;
@@ -180,7 +181,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     public function addStickyPostsToCollection()
     {
         if (($sticky = trim($this->optionRepository->get('sticky_posts'))) !== '') {
-            $stickyIds = unserialize($sticky);
+            $stickyIds = $this->serializer->unserialize($sticky);
 
             if (count($stickyIds) > 0) {
                 if ($orders = $this->getSelect()->getPart('order')) {
@@ -209,7 +210,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
     public function addIsStickyPostFilter($flag = true)
     {
         if (($sticky = trim($this->optionRepository->get('sticky_posts'))) !== '') {
-            $stickyIds = unserialize($sticky);
+            $stickyIds = $this->serializer->unserialize($sticky);
 
             if (count($stickyIds) > 0) {
                 $this->getSelect()->where('ID ' . ($flag ? 'IN' : ' NOT IN') . ' (?)', $stickyIds);
@@ -340,7 +341,10 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
                 $conditions = [];
 
                 foreach ($fields as $field => $fieldWeight) {
-                    $conditions[] = $db->quoteInto('`main_table`.`' . $field . '` LIKE ?', '%' . $this->_escapeSearchString($word) . '%');
+                    $conditions[] = $db->quoteInto(
+                        'main_table.' . $field . ' LIKE ?',
+                        '%' . $this->_escapeSearchString($word) . '%'
+                    );
                 }
 
                 $this->getSelect()->where(join(' OR ', $conditions));
@@ -357,7 +361,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             foreach ($words as $word => $wordWeight) {
                 foreach ($fields as $field => $fieldWeight) {
                     $weightSql[] = $db->quoteInto(
-                        'IF (`main_table`.`' . $field . '` LIKE ?, ' . ($wordWeight + $fieldWeight) . ', 0)',
+                        'IF (main_table.' . $field . ' LIKE ?, ' . ($wordWeight + $fieldWeight) . ', 0)',
                         '%' . $this->_escapeSearchString($word) . '%'
                     );
                 }
@@ -389,6 +393,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      */
     protected function _escapeSearchString($s)
     {
+        // phpcs:ignore -- todo
         return htmlspecialchars($s);
     }
 
@@ -403,9 +408,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $this->joinTermTables($type);
 
         if (is_array($termId)) {
-            $this->getSelect()->where("`tax_{$type}`.`term_id` IN (?)", $termId);
+            $this->getSelect()->where("tax_{$type}.term_id IN (?)", $termId);
         } else {
-            $this->getSelect()->where("`tax_{$type}`.`term_id` = ?", $termId);
+            $this->getSelect()->where("tax_{$type}.term_id = ?", $termId);
         }
 
         return $this;
@@ -422,9 +427,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $this->joinTermTables($type);
 
         if (is_array($term)) {
-            $this->getSelect()->where("`terms_{$type}`.`{$field}` IN (?)", $term);
+            $this->getSelect()->where("terms_{$type}.{$field} IN (?)", $term);
         } else {
-            $this->getSelect()->where("`terms_{$type}`.`{$field}` = ?", $term);
+            $this->getSelect()->where("terms_{$type}.{$field} = ?", $term);
         }
 
         return $this;
@@ -443,9 +448,15 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $tableTermRel     = $this->getTable('wordpress_term_relationship');
             $tableTerms = $this->getTable('wordpress_term');
 
-            $this->getSelect()->join(['rel_' . $type => $tableTermRel], "`rel_{$type}`.`object_id`=`main_table`.`ID`", '')
-                ->join(['tax_' . $type => $tableTax], "`tax_{$type}`.`term_taxonomy_id`=`rel_{$type}`.`term_taxonomy_id` AND `tax_{$type}`.`taxonomy`='{$type}'", '')
-                ->join(['terms_' . $type => $tableTerms], "`terms_{$type}`.`term_id` = `tax_{$type}`.`term_id`", '')
+            $this->getSelect()->join(['rel_' . $type => $tableTermRel], "rel_{$type}.object_id=main_table.ID", '')
+                ->join(
+                    [
+                        'tax_' . $type => $tableTax
+                    ],
+                    "tax_{$type}.term_taxonomy_id=rel_{$type}.term_taxonomy_id AND tax_{$type}.taxonomy='{$type}'",
+                    null
+                )
+                ->join(['terms_' . $type => $tableTerms], "terms_{$type}.term_id = tax_{$type}.term_id", '')
                 ->distinct();
 
             $this->_termTablesJoined[$type] = true;
@@ -487,7 +498,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));
         }
 
-        return intval($this->_totalRecords);
+        return (int)$this->_totalRecords;
     }
 
     /**

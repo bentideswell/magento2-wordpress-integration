@@ -4,19 +4,20 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines
 $blockLevel = (int)$block->getLevel();
 ?>
-<li class="level<?= $blockLevel ?> item<?php if ($block->isCurrentTerm($block->getTerm())): ?> active<?php endif; ?>">
-    <a  class="level<?= $blockLevel ?>" href="<?= $block->escapeUrl($block->getTerm()->getUrl()) ?>" title="<?= $$block->escapeHtml(__($block->getTerm()->getName())) ?>">
+<li class="level<?= (int)$blockLevel ?> item<?php if ($block->isCurrentTerm($block->getTerm())): ?> active<?php endif; ?>">
+    <a  class="level<?= (int)$blockLevel ?>" href="<?= $block->escapeUrl($block->getTerm()->getUrl()) ?>" title="<?= $block->escapeHtml(__($block->getTerm()->getName())) ?>">
         <?= $block->escapeHtml(__($block->getTerm()->getName())) ?>
     </a>
-    <?php if ($block->canShowCount()): ?> (<?= $block->getTerm()->getItemCount() ?>)<?php endif; ?>
+    <?php if ($block->canShowCount()): ?> (<?= (int)$block->getTerm()->getItemCount() ?>)<?php endif; ?>
     <?php if ($block->isHierarchical()): ?>
         <?php $children = $block->getTerm()->getChildrenTerms()->load() ?>
         <?php if (count($children) > 0): ?>
-            <ul class="level<?= $blockLevel + 1 ?>">
+            <ul class="level<?= (int)($blockLevel + 1) ?>">
                 <?php foreach ($children as $child): ?>
-                    <?= $block->drawChildItem($child, $blockLevel + 1) ?>
+                    <?= /* @noEscape */ $block->drawChildItem($child, $blockLevel + 1) ?>
                 <?php endforeach; ?>
             </ul>
         <?php endif; ?>

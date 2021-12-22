@@ -14,7 +14,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $postType): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $postType): array
     {
         $crumbs = [];
 
@@ -25,7 +25,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
         if ($postType->getPostType() === 'post') {
             $crumbs['post'] = [
                 'label' => __('Blog'),
-            ];            
+            ];
         } else {
             $crumbs['post'] = [
                 'label' => __($postType->getName()),

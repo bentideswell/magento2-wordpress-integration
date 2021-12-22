@@ -49,12 +49,12 @@ class YoastTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
             } else {
                 throw new IntegrationRecoverableException(
                     sprintf(
-                        'Install the Magento 2 Yoast add-on module for integrated SEO data from WordPress. Download at %s',
+                        'Install the Magento 2 Yoast module for integrated SEO data from WordPress. Download at %s',
                         'https://fishpig.co.uk/magento/wordpress-integration/yoast/'
                     )
-                );                
+                );
             }
-        } 
+        }
     }
 
     /**

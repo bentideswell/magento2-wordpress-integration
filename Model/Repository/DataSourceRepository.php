@@ -32,7 +32,7 @@ abstract class DataSourceRepository
     }
     
     /**
-     * @param  string $taxonomy 
+     * @param  string $taxonomy
      * @return bool
      */
     public function exists(string $id): bool
@@ -42,12 +42,12 @@ abstract class DataSourceRepository
             
             return true;
         } catch (NoSuchEntityException $e) {
-            return false;            
+            return false;
         }
     }
     
     /**
-     * @param  string $id 
+     * @param  string $id
      * @return mixed
      */
     public function get(string $id)

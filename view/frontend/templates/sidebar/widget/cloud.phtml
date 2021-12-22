@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php if ($tags = $block->getTags()): ?>
     <?php $tagCount = count($tags) ?>
@@ -16,7 +17,7 @@
         <div class="block-content">
             <ul class="tags-list">
                 <?php foreach ($tags as $tag): ?>
-                    <li<?php if (--$tagCount < 1): ?> class="last"<?php endif; ?>><a href="<?= $tag->getUrl() ?>" style="font-size:<?= $block->escapeHtml($block->getFontSize($tag)) ?>%;"><?= $block->escapeHtml($tag->getName()) ?></a></li>
+                    <li<?php if (--$tagCount < 1): ?> class="last"<?php endif; ?>><a href="<?= $block->escapeUrl($tag->getUrl()) ?>" style="font-size:<?= $block->escapeHtml($block->getFontSize($tag)) ?>%;"><?= $block->escapeHtml($tag->getName()) ?></a></li>
                 <?php endforeach; ?>
             </ul>
         </div>

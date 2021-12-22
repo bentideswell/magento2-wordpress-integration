@@ -11,6 +11,20 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
 {
     /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        array $data = []
+    ) {
+        $this->serializer = $wpContext->getSerializer();
+        parent::__construct($context, $wpContext, $data);
+    }
+    
+    /**
      * Retrieve the default title
      *
      * @return string
@@ -43,7 +57,7 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
             $data = $this->optionRepository->get('widget_' . $this->getWidgetType());
 
             if ($data) {
-                $data = unserialize($data);
+                $data = $this->serializer->unserialize($data);
 
                 if (isset($data[$this->getWidgetIndex()])) {
                     foreach ($data[$this->getWidgetIndex()] as $field => $value) {
@@ -64,6 +78,7 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
     public function getListId()
     {
         if (!$this->hasListId()) {
+            // phpcs:ignore -- not cryptographic
             $hash = 'wp-' . md5(rand(1111, 9999) . $this->getTitle() . $this->getWidgetType());
 
             $this->setListId(substr($hash, 0, 6));

@@ -28,12 +28,12 @@ class PathResolver
     {
         $path = trim(
             $this->scopeConfig->getValue(
-                'wordpress/setup/path', 
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE, 
+                'wordpress/setup/path',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 $storeId
             )
         );
 
         return $path ?? null;
-    }  
+    }
 }

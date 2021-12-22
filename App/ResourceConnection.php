@@ -55,7 +55,9 @@ class ResourceConnection
         $this->appMode = $appMode;
 
         if ($this->appMode->isApiMode()) {
-            throw new \Exception('Cannot use the ResourceConnection in API mode.');
+            throw new \FishPig\WordPress\App\Exception(
+                'Cannot use the ResourceConnection in API mode.'
+            );
         }
 
         $this->connectionConfigRetriever = $connectionConfigRetriever;
@@ -90,7 +92,7 @@ class ResourceConnection
             $db->query(
                 $db->quoteInto('SET NAMES ?', $config['charset'])
             );
-
+            // phpcs:ignore -- not cryptographic
             $tablesExistCacheKey = md5($storeId . '::' . implode(':', $config));
 
             if ((int)$this->cache->load($tablesExistCacheKey) !== 1) {
@@ -105,7 +107,9 @@ class ResourceConnection
                 );
    
                 if (!$tableExists) {
-                    throw new \Exception("Database connected but table '$targetTable' does not exist.");
+                    throw new \FishPig\WordPress\App\Exception(
+                        "Database connected but table '$targetTable' does not exist."
+                    );
                 }
 
                 $this->cache->save('1', $tablesExistCacheKey, [], 14400 /* 4 hours */);
@@ -138,7 +142,7 @@ class ResourceConnection
         }
 
         if ($canBeUsedInNetwork) {
-            $tablePrefix = $this->getNetworkTablePrefix();            
+            $tablePrefix = $this->getNetworkTablePrefix();
         } else {
             $tablePrefix = $this->getTablePrefix();
         }

@@ -66,11 +66,11 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
         if ($addonModule === 'WordPress_ACF') {
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/advanced-custom-fields/';
         } elseif ($addonModule === 'WordPress_Multisite') {
-            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/multisite/';            
+            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/multisite/';
         } elseif ($addonModule === 'WordPress_PermalinkManager') {
-            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/permalink-manager/';            
+            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/permalink-manager/';
         } elseif ($addonModule === 'WordPress_PostTypeTaxonomy') {
-            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/post-types-taxonomies/';            
+            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/post-types-taxonomies/';
         } elseif ($addonModule === 'WordPress_RelatedProducts') {
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/related-products/';
         } elseif ($addonModule === 'WordPress_Root') {
@@ -78,7 +78,7 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
         } elseif ($addonModule === 'WordPress_PluginShortcodeWidgets') {
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/shortcodes-widgets/';
         } elseif ($addonModule === 'WordPress_WPML') {
-            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/wpml/';            
+            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/wpml/';
         } elseif ($addonModule === 'WordPress_Multisite') {
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/multisite/';
         } elseif ($addonModule === 'PageSpeed') {
@@ -94,3 +94,4 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
         return '#';
     }
 }
+// phpcs:ignoreFile

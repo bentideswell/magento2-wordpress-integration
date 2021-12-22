@@ -26,19 +26,20 @@ class ImageResizer
      *
      */
     public function __construct(
-        \Magento\Framework\Filesystem $filesystem, 
-        \Magento\Framework\Image\AdapterFactory $imageFactory, 
+        \Magento\Framework\Filesystem $filesystem,
+        \Magento\Framework\Image\AdapterFactory $imageFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\Model\UrlInterface $url,
         \FishPig\WordPress\App\Integration\Mode $appMode,
-        \FishPig\WordPress\App\DirectoryList $wpDirectoryList
+        \FishPig\WordPress\App\DirectoryList $wpDirectoryList,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
     ) {
         $this->filesystem = $filesystem;
         $this->imageFactory = $imageFactory;
         $this->storeManager = $storeManager;
         $this->url = $url;
         $this->wpDirectoryList = $wpDirectoryList;
-        
+        $this->filesystemDriver = $filesystemDriver;
         $appMode->requireLocalMode();
     }
 
@@ -54,8 +55,10 @@ class ImageResizer
             $image = $this->getLocalFile($image);
         }
 
-        if (!$image || !is_file($image)) {
-            throw new \FishPig\WordPress\App\Exception('Unable to resize image due to invalid or missing local image.');
+        if (!$image || !$this->filesystemDriver->isFile($image)) {
+            throw new \FishPig\WordPress\App\Exception(
+                'Unable to resize image due to invalid or missing local image.'
+            );
         }
 
         $this->adapter = $this->imageFactory->create();
@@ -80,7 +83,7 @@ class ImageResizer
         $guid = str_replace(['https://', 'http://'], '', $image->getData('guid'));
         $localFile = $this->wpDirectoryList->getBasePath() . '/' . ltrim(str_replace($siteUrl, '', $guid), '/');
         
-        return is_file($localFile) ? $localFile : false;
+        return $this->filesystemDriver->isFile($localFile) ? $localFile : false;
     }
     
     /**
@@ -95,22 +98,24 @@ class ImageResizer
 
         $targetDirectory = $this->getTargetDirectory();
 
-        if (!is_dir($targetDirectory)) {
-            @mkdir($targetDirectory);
-
-            if (!is_dir($targetDirectory)) {
+        if (!$this->filesystemDriver->isDirectory($targetDirectory)) {
+            $this->filesystemDriver->createDirectory($targetDirectory);
+            if (!$this->filesystemDriver->isDirectory($targetDirectory)) {
                 return false;
             }
         }
 
+        // phpcs:ignore -- not cryptographic
         $targetFile = $targetDirectory . md5(http_build_query($this->args)) . $this->getFormat();
 
-        if (!is_file($targetFile)) {
+        if (!$this->filesystemDriver->isFile($targetFile)) {
             $this->adapter->resize($width, $height);
             $this->adapter->save($targetFile);
         }
 
-        return $this->storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . 'wordpress/' . basename($targetFile);
+        return $this->storeManager->getStore()->getBaseUrl(
+            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+        ) . 'wordpress/' . basename($targetFile); // phpcs:ignore -- basename is OK
     }
 
     /**

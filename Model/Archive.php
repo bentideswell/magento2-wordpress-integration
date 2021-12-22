@@ -107,7 +107,7 @@ class Archive extends AbstractModel implements ViewableModelInterface, PostColle
     public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
         return $this->postCollectionFactory->create()->addPostTypeFilter('post')->addArchiveDateFilter(
-            $this->getId(), 
+            $this->getId(),
             $this->getIsDaily()
         );
     }

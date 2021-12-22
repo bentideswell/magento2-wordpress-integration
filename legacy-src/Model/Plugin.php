@@ -27,7 +27,7 @@ class Plugin
      */
     public function install($target, $source, $enable = false)
     {
-        throw new \Exception("It's not possible to automatically install a WP plugin.");
+        return false;
     }
 
     /**
@@ -36,7 +36,7 @@ class Plugin
      */
     public function enable($plugin)
     {
-        throw new \Exception("It's not possible to automatically enable a WP plugin.");
+        return false;
     }
 
     /**
@@ -56,7 +56,7 @@ class Plugin
     public function getOption($plugin, $key = null)
     {
         if ($data = $this->optionRepository->getUnserialized($plugin)) {
-            if (is_null($key)) {
+            if ($key === null) {
                 return $data;
             }
 

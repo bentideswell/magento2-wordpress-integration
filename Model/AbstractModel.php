@@ -16,7 +16,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
      * @var \FishPig\WordPress\Model\UrlInterface
      */
     protected $url;
-
+    
     /**
      *
      */

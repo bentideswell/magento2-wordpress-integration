@@ -82,7 +82,7 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
     {
         return $this->postCollectionFactory->create()->addTermIdFilter(
             (int)$this->getId(),
-            $this->getTaxonomy()         
+            $this->getTaxonomy()
         );
     }
 
@@ -146,7 +146,6 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
     {
         return (int)$this->getCount();
     }
-    
 
     /**
      * Get a recursive array of all children IDs
@@ -155,16 +154,9 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
      */
     public function getChildIds(): array
     {
-        if (!$this->hasChildIds()) {
-            $this->setChildIds(
-                $this->getResource()->getChildIds($this->getId())
-            );
-        }
-
-        return $this->_getData('child_ids');
+        return $this->getResource()->getChildIds($this->getId());
     }
-    
-    
+
     /**
      * @deprecated since 3.0
      * @return string

@@ -23,10 +23,10 @@ class Logger extends \Monolog\Logger
      * @return void
      */
     public function __construct(
-        $name, 
+        $name,
         \Magento\Framework\App\State $appState,
-        array $handlers = array(), 
-        array $processors = array()
+        array $handlers = [],
+        array $processors = []
     ) {
         $this->appState = $appState;
         parent::__construct($name, $handlers, $processors);

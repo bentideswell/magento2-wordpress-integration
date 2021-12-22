@@ -23,11 +23,12 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $term): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $term): array
     {
         $crumbs = [];
         $taxonomy = $term->getTaxonomyInstance();
-        $postTypes = $this->postTypeRepository->getAll();;
+        $postTypes = $this->postTypeRepository->getAll();
+        ;
 
         if (count($postTypes) > 2) {
             foreach ($postTypes as $postType) {

@@ -40,8 +40,8 @@ class SwitcherUrlProviderPlugin
      *
      */
     public function aroundGetTargetStoreRedirectUrl(
-        \Magento\Store\ViewModel\SwitcherUrlProvider $subject, 
-        \Closure $callback, 
+        \Magento\Store\ViewModel\SwitcherUrlProvider $subject,
+        \Closure $callback,
         \Magento\Store\Model\Store $store
     ) {
 
@@ -49,7 +49,7 @@ class SwitcherUrlProviderPlugin
             $this->emulation->startEnvironmentEmulation($store->getId(), 'frontend');
 
             if (!$this->appMode->isDisabled() && $this->storeSwitcherUrlProvider !== null) {
-                try{
+                try {
                     if ($redirectUrl = $this->storeSwitcherUrlProvider->getUrl($store)) {
                         return $redirectUrl;
                     }

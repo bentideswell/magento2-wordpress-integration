@@ -19,7 +19,7 @@ abstract class AbstractResourceModel extends \Magento\Framework\Model\ResourceMo
      *
      */
     public function __construct(
-        \Magento\Framework\Model\ResourceModel\Db\Context $context, 
+        \Magento\Framework\Model\ResourceModel\Db\Context $context,
         \FishPig\WordPress\Model\ResourceModel\Context $wpContext,
         $connectionName = null
     ) {

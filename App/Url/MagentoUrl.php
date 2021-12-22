@@ -73,6 +73,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
                         $qs = substr($storeUrl, $pos+1);
 
                         if ($qs) {
+                            // phpcs:ignore -- parse_str (todo)
                             parse_str($qs, $qsParsed);
                             
                             if (isset($qsParsed['___store'])) {
@@ -91,7 +92,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 
                 $this->currentUrl[$cacheKey] = $storeUrl;
             } else {
-               $this->currentUrl[$cacheKey] = preg_replace('/\?.*$/', '', $storeUrl);
+                $this->currentUrl[$cacheKey] = preg_replace('/\?.*$/', '', $storeUrl);
             }
 
             if ($this->isCustomBaseUrl()) {
@@ -117,7 +118,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
                 'index.php',
                 '',
                 $this->storeManager->getStore()->getBaseUrl(
-                    \Magento\Framework\UrlInterface::URL_TYPE_LINK, 
+                    \Magento\Framework\UrlInterface::URL_TYPE_LINK,
                     $this->isFrontendUrlSecure()
                 )
             ),

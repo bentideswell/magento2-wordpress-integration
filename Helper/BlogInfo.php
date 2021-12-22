@@ -14,7 +14,7 @@ class BlogInfo extends \Magento\Framework\App\Helper\AbstractHelper
      *
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context, 
+        \Magento\Framework\App\Helper\Context $context,
         \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
         $this->optionRepository = $optionRepository;
@@ -42,6 +42,6 @@ class BlogInfo extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function isBlogPublic(): bool
     {
-        return (bool)$this->optionRepository->get('blog_public') ?? false; 
+        return (bool)$this->optionRepository->get('blog_public') ?? false;
     }
 }

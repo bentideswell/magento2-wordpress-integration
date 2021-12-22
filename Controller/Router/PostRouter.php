@@ -40,20 +40,18 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
         
         if ($this->frontPage->getPostsPageId() === $postId) {
             return $this->requestDispatcher->dispatch(
-                $request, 
-                '*/postType/view', 
+                $request,
+                '*/postType/view',
                 ['post_type' => 'post']
             );
-        } elseif ($this->frontPage->getFrontPageId() === $postId) {
-
         }
-        
+
         // Allows for cache invalidation
         $postAction = $request->getParam('wp_fpc_nonce') ? 'invalidate' : 'view';
 
         return $this->requestDispatcher->dispatch(
-            $request, 
-            '*/post/' . $postAction, 
+            $request,
+            '*/post/' . $postAction,
             ['id' => $postId]
         );
     }

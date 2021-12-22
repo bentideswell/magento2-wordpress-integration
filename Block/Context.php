@@ -13,6 +13,7 @@ use FishPig\WordPress\App\Logger;
 use FishPig\WordPress\Block\ShortcodeFactory;
 use FishPig\WordPress\Model\OptionRepository;
 use FishPig\WordPress\App\Url;
+use Magento\Framework\Serialize\SerializerInterface;
 
 class Context
 {
@@ -40,6 +41,16 @@ class Context
      * @var Url
      */
     private $url;
+
+    /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+    
+    /**
+     * @var SerializerInterface
+     */
+    private $jsonSerializer;
     
     /**
      * @param Registry
@@ -49,13 +60,17 @@ class Context
         Logger $logger,
         ShortcodeFactory $shortcodeFactory,
         OptionRepository $optionRepository,
-        Url $url
+        Url $url,
+        SerializerInterface $serializer,
+        SerializerInterface $jsonSerializer
     ) {
         $this->registry = $registry;
         $this->logger = $logger;
         $this->shortcodeFactory = $shortcodeFactory;
         $this->optionRepository = $optionRepository;
         $this->url = $url;
+        $this->serializer = $serializer;
+        $this->jsonSerializer = $jsonSerializer;
     }
     
     /**
@@ -96,5 +111,21 @@ class Context
     public function getUrl(): Url
     {
         return $this->url;
+    }
+
+    /**
+     * @return Serializer
+     */
+    public function getSerializer(): SerializerInterface
+    {
+        return $this->serializer;
+    }
+
+    /**
+     * @return Serializer
+     */
+    public function getJsonSerializer(): SerializerInterface
+    {
+        return $this->jsonSerializer;
     }
 }

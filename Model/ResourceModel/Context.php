@@ -14,7 +14,7 @@ use FishPig\WordPress\App\Url;
 use FishPig\WordPress\App\ResourceConnection;
 
 class Context
-{   
+{
     /**
      * @var Logger
      */
@@ -34,8 +34,7 @@ class Context
      * @var ResourceConnection
      */
     private $resourceConnection;
-    
-    
+
     /**
      * @param Registry
      */

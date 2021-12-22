@@ -51,12 +51,12 @@ spl_autoload_register(function($className) {
  * Initialise base objets
  */
 $fishpigObjects = [
-    new FishPig\WordPress\X\Setup(),
-    new FishPig\WordPress\X\AuthorisationKey(),
-    new FishPig\WordPress\X\Api(),
-    new FishPig\WordPress\X\Previews(),
-    new FishPig\WordPress\X\Fpc(),
-    new FishPig\WordPress\X\Misc(),
+    new \FishPig\WordPress\X\Setup(),
+    new \FishPig\WordPress\X\AuthorisationKey(),
+    new \FishPig\WordPress\X\Api(),
+    new \FishPig\WordPress\X\Previews(),
+    new \FishPig\WordPress\X\Fpc(),
+    new \FishPig\WordPress\X\Misc(),
 ];
 
 /**

@@ -91,7 +91,7 @@ class Taxonomy extends \Magento\Framework\DataObject
     
     /**
      * @return array
-     */  
+     */
     public function getAllRoutes()
     {
         return $this->getResource()->getAllRoutes($this);
@@ -148,20 +148,17 @@ class Taxonomy extends \Magento\Framework\DataObject
 
     /**
      * @deprecated since 3.0
-     */    
+     */
     public function getTaxonomyType()
     {
-        throw new \Exception(__METHOD__);
         return $this->getTaxonomy();
     }
-    
 
     /**
      * @deprecated since 3.0
      */
     public function getUris($uri = '')
     {
-        throw new \Exception(__METHOD__);
         return $this->getResource()->getAllRoutes();
     }
 
@@ -170,7 +167,6 @@ class Taxonomy extends \Magento\Framework\DataObject
      */
     public function getAllUris()
     {
-        throw new \Exception(__METHOD__);
         return $this->getResource()->getAllRoutes();
     }
 }

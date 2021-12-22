@@ -33,25 +33,25 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
      * @param  string $identifier
      * @param  array $tags
      * @param  int $lifeTime = null
-     * @return 
+     * @return
      */
     public function saveApiData($data, $identifier, array $tags = [], $lifeTime = null)
     {
         return $this->save(
-            $data, 
-            $identifier, 
+            $data,
+            $identifier,
             array_merge($tags, ['fishpig-wordpress-api']),
             $lifeTime ?? 60 * 60 * 4
-        );        
+        );
     }
 
    /**
-     * @param  mixed $data
-     * @param  string $identifier
-     * @param  array $tags
-     * @param  int $lifeTime = 30
-     * @return 
-     */
+    * @param  mixed $data
+    * @param  string $identifier
+    * @param  array $tags
+    * @param  int $lifeTime = 30
+    * @return
+    */
     public function quickSave($data, $identifier, array $tags = [], $lifeTime = 30)
     {
         return $this->save($data, $identifier, $tags, $lifeTime);

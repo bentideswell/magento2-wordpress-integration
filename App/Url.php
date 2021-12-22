@@ -157,7 +157,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     public function doUrlsMatch($url, $url2 = null, $strict = false): bool
     {
         $urls = [
-            $url, 
+            $url,
             $url2 ?? $this->magentoUrl->getCurrentUrl()
         ];
         
@@ -202,7 +202,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
         $homeUrl = $this->getHomeUrl();
         
         if (strpos($this->getHomeUrl(), $this->getMagentoUrl()) !== 0) {
-            throw new \Exception('URLs appear to be invalid.');
+            throw new \FishPig\WordPress\App\Exception('URLs appear to be invalid.');
         }
         
         return trim(substr($homeUrl, strlen($magentoUrl)), '/');
@@ -218,7 +218,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     
     /**
      * @return string
-     */    
+     */
     public function getWpContentUrl(): string
     {
         return $this->getSiteUrl('wp-content/');
@@ -226,7 +226,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
 
     /**
      * @return string
-     */    
+     */
     public function getUploadUrl(): string
     {
         return $this->getWpContentUrl() . 'uploads/';

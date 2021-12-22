@@ -33,9 +33,11 @@ class LocalHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProvider
             $hashes = [];
             
             foreach ($this->themeFileCollector->getFiles() as $file) {
+                // phpcs:ignore -- not cryptographic
                 $hashes[] = hash_file('md5', $file);
             }
         
+            // phpcs:ignore -- not cryptographic
             $this->hash = md5(implode('', $hashes));
         }
         

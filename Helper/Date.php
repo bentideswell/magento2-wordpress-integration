@@ -19,7 +19,7 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
      *
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context, 
+        \Magento\Framework\App\Helper\Context $context,
         \FishPig\WordPress\Model\OptionRepository $optionRepository
     ) {
         parent::__construct($context);

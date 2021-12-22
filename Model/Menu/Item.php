@@ -46,7 +46,7 @@ class Item extends \FishPig\WordPress\Model\AbstractMetaModel
     ) {
         $this->postRepository = $postRepository;
         $this->termRepository = $termRepository;
-        
+        $this->serializer = $wpContext->getSerializer();
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
     
@@ -106,7 +106,7 @@ class Item extends \FishPig\WordPress\Model\AbstractMetaModel
                 }
             }
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
-            $this->setObject(false);            
+            $this->setObject(false);
         }
 
         return $this->_getData('object');
@@ -218,7 +218,7 @@ class Item extends \FishPig\WordPress\Model\AbstractMetaModel
         if (!$this->hasCssClass()) {
             if ($classString = $this->getMetaValue('_menu_item_classes')) {
                 if (!is_array($classString)) {
-                    $classString = unserialize($classString);
+                    $classString = $this->serializer->unserialize($classString);
                 }
 
                 $this->setCssClass(trim(implode(' ', $classString)));

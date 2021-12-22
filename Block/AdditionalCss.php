@@ -21,8 +21,8 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
      * @param Theme   $theme
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context, 
-        \FishPig\WordPress\App\Theme $theme, 
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\App\Theme $theme,
         \FishPig\WordPress\Model\PostFactory $postFactory,
         array $data = []
     ) {

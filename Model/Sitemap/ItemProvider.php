@@ -21,7 +21,6 @@ class ItemProvider implements ItemProviderInterface
         \FishPig\WordPress\App\Logger $logger,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\Model\NetworkInterface $network,
-//        \Magento\Sitemap\Model\SitemapItemInterfaceFactory $sitemap
         array $itemProviders = []
     ) {
         $this->emulation = $emulation;
@@ -35,31 +34,30 @@ class ItemProvider implements ItemProviderInterface
     /**
      * @param int $storeId
      */
-    final public function getItems($storeId)
+    public function getItems($storeId)
     {
         $items = [];
 
+        if ($this->appMode->isDisabled()) {
+            return $items;
+        }
+        
         if (count($this->itemProviders) === 0) {
             return $items;
         }
 
         try {
-            if (!$this->appMode->isDisabled()) {
-                foreach ($this->itemProviders as $itemProvider) {
-                    if (!($itemProvider instanceof ItemProviderInterface)) {
-                        throw new \Exception(
-                            get_class($itemProvider) . ' must implement ' . ItemProviderInterface::class
-                        );
-                    }
-
-                    $items = array_merge(
-                        $items,
-                        $itemProvider->getItems($storeId)
+            foreach ($this->itemProviders as $itemProvider) {
+                if (!($itemProvider instanceof ItemProviderInterface)) {
+                    throw new \FishPig\WordPress\App\Exception(
+                        get_class($itemProvider) . ' must implement ' . ItemProviderInterface::class
                     );
                 }
+
+                $items[] = $itemProvider->getItems($storeId);
             }
 
-            return $items;
+            return $items ? array_merge(...$items) : [];
         } catch (\Exception $e) {
             $this->logger->error($e);
             throw $e;
@@ -73,8 +71,9 @@ class ItemProvider implements ItemProviderInterface
     protected function isEnabledForStore($storeId): bool
     {
         return $this->scopeConfig->isSetFlag(
-            'wordpress/xmlsitemap/enabled', 
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeId
+            'wordpress/xmlsitemap/enabled',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $storeId
         );
     }
 }

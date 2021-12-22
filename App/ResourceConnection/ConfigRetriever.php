@@ -21,7 +21,9 @@ class ConfigRetriever extends \FishPig\WordPress\App\Integration\Mode\ObjectReso
         );
         
         if ($missingFields = array_diff_key($this->getRequiredFields(), $config)) {
-            throw new \Exception('Missing database configuration fields: ' . implode(', ', array_flip($missingFields)));
+            throw new \FishPig\WordPress\App\Exception(
+                'Missing database configuration fields: ' . implode(', ', array_flip($missingFields))
+            );
         }
         
         return $config;
@@ -39,15 +41,15 @@ class ConfigRetriever extends \FishPig\WordPress\App\Integration\Mode\ObjectReso
 
     /**
      * @return []
-     */    
+     */
     private function getRequiredFields(): array
     {
         return array_flip(
             [
-                'host', 
-                'dbname', 
-                'username', 
-                'password', 
+                'host',
+                'dbname',
+                'username',
+                'password',
                 'charset',
                 'table_prefix',
             ]

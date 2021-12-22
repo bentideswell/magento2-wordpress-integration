@@ -32,7 +32,7 @@ class View extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         if (!($requestUri = trim($this->getRequest()->getParam('request_uri')))) {
-            throw new \Exception('Request URI not set so cannot redirect to WordPress.');
+            throw new \FishPig\WordPress\App\Exception('Request URI not set so cannot redirect to WordPress.');
         }
 
         return $this->resultFactory->create(

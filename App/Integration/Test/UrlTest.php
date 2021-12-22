@@ -43,7 +43,9 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         if ($homeUrl === $siteUrl) {
             throw new IntegrationFatalException(
                 sprintf(
-                    'Your WordPress Home URL matches your Site URL (%s). Your SiteURL should be the WordPress installation URL and the WordPress Home URL should be the integrated blog URL.', 
+                    'Your WordPress Home URL matches your Site URL (%s).'
+                    . ' Your SiteURL should be the WordPress installation URL and the WordPress Home URL should'
+                    . ' be the integrated blog URL.',
                     $siteUrl
                 )
             );
@@ -52,19 +54,28 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         if ($isRoot) {
             if ($homeUrl !== $magentoUrl) {
                 throw new IntegrationFatalException(
-                    sprintf('Your home URL (%s) is incorrect and should match your Magento URL. Change to. %s', $homeUrl, $magentoUrl)
+                    sprintf(
+                        'Your home URL (%s) is incorrect and should match your Magento URL. Change to. %s',
+                        $homeUrl,
+                        $magentoUrl
+                    )
                 );
             }
         } else {
             if (strpos($homeUrl, $magentoUrl) !== 0) {
                 throw new IntegrationFatalException(
-                    sprintf('Your home URL (%s) is invalid as it does not start with the Magento base URL (%s).', $homeUrl, $magentoUrl)
+                    sprintf(
+                        'Your home URL (%s) is invalid as it does not start with the Magento base URL (%s).',
+                        $homeUrl,
+                        $magentoUrl
+                    )
                 );
             }
 
             if ($homeUrl === $magentoUrl) {
                 throw new IntegrationFatalException(
-                    'Your WordPress Home URL matches your Magento URL. Try changing your Home URL to something like ' . $magentoUrl . '/blog'
+                    'Your WordPress Home URL matches your Magento URL.'
+                    . ' Try changing your Home URL to something like ' . $magentoUrl . '/blog'
                 );
             }
 
@@ -73,7 +84,9 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         
         if (!$this->url->doUrlProtocolsMatch($magentoUrl, $homeUrl, $siteUrl)) {
             throw new IntegrationFatalException(
-                'URL Protocol Mismatch. Your WordPress URLs do not use the same URL protocol as Magento. It is recommended to use https:// for all URLs but what ever you choose, all Magento and WordPress URLs must use the same protocol.'
+                'URL Protocol Mismatch. Your WordPress URLs do not use the same URL protocol as Magento.'
+                . ' It is recommended to use https:// for all URLs but what ever you choose, all Magento and'
+                . ' WordPress URLs must use the same protocol.'
             );
         }
     }
@@ -96,18 +109,23 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
             return;
         }
 
-        if ($modules = $this->routeConfig->getModulesByFrontName($blogRoute, 'frontend')) {   
+        if ($modules = $this->routeConfig->getModulesByFrontName($blogRoute, 'frontend')) {
             if (count($modules) === 1) {
                 $module = array_shift($modules);
 
                 IntegrationException::throwException(
-                    'The ' . $module . ' module uses \'' . $blogRoute . '\' as it\'s frontName. Either fully disable this module or change your WordPress Home URL.'
+                    "The $module module uses '$blogRoute' as it's frontName."
+                    . " Either fully disable this module or change your WordPress Home URL."
                 );
             } else {
-                $moduleString = implode(', ', array_slice($modules, 0, -1)). ' and ' . implode('', array_slice($modules, -1));
+                $moduleString = implode(
+                    ', ',
+                    array_slice($modules, 0, -1)
+                ) . ' and ' . implode('', array_slice($modules, -1));
 
                 IntegrationException::throwException(
-                    'The modules ' . $moduleString . ' use \'' . $blogRoute . '\' as their frontName. Either fully disable these modules or change your WordPress Home URL.'
+                    "The modules $moduleString use '$blogRoute' as their frontName."
+                    . " Either fully disable these modules or change your WordPress Home URL."
                 );
             }
         }

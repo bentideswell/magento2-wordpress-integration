@@ -34,11 +34,11 @@ class PermalinkTest implements \FishPig\WordPress\Api\App\Integration\TestInterf
             if (!$this->option->get($optionName)) {
                 throw new IntegrationRecoverableException(
                     sprintf(
-                        'A custom permalink structure is not set. Please set a custom permalink structure in the WordPress Admin',
+                        'A custom permalink structure is not set. Set a custom permalink structure in the WP Admin',
                         'https://fishpig.co.uk/magento/wordpress-integration/installation/'
                     )
                 );
             }
-        }   
+        }
     }
 }

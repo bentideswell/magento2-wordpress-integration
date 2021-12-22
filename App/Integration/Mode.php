@@ -78,7 +78,6 @@ class Mode
     public function isApiMode(): bool
     {
         return false;
-        return $this->getMode() === self::MODE_API;
     }
 
     /**
@@ -87,28 +86,30 @@ class Mode
     public function requireLocalMode($msg = null): self
     {
         if (!$this->isLocalMode()) {
+            $mode = $this->getMode();
             throw new InvalidModeException(
-                $msg ?? 'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_LOCAL . '.'
+                $msg ?? "Invalid mode. Current mode is $mode. Required mode is " . self::MODE_LOCAL . "."
             );
         }
         
         return $this;
     }
-    
+
     /**
      * @return $this
      */
     public function requireExternalMode($msg = null): self
     {
         if (!$this->isExternalMode()) {
+            $mode = $this->getMode();
             throw new InvalidModeException(
-                $msg ?? 'Invalid mode. Current mode is '. $this->getMode() . '. Required mode is ' . self::MODE_EXTERNAL . '.'
+                $msg ?? "Invalid mode. Current mode is $mode. Required mode is " . self::MODE_EXTERNAL . "."
             );
         }
-        
+
         return $this;
     }
-    
+
     /**
      * @return bool
      */
@@ -123,14 +124,14 @@ class Mode
     public function toOptionArray()
     {
         $options = [];
-        
+
         foreach ($this->getOptions() as $value => $label) {
             $options[] = [
                 'value' => $value,
                 'label' => $label
             ];
         }
-        
+
         return $options;
     }
 

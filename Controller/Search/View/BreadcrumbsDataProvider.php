@@ -14,7 +14,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $search): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $search): array
     {
         return [
             $search::ENTITY => [

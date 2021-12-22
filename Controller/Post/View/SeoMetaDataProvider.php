@@ -18,8 +18,7 @@ class SeoMetaDataProvider extends \FishPig\WordPress\Controller\Action\SeoMetaDa
     public function addMetaData(
         \Magento\Framework\View\Result\Page $resultPage,
         \FishPig\WordPress\Api\Data\ViewableModelInterface $post
-    ): void 
-    {
+    ): void {
         parent::addMetaData($resultPage, $post);
         
         $this->setMetaTitleWithBlogName($post->getName());

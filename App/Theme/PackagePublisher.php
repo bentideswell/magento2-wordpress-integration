@@ -17,36 +17,31 @@ class PackagePublisher
         \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\Filesystem $filesystem
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
     ) {
         $this->packageBuilder = $packageBuilder;
         $this->resultFactory = $resultFactory;
         $this->request = $request;
-        $this->filesystem = $filesystem;
+        $this->filesystemDriver = $filesystemDriver;
     }
 
     /**
-     * @return 
+     * @return
      */
     public function publish()
     {
         $zipFile = $this->packageBuilder->getFilename();
 
-        if (!$zipFile || !is_file($zipFile)) {
-            throw new \Exception('Unable to generate theme package.');
+        if (!$this->filesystemDriver->isFile($zipFile)) {
+            throw new \FishPig\WordPress\App\Exception('Unable to generate theme package.');
         }
 
-        $zipDir = dirname($zipFile);
+        if (!($data = $this->filesystemDriver->fileGetContents($zipFile))) {
+            throw new \FishPig\WordPress\App\Exception('Zip exists but data is corrupt.');
+        }
+        
+        // phpcs:ignore -- there's no harm in this
         $filename = basename($zipFile);
-        $dir = $this->filesystem->getDirectoryReadByPath($zipDir);
-
-        if (!$dir->isFile($filename)) {
-            throw new \Exception('Unable to find ' . $zipFile);
-        }
-
-        if (!($data = $dir->readFile($filename))) {
-            throw new \Exception('Zip exists but data is corrupt.');
-        }
 
         return $this->resultFactory->create(
             $this->resultFactory::TYPE_RAW

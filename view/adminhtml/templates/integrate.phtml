@@ -2,27 +2,15 @@
 /**
  *
  */
+// phpcs:ignoreFile -- long lines
 ?>
 <?php if ($msgs = $block->getMessages()): ?>
     <div class="messages">
         <?php foreach ($msgs as $msg): ?>
-            <div class="message message-<?= $msg['type'] ?> <?= $msg['type'] ?>"><div><?= $msg['msg'] ?></div></div>
+            <div class="message message-<?= $block->escapeHtmlAttr($msg['type']) ?> <?= $block->escapeHtmlAttr($msg['type']) ?>">
+                <div><?= $block->escapeHtml($msg['msg'], ['a', 'span', 'br']) ?></div>
+            </div>
         <?php endforeach; ?>
     </div>
     <?= $block->getAfterMessagesHtml() ?>
 <?php endif; ?>
-
-<?php return ?>
-<script type="text/javascript">
-    require(['jquery'], function($){
-        $(document).ready(function() {
-            var elems=document.querySelectorAll('.hide-parent');
-            
-            if (elems.length > 0) {
-                [].forEach.call(elems, function(e) {
-                   e.parentNode.remove(); 
-                });
-            }
-        });
-    });
-</script>

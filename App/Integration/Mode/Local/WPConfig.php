@@ -38,7 +38,7 @@ class WPConfig implements \FishPig\WordPress\Api\App\ResourceConnection\ConfigRe
             'username' => $this->wpConfig->getData('DB_USER'),
             'password' => $this->wpConfig->getData('DB_PASSWORD'),
             'charset' => $this->wpConfig->getData('DB_CHARSET', 'utf8mb4'),
-            'table_prefix' => $this->wpConfig->getData('DB_TABLE_PREFIX'),          
+            'table_prefix' => $this->wpConfig->getData('DB_TABLE_PREFIX'),
         ];
     }
 }

@@ -18,13 +18,12 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
      *
      */
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url,      
+        \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
         \Magento\Framework\Serialize\SerializerInterface $serializer
     ) {
         $this->serializer = $serializer;
-
         parent::__construct($url, $httpClientFactory, $requestLogger);
     }
     
@@ -35,7 +34,7 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     public function get($url = null): \Magento\Framework\HTTP\ClientInterface
     {
         if ($url === null) {
-            throw new \Exception('Invalid URL given.');
+            throw new \FishPig\WordPress\App\Exception('Invalid URL given.');
         }
         
         try {
@@ -49,7 +48,7 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
                 )
             );
         }
-    } 
+    }
     
     /**
      * @param  string $endpoint
@@ -111,7 +110,7 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
     private function throwPhpErrorMessageFromString($str): void
     {
         if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
-            throw new \Exception(trim($m[2]));
+            throw new \FishPig\WordPress\App\Exception(trim($m[2]));
         }
     }
 }

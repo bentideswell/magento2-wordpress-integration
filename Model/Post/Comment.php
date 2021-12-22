@@ -113,7 +113,9 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
      */
     public function getGuid()
     {
-        return $this->getPost() ? $this->url->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId()) : '';
+        return $this->getPost()
+            ? $this->url->getUrl('?p='. $this->getPost()->getId() . '#comment-' . $this->getId())
+            : '';
     }
 
     /**
@@ -210,9 +212,9 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
 
                     $baseUrl = self::GRAVATAR_BASE_URL_SECURE;
 
-                    $url = $baseUrl
-                        . md5(strtolower($this->getCommentAuthorEmail()))
-                        . '/?' . http_build_query($params);
+                    // phpcs:ignore -- not cryptographic
+                    $url = $baseUrl . md5(strtolower($this->getCommentAuthorEmail()))
+                         . '/?' . http_build_query($params);
 
                     $this->setGravatarUrl($url);
                 }
@@ -251,8 +253,12 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
     public function getAnchor()
     {
         return $this->getPost()
-            ? sprintf('<a href="%s" title="%s">%s</a>', $this->getUrl(), $this->getCommentAuthor(), $this->getPost()->getPostTitle())
-            : '';
+            ? sprintf(
+                '<a href="%s" title="%s">%s</a>',
+                $this->getUrl(),
+                $this->getCommentAuthor(),
+                $this->getPost()->getPostTitle()
+            ) : '';
     }
 
     /**

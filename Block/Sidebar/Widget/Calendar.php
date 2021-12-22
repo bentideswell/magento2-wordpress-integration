@@ -62,7 +62,11 @@ class Calendar extends AbstractWidget
         $itemsByDay = array_combine(range(1, $this->getDaysInMonth()), range(1, $this->getDaysInMonth()));
 
         foreach ($days as $day) {
-            $itemsByDay[ltrim($day, '0')] = sprintf('<a href="%s">%s</a>', $this->url->getUrl($this->getYear() . '/' . $this->getMonth() . '/' . $day), $day);
+            $itemsByDay[ltrim($day, '0')] = sprintf(
+                '<a href="%s">%s</a>',
+                $this->url->getUrl($this->getYear() . '/' . $this->getMonth() . '/' . $day),
+                $day
+            );
         }
 
         $itemsByDay = array_values($itemsByDay);
@@ -73,6 +77,7 @@ class Calendar extends AbstractWidget
 
         // Pad end of array
         $lastDayOfMonth = date('t', strtotime($this->getYear() . '-' . $this->getMonth() . '-01'));
+        // phpcs:ignore -- long line
         $endOfMonthPadding = 7 - date('N', strtotime($this->getYear() . '-' . $this->getMonth() . '-' . $lastDayOfMonth));
         $itemsByDay = array_pad($itemsByDay, count($itemsByDay)+$endOfMonthPadding, null);
 
@@ -152,11 +157,16 @@ class Calendar extends AbstractWidget
         if (count($posts)) {
             $previous = $posts->getFirstItem();
 
-            $this->setPreviousUrl($this->url->getUrl($previous->getPostDate('Y') . '/' . $previous->getPostDate('m') . '/'));
+            $this->setPreviousUrl(
+                $this->url->getUrl($previous->getPostDate('Y') . '/' . $previous->getPostDate('m') . '/')
+            );
             $this->setPreviousText($previous->getPostDate('M'));
         }
 
-        $dateString = date('Y-m-d', strtotime('+1 month', strtotime($this->getYear() . '-' . $this->getMonth() . '-01')));
+        $dateString = date(
+            'Y-m-d',
+            strtotime('+1 month', strtotime($this->getYear() . '-' . $this->getMonth() . '-01'))
+        );
 
         $posts = $this->postCollectionFactory->create()
             ->addIsViewableFilter()

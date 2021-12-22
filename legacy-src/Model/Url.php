@@ -83,29 +83,6 @@ class Url
     public function getFileUploadUrl()
     {
         return '';
-        $url = $this->optionManager->getOption('fileupload_url');
-
-        if (!$url) {
-            foreach (['upload_url_path', 'upload_path'] as $config) {
-                if ($value = $this->optionManager->getOption($config)) {
-                    if (strpos($value, 'http') === false) {
-                        if (substr($value, 0, 1) !== '/') {
-                            $url = $this->getSiteurl() . $value;
-                        }
-                    } else {
-                        $url = $value;
-                    }
-
-                    break;
-                }
-            }
-
-            if (!$url) {
-                $url = rtrim($this->getWpContentUrl(), '/') . '/uploads/';
-            }
-        }
-
-        return rtrim($url, '/') . '/';
     }
 
     /**

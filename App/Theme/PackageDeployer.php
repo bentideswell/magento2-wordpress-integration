@@ -11,46 +11,59 @@ namespace FishPig\WordPress\App\Theme;
 class PackageDeployer
 {
     /**
+     * @param \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
+     */
+    public function __construct(\Magento\Framework\Filesystem\DriverInterface $filesystemDriver)
+    {
+        $this->filesystemDriver = $filesystemDriver;
+    }
+    
+    /**
      * @return void
      */
     public function deploy(string $packageFile, string $wpPath): void
     {
-        if (!is_file($packageFile)) {
-            throw new \Exception($packageFile . ' does not exist.');
+        if (!$this->filesystemDriver->isFile($packageFile)) {
+            throw new \FishPig\WordPress\App\Exception($packageFile . ' does not exist.');
         }
         
-        if (!is_dir($wpPath)) {
-            throw new \Exception('WordPress path (' . $wpPath . ') is invalid.');
+        if (!$this->filesystemDriver->isDirectory($wpPath)) {
+            throw new \FishPig\WordPress\App\Exception(
+                'WordPress path (' . $wpPath . ') is invalid.'
+            );
         }
 
         $wpThemePath = $wpPath . '/wp-content/themes';
         
-        if (!is_dir($wpThemePath)) {
-            throw new \Exception('Unable to find ' . $wpThemePath);
+        if (!$this->filesystemDriver->isDirectory($wpThemePath)) {
+            throw new \FishPig\WordPress\App\Exception('Unable to find ' . $wpThemePath);
         }
         
         $fishPigThemePath = $wpThemePath . '/fishpig';
         
-        if (is_dir($fishPigThemePath)) {
+        if ($this->filesystemDriver->isDirectory($fishPigThemePath)) {
             $tempFishPigThemePath = $fishPigThemePath . date('-YmdHis-') . rand(100, 999) . '.delete';
             
-            rename($fishPigThemePath, $tempFishPigThemePath);
+            $this->filesystemDriver->rename($fishPigThemePath, $tempFishPigThemePath);
             
-            if (is_dir($fishPigThemePath)) {
-                throw new \Exception('Unable to remove existing FishPig theme from ' . $fishPigThemePath);
+            if ($this->filesystemDriver->isDirectory($fishPigThemePath)) {
+                throw new \FishPig\WordPress\App\Exception(
+                    'Unable to remove existing FishPig theme from ' . $fishPigThemePath
+                );
             }
         }
         
+        // phpcs:ignore -- basename is OK!
         $migratedZipFile = $wpThemePath . '/' . basename($packageFile);
 
-        copy($packageFile, $migratedZipFile);
+        $this->filesystemDriver->copy($packageFile, $migratedZipFile);
 
         $zip = new \ZipArchive;
 
         if ($zip->open($packageFile) !== true) {
-            throw new \Exception('Unable to open ' . $packageFile . ' using ZipArchive.');
+            throw new \FishPig\WordPress\App\Exception('Unable to open ' . $packageFile . ' using ZipArchive.');
         }
-        
+
         $zip->extractTo($wpThemePath);
         $zip->close();
 
@@ -58,33 +71,27 @@ class PackageDeployer
             $this->recursiveDeleteDir($tempFishPigThemePath);
         }
     }
-    
+
     /**
      * @param  string $baseDir
      * @return void
      */
     private function recursiveDeleteDir(string $baseDir, $level = 0): void
     {
-        if (is_dir($baseDir)) {
-            if ($baseDirObjects = scandir($baseDir)) {
-                foreach ($baseDirObjects as $baseDirObjectName) {
-                    if ($baseDirObjectName === '.' || $baseDirObjectName === '..') {
-                        continue;
-                    }
-                    
-                    $file = $baseDir . '/' . $baseDirObjectName;
-                    
-                    if (is_file($file)) {
-                        unlink($file);
-                    } elseif (is_dir($file)) {
+        if ($this->filesystemDriver->isDirectory($baseDir)) {
+            if ($files = $this->filesystemDriver->readDirectory($baseDir)) {
+                foreach ($files as $file) {
+                    if ($this->filesystemDriver->isFile($file)) {
+                        $this->filesystemDriver->deleteFile($file);
+                    } elseif ($this->filesystemDriver->isDirectory($file)) {
                         $this->recursiveDeleteDir($file, $level+1);
-                        rmdir($file);
+                        $this->filesystemDriver->deleteDirectory($file);
                     }
                 }
             }
-            
+
             if ($level === 0) {
-                rmdir($baseDir);
+                $this->filesystemDriver->deleteDirectory($baseDir);
             }
         }
     }

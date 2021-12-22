@@ -5,5 +5,5 @@
  */
 ?>
 <?php if ($productListHtml = $block->getProductListHtml()): ?>
-    <div class="product-shortcode"><?= $productListHtml ?></div>
+    <div class="product-shortcode"><?= /* @noEscape */ $productListHtml ?></div>
 <?php endif; ?>

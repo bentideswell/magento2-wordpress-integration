@@ -5,3 +5,4 @@
  * @url     https://fishpig.co.uk/magento/wordpress-integration/
  */
 include_once __DIR__ . '/legacy_autoload.php';
+// phpcs:ignoreFile

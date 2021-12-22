@@ -106,5 +106,4 @@ class HierarchicalUrlGenerator
 
         return false;
     }
-
 }

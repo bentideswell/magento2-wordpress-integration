@@ -19,13 +19,14 @@ class Sidebar extends \Magento\Framework\View\Element\Template
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\Model\PluginManager $pluginManager,
         \Magento\Framework\Registry $registry,
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
         array $data = []
     ) {
         $this->widgetRepository = $widgetRepository;
         $this->optionRepository = $optionRepository;
         $this->pluginManager = $pluginManager;
         $this->registry = $registry;
-
+        $this->serializer = $serializer;
         parent::__construct($context, $data);
     }
 
@@ -88,8 +89,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
             $widgets = $this->optionRepository->get('sidebars_widgets');
 
             if ($widgets) {
-                $widgets = unserialize($widgets);
-
+                $widgets = $this->serializer->unserialize($widgets);
                 $realWidgetArea = $this->getRealWidgetArea();
 
                 if (isset($widgets[$realWidgetArea])) {
@@ -112,19 +112,22 @@ class Sidebar extends \Magento\Framework\View\Element\Template
             return $this->getWidgetArea();
         }
 
-        if (!($settings = @unserialize($this->optionRepository->get('cs_modifiable')))) {
-            return $this->getWidgetArea();
+        if ($csModifiableOption = $this->optionRepository->get('cs_modifiable')) {
+            if ($settings = $this->serializer->unserialize($csModifiableOption)) {
+                return $this->getWidgetArea();
+            }
         }
 
         $handles = $this->getLayout()->getUpdate()->getHandles();
 
-        if (!isset($settings['modifiable']) || array_search($this->getWidgetArea(), $settings['modifiable']) === false) {
+        if (!isset($settings['modifiable'])
+            || array_search($this->getWidgetArea(), $settings['modifiable']) === false) {
             return $this->getWidgetArea();
         }
 
         if ($post = $this->registry->registry('wordpress_post')) {
             if ($value = $post->getMetaValue('_cs_replacements')) {
-                $value = @unserialize($value);
+                $value = $this->serializer->unserialize($value);
 
                 if (isset($value[$this->getWidgetArea()])) {
                     return $value[$this->getWidgetArea()];
@@ -132,17 +135,26 @@ class Sidebar extends \Magento\Framework\View\Element\Template
             }
 
             // Single post by type
-            if ($widgetArea = $this->_getArrayValue($settings, 'post_type_single/' . $post->getPostType() . '/' . $this->getWidgetArea())) {
+            if ($widgetArea = $this->_getArrayValue(
+                $settings,
+                'post_type_single/' . $post->getPostType() . '/' . $this->getWidgetArea()
+            )) {
                 return $widgetArea;
             }
 
             // Single post by category
-            if ($categoryIdResults = $post->getResource()->getParentTermsByPostId($post->getId(), $taxonomy = 'category')) {
+            if ($categoryIdResults = $post->getResource()->getParentTermsByPostId(
+                $post->getId(),
+                'category'
+            )) {
                 $categoryIdResults = array_pop($categoryIdResults);
 
                 if (isset($categoryIdResults['category_ids'])) {
                     foreach (explode(',', $categoryIdResults['category_ids']) as $categoryId) {
-                        if ($widgetArea = $this->_getArrayValue($settings, 'category_single/' . $categoryId . '/' . $this->getWidgetArea())) {
+                        if ($widgetArea = $this->_getArrayValue(
+                            $settings,
+                            'category_single/' . $categoryId . '/' . $this->getWidgetArea()
+                        )) {
                             return $widgetArea;
                         }
                     }
@@ -157,7 +169,10 @@ class Sidebar extends \Magento\Framework\View\Element\Template
         }
         
         if ($term = $this->registry->registry('wordpress_term')) {
-            if ($widgetArea = $this->_getArrayValue($settings, $term->getTaxonomy() . '_archive/' . $term->getId() . '/' . $this->getWidgetArea())) {
+            if ($widgetArea = $this->_getArrayValue(
+                $settings,
+                $term->getTaxonomy() . '_archive/' . $term->getId() . '/' . $this->getWidgetArea()
+            )) {
                 return $widgetArea;
             }
         }
@@ -169,7 +184,10 @@ class Sidebar extends \Magento\Framework\View\Element\Template
         }
         
         if ($author = $this->registry->registry('wordpress_author')) {
-            if ($widgetArea = $this->_getArrayValue($settings, 'authors/' . $author->getId() . '/' . $this->getWidgetArea())) {
+            if ($widgetArea = $this->_getArrayValue(
+                $settings,
+                'authors/' . $author->getId() . '/' . $this->getWidgetArea()
+            )) {
                 return $widgetArea;
             }
         }

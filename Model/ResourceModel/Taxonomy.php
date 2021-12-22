@@ -43,7 +43,7 @@ class Taxonomy
             return $this->cache[$cacheKey];
         }
         
-        $this->cache[$cacheKey] = [];        
+        $this->cache[$cacheKey] = [];
 
         $results = $this->resourceConnection->getConnection()->fetchAll(
             $this->getSelectForGetAllUris($taxonomy)
@@ -71,9 +71,9 @@ class Taxonomy
     }
 
      /**
-     * @param  TaxonomyModel $taxonomy
-     * @return 
-     */
+      * @param  TaxonomyModel $taxonomy
+      * @return
+      */
     public function getSelectForGetAllUris(TaxonomyModel $taxonomy)
     {
         $connection = $this->resourceConnection->getConnection();
@@ -114,7 +114,6 @@ class Taxonomy
                 null
             )
             ->where('tax.parent > 0');
-
 
         if (!($redirectableUris = $connection->fetchAll($select))) {
             return [];

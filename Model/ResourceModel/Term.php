@@ -31,7 +31,7 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
                     ['main_table' => $this->getMainTable()]
                 )->where(
                     $this->getConnection()->quoteIdentifier(sprintf('%s.%s', 'main_table', $field)) . '=?',
-                     $value
+                    $value
                 );
 
         $select->reset('where');
@@ -93,11 +93,12 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
             ->where('count>?', 0);
 
         if ($termIds = $this->getConnection()->fetchCol($select)) {
+            $allIds = [$termIds];
             foreach ($termIds as $key => $termId) {
-                $termIds = array_merge($termIds, $this->getChildIds($termId));
+                $allIds[] = $this->getChildIds($termId);
             }
 
-            return array_merge([$parentId], $termIds);
+            return array_unique(array_merge(...$allIds));
         }
 
         return [$parentId];

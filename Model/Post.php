@@ -155,7 +155,10 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
             $excerpt = explode(' ', $excerpt);
 
             if (count($excerpt) > $maxWords) {
-                $excerpt = rtrim(implode(' ', array_slice($excerpt, 0, $maxWords)), "!@£$%^&*()_-+=[{]};:'\",<.>/? ") . '...';
+                $excerpt = rtrim(
+                    implode(' ', array_slice($excerpt, 0, $maxWords)),
+                    "!@£$%^&*()_-+=[{]};:'\",<.>/? "
+                ) . '...';
             } else {
                 $excerpt = implode(' ', $excerpt);
             }
@@ -227,7 +230,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      */
     protected function _getTeaserAnchor()
     {
-        // Allows translation
+        // phpcs:ignore -- allows translation
         return stripslashes(__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
     }
 
@@ -399,7 +402,10 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         /*if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
             if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
                 if (strpos($renderedContent, '[') !== false) {
-                    $renderedContent = $this->shortcodeFactory->create()->setShortcode($renderedContent)->setPost($this)->toHtml();
+                    $renderedContent = $this->shortcodeFactory->create()
+                        ->setShortcode($renderedContent)
+                        ->setPost($this)
+                        ->toHtml();
                 }
 
                 return $renderedContent;
@@ -410,7 +416,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
 
         if (!$this->hasData($key)) {
             $this->setData(
-                $key, 
+                $key,
                 $this->shortcodeFactory->create()->setShortcode($content)->setPost($this)->toHtml()
             );
         }
@@ -445,9 +451,9 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         if (!$this->hasData('images')) {
             $this->setImages(
                 $this->imageFactory->create()->getCollection(
-                    )->setParent(
-                        (int)$this->getData('ID')
-                    )
+                )->setParent(
+                    (int)$this->getData('ID')
+                )
             );
         }
 
@@ -754,7 +760,6 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     {
         return $this->getChildrenPosts();
     }
-
 
     /**
      *

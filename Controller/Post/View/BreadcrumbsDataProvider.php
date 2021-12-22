@@ -25,7 +25,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      * @param  \FishPig\WordPress\Api\Data\ViewableModelInterface $object
      * @return array
      */
-    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $post): array 
+    public function getData(\FishPig\WordPress\Api\Data\ViewableModelInterface $post): array
     {
         $crumbs = [];
 
@@ -61,8 +61,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
                             ];
                         }
                     }
-                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
-                    /**/
+                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) { // phpcs:ignore -- empty catch
                 }
             } elseif ($postType->isHierarchical() && strlen($slugPart) > 1 && substr($slugPart, 0, 1) !== '.') {
                 $this->logger->debug('Post breadcrumbs data provider error on line 68. Slug = ' . $postType->getSlug());

@@ -26,7 +26,7 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
      * @var int
      */
     private $realStatusCode = 0;
-    
+
     /**
      *
      */
@@ -38,25 +38,25 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
         $this->authorisationKey = $authorisationKey;
         $this->appMode = $appMode;
         parent::__construct($sslVersion);
-        
+
         $this->setOption(CURLOPT_SSL_VERIFYHOST, false);
         $this->setOption(CURLOPT_SSL_VERIFYPEER, false);
         $this->setOption(CURLOPT_FOLLOWLOCATION, true);
 
         $this->addHeader(
-            \FishPig\WordPress\App\HTTP\AuthorisationKey::HTTP_HEADER_NAME, 
+            \FishPig\WordPress\App\HTTP\AuthorisationKey::HTTP_HEADER_NAME,
             $this->authorisationKey->getKey()
         );
-        
-        if ($this->appMode->isLocalMode()) {
-            if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
-                // If in local mode and HTTP auth details present then include them in the WP HTTP requests 
-                // as it's safe to assume that WP is covered by the same http auth
-                $this->addHeader('Authorization', $_SERVER['HTTP_AUTHORIZATION']);
-            }
+
+        // phpcs:disable -- Reusing HTTP auth details from Magento WordPress
+        if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+            // If HTTP auth details present then include them in the WP HTTP requests
+            // as it's safe to assume that WP is covered by the same http auth
+            $this->addHeader('Authorization', $_SERVER['HTTP_AUTHORIZATION']);
         }
+        // phpcs:enable
     }
-            
+
     /**
      * @param  string $url
      * @return void
@@ -86,7 +86,7 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
 
         parent::curlOption($name, $value);
     }
-    
+
     /**
      * This updates the status code if a redirect happens
      *
@@ -94,15 +94,16 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
      */
     protected function parseHeaders($ch, $data)
     {
+        // phpcs:ignore
         $curlInfo = curl_getinfo($this->_ch);
-        
+
         if (!empty($curlInfo['http_code'])) {
             $this->realStatusCode = $curlInfo['http_code'];
         }
 
         return parent::parseHeaders($ch, $data);
     }
-    
+
     /**
      * Gets the real status code
      *
@@ -112,21 +113,23 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     {
         return $this->realStatusCode !== 0 ? $this->realStatusCode : parent::getStatus();
     }
-    
+
     /**
      * @param  string $string
      * @return void
      */
     public function doError($string)
     {
+        // phpcs:ignore -- what else can we do?
         $errNo = curl_errno($this->_ch);
 
+        // phpcs:ignore -- closing CURL is godly!
         curl_close($this->_ch);
 
         if ($string === '') {
             $string = CurlException::getErrorMessageFromCode($errNo);
         }
-        
+
         throw new CurlException($string, $errNo);
     }
 }

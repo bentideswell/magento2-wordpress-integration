@@ -92,7 +92,7 @@ class Post extends AbstractResourceModel
                     'permalink',
                     $this->permalinkResource->completePostSlug(
                         $permalink,
-                        (int)$post->getId(), 
+                        (int)$post->getId(),
                         $post->getTypeInstance()
                     )
                 );
@@ -133,11 +133,9 @@ class Post extends AbstractResourceModel
             ->setPost(
                 $post
             )->addCommentApprovedFilter(
-                
             )->addParentCommentFilter(
                 0
             )->addOrderByDate(
-                
             );
     }
 

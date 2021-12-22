@@ -60,8 +60,6 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
     public function getUrl()
     {
         if (!$this->hasUrl()) {
-            
-
             $this->setUrl(
                 $this->url->getHomeUrlWithFront('author/' . urlencode($this->getUserNicename()) . '/')
             );
@@ -76,7 +74,7 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
     public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
         return $this->postCollectionFactory->create()->addUserIdFilter(
-            (int)$this->getId()            
+            (int)$this->getId()
         );
     }
     
@@ -105,22 +103,6 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
     public function getTablePrefix()
     {
         return $this->getResource()->getTablePrefix();
-    }
-
-    /**
-     * Retrieve the user's role
-     *
-     * @return false|string
-     */
-    public function getRole()
-    {
-        if ($roles = $this->getMetaValue($this->getTablePrefix() . 'capabilities')) {
-            foreach (unserialize($roles) as $role => $junk) {
-                return $role;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -170,7 +152,10 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
      */
     public function getGravatarUrl($size = 50)
     {
-        return "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->getUserEmail()))) . "?d=" . urlencode($this->_getDefaultGravatarImage()) . "&s=" . $size;
+        // phpcs:ignore -- not cryptographic
+        $userKey = md5(strtolower(trim($this->getUserEmail())));
+        $defaultImage = urlencode($this->_getDefaultGravatarImage());
+        return "https://www.gravatar.com/avatar/" . $userKey . "?d=" . $defaultImage . "&s=" . $size;
     }
 
     /**

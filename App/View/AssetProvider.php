@@ -53,8 +53,7 @@ class AssetProvider implements AssetProviderInterface
     public function provideAssets(
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\App\ResponseInterface $response
-    ): void
-    {
+    ): void {
         if ($this->appMode->isDisabled()) {
             return;
         }

@@ -21,10 +21,12 @@ class DirectoryList
      */
     public function __construct(
         \FishPig\WordPress\App\DirectoryList\PathResolver $pathResolver,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
     ) {
         $this->pathResolver = $pathResolver;
         $this->storeManager = $storeManager;
+        $this->filesystemDriver = $filesystemDriver;
     }
     
     /**
@@ -37,25 +39,26 @@ class DirectoryList
         if (!isset($this->basePath[$storeId])) {
             $this->basePath[$storeId] = false;
             
-            // Get path or default to wp            
+            // Get path or default to wp
             $path = $this->pathResolver->resolve()->getPath($storeId) ?: 'wp';
 
             if (substr($path, 0, 1) !== '/') {
-                if (is_dir(BP . '/pub/' . $path)) {
+                if ($this->filesystemDriver->isDirectory(BP . '/pub/' . $path)) {
                     $path = BP . '/pub/' . $path;
-                } elseif (is_dir(BP . '/' . $path)) {
+                } elseif ($this->filesystemDriver->isDirectory(BP . '/' . $path)) {
                     $path = BP . '/' . $path;
                 }
             }
 
-            if (is_dir($path) && is_file($path . '/wp-config.php')) {
+            if ($this->filesystemDriver->isDirectory($path)
+                && $this->filesystemDriver->isFile($path . '/wp-config.php')) {
                 $this->basePath[$storeId] = $path;
             }
         }
-        
+
         return $this->basePath[$storeId];
-    } 
-    
+    }
+
     /**
      * @return bool
      */

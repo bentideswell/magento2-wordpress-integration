@@ -9,5 +9,6 @@ declare(strict_types=1);
 namespace FishPig\WordPress\App\Integration\Exception;
 
 class IntegrationRecoverableException extends \FishPig\WordPress\App\Exception
-{   
+{
+
 }

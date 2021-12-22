@@ -1,8 +1,0 @@
-<?php
-/**
- *
- **/
-?>
-<?php if ($post = $block->getPost()): ?>
-    <div class="post-user post-meta-item"><strong><?= __('Posted By') ?>:</strong> <a href="<?= $block->escapeUrl($post->getUser()->getUrl()) ?>"><?= $block->escapeHtml($post->getUser()->getDisplayName()) ?></a></div>
-<?php endif; ?>

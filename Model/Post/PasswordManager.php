@@ -81,8 +81,9 @@ class PasswordManager
      */
     private function hashPassword(string $password): string
     {
-        return md5( // phpcs:ignore
+        // phpcs:ignore -- not cryptographic
+        return md5(
             $this->deploymentConfig->get('crypt/key') . $this->url->getSiteUrl() . $password
-        ); // md5() here is not for cryptographic use.
+        );
     }
 }

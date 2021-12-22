@@ -45,7 +45,8 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
             $this->postCollection = $this->getBasePostCollection()
                 ->addIsViewableFilter()
                 ->addOrder(
-                    'post_date', 'desc'
+                    'post_date',
+                    'desc'
                 );
         }
 
@@ -75,7 +76,7 @@ abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
     {
         if (!($postListBlock = $this->getChildBlock('wp.post.list'))) {
             $postListBlock = $this->getLayout()
-                ->createBlock('FishPig\WordPress\Block\Post\ListPost')
+                ->createBlock(\FishPig\WordPress\Block\Post\ListPost::class)
                 ->setTemplate('FishPig_WordPress::post/list.phtml');
 
                 $this->setChild('wp.post.list', $postListBlock);

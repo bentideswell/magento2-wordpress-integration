@@ -9,7 +9,7 @@
     <p class="post-list-description"><?= $block->escapeHtml($text) ?></p>
 <?php endif; ?>
 <?php if ($postList = trim($block->getPostListHtml())): ?>
-    <?= $postList ?>
+    <?= /* @noEscape */ $postList ?>
 <?php else: ?>
-    <p class="note-msg"><?= __('There are no posts matching your selection.') ?></p>
+    <p class="note-msg"><?= $block->escapeHtml(__('There are no posts matching your selection.')) ?></p>
 <?php endif; ?>

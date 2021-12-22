@@ -31,7 +31,7 @@ class Core extends \Magento\Framework\App\Helper\AbstractHelper
      * @return mixed
      */
     public function simulatedCallback(\Closure $callback, array $params = [])
-    {   
+    {
         return null;
     }
 

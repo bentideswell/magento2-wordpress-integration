@@ -42,9 +42,17 @@ class Menu extends \FishPig\WordPress\Model\Term
         array $data = []
     ) {
         $this->menuItemCollectionFactory = $menuItemCollectionFactory;
-        parent::__construct($context, $registry, $wpContext, $taxonomyRepository, $termRepository, $resource, $resourceCollection, $data);
+        parent::__construct(
+            $context,
+            $registry,
+            $wpContext,
+            $taxonomyRepository,
+            $termRepository,
+            $resource,
+            $resourceCollection,
+            $data
+        );
     }
-
 
     /**
      * Gets a simple array of the menu

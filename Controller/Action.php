@@ -85,15 +85,14 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     {
         return trim(
             str_replace(
-                ['__', '__'], 
-                '_', 
+                ['__', '__'],
+                '_',
                 preg_replace('/[^a-z0-9_]+/', '_', $handle)
             ),
             '_'
         );
     }
 
-    
     /**
      * @param  array $crumbs
      * @return void
@@ -101,7 +100,7 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     protected function addBreadcrumbs(array $crumbs): void
     {
         if (!($breadcrumbsBlock = $this->_view->getLayout()->getBlock('breadcrumbs'))) {
-            return;   
+            return;
         }
 
         $crumbs = array_merge(

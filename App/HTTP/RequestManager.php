@@ -24,7 +24,7 @@ class RequestManager
      * @param \FishPig\WordPress\Model\UrlInterface $url
      */
     public function __construct(
-        \FishPig\WordPress\Model\UrlInterface $url,      
+        \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger
     ) {
@@ -69,7 +69,8 @@ class RequestManager
      */
     protected function makeRequest(string $method, string $url = null, $args = null): ClientInterface
     {
-        $cacheKey = md5($method . strtolower($url ?? '_current'));        
+        // phpcs:ignore -- not cryptographic
+        $cacheKey = md5($method . strtolower($url ?? '_current'));
         
         if (!isset($this->cache[$cacheKey])) {
             $this->cache[$cacheKey] = $client = $this->httpClientFactory->create();
@@ -102,8 +103,7 @@ class RequestManager
                 throw $e;
             }
         }
-        
-        
+
         return $this->cache[$cacheKey];
     }
     
@@ -119,11 +119,13 @@ class RequestManager
             'REMOTE_ADDR',
         ];
 
+        // phpcs:disable -- this is only used debug logging
         foreach ($headers as $header) {
             if (!empty($_SERVER[$header])) {
                 return $_SERVER[$header];
             }
         }
+        // phpcs:enable
 
         return false;
     }

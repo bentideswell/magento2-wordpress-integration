@@ -82,7 +82,7 @@ class RequestDispatcher
         $routeParts = explode('/', $route);
 
         if (count($routeParts) !== 3) {
-            throw new \Exception('Invalid route (' . $route . ') supplied to router.');
+            throw new \FishPig\WordPress\App\Exception('Invalid route (' . $route . ') supplied to router.');
         }
 
         return [

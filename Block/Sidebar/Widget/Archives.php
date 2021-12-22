@@ -11,7 +11,7 @@ class Archives extends AbstractWidget
      *
      * @var null|Varien_Data_Collection
      */
-    protected $archiveCollection;
+    protected $archiveCollection = null;
 
     /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
@@ -38,12 +38,14 @@ class Archives extends AbstractWidget
      */
     public function getArchives()
     {
-        if (is_null($this->archiveCollection)) {
+        if ($this->archiveCollection === null) {
             $dates = $this->archiveResource->getDatesForWidget();
             $this->archiveCollection = [];
 
             foreach ($dates as $date) {
-                $archive = $this->archiveFactory->create()->load($date['archive_date'])->setPostCount($date['post_count']);;
+                $archive = $this->archiveFactory->create()
+                    ->load($date['archive_date'])
+                    ->setPostCount($date['post_count']);
                 $this->archiveCollection[$archive->getId()] = $archive;
             }
         }

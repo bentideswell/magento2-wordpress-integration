@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php if ($post = $block->getPost()): ?>
     <?php if (!$post->isViewableForVisitor()): ?>
@@ -13,38 +14,40 @@
             <div class="post-entry">
                 <?php if ($image = $post->getImage()): ?>
                     <div class="post-image">
-                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getPostTitle()) ?>"><img src="<?= $block->escapeUrl($image->getImageUrl('thumbnail')) ?>" alt="<?= $block->escapeHtml($post->getPostTitle()) ?>"/></a>
+                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getPostTitle()) ?>">
+                            <img src="<?= $block->escapeUrl($image->getImageUrl('thumbnail')) ?>" alt="<?= $block->escapeHtml($post->getPostTitle()) ?>"/>
+                        </a>
                     </div>
                 <?php endif; ?>
                 <?php if (($content = trim($post->getContent())) !== ''): ?>
-                    <div class="post-content"><?= $content ?></div>
+                    <div class="post-content"><?= /* @noEscape */ $content ?></div>
                 <?php endif; ?>
             </div>
             <div class="post-meta">
                 <?php
                     // Try to get category taxonomy but if not available for this post type, get first available taxonomy
                     // Then display this taxonomy as a string or links
-                    // You can change 'category' to any custom taxonomy this post type supports            
-                    if ($taxonomy = $post->getSupportedTaxonomy('category') ?: $post->getSupportedTaxonomy(null)): ?>
+                    // You can change 'category' to any custom taxonomy this post type supports
+                if ($taxonomy = $post->getSupportedTaxonomy('category') ?: $post->getSupportedTaxonomy(null)): ?>
                     <?php if ($categoryString = $post->getTermCollectionAsString($taxonomy->getTaxonomy())): ?>
                         <div class="post-categories post-meta-item">
-                            <strong><?= $block->escapeHtml(__($taxonomy->getName())) ?>:</strong> <?= $categoryString ?>
+                            <strong><?= $block->escapeHtml(__($taxonomy->getName())) ?>:</strong> <?= $block->escapeHtml($categoryString, ['a']) ?>
                         </div>
                     <?php endif; ?>
                 <?php endif; ?>
                 <?php if ($tagString = $post->getTermCollectionAsString('post_tag')): ?>
                     <div class="post-tags post-meta-item">
-                        <strong><?= __('Tags') ?>:</strong> <?= $tagString ?>
+                        <strong><?= $block->escapeHtml(__('Tags')) ?>:</strong> <?= $block->escapeHtml($tagString, ['a']) ?>
                     </div>
                 <?php endif; ?>
                 <div class="post-date post-meta-item">
-                    <strong><?= __('Posted On') ?>:</strong> <?= $post->getPostDate() ?>
+                    <strong><?= $block->escapeHtml(__('Posted On')) ?>:</strong> <?= $block->escapeHtml($post->getPostDate()) ?>
                 </div>
                 <div class="post-user post-meta-item">
-                    <strong><?= __('Posted By') ?>:</strong> <a href="<?= $block->escapeUrl($post->getUser()->getUrl()) ?>"><?= $block->escapeHtml($post->getUser()->getDisplayName()) ?></a>
+                    <strong><?= $block->escapeHtml(__('Posted By')) ?>:</strong> <a href="<?= $block->escapeUrl($post->getUser()->getUrl()) ?>"><?= $block->escapeHtml($post->getUser()->getDisplayName()) ?></a>
                 </div>
             </div>
-            <?= $block->getChildHtml('comments') ?>
+            <?= /* @noEscape */ $block->getChildHtml('comments') ?>
         <?php endif; ?>
     </div>
 <?php endif; ?>

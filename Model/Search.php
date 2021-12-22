@@ -90,9 +90,9 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
     public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
         $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
-            $this->getParsedSearchString(), 
+            $this->getParsedSearchString(),
             [
-                'post_title' => 5, 
+                'post_title' => 5,
                 'post_content' => 1
             ]
         );

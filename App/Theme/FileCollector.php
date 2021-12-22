@@ -15,9 +15,11 @@ class FileCollector
      */
     public function __construct(
         \Magento\Framework\Module\Dir $moduleDir,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
         array $modules = []
     ) {
         $this->moduleDir = $moduleDir;
+        $this->filesystemDriver = $filesystemDriver;
         $this->modules = $modules;
     }
 
@@ -29,15 +31,16 @@ class FileCollector
         $files = [];
 
         foreach ($this->modules as $module) {
-            $moduleDir = dirname($this->moduleDir->getDir($module, \Magento\Framework\Module\Dir::MODULE_ETC_DIR))
-                 . '/' . $this->getTargetDir();
+            $moduleEtcDir = $this->moduleDir->getDir($module, \Magento\Framework\Module\Dir::MODULE_ETC_DIR);
+            $moduleDir = $this->filesystemDriver->getParentDirectory($moduleEtcDir);
+            $moduleWpThemeDir = $moduleDir . '/' . $this->getTargetDir();
 
-            if (is_dir($moduleDir)) {
-                $files = array_merge($files, $this->collectFiles($moduleDir));
+            if ($this->filesystemDriver->isDirectory($moduleWpThemeDir)) {
+                $files[] = $this->collectFiles($moduleWpThemeDir);
             }
         }
 
-        return $files;
+        return $files ? array_merge(...$files) : [];
     }
 
     /**
@@ -52,24 +55,22 @@ class FileCollector
 
         $themeFiles = [];
 
-        if (is_dir($dir) && ($files = scandir($dir))) {
+        if (!$this->filesystemDriver->isDirectory($dir)) {
+            return $themeFiles;
+        }
+
+        if ($files = $this->filesystemDriver->readDirectory($dir)) {
             foreach ($files as $file) {
-                if ($file === '.' || $file === '..' || $file === '.git' || $file === 'README.md') {
-                    continue;
-                }
-
-                $tmp = $dir . '/' . $file;
-                $rel = str_replace($baseDir . '/', '', $tmp);
-
-                if (is_file($tmp)) {
-                    $themeFiles[$rel] = $tmp;
-                } elseif (is_dir($tmp)) {
-                    $themeFiles = array_merge($themeFiles, $this->collectFiles($tmp, $baseDir));
+                if ($this->filesystemDriver->isFile($file)) {
+                    $rel = str_replace($baseDir . '/', '', $file);
+                    $themeFiles[] = [$rel => $file];
+                } elseif ($this->filesystemDriver->isDirectory($file)) {
+                    $themeFiles[] = $this->collectFiles($file, $baseDir);
                 }
             }
         }
-
-        return $themeFiles;
+        
+        return $themeFiles ? array_merge(...$themeFiles) : [];
     }
 
     /**

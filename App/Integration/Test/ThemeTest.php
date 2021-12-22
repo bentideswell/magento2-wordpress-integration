@@ -50,11 +50,15 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         }
 
         if (!$this->theme->isInstalled()) {
-            throw new IntegrationFatalException('The FishPig theme is not installed in WordPress. ' . $this->getErrorMessage());
+            throw new IntegrationFatalException(
+                'The FishPig theme is not installed in WordPress. ' . $this->getErrorMessage()
+            );
         }
 
         if (!$this->theme->isLatestVersion()) {
-            throw new IntegrationFatalException('The WordPress FishPig theme has an update available. ' . $this->getErrorMessage());
+            throw new IntegrationFatalException(
+                'The WordPress FishPig theme has an update available. ' . $this->getErrorMessage()
+            );
         }
     }
     

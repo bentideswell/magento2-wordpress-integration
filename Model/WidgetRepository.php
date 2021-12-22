@@ -9,7 +9,8 @@ declare(strict_types=1);
 namespace FishPig\WordPress\Model;
 
 class WidgetRepository
-{    
+{
+
     /**
      * @var array
      */

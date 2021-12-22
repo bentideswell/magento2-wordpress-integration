@@ -11,10 +11,16 @@ namespace FishPig\WordPress\Model;
 class Factory
 {
     /**
+     * @var array
+     */
+    private $factories = [];
+
+    /**
      *
      */
     public function __construct(array $factories = [])
     {
+        $this->factories = [];
     }
 
     /**
@@ -68,6 +74,7 @@ class Factory
             $type   = trim($type, '\\');
             $prefix = __NAMESPACE__ . '\\';
 
+            // phpcs:ignore
             if (strpos($type, '\\') > 0) {
                 $prefix = 'FishPig\WordPress\\';
             }

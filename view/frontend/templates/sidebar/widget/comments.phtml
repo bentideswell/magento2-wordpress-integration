@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php $comments = $block->getComments() ?>
 <?php if (count($comments) > 0): ?>
@@ -18,7 +19,7 @@
                 <?php foreach ($comments as $comment): ?>
                     <?php if ($comment->getPost()): ?>
                     <li class="item">
-                        <?= $block->escapeHtml($comment->getCommentAuthor()) ?> <?= __('on') ?> <a href="<?= $block->escapeUrl($comment->getUrl()) ?>"><?= $block->escapeHtml(__($comment->getPostTitle())) ?></a>
+                        <?= $block->escapeHtml($comment->getCommentAuthor()) ?> <?= $block->escapeHtml(__('on')) ?> <a href="<?= $block->escapeUrl($block->escapeUrl($comment->getUrl())) ?>"><?= $block->escapeHtml(__($comment->getPostTitle())) ?></a>
                     </li>
                     <?php endif; ?>
                 <?php endforeach; ?>

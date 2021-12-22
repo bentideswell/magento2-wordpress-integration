@@ -16,7 +16,7 @@
         <div class="block-content">
             <ul class="level0" id="wp-term-list">
                 <?php foreach ($terms as $term): ?>
-                    <?= $block->drawChildItem($term) ?>
+                    <?= /* @noEscape */ $block->drawChildItem($term) ?>
                 <?php endforeach; ?>
             </ul>
         </div>

@@ -80,18 +80,21 @@ abstract class AbstractCollection extends ParentClass
                 ]
             );
 
-            $this->_eventManager->dispatch($model->getEventPrefix() . '_join_meta_field', ['collection' => $this, 'meta' => $meta]);
+            $this->_eventManager->dispatch(
+                $model->getEventPrefix() . '_join_meta_field',
+                ['collection' => $this, 'meta' => $meta]
+            );
 
             if ($meta->getCanSkipJoin()) {
                 $this->metaFieldsJoined[$field] = $meta->getAlias();
             } else {
-                $condition = "`{$alias}`.`{$model->getMetaTableObjectField()}`=`main_table`.`{$model->getResource()->getIdFieldName()}` AND "
-                    . $this->getConnection()->quoteInto("`{$alias}`.`meta_key`=?", $field);
+                $condition = "{$alias}.{$model->getMetaTableObjectField()}"
+                             . "=main_table.{$model->getResource()->getIdFieldName()} AND "
+                             . $this->getConnection()->quoteInto("{$alias}.meta_key=?", $field);
 
                 $this->getSelect()->joinLeft([$alias => $model->getMetaTable()], $condition, '');
 
                 $this->metaFieldsJoined[$field] = $alias . '.meta_value';
-                ;
             }
         }
 

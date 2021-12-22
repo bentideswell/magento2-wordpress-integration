@@ -43,7 +43,11 @@ class HeadAdditional extends \Magento\Framework\View\Element\AbstractBlock
             ];
 
             foreach ($cssFiles as $cssTypeId => $cssFile) {
-                $html[] = sprintf('<link rel="stylesheet" id="%s" href="%s" type="text/css" media="all"/>', $cssTypeId, $siteUrl . $cssFile);
+                $html[] = sprintf(
+                    '<link rel="stylesheet" id="%s" href="%s" type="text/css" media="all"/>',
+                    $cssTypeId,
+                    $siteUrl . $cssFile
+                );
             }
         }
 

@@ -22,7 +22,7 @@ class SwitcherPlugin
     public function __construct(
         \Magento\Framework\Url\EncoderInterface $encoder,
         \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
-    ) {        
+    ) {
         $this->encoder = $encoder;
         $this->storeSwitcherUrlProvider = $storeSwitcherUrlProvider;
     }
@@ -31,8 +31,8 @@ class SwitcherPlugin
      *
      */
     public function aroundGetTargetStorePostData(
-        \Magento\Store\Block\Switcher $subject, 
-        \Closure $callback, 
+        \Magento\Store\Block\Switcher $subject,
+        \Closure $callback,
         \Magento\Store\Model\Store $store,
         $data = []
     ) {

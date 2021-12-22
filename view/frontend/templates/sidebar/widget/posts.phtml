@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php $posts = $block->getPosts() ?>
 <?php if (count($posts) > 0): ?>
@@ -14,7 +15,7 @@
             </div>
         <?php endif; ?>
         <div class="block-content">
-            <ul id="<?= $block->getListId() ?>">
+            <ul id="<?= $block->escapeHtmlAttr($block->getListId()) ?>">
             <?php foreach ($posts as $post): ?>
                 <li class="item">
                     <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getPostTitle()) ?>"><?= $block->escapeHtml($post->getPostTitle()) ?></a>

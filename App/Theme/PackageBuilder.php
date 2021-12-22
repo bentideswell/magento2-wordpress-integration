@@ -23,11 +23,13 @@ class PackageBuilder
     public function __construct(
         \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
         \FishPig\WordPress\App\Theme\FileCollector $fileCollector,
-        \Magento\Framework\App\Filesystem\DirectoryList $directoryList
+        \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
     ) {
         $this->localHashProvider = $localHashProvider;
         $this->fileCollector = $fileCollector;
         $this->directoryList = $directoryList;
+        $this->filesystemDriver = $filesystemDriver;
     }
 
     /**
@@ -46,7 +48,7 @@ class PackageBuilder
         $file = $this->directoryList->getPath(DirectoryList::MEDIA)
             . '/fishpig-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
 
-        if (is_file($file)) {
+        if ($this->filesystemDriver->isFile($file)) {
             return $file;
         }
 
@@ -55,7 +57,7 @@ class PackageBuilder
         if (class_exists(\ZipArchive::class)) {
             $this->buildUsingZipArchive($file, $files);
         } else {
-            throw new \Exception('Unable to build zip file without ZipArchive.');
+            throw new \FishPig\WordPress\App\Exception('Unable to build zip file without ZipArchive.');
         }
 
         return $file;
@@ -71,14 +73,14 @@ class PackageBuilder
         $zip = new \ZipArchive();
 
         if ($zip->open($zipFile, \ZipArchive::CREATE) !== true) {
-            throw new \Exception('Unable to open Zip for writing at ' . $zipFile);
+            throw new \FishPig\WordPress\App\Exception('Unable to open Zip for writing at ' . $zipFile);
         }
 
         $localHash = $this->localHashProvider->getHash();
 
         foreach ($files as $relative => $file) {
             $relative = 'fishpig/' . $relative;
-            $data = file_get_contents($file);
+            $data = $this->filesystemDriver->fileGetContents($file);
             
             if (strpos($data, self::TOKEN_REMOTE_HASH) !== false) {
                 $zip->addFromString(
@@ -92,8 +94,8 @@ class PackageBuilder
 
         $zip->close();
 
-        if (!is_file($zipFile)) {
-            throw new \Exception('Failed to create ' . $zipFile . ' using ZipArchive');
+        if (!$this->filesystemDriver->isFile($zipFile)) {
+            throw new \FishPig\WordPress\App\Exception('Failed to create ' . $zipFile . ' using ZipArchive');
         }
     }
 }

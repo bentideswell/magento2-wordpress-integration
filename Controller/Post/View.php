@@ -83,10 +83,10 @@ class View extends \FishPig\WordPress\Controller\Action
                                 );
                         }
                     } catch (NoSuchEntityException $e) {
-                        /* Ignore */
+                        $previewPost = false;
                     }
                 }
-            }   
+            }
         }
         
         if ($post->getPostStatus() === 'private' && !$this->customerSession->isLoggedIn()) {

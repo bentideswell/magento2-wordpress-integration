@@ -52,7 +52,9 @@ class IntegrationDataRetriever
         }
 
         if (!isset($this->data[$storeId][$key])) {
-            throw new \FishPig\WordPress\App\Api\Exception\MissingApiDataException('Unable to get ' . $key . ' from API data.');
+            throw new \FishPig\WordPress\App\Api\Exception\MissingApiDataException(
+                'Unable to get ' . $key . ' from API data.'
+            );
         }
 
         return $this->data[$storeId][$key];

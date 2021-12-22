@@ -61,7 +61,7 @@ class Form extends AbstractBlock
      */
     public function getRedirectToUrl()
     {
-       return $this->_urlBuilder->getUrl('wordpress/post_comment/submit', ['post_id' => $this->getPost()->getId()]);
+        return $this->_urlBuilder->getUrl('wordpress/post_comment/submit', ['post_id' => $this->getPost()->getId()]);
     }
 
     /**

@@ -82,7 +82,7 @@ class Posts extends AbstractWidget
      */
     protected function _getPostCollection()
     {
-        if (is_null($this->collection)) {
+        if ($this->collection === null) {
             $collection = $this->postCollectionFactory->create()
                 ->setOrderByPostDate()
                 ->addIsViewableFilter()
@@ -176,6 +176,7 @@ class Posts extends AbstractWidget
     public function getListId()
     {
         if (!$this->hasListId()) {
+            // phpcs:ignore -- not cryptographic
             $hash = 'wp-' . md5(rand(1111, 9999) . $this->getCategoryId() . $this->getAuthorId() . $this->getTitle());
 
             $this->setListId(substr($hash, 0, 6));

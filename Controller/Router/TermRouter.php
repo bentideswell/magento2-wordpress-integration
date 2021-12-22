@@ -41,8 +41,8 @@ class TermRouter implements \Magento\Framework\App\RouterInterface
             foreach ($taxonomy->getAllRoutes() as $termId => $route) {
                 if ($pathInfo === $route) {
                     return $this->requestDispatcher->dispatch(
-                        $request, 
-                        '*/term/view', 
+                        $request,
+                        '*/term/view',
                         ['id' => $termId]
                     );
                 }

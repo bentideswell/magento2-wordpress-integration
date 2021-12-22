@@ -5,11 +5,12 @@
  * @notes This template is used when there post/list.phtml doesn't have a child block called 'renderer'
  * @notes This happens when post/list.phtml is called in via PHP rather than via the default layout handles
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php if ($post = $block->getPost()): ?>
     <div class="post-list-item">
         <h2>
-            <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getName()) ?>">
+            <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtmlAttr($post->getName()) ?>">
                 <?= $block->escapeHtml($post->getName()) ?>
             </a>
         </h2>
@@ -19,31 +20,36 @@
             <div class="post-entry">
                 <?php if ($image = $post->getImage()): ?>
                     <?php $imageUrl = $image->getResizer() // Resizing only available in local integration mode
-                            ? $image->getResizer()->constrainOnly(true)->keepFrame(false)->keepAspectRatio(true)->resize(600, null) 
+                            ? $image->getResizer()->constrainOnly(true)
+                                ->keepFrame(false)
+                                ->keepAspectRatio(true)
+                                ->resize(600, null)
                             : $image->getImageUrl(['large', 'medium']) ?>
                     <div class="post-image">
-                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getName()) ?>"><img src="<?= $block->escapeUrl($imageUrl) ?>" alt="<?= $block->escapeHtml($post->getName()) ?>"/></a>
+                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getName()) ?>">
+                            <img src="<?= $block->escapeUrl($imageUrl) ?>" alt="<?= $block->escapeHtml($post->getName()) ?>"/>
+                        </a>
                     </div>
                 <?php endif; ?>
-                <div class="post-excerpt"><?= $post->getExcerpt(60) ?></div>
+                <div class="post-excerpt"><?= /* @noEscape */ $post->getExcerpt(60) ?></div>
             </div>
         <?php endif; ?>
         <div class="post-meta">
             <?php if ($categoryString = $post->getTermCollectionAsString('category')): ?>
                 <div class="post-categories post-meta-item">
-                    <strong><?= __('Categories') ?>:</strong> <?= $categoryString ?>
+                    <strong><?= $block->escapeHtml(__('Categories')) ?>:</strong> <?= $block->escapeHtml($categoryString, ['a']) ?>
                 </div>
             <?php endif; ?>
             <?php if ($tagString = $post->getTermCollectionAsString('post_tag')): ?>
                 <div class="post-tags post-meta-item">
-                    <strong><?= __('Tags') ?>:</strong> <?= $tagString ?>
+                    <strong><?= $block->escapeHtml(__('Tags')) ?>:</strong> <?= $block->escapeHtml($tagString, ['a']) ?>
                 </div>
             <?php endif; ?>
             <div class="post-date post-meta-item">
-                <strong><?= __('Posted On') ?>:</strong> <?= $block->escapeHtml($post->getPostDate()) ?>
+                <strong><?= $block->escapeHtml(__('Posted On')) ?>:</strong> <?= $block->escapeHtml($post->getPostDate()) ?>
             </div>
             <div class="post-user post-meta-item">
-                <strong><?= __('Posted By') ?>:</strong> <a href="<?= $block->escapeUrl($post->getUser()->getUrl()) ?>"><?= $block->escapeHtml($post->getUser()->getDisplayName()) ?></a>
+                <strong><?= $block->escapeHtml(__('Posted By')) ?>:</strong> <a href="<?= $block->escapeUrl($post->getUser()->getUrl()) ?>"><?= $block->escapeHtml($post->getUser()->getDisplayName()) ?></a>
             </div>
         </div>
     </div>

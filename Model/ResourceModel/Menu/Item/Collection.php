@@ -72,11 +72,11 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $type = $menu->getTaxonomy();
 
         $this->getSelect()->distinct()->join(
-            ["rel_$type" => $this->getTable('term_relationships')], 
+            ["rel_$type" => $this->getTable('term_relationships')],
             "rel_$type.object_id = main_table.ID",
             null
         )->join(
-            ["tax_$type" => $this->getTable('term_taxonomy')], 
+            ["tax_$type" => $this->getTable('term_taxonomy')],
             "tax_$type.term_taxonomy_id=rel_$type.term_taxonomy_id AND tax_$type.taxonomy='$type'",
             null
         )->join(
@@ -84,7 +84,8 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             "terms_$type.term_id = tax_$type.term_id",
             null
         )->where(
-            "terms_$type.term_id = ?", $this->menuId
+            "terms_$type.term_id = ?",
+            $this->menuId
         );
 
         return $this;

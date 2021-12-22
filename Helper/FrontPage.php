@@ -24,7 +24,7 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
      *
      */
     public function __construct(
-        \Magento\Framework\App\Helper\Context $context, 
+        \Magento\Framework\App\Helper\Context $context,
         \FishPig\WordPress\Model\UrlInterface $url,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\Model\PostRepository $postRepository,
@@ -47,7 +47,7 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
         
         if (!isset($this->frontPage[$storeId])) {
             $this->frontPage[$storeId] = $this->getFrontPageId()
-                ? $this->postRepository->getQuietly($this->getFrontPageId()) 
+                ? $this->postRepository->getQuietly($this->getFrontPageId())
                 : false;
         }
 
@@ -63,7 +63,7 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
 
         if (!isset($this->postsPage[$storeId])) {
             $this->postsPage[$storeId] = $this->getPostsPageId()
-                ? $this->postRepository->getQuietly($this->getPostsPageId()) 
+                ? $this->postRepository->getQuietly($this->getPostsPageId())
                 : false;
         }
 

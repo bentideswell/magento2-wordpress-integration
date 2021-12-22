@@ -10,19 +10,25 @@
             <?php foreach ($posts as $post): ?>
                 <li class="item">
                     <div class="post-image">
-                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getName()) ?>">
+                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" 
+                           title="<?= $block->escapeHtml($post->getName()) ?>">
                             <?php if ($image = $post->getImage()): ?>
-                                <?php $imageUrl = $image->getResizer() // Resizing only available in local integration mode
-                                        ? $image->getResizer()->constrainOnly(true)->keepFrame(false)->keepAspectRatio(true)->resize(600, null) 
+                                <?php $imageUrl = $image->getResizer() // Resizing only available in local mode
+                                        ? $image->getResizer()->constrainOnly(true)
+                                            ->keepFrame(false)
+                                            ->keepAspectRatio(true)
+                                            ->resize(600, null)
                                         : $image->getImageUrl(['large', 'medium']) ?>
-                                <img src="<?= $block->escapeUrl($imageUrl) ?>" alt="<?= $block->escapeHtml($post->getName()) ?>"/>
+                                <img src="<?= $block->escapeUrl($imageUrl) ?>" 
+                                     alt="<?= $block->escapeHtml($post->getName()) ?>"/>
                             <?php else: ?>
                                 <span class="empty"></span>
                             <?php endif; ?>
                         </a>
                     </div>
                     <h2>
-                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getName()) ?>">
+                        <a href="<?= $block->escapeUrl($post->getUrl()) ?>"
+                           title="<?= $block->escapeHtml($post->getName()) ?>">
                             <?= $block->escapeHtml($post->getName()) ?>
                         </a>
                     </h2>

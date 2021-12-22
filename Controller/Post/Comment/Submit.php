@@ -33,13 +33,13 @@ class Submit extends \Magento\Framework\App\Action\Action
 
         try {
             if (($postId = (int)$this->getRequest()->getParam('post_id')) === 0) {
-                throw new \Exception('Invalid post ID.');
+                throw new \FishPig\WordPress\App\Exception('Invalid post ID.');
             }
             
             $post = $this->postFactory->create()->load($postId);
             
             if (!$post->getId()) {
-                throw new \Exception('Invalid post loaded.');
+                throw new \FishPig\WordPress\App\Exception('Invalid post loaded.');
             }
 
             $location = $post->getUrl();

@@ -32,7 +32,9 @@ class ModeTest implements TestInterface
         $resolvedTestObject = $this->modeTestResolver->resolve();
         
         if (($resolvedTestObject instanceof TestInterface) === false) {
-            throw new \Exception(get_class($resolvedTestObject) . ' must implement ' . TestInterface::class);
+            throw new \FishPig\WordPress\App\Exception(
+                get_class($resolvedTestObject) . ' must implement ' . TestInterface::class
+            );
         }
 
         $resolvedTestObject->runTest();

@@ -198,8 +198,9 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
 
         $slug = '';
 
+        // phpcs:ignore -- empty if
         if (((string)$slug = $this->getHasArchive()) !== '1') {
-            // Do nothing yet
+            /**/
         } elseif ($slug = $this->getSlug()) {
             if (strpos($slug, '%') !== false) {
                 $slug = trim(substr($slug, 0, strpos($slug, '%')), '%/');
@@ -256,8 +257,6 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
         return false;
     }
 
-
-
     /**
      * Determine whether this post type is hierarchical
      *
@@ -307,7 +306,6 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
         
         return $this->getResource()->getHierarchicalPostNames($this);
     }
-
 
     /**
      * @return string

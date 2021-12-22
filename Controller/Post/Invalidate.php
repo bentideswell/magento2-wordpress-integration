@@ -25,7 +25,7 @@ class Invalidate extends \Magento\Framework\App\Action\Action
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \Magento\Framework\App\CacheInterface $cacheManager,
         \Magento\Framework\Serialize\SerializerInterface $serializer
-    ){
+    ) {
         $this->optionRepository = $optionRepository;
         $this->postRepository = $postRepository;
         $this->cacheManager = $cacheManager;
@@ -51,7 +51,8 @@ class Invalidate extends \Magento\Framework\App\Action\Action
         }
         
         return $this->getResponse()->setHeader(
-            'Content-Type', 'text/json; charset=utf-8'
+            'Content-Type',
+            'text/json; charset=utf-8'
         )->setBody(
             $this->serializer->serialize($response)
         );
@@ -66,7 +67,7 @@ class Invalidate extends \Magento\Framework\App\Action\Action
         $nonce  = $this->getRequest()->getParam(self::INVALIDATION_URL_NONCE_FIELD);
 
         if (!$this->isValidNonce($nonce, self::NONCE_OPTION_NAME_PREFIX . $postId)) {
-            throw new \Exception('Invalid nonce');
+            throw new \FishPig\WordPress\App\Exception('Invalid nonce');
         }
 
         $post = $this->postRepository->get($postId);

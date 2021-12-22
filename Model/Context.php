@@ -13,9 +13,11 @@ use FishPig\WordPress\Block\ShortcodeFactory;
 use FishPig\WordPress\Model\OptionRepository;
 use FishPig\WordPress\App\Url;
 use FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory as PostCollectionFactory;
+use Magento\Framework\Serialize\SerializerInterface;
 
 class Context
-{   
+{
+
     /**
      * @var Logger
      */
@@ -42,6 +44,16 @@ class Context
     private $postCollectionFactory;
 
     /**
+     * @var SerializerInterface
+     */
+    private $serializer;
+    
+    /**
+     * @var SerializerInterface
+     */
+    private $jsonSerializer;
+    
+    /**
      * @param Registry
      */
     public function __construct(
@@ -49,13 +61,17 @@ class Context
         ShortcodeFactory $shortcodeFactory,
         OptionRepository $optionRepository,
         Url $url,
-        PostCollectionFactory $postCollectionFactory
+        PostCollectionFactory $postCollectionFactory,
+        SerializerInterface $serializer,
+        SerializerInterface $jsonSerializer
     ) {
         $this->logger = $logger;
         $this->shortcodeFactory = $shortcodeFactory;
         $this->optionRepository = $optionRepository;
         $this->url = $url;
         $this->postCollectionFactory = $postCollectionFactory;
+        $this->serializer = $serializer;
+        $this->jsonSerializer = $jsonSerializer;
     }
 
     /**
@@ -96,5 +112,21 @@ class Context
     public function getPostCollectionFactory(): PostCollectionFactory
     {
         return $this->postCollectionFactory;
+    }
+    
+    /**
+     * @return Serializer
+     */
+    public function getSerializer(): SerializerInterface
+    {
+        return $this->serializer;
+    }
+
+    /**
+     * @return Serializer
+     */
+    public function getJsonSerializer(): SerializerInterface
+    {
+        return $this->jsonSerializer;
     }
 }

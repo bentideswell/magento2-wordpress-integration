@@ -16,8 +16,7 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      */
     public function getData(
         \FishPig\WordPress\Api\Data\ViewableModelInterface $archive
-    ): array 
-    {
+    ): array {
         return [
             $archive::ENTITY => [
                 'label' => __($archive->getName()),

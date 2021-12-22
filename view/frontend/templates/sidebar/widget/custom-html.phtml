@@ -12,6 +12,6 @@
             <strong><?= $block->escapeHtml(__($title)) ?></strong>
         </div>
     <?php endif; ?>
-    <div class="block-content"><?= $content ?></div>
+    <div class="block-content"><?= /* @noEscape */ $content ?></div>
 </div>
 <?php endif; ?>

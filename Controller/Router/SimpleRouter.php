@@ -31,9 +31,9 @@ class SimpleRouter implements \Magento\Framework\App\RouterInterface
         foreach ($this->getRegexRoutePatterns() as $pattern => $routePath) {
             if (preg_match($pattern, $pathInfo, $matches)) {
                 return $this->requestDispatcher->dispatch(
-                    $request, 
-                    $routePath, 
-                    $this->findParamsInMatchesArray($matches)    
+                    $request,
+                    $routePath,
+                    $this->findParamsInMatchesArray($matches)
                 );
             }
         }

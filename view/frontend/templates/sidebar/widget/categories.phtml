@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php $showEmpty = $block->canShowEmpty() ?>
 <?php $categories = $block->getCategories() ?>
@@ -19,7 +20,7 @@
                 <?php if ($block->getDropdown()): ?>
                     <li class="level0 item">
                         <select name="blog-archive-dropdown" onchange="if (this.value!=='#'){window.location.href=this.value;}">
-                            <option value="#"><?= __('Select Category') ?></option>
+                            <option value="#"><?= $block->escapeHtml(__('Select Category')) ?></option>
                             <?php foreach ($categories as $category): ?>
                                 <option value="<?= $block->escapeUrl($category->getUrl()) ?>"<?php if ($block->isCurrentCategory($category)): ?> selected="selected"<?php endif; ?>><?= $block->escapeHtml($category->getName()) ?> <?php if ($block->getCount()): ?> (<?= $block->escapeHtml($category->getPostCount()) ?>)<?php endif; ?></option>
                                 <?php if ($block->getHierarchical()): ?>
@@ -45,7 +46,7 @@
                                     <ul class="level1">
                                         <?php foreach ($children as $child): ?>
                                             <?php if ($showEmpty || $child->getPostCount() > 0): ?>
-                                            <li class="level1 item<?php if ($block->isCurrentCategory($child)): ?> active<?php endif; ?>">&raquo; <a href="<?= $child->getUrl() ?>" title="<?= $child->getName() ?>" class="level1"><?= $block->escapeHtml($child->getName()) ?></a><?php if ($block->getCount()): ?> (<?= $block->escapeHtml($child->getPostCount()) ?>)<?php endif; ?>
+                                            <li class="level1 item<?php if ($block->isCurrentCategory($child)): ?> active<?php endif; ?>">&raquo; <a href="<?= $block->escapeUrl($child->getUrl()) ?>" title="<?= $block->escapeHtmlAttr($child->getName()) ?>" class="level1"><?= $block->escapeHtml($child->getName()) ?></a><?php if ($block->getCount()): ?> (<?= $block->escapeHtml($child->getPostCount()) ?>)<?php endif; ?>
                                             </li>
                                             <?php endif; ?>
                                         <?php endforeach; ?>

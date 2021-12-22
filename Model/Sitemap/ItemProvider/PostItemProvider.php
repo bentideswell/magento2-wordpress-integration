@@ -27,7 +27,7 @@ class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProvid
      * @param  int $storeId
      * @return array
      */
-    final public function getItems($storeId)
+    public function getItems($storeId)
     {
         $storeBaseUrl =  rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
         $collection   = $this->collectionFactory->create()->addIsViewableFilter();

@@ -17,7 +17,7 @@ class Password extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Action\Context $context,
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Model\Post\PasswordManager $postPasswordManager
-    ){
+    ) {
         $this->postRepository = $postRepository;
         $this->postPasswordManager = $postPasswordManager;
         parent::__construct($context);
@@ -33,7 +33,7 @@ class Password extends \Magento\Framework\App\Action\Action
                 (int)$this->getRequest()->getPost('post')
             );
         } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
-            return $this->_forward('noRoute');   
+            return $this->_forward('noRoute');
         }
 
         $this->postPasswordManager->setPostPassword(

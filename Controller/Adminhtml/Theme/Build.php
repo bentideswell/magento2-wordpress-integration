@@ -27,7 +27,7 @@ class Build extends \Magento\Backend\App\Action
     }
 
     /**
-     * @return 
+     * @return
      */
     public function execute()
     {

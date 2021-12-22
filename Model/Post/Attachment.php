@@ -11,6 +11,22 @@ namespace FishPig\WordPress\Model\Post;
 class Attachment extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
+     *
+     */
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+        $this->serializer = $wpContext->getSerializer();
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
+    }
+    
+    /**
      * @return void
      */
     public function _construct()
@@ -28,7 +44,7 @@ class Attachment extends \FishPig\WordPress\Model\AbstractMetaModel
         if ((int)$this->getId()) {
             if ($metaData =$this->getMetaValue('metadata')) {
                 $this->addData(
-                    unserialize($metaData, ['allowed_classes' => false])
+                    $this->serializer->unserialize($metaData)
                 );
             }
         }

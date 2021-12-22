@@ -4,6 +4,7 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php $items = $block->getDateItems() ?>
 <?php if ($items): ?>
@@ -50,10 +51,10 @@
                         <?php foreach ($items as $it => $row): ?>
                             <tr>
                                 <?php foreach ($row as $html): ?>
-                                    <?php if (is_null($html)): ?>
+                                    <?php if ($html === null): ?>
                                         <td class="pad">&nbsp;</td>
                                     <?php else: ?>
-                                        <td><?= $html ?></td>
+                                        <td><?= /* @noEscape */ $html ?></td>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             </tr>

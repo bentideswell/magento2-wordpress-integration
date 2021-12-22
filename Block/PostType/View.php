@@ -27,7 +27,6 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
         }
         
         return $this->postType;
-
     }
 
     /**

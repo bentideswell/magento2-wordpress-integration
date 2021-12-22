@@ -31,8 +31,7 @@ class ResultPlugin
         \Magento\Framework\Controller\ResultInterface $subject,
         \Magento\Framework\Controller\ResultInterface $result,
         \Magento\Framework\App\Response\Http $response
-    ): \Magento\Framework\Controller\ResultInterface
-    {
+    ): \Magento\Framework\Controller\ResultInterface {
         $this->assetProvider->provideAssets(
             $this->request,
             $response

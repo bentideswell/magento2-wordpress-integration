@@ -18,13 +18,13 @@ class Permalink
     private $pathInfoIdMap = [];
 
     /**
-     * @param \FishPig\WordPress\App\ResourceConnection $resourceConnection 
+     * @param \FishPig\WordPress\App\ResourceConnection $resourceConnection
      */
     public function __construct(
-       \FishPig\WordPress\App\ResourceConnection $resourceConnection,
-       \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
-       \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
-       \FishPig\WordPress\Model\ResourceModel\HierarchicalUrlGenerator $hierarchicalUrlGenerator
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
+        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+        \FishPig\WordPress\Model\ResourceModel\HierarchicalUrlGenerator $hierarchicalUrlGenerator
     ) {
         $this->resourceConnection = $resourceConnection;
         $this->postTypeRepository = $postTypeRepository;
@@ -51,7 +51,7 @@ class Permalink
 
         foreach ($this->postTypeRepository->getAll() as $postType) {
             if (!$postType->isPublic()) {
-                continue;   
+                continue;
             }
 
             $routes = false;
@@ -67,11 +67,13 @@ class Permalink
                                 'url_key' => 'post_name'
                             ]
                         )->where(
-                            'post_name IN (?)', explode('/', $pathInfo)
+                            'post_name IN (?)',
+                            explode('/', $pathInfo)
                         )->where(
-                            'post_type = ?', $postType->getPostType()
+                            'post_type = ?',
+                            $postType->getPostType()
                         )->where(
-                            'post_status IN (?)', 
+                            'post_status IN (?)',
                             ['publish', 'protected', 'private']
                         )
                     )
@@ -85,14 +87,14 @@ class Permalink
                     ->from(
                         ['main_table' => $this->resourceConnection->getTable('posts')],
                         [
-                            'id' => 'ID', 
+                            'id' => 'ID',
                             'permalink' => $this->getPermalinkSqlColumn($postType->getPostType())
                         ]
                     )->where(
-                        'post_type = ?', 
+                        'post_type = ?',
                         $postType->getPostType()
                     )->where(
-                        'post_status IN (?)', 
+                        'post_status IN (?)',
                         ['publish', 'protected', 'private']
                     )->limit(
                         1
@@ -162,7 +164,10 @@ class Permalink
 
         $select->join(
             ['_taxonomy' => $this->resourceConnection->getTable('wordpress_term_taxonomy')],
-            $this->getConnection()->quoteInto("_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?", $taxonomy),
+            $this->getConnection()->quoteInto(
+                "_taxonomy.term_taxonomy_id = _relationship.term_taxonomy_id AND _taxonomy.taxonomy= ?",
+                $taxonomy
+            ),
             null
         );
 
@@ -294,7 +299,8 @@ class Permalink
         $postTypes = $this->postTypeRepository->getAll();
         $sqlColumns = [];
         $fields = $this->getPermalinkSqlFields();
-
+        $db = $this->resourceConnection->getConnection();
+        
         foreach ($postTypes as $postType) {
             if ($requiredPostTypes !== null && !in_array($postType->getPostType(), $requiredPostTypes)) {
                 continue;
@@ -307,12 +313,15 @@ class Permalink
                 if (substr($token, 0, 1) === '%' && isset($fields[trim($token, '%')])) {
                     $sqlFields[] = $fields[trim($token, '%')];
                 } else {
-                    $sqlFields[] = "'" . $token . "'";
+                    $sqlFields[] = $db->quoteInto('?', $token);
                 }
             }
 
             if (count($sqlFields) > 0) {
-                $sqlColumns[$postType->getPostType()] = ' WHEN `post_type` = \'' . $postType->getPostType() . '\' THEN (CONCAT(' . implode(', ', $sqlFields) . '))';
+                $sqlColumns[$postType->getPostType()] = $db->quoteInto(
+                    'WHEN post_type = ?  THEN CONCAT(' . implode(', ', $sqlFields) . ')',
+                    $postType->getPostType()
+                );
             }
         }
 

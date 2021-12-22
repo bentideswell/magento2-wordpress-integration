@@ -12,6 +12,6 @@
         </div>
     <?php endif; ?>
     <div class="block-content">
-        <?= $block->getWidgetText() ?>
+        <?= /* @noEscape */ $block->getWidgetText() ?>
     </div>
 </div>

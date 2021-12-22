@@ -66,7 +66,7 @@ class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager
     public function getPagerUrl($params = [])
     {
         if (isset($params['page']) && $params['page'] != 1) {
-            return rtrim($this->getPost()->getUrl(), '/') . '/' . sprintf('comment-page-%d', $params['page']) . '#comments';
+            return rtrim($this->getPost()->getUrl(), '/') . '/' . 'comment-page-' . (int)$params['page'] . '#comments';
         }
 
         return $this->getPost()->getUrl() . '#comments';
@@ -81,15 +81,7 @@ class Pager extends \FishPig\WordPress\Block\Post\PostList\Pager
     {
         if (!$this->hasCurrentPage()) {
             $results = [];
-
-            // if (preg_match("/comment-page-([0-9]{1,})$/", $this->_urlBuilder->getCurrentUrl(), $results)) {
-            // if (isset($results[1])) {
-            // $this->setCurrentPage($results[1]);
-            // }
-            // }
-            // else {
-                $this->setCurrentPage(1);
-            // }
+            $this->setCurrentPage(1);
         }
 
         return $this->getData('current_page');

@@ -24,9 +24,11 @@ class OptionRepository
      * @param \FishPig\WordPress\App\Option $dataSource
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $dataSource
+        \FishPig\WordPress\App\Option $dataSource,
+        \Magento\Framework\Serialize\SerializerInterface $serializer
     ) {
         $this->dataSource = $dataSource;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -65,7 +67,7 @@ class OptionRepository
     public function getUnserialized($key): array
     {
         if ($data = $this->get($key)) {
-            return unserialize($data, ['allowed_classes' => false]);
+            return $this->serializer->unserialize($data);
         }
 
         return [];

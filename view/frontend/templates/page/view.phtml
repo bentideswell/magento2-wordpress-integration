@@ -4,21 +4,25 @@
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
  */
+// phpcs:ignoreFile -- long lines (todo)
 ?>
 <?php if ($post = $block->getPost()): ?>
     <div class="post-view">
         <div class="post-entry">
             <?php if ($image = $post->getImage()): ?>
                 <div class="post-image">
-                    <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getPostTitle()) ?>"><img src="<?= $image->getAvailableImage() ?>" alt="<?= $block->escapeHtml($post->getPostTitle()) ?>"/></a>
+                    <a href="<?= $block->escapeUrl($post->getUrl()) ?>" title="<?= $block->escapeHtml($post->getPostTitle()) ?>">
+                        <img src="<?= $block->escapeUrl($image->getAvailableImage()) ?>" 
+                             alt="<?= $block->escapeHtml($post->getPostTitle()) ?>"/>
+                    </a>
                 </div>
             <?php endif; ?>
             <?php if (!$post->isViewableForVisitor()): ?>
                 <?= $block->getPasswordProtectHtml() ?>
             <?php elseif (($content = trim($post->getContent())) !== ''): ?>
-                <div class="post-content"><?= $content ?></div>
+                <div class="post-content"><?= /* @noEscape */ $content ?></div>
             <?php endif; ?>
         </div>
-        <?= $block->getChildHtml('comments') ?>
+        <?= /* @noEscape */ $block->getChildHtml('comments') ?>
     </div>
 <?php endif; ?>

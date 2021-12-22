@@ -23,11 +23,13 @@ class WPConfig
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\DirectoryList $directoryList,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
     ) {
         $this->appMode = $appMode;
         $this->directoryList = $directoryList;
         $this->storeManager = $storeManager;
+        $this->filesystemDriver = $filesystemDriver;
     }
     
     /**
@@ -38,14 +40,14 @@ class WPConfig
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
         
-        if (!isset($this->data[$storeId])) {        
+        if (!isset($this->data[$storeId])) {
             $this->appMode->requireLocalMode();
 
             $configFile = $this->getConfigFile();
             
             $this->data[$storeId] = [];
 
-            $wpConfig = file_get_contents($configFile);
+            $wpConfig = $this->filesystemDriver->fileGetContents($configFile);
     
             // Cleanup comments
             $wpConfig = str_replace("\n", "\n\n", $wpConfig);
@@ -53,13 +55,21 @@ class WPConfig
             $wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
             $wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
     
-            if (!preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U', $wpConfig, $matches)) {
+            if (!preg_match_all(
+                '/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U',
+                $wpConfig,
+                $matches
+            )) {
                 IntegrationException::throwException('Unable to extract values from wp-config.php');
             }
     
             $this->data[$storeId] = array_combine($matches[1], $matches[3]);
     
-            if (preg_match_all('/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U', $wpConfig, $matches)) {
+            if (preg_match_all(
+                '/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U',
+                $wpConfig,
+                $matches
+            )) {
                 $temp = array_combine($matches[1], $matches[2]);
     
                 foreach ($temp as $k => $v) {

@@ -91,7 +91,7 @@ abstract class ModelRepository
     
     /**
      * @param  mixed  $value
-     * @param  string $field     
+     * @param  string $field
      * @return \FishPig\WordPress\Api\Data\ViewableModelInterface
      */
     public function getByField($value, $field)
@@ -111,7 +111,7 @@ abstract class ModelRepository
     
     /**
      * @param  mixed  $value
-     * @param  string $field     
+     * @param  string $field
      * @return \FishPig\WordPress\Api\Data\ViewableModelInterface
      */
     private function loadObject($value, $field)

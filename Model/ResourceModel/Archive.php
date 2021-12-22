@@ -39,12 +39,16 @@ class Archive extends AbstractResourceModel
                     ['main_table' => $this->getMainTable()],
                     [
                         'post_count' => new \Zend_Db_Expr('COUNT(ID)'),
-                        'archive_date' => new \Zend_Db_Expr("CONCAT(SUBSTRING(post_date, 1, 4), '/', SUBSTRING(post_date, 6, 2))")
+                        'archive_date' => new \Zend_Db_Expr(
+                            "CONCAT(SUBSTRING(post_date, 1, 4), '/', SUBSTRING(post_date, 6, 2))"
+                        )
                     ]
                 )->where(
-                    'main_table.post_type=?', 'post'
+                    'main_table.post_type=?',
+                    'post'
                 )->where(
-                    'post_status = ?', 'publish'
+                    'post_status = ?',
+                    'publish'
                 )->group(
                     'archive_date'
                 )->order(

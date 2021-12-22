@@ -15,7 +15,7 @@ use Symfony\Component\Console\Input\InputOption;
 class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
-     *
+     * @const string
      */
     const INSTALL_PATH = 'install-path';
 
@@ -25,11 +25,12 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
     public function __construct(
         \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
         \FishPig\WordPress\App\Theme\PackageDeployer $packageDeployer,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
         string $name = null
     ) {
         $this->packageBuilder = $packageBuilder;
         $this->packageDeployer = $packageDeployer;
-
+        $this->filesystemDriver = $filesystemDriver;
         parent::__construct($name);
     }
 
@@ -57,16 +58,18 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
             $packageFile = $this->packageBuilder->getFilename();
 
             if ($installPath = $input->getOption(self::INSTALL_PATH)) {
-                $installPath = realpath($installPath);
-                
+                $installPath = $this->filesystemDriver->getRealPath($installPath);
+
                 if (!$installPath) {
-                    throw new \Exception('Invalid install path. Package file is at ' . $packageFile);
+                    throw new \FishPig\WordPress\App\Exception(
+                        'Invalid install path. Package file is at ' . $packageFile
+                    );
                 }
 
                 $this->packageDeployer->deploy($packageFile, $installPath);
 
                 $output->writeLn(
-                    "Theme installed to WordPress at $installPath. Visit a WordPress Admin page to complete the installation."
+                    "Theme installed to WordPress at $installPath. Visit a WP Admin page to complete the installation."
                 );
             } else {
                 $output->writeLn($packageFile);

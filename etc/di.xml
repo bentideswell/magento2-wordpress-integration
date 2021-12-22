@@ -219,6 +219,7 @@
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
 			<argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post</argument>
+        	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
 		</arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection">
@@ -355,5 +356,31 @@
 				<item name="custom_html" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\CustomHtml</item>
 			</argument>
 		</arguments>
+	</type>
+	<!-- Misc -->
+	<type name="FishPig\WordPress\App\Option">
+    	<arguments>
+        	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+    	</arguments>
+	</type>
+	<type name="FishPig\WordPress\Model\OptionRepository">
+    	<arguments>
+        	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+    	</arguments>
+	</type>
+	<type name="FishPig\WordPress\Block\Sidebar">
+    	<arguments>
+        	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+    	</arguments>
+	</type>
+	<type name="FishPig\WordPress\Model\Context">
+    	<arguments>
+        	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+    	</arguments>
+	</type>
+	<type name="FishPig\WordPress\Block\Context">
+    	<arguments>
+        	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+    	</arguments>
 	</type>
 </config>

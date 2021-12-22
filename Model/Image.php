@@ -42,6 +42,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
         
         foreach ($codes as $code) {
             if ($imageFile = $this->getImageByCode($code, 'file')) {
+                // phpcs:ignore -- dirname
                 return $this->url->getUploadUrl() . dirname($this->getFile()) . '/' . $imageFile;
             }
         }
@@ -88,7 +89,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
                 if (substr($method, -3) === 'Url') {
                     $imageCode = $this->_underscore(substr($method, 3, -3));
                 } elseif (substr($method, -5) === 'Image') {
-                    $imageCode = $this->_underscore(substr($method, 3, -5));   
+                    $imageCode = $this->_underscore(substr($method, 3, -5));
                 }
                 
                 if (!empty($imageCode)) {

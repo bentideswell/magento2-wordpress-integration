@@ -43,10 +43,12 @@ class ObjectResolver
     
             if (!isset($this->objects[$mode])) {
                 if ($this->throwExceptionIfObjectNotSet) {
-                    throw new \Exception('Unable to find object in ' . get_class($this) . '::getObject(' . $mode . ')');
+                    throw new \FishPig\WordPress\App\Exception(
+                        'Unable to find object in ' . get_class($this) . '::getObject(' . $mode . ')'
+                    );
                 }
                 
-                return $this->resolvedObject; /* false */
+                return $this->resolvedObject;
             } else {
                 $this->resolvedObject = $this->objectManager->get($this->objects[$mode]);
             }

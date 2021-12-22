@@ -39,12 +39,12 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         $this->optionRepository = $optionRepository;
 
         parent::__construct(
-            $entityFactory, 
-            $logger, 
-            $fetchStrategy, 
-            $eventManager, 
-            $connection, 
-            $resource, 
+            $entityFactory,
+            $logger,
+            $fetchStrategy,
+            $eventManager,
+            $connection,
+            $resource,
             $modelName
         );
     }
@@ -57,7 +57,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
      */
     public function addOrderByDate($dir = null)
     {
-        if (is_null($dir)) {
+        if ($dir === null) {
             $dir = $this->optionRepository->get('comment_order');
             $dir = in_array($dir, ['asc', 'desc']) ? $dir : 'asc';
         }

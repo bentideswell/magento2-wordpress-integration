@@ -26,6 +26,7 @@ class IntegrationStatus extends \Magento\Backend\Block\Template
         \Magento\Store\Model\StoreManager $storeManager,
         \Magento\Store\Model\App\Emulation $emulator,
         \Magento\Framework\Module\Dir\Reader $moduleDirReader,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
         array $data = []
     ) {
         $this->appMode = $appMode;
@@ -34,7 +35,7 @@ class IntegrationStatus extends \Magento\Backend\Block\Template
         $this->storeManager = $storeManager;
         $this->emulator = $emulator;
         $this->moduleDirReader = $moduleDirReader;
-        
+        $this->filesystemDriver = $filesystemDriver;
         parent::__construct($context, $data);
     }
 
@@ -155,12 +156,12 @@ class IntegrationStatus extends \Magento\Backend\Block\Template
     {
         $moduleComposerJsonFile = $this->moduleDirReader->getModuleDir('', $module) . '/composer.json';
         
-        if (!is_file($moduleComposerJsonFile)) {
+        if (!$this->filesystemDriver->isFile($moduleComposerJsonFile)) {
             return false;
         }
         
         $moduleComposerJsonData = json_decode(
-            file_get_contents($moduleComposerJsonFile),
+            $this->filesystemDriver->fileGetContents($moduleComposerJsonFile),
             true
         );
         

@@ -44,8 +44,8 @@ class HomepageRouter implements \Magento\Framework\App\RouterInterface
 
         if ($frontPageId = $this->frontPage->getFrontPageId()) {
             return $this->requestDispatcher->dispatch(
-                $request, 
-                '*/post/view', 
+                $request,
+                '*/post/view',
                 ['id' => $frontPageId]
             );
         }

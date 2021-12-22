@@ -36,7 +36,7 @@ class CspWhitelistXmlCollectorPlugin
         }
 
         if ($newPolicies = $this->whitelistPolicyCollector->collect()) {
-            $defaultPolicies += $newPolicies;                   
+            $defaultPolicies += $newPolicies;
         }
         
         return $defaultPolicies;

@@ -14,9 +14,11 @@ class Option
      * @param \FishPig\WordPress\App\ResourceConnection $resourceConnection
      */
     public function __construct(
-        \FishPig\WordPress\App\ResourceConnection $resourceConnection
+        \FishPig\WordPress\App\ResourceConnection $resourceConnection,
+        \Magento\Framework\Serialize\SerializerInterface $serializer
     ) {
         $this->resourceConnection = $resourceConnection;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -49,7 +51,7 @@ class Option
             $db->delete($this->getOptionsTable(), $db->quoteInto('option_name=?', $key));
         } else {
             if (is_array($value)) {
-                $value = serialize($value);
+                $value = $this->serializer->serialize($value);
             }
 
             if (($existingValue = $this->get($key)) === null) {

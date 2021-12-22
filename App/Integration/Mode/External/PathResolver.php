@@ -17,5 +17,5 @@ class PathResolver
     public function getPath(int $storeId): ?string
     {
         return null;
-    }  
+    }
 }

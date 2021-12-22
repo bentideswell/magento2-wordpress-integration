@@ -32,6 +32,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\App\Logger $logger,
+        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
         string $name = null
     ) {
         $this->fullModuleList = $fullModuleList;
@@ -41,6 +42,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         $this->storeManager = $storeManager;
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
+        $this->filesystemDriver = $filesystemDriver;
         parent::__construct($name);
     }
 
@@ -91,7 +93,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
      
     /**
      * @return array|false
-     */   
+     */
     private function getMagentoDebugData()
     {
         $data = [
@@ -105,7 +107,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
     
     /**
      * @return array|false
-     */   
+     */
     private function getModulesDebugData()
     {
         $modules = [];
@@ -139,7 +141,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         return $db->fetchAll(
             $db->select()
                 ->from(
-                    $this->resourceConnection->getTableName('core_config_data'), 
+                    $this->resourceConnection->getTableName('core_config_data'),
                     [
                         'path',
                         'value',
@@ -147,7 +149,8 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
                         'scope_id',
                     ]
                 )->where(
-                    'path LIKE ?', 'wordpress%'
+                    'path LIKE ?',
+                    'wordpress%'
                 )
         );
     }
@@ -159,23 +162,19 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
     {
         $composerFile = $path . '/composer.json';
         
-        if (!is_file($composerFile)) {
+        if (!$this->filesystemDriver->isFile($composerFile)) {
             return false;
         }
-        
-        try {
-            $jsonString = file_get_contents($composerFile);
-            $json = json_decode($jsonString, true);
-            
-            if (!$json) {
-                throw new \Exception('Unable to parse JSON.');
-            }
 
-            if (!empty($json['version'])) {
-                return $json['version'];
-            }
-        } catch (\Exception $e) {
-            
+        $jsonString = $this->filesystemDriver->fileGetContents($composerFile);
+        $json = json_decode($jsonString, true);
+        
+        if (!$json) {
+            throw new \FishPig\WordPress\App\Exception('Unable to parse JSON.');
+        }
+
+        if (!empty($json['version'])) {
+            return $json['version'];
         }
         
         return false;
@@ -222,6 +221,6 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
             return false;
         }
         
-        return false;        
+        return false;
     }
 }
