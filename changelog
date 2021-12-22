@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
+- Add 'disabled' as a mode value as well as ''
+
+## [3.0.29] - 2021-12-21
+### [Fixed]
+- ResourceConnection checks getConnection() before calling isConnection.
 
 ## [3.0.28] - 2021-12-21
 ### [Fixed]

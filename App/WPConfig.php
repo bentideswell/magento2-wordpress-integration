@@ -96,7 +96,7 @@ class WPConfig
     {
         if ($this->directoryList->isBasePathValid() === false) {
             throw new IntegrationFatalException(
-                __('Unable to find a WordPress installation using the path provided.')
+                (string)__('Unable to find a WordPress installation using the path provided.')
             );
         }
 

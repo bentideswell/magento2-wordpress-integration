@@ -69,7 +69,7 @@ class ResourceConnection
      */
     public function isConnected(): bool
     {
-        return $this->getConnection()->isConnected();
+        return $this->getConnection() && $this->getConnection()->isConnected();
     }
 
     /**
