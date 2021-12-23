@@ -24,12 +24,12 @@ class PackageBuilder
         \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
         \FishPig\WordPress\App\Theme\FileCollector $fileCollector,
         \Magento\Framework\App\Filesystem\DirectoryList $directoryList,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
+        \Magento\Framework\Filesystem $filesystem
     ) {
         $this->localHashProvider = $localHashProvider;
         $this->fileCollector = $fileCollector;
         $this->directoryList = $directoryList;
-        $this->filesystemDriver = $filesystemDriver;
+        $this->filesystem = $filesystem;
     }
 
     /**
@@ -45,22 +45,31 @@ class PackageBuilder
      */
     private function build(): string
     {
-        $file = $this->directoryList->getPath(DirectoryList::MEDIA)
-            . '/fishpig-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
+        $mediaDir = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
+        $packageFilename = 'fishpig-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
+        
+        
 
-        if ($this->filesystemDriver->isFile($file)) {
-            return $file;
+        if (!$mediaDir->isFile($packageFilename)) {     
+            $files = $this->fileCollector->getFiles();
+
+            if (class_exists(\ZipArchive::class)) {
+                $this->buildUsingZipArchive(
+                    $mediaDir->getAbsolutePath($packageFilename),
+                    $files
+                );
+                
+                if (!$mediaDir->isFile($packageFilename)) {
+                    throw new \FishPig\WordPress\App\Exception(
+                        'Zip package does not exist. Built using ZipArchive.'
+                    );
+                }
+            } else {
+                throw new \FishPig\WordPress\App\Exception('Unable to build zip file without ZipArchive.');
+            }
         }
 
-        $files = $this->fileCollector->getFiles();
-
-        if (class_exists(\ZipArchive::class)) {
-            $this->buildUsingZipArchive($file, $files);
-        } else {
-            throw new \FishPig\WordPress\App\Exception('Unable to build zip file without ZipArchive.');
-        }
-
-        return $file;
+        return $mediaDir->getAbsolutePath($packageFilename);
     }
 
     /**
@@ -80,7 +89,8 @@ class PackageBuilder
 
         foreach ($files as $relative => $file) {
             $relative = 'fishpig/' . $relative;
-            $data = $this->filesystemDriver->fileGetContents($file);
+            // phpcs:ignore -- file_get_contents
+            $data = file_get_contents($file);
             
             if (strpos($data, self::TOKEN_REMOTE_HASH) !== false) {
                 $zip->addFromString(
@@ -93,9 +103,5 @@ class PackageBuilder
         }
 
         $zip->close();
-
-        if (!$this->filesystemDriver->isFile($zipFile)) {
-            throw new \FishPig\WordPress\App\Exception('Failed to create ' . $zipFile . ' using ZipArchive');
-        }
     }
 }

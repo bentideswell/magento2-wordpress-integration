@@ -11,15 +11,20 @@ namespace FishPig\WordPress\App\Theme;
 class FileCollector
 {
     /**
+     * @const string
+     */
+    const WPTHEME_DIR = 'wptheme';
+
+    /**
      *
      */
     public function __construct(
         \Magento\Framework\Module\Dir $moduleDir,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
+        \Magento\Framework\Filesystem $filesystem,
         array $modules = []
     ) {
         $this->moduleDir = $moduleDir;
-        $this->filesystemDriver = $filesystemDriver;
+        $this->filesystem = $filesystem;
         $this->modules = $modules;
     }
 
@@ -31,53 +36,19 @@ class FileCollector
         $files = [];
 
         foreach ($this->modules as $module) {
-            $moduleEtcDir = $this->moduleDir->getDir($module, \Magento\Framework\Module\Dir::MODULE_ETC_DIR);
-            $moduleDir = $this->filesystemDriver->getParentDirectory($moduleEtcDir);
-            $moduleWpThemeDir = $moduleDir . '/' . $this->getTargetDir();
+            $wpThemeDir = $this->filesystem->getDirectoryReadByPath(
+                $this->moduleDir->getDir($module, '') . '/' . self::WPTHEME_DIR
+            );
 
-            if ($this->filesystemDriver->isDirectory($moduleWpThemeDir)) {
-                $files[] = $this->collectFiles($moduleWpThemeDir);
-            }
-        }
-
-        return $files ? array_merge(...$files) : [];
-    }
-
-    /**
-     * @param  string $dir
-     * @return []
-     */
-    private function collectFiles($dir, $baseDir = null): array
-    {
-        if (!$baseDir) {
-            $baseDir = $dir;
-        }
-
-        $themeFiles = [];
-
-        if (!$this->filesystemDriver->isDirectory($dir)) {
-            return $themeFiles;
-        }
-
-        if ($files = $this->filesystemDriver->readDirectory($dir)) {
-            foreach ($files as $file) {
-                if ($this->filesystemDriver->isFile($file)) {
-                    $rel = str_replace($baseDir . '/', '', $file);
-                    $themeFiles[] = [$rel => $file];
-                } elseif ($this->filesystemDriver->isDirectory($file)) {
-                    $themeFiles[] = $this->collectFiles($file, $baseDir);
+            if ($wpThemeDir->isDirectory()) {
+                foreach ($wpThemeDir->readRecursively() as $file) {
+                    if ($wpThemeDir->isFile($file)) {
+                        $files[$file] = $wpThemeDir->getAbsolutePath($file);
+                    }
                 }
             }
         }
-        
-        return $themeFiles ? array_merge(...$themeFiles) : [];
-    }
 
-    /**
-     * @return string
-     */
-    public function getTargetDir(): string
-    {
-        return 'wptheme';
+        return $files;
     }
 }

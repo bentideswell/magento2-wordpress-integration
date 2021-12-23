@@ -22,17 +22,17 @@ class DirectoryList
     public function __construct(
         \FishPig\WordPress\App\DirectoryList\PathResolver $pathResolver,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
+        \Magento\Framework\Filesystem $filesystem
     ) {
         $this->pathResolver = $pathResolver;
         $this->storeManager = $storeManager;
-        $this->filesystemDriver = $filesystemDriver;
+        $this->filesystem = $filesystem;
     }
-    
+
     /**
-     * @return string|false
+     * @return \Magento\Framework\Filesystem\Directory\Read|false
      */
-    public function getBasePath()
+    public function getBaseDirectory()
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
 
@@ -43,27 +43,42 @@ class DirectoryList
             $path = $this->pathResolver->resolve()->getPath($storeId) ?: 'wp';
 
             if (substr($path, 0, 1) !== '/') {
-                if ($this->filesystemDriver->isDirectory(BP . '/pub/' . $path)) {
-                    $path = BP . '/pub/' . $path;
-                } elseif ($this->filesystemDriver->isDirectory(BP . '/' . $path)) {
-                    $path = BP . '/' . $path;
-                }
-            }
+                $wpDir = $this->filesystem->getDirectoryReadByPath(BP . '/pub/' . $path);
 
-            if ($this->filesystemDriver->isDirectory($path)
-                && $this->filesystemDriver->isFile($path . '/wp-config.php')) {
-                $this->basePath[$storeId] = $path;
+                if (!$wpDir->isDirectory()) {
+                    $wpDir = $this->filesystem->getDirectoryReadByPath(BP . '/' . $path);
+                }
+            } else {
+                $wpDir = $this->filesystem->getDirectoryReadByPath($path);
+            }
+            
+            if (isset($wpDir) && $wpDir->isDirectory()) {
+                if ($wpDir->isFile('wp-config.php')) {
+                    $this->basePath[$storeId] = $wpDir;
+                }
             }
         }
 
-        return $this->basePath[$storeId];
+        return $this->basePath[$storeId];   
     }
-
+    
     /**
      * @return bool
      */
     public function isBasePathValid(): bool
     {
-        return $this->getBasePath() !== false;
+        return $this->getBaseDirectory() !== false;
+    }
+
+    /**
+     * @return string|false
+     */
+    public function getBasePath()
+    {
+        if ($wpDirectory = $this->getBaseDirectory()) {
+            return $wpDirectory->getAbsolutePath();
+        }
+        
+        return false;
     }
 }

@@ -17,12 +17,12 @@ class PackagePublisher
         \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
         \Magento\Framework\Controller\ResultFactory $resultFactory,
         \Magento\Framework\App\RequestInterface $request,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
+        \Magento\Framework\Filesystem\File\ReadFactory $fileReadFactory
     ) {
         $this->packageBuilder = $packageBuilder;
         $this->resultFactory = $resultFactory;
         $this->request = $request;
-        $this->filesystemDriver = $filesystemDriver;
+        $this->fileReadFactory = $fileReadFactory;
     }
 
     /**
@@ -31,15 +31,15 @@ class PackagePublisher
     public function publish()
     {
         $zipFile = $this->packageBuilder->getFilename();
+        $fileRead = $this->fileReadFactory->create(
+            $zipFile,
+            \Magento\Framework\Filesystem\DriverPool::FILE
+        );
 
-        if (!$this->filesystemDriver->isFile($zipFile)) {
-            throw new \FishPig\WordPress\App\Exception('Unable to generate theme package.');
+        if (!($data = $fileRead->readAll($zipFile))) {
+            throw new \FishPig\WordPress\App\Exception('Zip exists but data is corrupt or missing.');
         }
 
-        if (!($data = $this->filesystemDriver->fileGetContents($zipFile))) {
-            throw new \FishPig\WordPress\App\Exception('Zip exists but data is corrupt.');
-        }
-        
         // phpcs:ignore -- there's no harm in this
         $filename = basename($zipFile);
 

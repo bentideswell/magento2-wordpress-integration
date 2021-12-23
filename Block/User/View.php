@@ -26,6 +26,16 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
         
         return $this->user;
     }
+    
+    /**
+     * @param  \FishPig\WordPress\Model\User $user
+     * @return self
+     */
+    public function setUser(\FishPig\WordPress\Model\User $user): self
+    {
+        $this->user = $user;
+        return $this;
+    }
 
     /**
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection

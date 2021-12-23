@@ -13,6 +13,11 @@ use Magento\Framework\HTTP\ClientInterface;
 class RequestManager
 {
     /**
+     * @const bool
+     */
+    const LOG_DATA = false;
+
+    /**
      * Cache to limit HTTP requests.
      * Cached values only live per request and aren't stored
      *
@@ -91,16 +96,19 @@ class RequestManager
                 } else {
                     $client->$method($url, $args);
                 }
-
-                $logData['Status'] = $client->getStatus();
-                $this->requestLogger->logApiRequest($logData);
             } catch (\Exception $e) {
-                $logData['Status'] = $client->getStatus();
                 $logData['Error'] = $e->getMessage();
-                
-                $this->requestLogger->logApiRequest($logData);
-
                 throw $e;
+            } finally {
+                $logData['Status'] = $client->getStatus();
+
+                if (self::LOG_DATA) {
+                    $logData['Headers'] = $client->getRequestHeaders();
+                    $logData['Response'] = $client->getHeaders();
+                    $logData['Body'] = $client->getBody();
+                }
+
+                $this->requestLogger->logApiRequest($logData);
             }
         }
 

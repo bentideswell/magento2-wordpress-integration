@@ -383,4 +383,10 @@
         	<argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
     	</arguments>
 	</type>
+	<type name="FishPig\WordPress\App\Theme\PackageDeployer">
+    	<arguments>
+        	<argument name="filesystemDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
+    	</arguments>    	
+    	
+	</type>
 </config>

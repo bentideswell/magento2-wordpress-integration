@@ -32,7 +32,6 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\App\Logger $logger,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
         string $name = null
     ) {
         $this->fullModuleList = $fullModuleList;
@@ -42,7 +41,6 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         $this->storeManager = $storeManager;
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
-        $this->filesystemDriver = $filesystemDriver;
         parent::__construct($name);
     }
 
@@ -162,11 +160,13 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
     {
         $composerFile = $path . '/composer.json';
         
-        if (!$this->filesystemDriver->isFile($composerFile)) {
+        // phpcs:ignore -- is_file
+        if (!is_file($composerFile)) {
             return false;
         }
 
-        $jsonString = $this->filesystemDriver->fileGetContents($composerFile);
+        // phpcs:ignore -- file_get_contents
+        $jsonString = file_get_contents($composerFile);
         $json = json_decode($jsonString, true);
         
         if (!$json) {

@@ -62,4 +62,12 @@ class WidgetRepository
 
         return false;
     }
+
+    /**
+     * @return array
+     */
+    public function getAll(): array
+    {
+        return $this->widgets;
+    }
 }

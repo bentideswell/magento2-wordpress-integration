@@ -132,4 +132,12 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
 
         throw new CurlException($string, $errNo);
     }
+
+    /**
+     * @return array
+     */
+    public function getRequestHeaders(): array
+    {
+        return $this->_headers;
+    }
 }

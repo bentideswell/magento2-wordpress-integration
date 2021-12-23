@@ -23,13 +23,11 @@ class WPConfig
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\DirectoryList $directoryList,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->appMode = $appMode;
         $this->directoryList = $directoryList;
         $this->storeManager = $storeManager;
-        $this->filesystemDriver = $filesystemDriver;
     }
     
     /**
@@ -39,16 +37,20 @@ class WPConfig
     public function getData($key = null, $default = null)
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
-        
+
         if (!isset($this->data[$storeId])) {
             $this->appMode->requireLocalMode();
-
-            $configFile = $this->getConfigFile();
             
             $this->data[$storeId] = [];
 
-            $wpConfig = $this->filesystemDriver->fileGetContents($configFile);
-    
+            if ($this->directoryList->isBasePathValid() === false) {
+                throw new IntegrationFatalException(
+                    (string)__('Unable to find a WordPress installation using the path provided.')
+                );
+            }
+
+            $wpConfig = $this->directoryList->getBaseDirectory()->readFile('wp-config.php');
+
             // Cleanup comments
             $wpConfig = str_replace("\n", "\n\n", $wpConfig);
             $wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
@@ -97,19 +99,5 @@ class WPConfig
         }
         
         return $default;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getConfigFile(): string
-    {
-        if ($this->directoryList->isBasePathValid() === false) {
-            throw new IntegrationFatalException(
-                (string)__('Unable to find a WordPress installation using the path provided.')
-            );
-        }
-
-        return $this->directoryList->getBasePath() . DIRECTORY_SEPARATOR . 'wp-config.php';
     }
 }

@@ -13,6 +13,11 @@ use FishPig\WordPress\Model\Image;
 class ImageResizer
 {
     /**
+     * @const string
+     */
+    const RESIZE_MEDIA_DIR = 'wordpress';
+
+    /**
      * @var
      */
     private $adapter;
@@ -21,6 +26,11 @@ class ImageResizer
      * @var array
      */
     protected $args = [];
+
+    /**
+     * @var
+     */
+    private static $targetDirectory = null;
 
     /**
      *
@@ -32,58 +42,58 @@ class ImageResizer
         \FishPig\WordPress\Model\UrlInterface $url,
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\DirectoryList $wpDirectoryList,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
+        \Magento\Framework\Filesystem\Directory\WriteFactory $writeFactory
     ) {
         $this->filesystem = $filesystem;
         $this->imageFactory = $imageFactory;
         $this->storeManager = $storeManager;
         $this->url = $url;
         $this->wpDirectoryList = $wpDirectoryList;
-        $this->filesystemDriver = $filesystemDriver;
+        $this->writeFactory = $writeFactory;
         $appMode->requireLocalMode();
     }
 
     /**
-     * @param  string|Image $image
-     * @return $this
+     * @param  \FishPig\WordPress\Model\Image $image
+     * @return self
      */
-    public function setImage($image)
+    public function setImage(\FishPig\WordPress\Model\Image $image): self
     {
+        // Reset args
         $this->args = [];
+        $this->adapter = false;
 
-        if (is_object($image)) {
-            $image = $this->getLocalFile($image);
+        if (!$this->wpDirectoryList->isBasePathValid()) {
+            throw new \FishPig\WordPress\App\Exception('Invalid base path. Unable to resize image.');
         }
-
-        if (!$image || !$this->filesystemDriver->isFile($image)) {
+        
+        $siteUrl = $this->stripProtocolFromUrl($this->url->getSiteUrl());
+        $guid = $this->stripProtocolFromUrl($image->getData('guid'));
+        $wpRelativeFile = ltrim(str_replace($siteUrl, '', $guid), '/');
+        $wpDir = $this->wpDirectoryList->getBaseDirectory();
+        
+        if (!$wpDir->isFile($wpRelativeFile)) {
             throw new \FishPig\WordPress\App\Exception(
-                'Unable to resize image due to invalid or missing local image.'
+                $wpRelativeFile . ' does not exist.'
             );
         }
-
+        
+        $image = $wpDir->getAbsolutePath($wpRelativeFile);
+        
         $this->adapter = $this->imageFactory->create();
-
         $this->adapter->open($image);
-
         $this->args['original_file'] = $image;
 
         return $this;
     }
 
     /**
-     *
+     * @param  string $url
+     * @return string
      */
-    private function getLocalFile(\FishPig\WordPress\Model\Image $image)
+    private function stripProtocolFromUrl(string $url): string
     {
-        if (!$this->wpDirectoryList->isBasePathValid()) {
-            throw new \FishPig\WordPress\App\Exception('Invalid base path. Unable to resize image.');
-        }
-        
-        $siteUrl = str_replace(['https://', 'http://'], '', $this->url->getSiteUrl());
-        $guid = str_replace(['https://', 'http://'], '', $image->getData('guid'));
-        $localFile = $this->wpDirectoryList->getBasePath() . '/' . ltrim(str_replace($siteUrl, '', $guid), '/');
-        
-        return $this->filesystemDriver->isFile($localFile) ? $localFile : false;
+        return str_replace(['https://', 'http://'], '', $url);
     }
     
     /**
@@ -96,19 +106,12 @@ class ImageResizer
         $this->args['width'] = $width;
         $this->args['height'] = $height;
 
-        $targetDirectory = $this->getTargetDirectory();
-
-        if (!$this->filesystemDriver->isDirectory($targetDirectory)) {
-            $this->filesystemDriver->createDirectory($targetDirectory);
-            if (!$this->filesystemDriver->isDirectory($targetDirectory)) {
-                return false;
-            }
-        }
+        $targetDirectory = $this->getTargetDirectoryWrite();
 
         // phpcs:ignore -- not cryptographic
-        $targetFile = $targetDirectory . md5(http_build_query($this->args)) . $this->getFormat();
+        $targetFile = $targetDirectory->getAbsolutePath() . md5(http_build_query($this->args)) . $this->getFormat();
 
-        if (!$this->filesystemDriver->isFile($targetFile)) {
+        if (!$targetDirectory->isFile($targetFile)) {
             $this->adapter->resize($width, $height);
             $this->adapter->save($targetFile);
         }
@@ -127,13 +130,32 @@ class ImageResizer
     }
 
     /**
-     * @return string
+     * @return \Magento\Framework\Filesystem\Directory\Write
      */
-    protected function getTargetDirectory()
+    protected function getTargetDirectoryWrite()
     {
-        return $this->filesystem->getDirectoryRead(
-            \Magento\Framework\App\Filesystem\DirectoryList::MEDIA
-        )->getAbsolutePath() . 'wordpress' . DIRECTORY_SEPARATOR;
+        if (self::$targetDirectory === null) {
+            $mediaDir = $this->filesystem->getDirectoryWrite(
+                \Magento\Framework\App\Filesystem\DirectoryList::MEDIA
+            );
+            
+            if (!$mediaDir->isDirectory(self::RESIZE_MEDIA_DIR)) {
+                $mediaDir->create(self::RESIZE_MEDIA_DIR);
+            }
+            
+            if (!$mediaDir->isDirectory(self::RESIZE_MEDIA_DIR)) {
+                throw new \Exception(
+                    'Unable to create directory for resized blog image.'
+                );
+            }
+
+            self::$targetDirectory = $this->writeFactory->create(
+                $mediaDir->getAbsolutePath(self::RESIZE_MEDIA_DIR),
+                \Magento\Framework\Filesystem\DriverPool::FILE
+            );
+        }
+        
+        return self::$targetDirectory;
     }
 
     /**

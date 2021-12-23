@@ -30,6 +30,16 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     }
 
     /**
+     * @param  Term $term
+     * @return self
+     */
+    public function setTerm(Term $term): self
+    {
+        $this->term = $term;
+        return $this;
+    }
+
+    /**
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
     protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection

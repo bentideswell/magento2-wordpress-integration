@@ -25,12 +25,12 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
     public function __construct(
         \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
         \FishPig\WordPress\App\Theme\PackageDeployer $packageDeployer,
-        \Magento\Framework\Filesystem\DriverInterface $filesystemDriver,
+        \Magento\Framework\Filesystem\Driver\File $fileDriver,
         string $name = null
     ) {
         $this->packageBuilder = $packageBuilder;
         $this->packageDeployer = $packageDeployer;
-        $this->filesystemDriver = $filesystemDriver;
+        $this->fileDriver = $fileDriver;
         parent::__construct($name);
     }
 
@@ -58,7 +58,7 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
             $packageFile = $this->packageBuilder->getFilename();
 
             if ($installPath = $input->getOption(self::INSTALL_PATH)) {
-                $installPath = $this->filesystemDriver->getRealPath($installPath);
+                $installPath = $this->fileDriver->getRealPath($installPath);
 
                 if (!$installPath) {
                     throw new \FishPig\WordPress\App\Exception(

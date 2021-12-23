@@ -3,7 +3,13 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 - Add 'disabled' as a mode value as well as ''
+- Check file collection for theme is cached
 
+## [3.0.32] - 2021-12-23
+### [Changed]
+- Changed \Magento\Framework\Filesystem\DriverInterface to \Magento\Framework\Filesystem and get individual directories
+  from there.
+  
 ## [3.0.30] - 2021-12-22
 ### [Changed]
 - Code formatting clean up.

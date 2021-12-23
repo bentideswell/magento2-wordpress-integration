@@ -30,6 +30,16 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     }
 
     /**
+     * @param  Archive $archive
+     * @return self
+     */
+    public function setArchive(Archive $archive): self
+    {
+        $this->archive = $archive;
+        return $this;
+    }
+
+    /**
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
     protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
