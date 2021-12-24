@@ -10,7 +10,7 @@
 	<type name="FishPig\WordPress\App\Integration\Tests">
 		<arguments>
 			<argument name="integrationTestPool" xsi:type="array">
-				<item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\ModeTest</item>
+				<item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\DBTest</item>
 				<item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>				
 				<item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
 				<item name="api" xsi:type="object">FishPig\WordPress\App\Integration\Test\ApiTest</item>
@@ -19,15 +19,6 @@
 			</argument>
 		</arguments>
 	</type>
-	
-    <type name="FishPig\WordPress\App\Integration\Test\ModeTestResolver">
-		<arguments>
-			<argument name="objects" xsi:type="array">
-				<item name="local" xsi:type="string">FishPig\WordPress\App\Integration\Test\LocalModeTest</item>
-				<item name="external" xsi:type="string">FishPig\WordPress\App\Integration\Test\ExternalModeTest</item>
-			</argument>
-		</arguments>
-    </type>
     <!--
     /**
      * @Path Resolver
@@ -386,7 +377,6 @@
 	<type name="FishPig\WordPress\App\Theme\PackageDeployer">
     	<arguments>
         	<argument name="filesystemDriver" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-    	</arguments>    	
-    	
+    	</arguments>
 	</type>
 </config>

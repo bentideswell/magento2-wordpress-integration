@@ -66,9 +66,11 @@ class ImageResizer
         if (!$this->wpDirectoryList->isBasePathValid()) {
             throw new \FishPig\WordPress\App\Exception('Invalid base path. Unable to resize image.');
         }
-        
+
         $siteUrl = $this->stripProtocolFromUrl($this->url->getSiteUrl());
-        $guid = $this->stripProtocolFromUrl($image->getData('guid'));
+        // ToDo: add getUploadsUrl to siteUrl
+        // Add getGuid to Model\Image
+        $guid = $this->stripProtocolFromUrl($this->url->getWpContentUrl() . 'uploads/' . $image->getData('file'));
         $wpRelativeFile = ltrim(str_replace($siteUrl, '', $guid), '/');
         $wpDir = $this->wpDirectoryList->getBaseDirectory();
         

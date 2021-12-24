@@ -2,8 +2,16 @@
 
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
-- Add 'disabled' as a mode value as well as ''
 - Check file collection for theme is cached
+- Auto disable Elementor experiments
+- Auto set page title selector in Elementor for Hide Title
+- Resolve CSP font issues without .htaccess (if possible)
+
+## [3.0.33] - 2021-12-24
+### [Added]
+- Checks for HTTP auth and displays a message indicating HTTP auth failure. In a future version you will be able to 
+  specify HTTP auth details in the Admin. For now, just ensure Magento and WP use the same HTTP auth details and
+  these will be shared with the WP API automatically.
 
 ## [3.0.32] - 2021-12-23
 ### [Changed]

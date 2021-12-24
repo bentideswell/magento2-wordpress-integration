@@ -21,7 +21,6 @@ class WhitelistPolicyCollector
     public function __construct(
         array $policyGeneratorPool = []
     ) {
-
         $this->policyGeneratorPool = $policyGeneratorPool;
     }
     

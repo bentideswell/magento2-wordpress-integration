@@ -48,7 +48,6 @@ class IntegrationStatus extends \Magento\Backend\Block\Template
      */
     protected function _toHtml()
     {
-
         if ($this->_request->getParam('section') !== 'wordpress') {
             return;
         }

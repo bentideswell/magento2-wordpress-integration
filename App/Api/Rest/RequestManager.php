@@ -10,6 +10,7 @@ namespace FishPig\WordPress\App\Api\Rest;
 
 use FishPig\WordPress\App\HTTP\InvalidStatusException;
 use FishPig\WordPress\App\HTTP\CurlException;
+use FishPig\WordPress\App\HTTP\HTTPAuthException;
 use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
@@ -72,7 +73,11 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
                     );
                 }
             }
-            
+
+            if ($httpResponse->getStatus() === 401) {
+                throw new HTTPAuthException('WordPress API requires HTTP authentication credentials.');
+            }
+
             throw new InvalidStatusException(
                 (string)__(
                     'Error trying to get JSON endpoint %1. Status = %2',

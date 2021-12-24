@@ -10,7 +10,6 @@ namespace FishPig\WordPress\App\Integration\Test;
 
 use FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException;
 use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
-use FishPig\WordPress\App\Api\Exception\MissingApiDataException;
 
 class ApiTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
@@ -29,14 +28,14 @@ class ApiTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     public function runTest(): void
     {
         try {
-            $data = $this->integrationDataRetriever->getData();
-
-            if (!$data || !is_array($data)) {
+            if (!($data = $this->integrationDataRetriever->getData())) {
                 throw new IntegrationFatalException(
                     'Unable to contact the WordPress API.'
                 );
             }
-        } catch (MissingApiDataException $e) {
+        } catch (\FishPig\WordPress\App\HTTP\HTTPAuthException $e) {
+            throw new IntegrationFatalException('', null, $e);
+        } catch (\FishPig\WordPress\App\Api\Exception\MissingApiDataException $e) {
             throw new IntegrationFatalException($e->getMessage());
         }
     }
