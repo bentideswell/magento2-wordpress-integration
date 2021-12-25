@@ -7,6 +7,10 @@
 - Auto set page title selector in Elementor for Hide Title
 - Resolve CSP font issues without .htaccess (if possible)
 
+## [3.0.34] - 2021-12-25
+### [Fixed]
+- Compilation error: "Class FishPig\WordPress\App\HTTP\Throwable does not exist"
+
 ## [3.0.33] - 2021-12-24
 ### [Added]
 - Checks for HTTP auth and displays a message indicating HTTP auth failure. In a future version you will be able to 
