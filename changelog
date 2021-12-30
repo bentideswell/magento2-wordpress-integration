@@ -7,6 +7,9 @@
 - Auto set page title selector in Elementor for Hide Title
 - Resolve CSP font issues without .htaccess (if possible)
 
+## [3.1.1] - 2021-12-30
+### [Changed]
+- Removed wrapping HTML tag from wp_footer call in WordPress theme.
 
 ## [3.1.0] - 2021-12-30
 ### [Changed]
