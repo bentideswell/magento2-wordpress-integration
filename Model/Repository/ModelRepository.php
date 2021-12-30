@@ -22,9 +22,11 @@ abstract class ModelRepository
      */
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         string $factoryClass,
         string $idFieldName = 'ID'
     ) {
+        $this->storeManager = $storeManager;
         $this->objectFactory = $objectManager->get($factoryClass);
         $this->idFieldName = $idFieldName;
     }
@@ -34,10 +36,15 @@ abstract class ModelRepository
      */
     public function get($id): \Magento\Framework\DataObject
     {
+        $storeId = (int)$this->getStoreId();
         $id = (int)$id;
         
-        if (isset($this->cache[$id])) {
-            if ($this->cache[$id] === false) {
+        if (!isset($this->cache[$storeId])) {
+            $this->cache[$storeId] = [];
+        }
+
+        if (isset($this->cache[$storeId][$id])) {
+            if ($this->cache[$storeId][$id] === false) {
                 throw new NoSuchEntityException(
                     __(
                         "The %1 (%2=%3) that was requested doesn't exist. Verify the object and try again.",
@@ -48,14 +55,14 @@ abstract class ModelRepository
                 );
             }
 
-            return $this->cache[$id];
+            return $this->cache[$storeId][$id];
         }
         
-        $this->cache[$id] = false;
+        $this->cache[$storeId][$id] = false;
 
         $object = $this->loadObject($id, $this->idFieldName);
         
-        return $this->cache[$id] = $object;
+        return $this->cache[$storeId][$id] = $object;
     }
     
     /**
@@ -76,17 +83,20 @@ abstract class ModelRepository
      */
     public function getWithoutException($id): \Magento\Framework\DataObject
     {
+        $storeId = (int)$this->getStoreId();
         $id = (int)$id;
         
-        if (isset($this->cache[$id])) {
-            return $this->cache[$id];
+        if (isset($this->cache[$storeId][$id])) {
+            return $this->cache[$storeId][$id];
         }
         
-        $this->cache[$id] = false;
-
-        $object = $this->loadObject($id, $this->idFieldName);
+        if (!isset($this->cache[$storeId])) {
+            $this->cache[$storeId] = [];
+        }
         
-        return $this->cache[$id] = $object;
+        $this->cache[$storeId][$id] = false;
+
+        return $this->cache[$id][$storeId] = $this->loadObject($id, $this->idFieldName);
     }
     
     /**
@@ -96,17 +106,21 @@ abstract class ModelRepository
      */
     public function getByField($value, $field)
     {
-        if ($this->cache) {
-            foreach ($this->cache as $object) {
+        $storeId = (int)$this->getStoreId();
+        
+        if (!empty($this->cache[$storeId])) {
+            foreach ($this->cache[$storeId] as $object) {
                 if ($object->getData($field) === $value) {
                     return $object;
                 }
             }
+        } else {
+            $this->cache[$storeId] = [];
         }
 
         $object = $this->loadObject($value, $field);
         
-        return $this->cache[$object->getId()] = $object;
+        return $this->cache[$storeId][$object->getId()] = $object;
     }
     
     /**
@@ -130,5 +144,13 @@ abstract class ModelRepository
         }
 
         return $object;
+    }
+    
+    /**
+     * @return int
+     */
+    private function getStoreId(): int
+    {
+        return (int)$this->storeManager->getStore()->getId();
     }
 }

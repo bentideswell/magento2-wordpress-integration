@@ -41,7 +41,8 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
 
         $this->setOption(CURLOPT_SSL_VERIFYHOST, false);
         $this->setOption(CURLOPT_SSL_VERIFYPEER, false);
-        $this->setOption(CURLOPT_FOLLOWLOCATION, true);
+        $this->setOption(CURLOPT_FOLLOWLOCATION, false);
+//        $this->setOption(CURLOPT_MAXREDIRS, 1);
 
         $this->addHeader(
             \FishPig\WordPress\App\HTTP\AuthorisationKey::HTTP_HEADER_NAME,

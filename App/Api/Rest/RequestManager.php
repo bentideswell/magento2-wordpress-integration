@@ -10,7 +10,6 @@ namespace FishPig\WordPress\App\Api\Rest;
 
 use FishPig\WordPress\App\HTTP\InvalidStatusException;
 use FishPig\WordPress\App\HTTP\CurlException;
-use FishPig\WordPress\App\HTTP\HTTPAuthException;
 use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
@@ -22,10 +21,11 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
-        \Magento\Framework\Serialize\SerializerInterface $serializer
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        array $urlModifiers = []
     ) {
         $this->serializer = $serializer;
-        parent::__construct($url, $httpClientFactory, $requestLogger);
+        parent::__construct($url, $httpClientFactory, $requestLogger, $urlModifiers);
     }
     
     /**
@@ -34,12 +34,8 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
      */
     public function get($url = null): \Magento\Framework\HTTP\ClientInterface
     {
-        if ($url === null) {
-            throw new \FishPig\WordPress\App\Exception('Invalid URL given.');
-        }
-        
         try {
-            return parent::get($this->url->getRestUrl($url));
+            return parent::get($url);
         } catch (CurlException $e) {
             throw new IntegrationFatalException(
                 sprintf(
@@ -72,10 +68,6 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
                         )
                     );
                 }
-            }
-
-            if ($httpResponse->getStatus() === 401) {
-                throw new HTTPAuthException('WordPress API requires HTTP authentication credentials.');
             }
 
             throw new InvalidStatusException(

@@ -52,7 +52,6 @@ class UrlHelper
     public function getRelativePathInfo(RequestInterface $request)
     {
         if (($alias = $this->getUrlAlias($request)) !== false) {
-
             if ($blogRoute = $this->url->getBlogRoute()) {
                 if (strpos($alias . '/', $blogRoute .'/') === 0) {
                     return ltrim(substr($alias, strlen($blogRoute)), '/');
@@ -147,7 +146,10 @@ class UrlHelper
             $magentoUrlPath = ltrim($magentoUrlPath, '/');
 
             if (strpos($pathInfo, $magentoUrlPath) === 0) {
-                $pathInfo = ltrim(substr($pathInfo, strlen($magentoUrlPath)), '/');
+                // ToDo
+                // This was removed due to conflicts with WPML
+                // It may need to be reviewed and added back in
+                // $pathInfo = ltrim(substr($pathInfo, strlen($magentoUrlPath)), '/');
             }
         }
 

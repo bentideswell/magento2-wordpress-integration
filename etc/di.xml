@@ -304,6 +304,13 @@
             <argument name="instanceName" xsi:type="string">FishPig\WordPress\App\HTTP\Client\Curl</argument>
         </arguments>        
     </type>
+    <type name="FishPig\WordPress\App\Api\Rest\RequestManager">
+        <arguments>
+            <argument name="urlModifiers" xsi:type="array">
+                <item name="rest_url" xsi:type="object">FishPig\WordPress\App\Api\Rest\RequestManager\UrlModifier</item>
+            </argument>
+        </arguments>
+    </type>
     <!--
     /**
      * Review and Remove

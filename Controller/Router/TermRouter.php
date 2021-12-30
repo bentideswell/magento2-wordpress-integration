@@ -33,7 +33,6 @@ class TermRouter implements \Magento\Framework\App\RouterInterface
         $pathInfo = $this->routerUrlHelper->getRelativePathInfo($request);
 
         foreach ($this->taxonomyRepository->getAll() as $taxonomy) {
-
             if ($taxonomy->getSlug() && strpos($pathInfo, $taxonomy->getSlug() . '/') !== 0) {
                 continue;
             }
@@ -54,7 +53,7 @@ class TermRouter implements \Magento\Framework\App\RouterInterface
             if ($taxonomy->getSlug() && strpos($pathInfo, $taxonomy->getSlug() . '/') !== 0) {
                 continue;
             }
-            
+
             if (($routes = $taxonomy->getResource()->getRedirectableUris($taxonomy, $pathInfo)) !== false) {
                 foreach ($routes as $routeId => $route) {
                     if ($pathInfo === $route['source']) {

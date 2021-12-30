@@ -17,8 +17,6 @@ class Post extends AbstractResourceModel
 
     /**
      *
-     *
-     * @return
      */
     public function __construct(
         \Magento\Framework\Model\ResourceModel\Db\Context $context,
@@ -52,20 +50,24 @@ class Post extends AbstractResourceModel
      */
     protected function _getLoadSelect($field, $value, $object)
     {
-        $select = $this->getConnection()->select()
-            ->from(['e' => $this->getMainTable()])
-            ->where("e.{$field}=?", $value)
-            ->limit(1);
+        $select = parent::_getLoadSelect($field, $value, $object);
 
         $postType = $object->getPostType();
 
         if (!in_array($postType, ['*', ''])) {
-            $select->where('e.post_type ' . (is_array($postType) ? 'IN' : '=') . ' (?)', $postType);
+            $select->where(
+                'main_table.post_type ' . (is_array($postType) ? 'IN' : '=') . ' (?)',
+                $postType
+            );
         }
 
-        $select->columns(['permalink' => $this->permalinkResource->getPermalinkSqlColumn()]);
+        $select->columns(
+            [
+                'permalink' => $this->permalinkResource->getPermalinkSqlColumn() // ToDo: specify post types
+            ]
+        );
 
-        return $this->filterLoadSelect($select, $object);
+        return $select;
     }
 
     /**

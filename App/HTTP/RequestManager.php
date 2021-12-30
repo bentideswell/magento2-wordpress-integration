@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace FishPig\WordPress\App\HTTP;
 
 use Magento\Framework\HTTP\ClientInterface;
+use FishPig\WordPress\App\HTTP\RequestManager\UrlModifierInterface;
 
 class RequestManager
 {
@@ -26,16 +27,32 @@ class RequestManager
     private $cache = [];
 
     /**
+     * @var array
+     */
+    private $urlModifiers = [];
+
+    /**
      * @param \FishPig\WordPress\Model\UrlInterface $url
      */
     public function __construct(
         \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
-        \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger
+        \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
+        array $urlModifiers = []
     ) {
         $this->url = $url;
         $this->httpClientFactory = $httpClientFactory;
         $this->requestLogger = $requestLogger;
+
+        foreach ($urlModifiers as $key => $urlModifier) {
+            if (false === ($urlModifier instanceof UrlModifierInterface)) {
+                throw new \InvalidArgumentException(
+                    get_class($urlModifier) . ' does not implement ' . UrlModifierInterface::class
+                );
+            }
+            
+            $this->urlModifiers[$key] = $urlModifier;
+        }
     }
 
     /**
@@ -44,7 +61,10 @@ class RequestManager
      */
     public function get(string $url = null): ClientInterface
     {
-        return $this->makeRequest('GET', $url);
+        return $this->makeRequest(
+            'GET',
+            $this->modifyUrl($url)
+        );
     }
 
     /**
@@ -54,16 +74,23 @@ class RequestManager
      */
     public function post(string $url = null, array $data = []): ClientInterface
     {
-        return $this->makeRequest('POST', $url, $data);
+        return $this->makeRequest(
+            'POST',
+            $this->modifyUrl($url),
+            $data
+        );
     }
-    
+
     /**
      * @param  string $url = null
      * @return ClientInterface
      */
     public function head(string $url = null): ClientInterface
     {
-        return $this->makeRequest('HEAD', $url);
+        return $this->makeRequest(
+            'HEAD',
+            $this->modifyUrl($url)
+        );
     }
 
     /**
@@ -79,7 +106,7 @@ class RequestManager
         
         if (!isset($this->cache[$cacheKey])) {
             $this->cache[$cacheKey] = $client = $this->httpClientFactory->create();
-            
+
             $logData = [
                 'Date' => date('Y/m/d H:i:s'),
                 'Method' => str_pad($method, 4),
@@ -87,7 +114,7 @@ class RequestManager
                 'Error' => '',
                 'URL' => $url,
                 'IP' => $this->getRemoteAddress(),
-                'Current' => $this->url->getCurrentUrl()
+                'Current' => $this->url->getCurrentUrl(true)
             ];
 
             try {
@@ -95,6 +122,13 @@ class RequestManager
                     $client->$method($url);
                 } else {
                     $client->$method($url, $args);
+                }
+
+                if (!in_array($client->getStatus(), [200, 404])) {
+                    throw new \FishPig\WordPress\App\HTTP\InvalidStatusException(
+                        '',
+                        $client->getStatus()
+                    );
                 }
             } catch (\Exception $e) {
                 $logData['Error'] = $e->getMessage();
@@ -136,5 +170,18 @@ class RequestManager
         // phpcs:enable
 
         return false;
+    }
+    
+    /**
+     * @param  string $url
+     * @return string
+     */
+    private function modifyUrl(string $url = null): string
+    {
+        foreach ($this->urlModifiers as $urlModifier) {
+            $url = $urlModifier->modifyUrl($url);
+        }
+        
+        return $url;
     }
 }

@@ -37,7 +37,7 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
         if ($postId === false) {
             return false;
         }
-        
+
         if ($this->frontPage->getPostsPageId() === $postId) {
             return $this->requestDispatcher->dispatch(
                 $request,

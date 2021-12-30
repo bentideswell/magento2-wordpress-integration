@@ -51,6 +51,7 @@ spl_autoload_register(function($className) {
  * Initialise base objets
  */
 $fishpigObjects = [
+    new \FishPig\WordPress\X\Helper(),
     new \FishPig\WordPress\X\Setup(),
     new \FishPig\WordPress\X\AuthorisationKey(),
     new \FishPig\WordPress\X\Api(),

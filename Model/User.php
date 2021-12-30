@@ -73,6 +73,7 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
      */
     public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
+        /* ToDo: add filter to remove front and posts page */
         return $this->postCollectionFactory->create()->addUserIdFilter(
             (int)$this->getId()
         );

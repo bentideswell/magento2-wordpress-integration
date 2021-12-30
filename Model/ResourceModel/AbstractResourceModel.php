@@ -60,7 +60,10 @@ abstract class AbstractResourceModel extends \Magento\Framework\Model\ResourceMo
     }
     
     /**
-     *
+     * @param  string $field
+     * @param  mixed $value
+     * @param  $object
+     * @return \Magento\Framework\DB\Select
      */
     protected function _getLoadSelect($field, $value, $object)
     {
@@ -73,16 +76,10 @@ abstract class AbstractResourceModel extends \Magento\Framework\Model\ResourceMo
                     $connection->quoteIdentifier('main_table.' . $field) . '=?',
                     $value
                 )
+            )->limit(
+                1
             );
-
-        return $this->filterLoadSelect($select, $object);
-    }
-    
-    /**
-     * @return \Magento\Framework\DB\Select
-     */
-    public function filterLoadSelect(\Magento\Framework\DB\Select $select, $object = null): \Magento\Framework\DB\Select
-    {
+            
         return $select;
     }
 }

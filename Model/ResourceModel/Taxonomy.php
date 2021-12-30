@@ -88,7 +88,10 @@ class Taxonomy
             )
             ->join(
                 ['tax' => $this->resourceConnection->getTable('term_taxonomy')],
-                $connection->quoteInto("tax.term_id = term.term_id AND tax.taxonomy = ?", $taxonomy->getTaxonomy()),
+                $connection->quoteInto(
+                    "tax.term_id = term.term_id AND tax.taxonomy = ?",
+                    $taxonomy->getTaxonomy()
+                ),
                 'parent'
             );
             
@@ -130,9 +133,9 @@ class Taxonomy
         if (!($allUris = $this->getAllRoutes($taxonomy))) {
             return [];
         }
- 
+
         foreach ($redirectableUris as $redirectableUri) {
-            if (isset($targetUris[$redirectableUri['id']])) {
+            if (isset($targetUris[$redirectableUri['id']], $allUris[$redirectableUri['id']])) {
                 $redirectableData[$redirectableUri['id']] = [
                     'source' => $targetUris[$redirectableUri['id']],
                     'target' => $allUris[$redirectableUri['id']],

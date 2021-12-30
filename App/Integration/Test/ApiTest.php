@@ -33,8 +33,8 @@ class ApiTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
                     'Unable to contact the WordPress API.'
                 );
             }
-        } catch (\FishPig\WordPress\App\HTTP\HTTPAuthException $e) {
-            throw new IntegrationFatalException('', null, $e);
+        } catch (\FishPig\WordPress\App\HTTP\InvalidStatusException $e) {
+            throw new IntegrationFatalException($e->getMessage(), null, $e);
         } catch (\FishPig\WordPress\App\Api\Exception\MissingApiDataException $e) {
             throw new IntegrationFatalException($e->getMessage());
         }
