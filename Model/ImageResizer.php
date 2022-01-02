@@ -68,10 +68,7 @@ class ImageResizer
         }
 
         $siteUrl = $this->stripProtocolFromUrl($this->url->getSiteUrl());
-        // ToDo: add getUploadsUrl to siteUrl
-        // Add getGuid to Model\Image
-        $guid = $this->stripProtocolFromUrl($this->url->getWpContentUrl() . 'uploads/' . $image->getData('file'));
-        $wpRelativeFile = ltrim(str_replace($siteUrl, '', $guid), '/');
+        $wpRelativeFile = ltrim(str_replace($siteUrl, '', $this->stripProtocolFromUrl($image->getGuid())), '/');
         $wpDir = $this->wpDirectoryList->getBaseDirectory();
         
         if (!$wpDir->isFile($wpRelativeFile)) {

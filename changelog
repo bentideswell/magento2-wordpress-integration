@@ -6,6 +6,10 @@
 - Auto set page title selector in Elementor for Hide Title
 - Resolve CSP font issues without .htaccess (if possible)
 
+## [3.2.1] - 2021-01-02
+### [Fixed]
+- Resizable images when using Multisite in local mode. The correct path for the image is now used.
+
 ## [3.2.0] - 2022-01-02
 ### [Added]
 - Added hello WP API method to help with debugging.

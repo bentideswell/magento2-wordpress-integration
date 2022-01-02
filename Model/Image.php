@@ -116,7 +116,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
      */
     public function getFullSizeImage(): string
     {
-        return $this->getData('guid');
+        return $this->getGuid();
     }
 
     /**
@@ -200,5 +200,15 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
         }
         
         return $this->resizer;
+    }
+    
+    /**
+     * Get the direct image URL
+     *
+     * @return string
+     */    
+    public function getGuid(): string
+    {
+        return $this->url->getUploadUrl() . $this->getData('file');
     }
 }
