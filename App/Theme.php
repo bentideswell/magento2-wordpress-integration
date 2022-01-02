@@ -21,11 +21,13 @@ class Theme
     public function __construct(
         \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
         \FishPig\WordPress\App\Theme\RemoteHashProvider $remoteHashProvider,
-        \FishPig\WordPress\Model\OptionRepository $optionRepository
+        \FishPig\WordPress\Model\OptionRepository $optionRepository,
+        \FishPig\WordPress\App\Cache $cache
     ) {
         $this->localHashProvider = $localHashProvider;
         $this->remoteHashProvider = $remoteHashProvider;
         $this->optionRepository = $optionRepository;
+        $this->cache = $cache;
     }
 
     /**
@@ -45,11 +47,24 @@ class Theme
     }
     
     /**
+     * Local theme hash (file collection + hashing) is cached for an hour
+     * Flushing or disabling the cache will force a rebuild of hash
+     * Access via CLI will also force a rebuild of local hash
+     *
      * @return string
      */
     private function getLocalHash(): string
     {
-        return $this->localHashProvider->getHash();
+        $cacheKey = 'theme_local_hash';
+        
+        if (PHP_SAPI !== 'cli' && ($localHash = $this->cache->load($cacheKey))) {
+            return $localHash;
+        }
+
+        $localHash = $this->localHashProvider->getHash();
+        $this->cache->save($localHash, $cacheKey, [], 60*60);
+
+        return $localHash;
     }
     
     /**

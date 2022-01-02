@@ -18,16 +18,25 @@
             <strong><?= $block->escapeHtml(__($title)) ?></strong>
         </div>
     <?php endif; ?>
-    <div class="block-content">
+    <div class="block-content"> 
         <form method="get" action="<?= $block->escapeUrl($block->getFormActionUrl()) ?>" id="blog-search-form">
-            <div class="blog-search">
-                <?php if ($block->getPostType()): ?>
-                <div class="no-display">
-                    <input type="hidden" name="post_type" value="<?= $block->escapeHtml($block->getPostType()) ?>" />
+            <?php if ($block->getPostType()): ?>
+                <input type="hidden" name="post_type" value="<?= $block->escapeHtml($block->getPostType()) ?>"/>
+            <?php endif; ?>
+            <fieldset class="fieldset">
+
+                <div class="field required">
+                    <div class="control">
+                        <input type="text" name="s" class="input-text" value="<?= $block->escapeHtml($block->getSearchTerm()) ?>" placeholder="<?= $block->escapeHtml(__('Search blog...')) ?>"/>
+                    </div>
                 </div>
-                <?php endif; ?>
-                <input type="text" name="s" class="input-text" title="<?= $block->escapeHtml(__('Search Posts')) ?>" value="<?= $block->escapeHtml($block->getSearchTerm()) ?>"/>
-                <button class="button" title="<?= $block->escapeHtml(__('Search')) ?>" type="submit"><span><span><?= $block->escapeHtml(__('Search')) ?></span></span></button>
+            </fieldset>
+            <div class="actions-toolbar">
+                <div class="primary">
+                    <button type="submit" name="submit"  class="action submit primary">
+                    <span><?= $block->escapeHtml(__('Search')) ?></span>
+                    </button>
+                </div>
             </div>
         </form>
     </div>

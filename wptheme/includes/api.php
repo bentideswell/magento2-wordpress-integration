@@ -41,6 +41,20 @@ class Api
             function() {
                 register_rest_route(
                     'fishpig/v1', 
+                    '/hello/', 
+                    [
+                        'methods' => 'GET',
+                        'callback' => function(\WP_REST_Request $request) {
+                            return [
+                                'status' => 1,
+                            ];
+                        },
+                        'permission_callback' => '__return_true',
+                    ]
+                );
+
+                register_rest_route(
+                    'fishpig/v1', 
                     '/data/', 
                     [
                         'methods' => 'GET',

@@ -2,10 +2,21 @@
 
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
-- Check file collection for theme is cached
 - Auto disable Elementor experiments
 - Auto set page title selector in Elementor for Hide Title
 - Resolve CSP font issues without .htaccess (if possible)
+
+## [3.2.0] - 2022-01-02
+### [Added]
+- Added hello WP API method to help with debugging.
+- Added wp_redirect protection to WP theme.
+- Caching for theme hash generation (file collection).
+- Added fishpig:wordpress:set-option console command.
+### [Changed]
+- Moved logs from var/log/wordpress.log to var/log/wp/error.log. Also added http.log to same location.
+- Updated search widget template.
+### [Fixed]
+- Automatic WP theme update registration when in local mode.
 
 ## [3.1.1] - 2021-12-30
 ### [Changed]

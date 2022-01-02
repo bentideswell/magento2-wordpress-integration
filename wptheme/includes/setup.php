@@ -106,6 +106,19 @@ class Setup
         
             remove_action('wp_head', [$wp_widget_factory->widgets['WP_Widget_Recent_Comments'], 'recent_comments_style']);
         });
+        
+        // Redirection Protection
+        add_filter(
+            'wp_redirect',
+            function($url) {
+                // Don't allow redirects to home URL because this can fire off many API calls and get us in a loop
+                if (strpos($url, '/wp-admin/') === false && strpos($url, rtrim(get_home_url(), '/')) === 0) {
+                    return false;
+                }
+
+                return $url;
+            }
+        );
     }    
 }
 // phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento

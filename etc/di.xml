@@ -254,7 +254,7 @@
 			<argument name="commands" xsi:type="array">
 				<item name="fishpig-wordpress-build-theme" xsi:type="object">FishPig\WordPress\Console\Command\BuildThemePackageCommand</item>
 				<item name="fishpig-wordpress-debug" xsi:type="object">FishPig\WordPress\Console\Command\DebugCommand</item>
-				
+				<item name="fishpig-wordpress-set" xsi:type="object">FishPig\WordPress\Console\Command\SetOptionCommand</item>				
 			</argument>
 		</arguments>
 	</type>
@@ -266,7 +266,7 @@
 	<type name="FishPig\WordPress\App\Logger\Handler">
 		<arguments>
 			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-			<argument name="fileName" xsi:type="string">/var/log/wordpress.log</argument>
+			<argument name="fileName" xsi:type="string">/var/log/wp/error.log</argument>
 		</arguments>
 	</type>
 	<type name="FishPig\WordPress\App\Logger">
@@ -280,7 +280,7 @@
 	<type name="FishPig\WordPress\App\HTTP\RequestManager\Logger\Handler">
 		<arguments>
 			<argument name="filesystem" xsi:type="object">Magento\Framework\Filesystem\Driver\File</argument>
-			<argument name="fileName" xsi:type="string">/var/log/wordpress-http-requests.log</argument>
+			<argument name="fileName" xsi:type="string">/var/log/wp/http.log</argument>
 		</arguments>
 	</type>
 	<type name="FishPig\WordPress\App\HTTP\RequestManager\Logger">

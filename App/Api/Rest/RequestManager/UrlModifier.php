@@ -26,9 +26,9 @@ class UrlModifier implements \FishPig\WordPress\App\HTTP\RequestManager\UrlModif
 
     /**
      * @param  string $url
-     * @return \Magento\Framework\HTTP\ClientInterface
+     * @return ?string
      */
-    public function modifyUrl(string $url = null): string
+    public function modifyUrl(string $url = null): ?string
     {
         if ($url === null) {
             throw new \FishPig\WordPress\App\Exception('Invalid URL given.');

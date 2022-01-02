@@ -61,10 +61,7 @@ class RequestManager
      */
     public function get(string $url = null): ClientInterface
     {
-        return $this->makeRequest(
-            'GET',
-            $this->modifyUrl($url)
-        );
+        return $this->makeRequest('GET', $url);
     }
 
     /**
@@ -74,11 +71,7 @@ class RequestManager
      */
     public function post(string $url = null, array $data = []): ClientInterface
     {
-        return $this->makeRequest(
-            'POST',
-            $this->modifyUrl($url),
-            $data
-        );
+        return $this->makeRequest('POST', $url, $data);
     }
 
     /**
@@ -87,10 +80,7 @@ class RequestManager
      */
     public function head(string $url = null): ClientInterface
     {
-        return $this->makeRequest(
-            'HEAD',
-            $this->modifyUrl($url)
-        );
+        return $this->makeRequest('HEAD', $url);
     }
 
     /**
@@ -101,6 +91,10 @@ class RequestManager
      */
     protected function makeRequest(string $method, string $url = null, $args = null): ClientInterface
     {
+        if (($url = (string)$this->modifyUrl($url)) === '') {
+            throw new \FishPig\WordPress\App\Exception('Empty URL in ' . get_class($this) . '::' . $method);
+        }
+        
         // phpcs:ignore -- not cryptographic
         $cacheKey = md5($method . strtolower($url ?? '_current'));
         
@@ -174,9 +168,9 @@ class RequestManager
     
     /**
      * @param  string $url
-     * @return string
+     * @return ?string
      */
-    private function modifyUrl(string $url = null): string
+    private function modifyUrl(string $url = null): ?string
     {
         foreach ($this->urlModifiers as $urlModifier) {
             $url = $urlModifier->modifyUrl($url);

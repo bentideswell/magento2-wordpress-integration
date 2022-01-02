@@ -46,7 +46,9 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     public function runTest(): void
     {
         if ((!$this->theme->isInstalled() || !$this->theme->isLatestVersion()) && $this->appMode->isLocalMode()) {
-            $this->buildAndDeployTheme();
+            if ($this->buildAndDeployTheme()) {
+                return;
+            }
         }
 
         if (!$this->theme->isInstalled()) {
@@ -61,28 +63,32 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
             );
         }
     }
-    
+
     /**
      * Try to build and deploy the theme in local mode.
      *
-     * @return void
+     * @return bool
      */
-    private function buildAndDeployTheme(): void
+    private function buildAndDeployTheme(): bool
     {
         try {
             if ($this->wpDirectoryList->isBasePathValid()) {
                 $packageFile = $this->themePackageBuilder->getFilename();
 
                 $this->themePackageDeployer->deploy($packageFile, $this->wpDirectoryList->getBasePath());
-            
+
                 // This activates the update in WordPress and sets the hash in the DB
-                $this->requestManager->get($this->wpUrl->getSiteUrl());
+                $this->requestManager->get($this->wpUrl->getSiteUrl('/'));
+
+                return true;
             }
         } catch (\Exception $e) {
             $this->logger->error($e);
         }
+
+        return false;
     }
-    
+
     /**
      * @return string
      */
