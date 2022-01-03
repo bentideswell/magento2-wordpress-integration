@@ -19,11 +19,13 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     public function __construct(
         \FishPig\WordPress\App\Url $url,
         \Magento\Framework\App\Route\Config $routeConfig,
-        \FishPig\WordPress\Model\Config $config
+        \FishPig\WordPress\Model\Config $config,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->url = $url;
         $this->routeConfig = $routeConfig;
         $this->config = $config;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -39,15 +41,19 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         $homeUrl = rtrim($this->url->getHomeUrl(), '/'); // Trimmed incase WP configured to add trailing slash to home
         $siteUrl = $this->url->getSiteUrl();
         $isRoot = $this->url->isRoot();
+        $storeId = (int)$this->storeManager->getStore()->getId();
 
         if ($homeUrl === $siteUrl) {
+            if ($isRoot) {
+                throw new IntegrationFatalException(
+                    'Invalid WordPress home URL. '
+                    . PHP_EOL . 'Home URL should match Magento base URL (' . $magentoUrl . '). '
+                    . PHP_EOL . 'Fix with: ' . "\n\n" . $this->getUpdateUrlCommand($magentoUrl)
+                );
+            }
+
             throw new IntegrationFatalException(
-                sprintf(
-                    'Your WordPress Home URL matches your Site URL (%s).'
-                    . ' Your SiteURL should be the WordPress installation URL and the WordPress Home URL should'
-                    . ' be the integrated blog URL.',
-                    $siteUrl
-                )
+                'Your home URL matches your site URL. Change your home URL to something like ' . $magentoUrl . '/blog'
             );
         }
 
@@ -81,7 +87,7 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 
             $this->validateBlogRouteAgainstFrontNames($magentoUrl, $homeUrl);
         }
-        
+
         if (!$this->url->doUrlProtocolsMatch($magentoUrl, $homeUrl, $siteUrl)) {
             throw new IntegrationFatalException(
                 'URL Protocol Mismatch. Your WordPress URLs do not use the same URL protocol as Magento.'
@@ -129,5 +135,16 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
                 );
             }
         }
+    }
+    
+    private function getUpdateUrlCommand($url, $optionName = 'home'): string
+    {
+        return sprintf(
+            '<strong>bin/magento %s --option %s --value "%s" --store %d</strong>',
+            'fishpig:wordpress:set-option',
+            $optionName,
+            $url,
+            (int)$this->storeManager->getStore()->getId()
+        );
     }
 }

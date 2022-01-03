@@ -8,7 +8,7 @@
     <div class="messages">
         <?php foreach ($msgs as $msg): ?>
             <div class="message message-<?= $block->escapeHtmlAttr($msg['type']) ?> <?= $block->escapeHtmlAttr($msg['type']) ?>">
-                <div><?= $block->escapeHtml($msg['msg'], ['a']) ?></div>
+                <div><?= $block->escapeHtml(nl2br(trim($msg['msg'])), ['a', 'br', 'strong']) ?></div>
             </div>
         <?php endforeach; ?>
     </div>

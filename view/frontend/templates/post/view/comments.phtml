@@ -30,7 +30,7 @@
                             <a href="<?= $block->escapeUrl($comment->getUrl()) ?>" rel="nofollow" class="comment-when"><?= $block->escapeHtml(__('%1 at %2', $comment->getCommentDate(), $comment->getCommentTime())) ?></a>
                         </div>
                     </div>
-                    <div class="comment-entry"><?= $block->escapeHtml($block->getCommentContent($comment)) ?></div>
+                    <div class="comment-entry"><?= $block->escapeHtml($block->getCommentContent($comment), ['br', 'a']) ?></div>
                     <?php if ($block->canComment()): ?>
                         <div class="reply">
                             <a href="#respond" onclick="document.getElementById('comment_parent').value=<?= (int)$comment->getId() ?>;" class="comment-reply-link"><?= $block->escapeHtml(__('Reply')) ?></a> <span>&darr;</span>

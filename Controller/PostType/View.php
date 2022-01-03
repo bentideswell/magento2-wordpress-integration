@@ -80,6 +80,10 @@ class View extends \FishPig\WordPress\Controller\Action
         if ($postType->isFrontPage()) {
             $layoutHandles[] = 'wordpress_front_page';
         }
+        
+        if ($postType->getPostType() === 'posts') {
+            $layoutHandles[] = 'wordpress_homepage_view'; // Legacy
+        }
 
         return $layoutHandles;
     }

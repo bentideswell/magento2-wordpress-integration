@@ -39,6 +39,22 @@ class Option
 
     /**
      * @param  string $key
+     * @return bool
+     */
+    public function exists(string $key): bool
+    {
+        $db = $this->resourceConnection->getConnection();
+
+        return false !== $db->fetchRow(
+            $db->select()
+                ->from($this->getOptionsTable(), 'option_value')
+                ->where('option_name=?', $key)
+                ->limit(1)
+        );
+    }
+
+    /**
+     * @param  string $key
      * @param  mixed $value
      * @return void
      */
@@ -54,7 +70,7 @@ class Option
                 $value = $this->serializer->serialize($value);
             }
 
-            if (($existingValue = $this->get($key)) === null) {
+            if ($this->exists($key) === false) {
                 $db->insert(
                     $this->getOptionsTable(),
                     [
