@@ -126,12 +126,12 @@
 			<argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\MetaDataProvider</argument>
 		</arguments>
     </type>
-    <virtualType name="FishPig\WordPress\Model\Post\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+    <type name="FishPig\WordPress\Model\Post\MetaDataProvider">
         <arguments>
             <argument name="tableName" xsi:type="string">postmeta</argument>
             <argument name="objectField" xsi:type="string">post_id</argument>
         </arguments>
-    </virtualType>
+    </type>
     <type name="FishPig\WordPress\Model\Post\Attachment">
 		<arguments>
 			<argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment</argument>
