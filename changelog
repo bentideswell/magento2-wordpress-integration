@@ -6,7 +6,7 @@
 - Auto set page title selector in Elementor for Hide Title
 - Resolve CSP font issues without .htaccess (if possible)
 
-## [3.4.0] - 2021-01-04
+## [3.4.1] - 2021-01-04
 ### [Added]
 - MetaDataProvider for Post. This was a virtual class but is now an actual class. This allows for ACF to add plugins.
 
