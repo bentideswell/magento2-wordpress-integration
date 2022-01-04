@@ -6,6 +6,12 @@
 - Auto set page title selector in Elementor for Hide Title
 - Resolve CSP font issues without .htaccess (if possible)
 
+## [3.3.0] - 2021-01-04
+### [Added]
+- Added option to POST using REST API.
+### [Changed]
+- Improved RequestManager error handling
+
 ## [3.2.2] - 2021-01-03
 ### [Changed]
 - Error messages for URLs when using Root.

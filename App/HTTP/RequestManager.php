@@ -118,11 +118,20 @@ class RequestManager
                     $client->$method($url, $args);
                 }
 
-                if (!in_array($client->getStatus(), [200, 404])) {
-                    throw new \FishPig\WordPress\App\HTTP\InvalidStatusException(
-                        '',
-                        $client->getStatus()
-                    );
+                if (!in_array($client->getStatus(), $this->getAllowedStatusCodes())) {
+                    if (is_string($client->getBody()) && $pError = $this->extractPhpErrorMessage($client->getBody())) {
+                        $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
+                            'WordPress Server ' . $client->getStatus() . ' Error: ' . $pError,
+                            $client->getStatus()
+                        );
+                    } else {
+                        $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
+                            '',
+                            $client->getStatus()
+                        );
+                    }
+
+                    throw $e->setUrl($url);
                 }
             } catch (\Exception $e) {
                 $logData['Error'] = $e->getMessage();
@@ -142,7 +151,7 @@ class RequestManager
 
         return $this->cache[$cacheKey];
     }
-    
+
     /**
      * @return string|false
      */
@@ -170,12 +179,36 @@ class RequestManager
      * @param  string $url
      * @return ?string
      */
-    private function modifyUrl(string $url = null): ?string
+    protected function modifyUrl(string $url = null): ?string
     {
         foreach ($this->urlModifiers as $urlModifier) {
             $url = $urlModifier->modifyUrl($url);
         }
         
         return $url;
+    }
+    
+    /**
+     * @param  string $str
+     * @return string|false
+     */
+    protected function extractPhpErrorMessage(string $str)
+    {
+        if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
+            return trim($m[2]);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * @return array
+     */
+    protected function getAllowedStatusCodes(): array
+    {
+        return [
+            200,
+            404
+        ];
     }
 }

@@ -20,10 +20,23 @@ class InvalidStatusException extends \FishPig\WordPress\App\Exception
                 $message = 'WordPress API requires HTTP authentication but credentials not present.'
                     . ' If Magento and WordPress use the same HTTP auth credentials, these are applied automatically.';
             } else {
-                $message = 'WordPress HTTP request failed with HTTP response code ' . $code;
+                $message = 'WordPress HTTP request failed with HTTP response code ' . $code . '.';
             }
         }
 
         parent::__construct($message, $code, $previous);
+    }
+    
+    /**
+     * @param ?string $url
+     * @param return self
+     */
+    public function setUrl(?string $url): self
+    {
+        if ($this->message) {
+            $this->message .= ' The URL was ' . $url;
+        }
+
+        return $this;
     }
 }
