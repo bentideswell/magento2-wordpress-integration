@@ -42,8 +42,8 @@ class PackageDeployer
         $fishPigThemePath = $wpThemePath . '/fishpig';
         
         if ($this->filesystemDriver->isDirectory($fishPigThemePath)) {
-            $tempFishPigThemePath = $fishPigThemePath . date('-YmdHis-') . rand(100, 999) . '.delete';
-            
+            $tempFishPigThemePath = $fishPigThemePath . '-backup-' . date('Y-m-d-H-i-s');
+
             $this->filesystemDriver->rename($fishPigThemePath, $tempFishPigThemePath);
             
             if ($this->filesystemDriver->isDirectory($fishPigThemePath)) {
@@ -53,10 +53,11 @@ class PackageDeployer
             }
         }
         
-        // phpcs:ignore -- basename is OK!
-        $migratedZipFile = $wpThemePath . '/' . basename($packageFile);
-
-        $this->filesystemDriver->copy($packageFile, $migratedZipFile);
+        if (!class_exists(\ZipArchive::class)) {
+            throw new \FishPig\WordPress\App\Exception(
+                'Class ZipArchive can not be found. Unable to extract theme package. Auto install failed.'
+            );
+        }
 
         $zip = new \ZipArchive;
 
@@ -68,7 +69,10 @@ class PackageDeployer
         $zip->close();
 
         if (isset($tempFishPigThemePath)) {
-            $this->recursiveDeleteDir($tempFishPigThemePath);
+            if (!$this->filesystemDriver->isFile($tempFishPigThemePath . '/local.php')) {
+                // If local.php found in old theme, do not delete as it may contain custom code
+                $this->recursiveDeleteDir($tempFishPigThemePath);
+            }
         }
     }
 

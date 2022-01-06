@@ -17,6 +17,9 @@ class Setup
             // Ensures Theme hash is set correctly
             if (get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {
                 update_option(FISHPIG_THEME_OPTION_NAME, FISHPIG_THEME_HASH);
+
+                // Being here means the theme has been updated/installed
+                flush_rewrite_rules(false);
             }
             
             // Setup theme supports

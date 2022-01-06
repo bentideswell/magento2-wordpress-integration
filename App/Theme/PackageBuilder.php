@@ -8,7 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Theme;
 
-use \Magento\Framework\App\Filesystem\DirectoryList;
+use FishPig\WordPress\App\Theme;
+use Magento\Framework\App\Filesystem\DirectoryList;
 
 class PackageBuilder
 {
@@ -46,7 +47,7 @@ class PackageBuilder
     private function build(): string
     {
         $mediaDir = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
-        $packageFilename = 'fishpig-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
+        $packageFilename = Theme::THEME_NAME . '-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
         
         
 
@@ -88,7 +89,7 @@ class PackageBuilder
         $localHash = $this->localHashProvider->getHash();
 
         foreach ($files as $relative => $file) {
-            $relative = 'fishpig/' . $relative;
+            $relative = Theme::THEME_NAME . '/' . $relative;
             // phpcs:ignore -- file_get_contents
             $data = file_get_contents($file);
             

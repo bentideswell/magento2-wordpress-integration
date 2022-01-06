@@ -38,10 +38,11 @@ class View extends \FishPig\WordPress\Controller\Action
     {
         $request = $this->getRequest();
 
-        // This will throw Exception is post does not exist
-        $user = $this->userRepository->getByNicename(
-            $request->getParam('author')
-        );
+        try {
+            $user = $this->userRepository->getByNicename($request->getParam('author'));
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            return $this->getNoRouteForward();
+        }
 
         $this->registry->register($user::ENTITY, $user);
 

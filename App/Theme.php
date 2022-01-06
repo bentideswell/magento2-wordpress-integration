@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App;
 class Theme
 {
     /**
+     *
+     */
+    const THEME_NAME = 'fishpig';
+
+    /**
      * @var array
      */
     private $themeMods = null;
@@ -35,7 +40,7 @@ class Theme
      */
     public function isInstalled(): bool
     {
-        return $this->getRemoteHash() !== '';
+        return self::THEME_NAME === $this->getEnabledThemeName() && $this->getRemoteHash() !== '';
     }
 
     /**
@@ -46,6 +51,13 @@ class Theme
         return $this->isInstalled() && $this->getLocalHash() === $this->getRemoteHash();
     }
     
+    /**
+     * @return ?string
+     */
+    public function getEnabledThemeName(): ?string
+    {
+        return $this->optionRepository->get('template');
+    }
     /**
      * Local theme hash (file collection + hashing) is cached for an hour
      * Flushing or disabling the cache will force a rebuild of hash
@@ -81,7 +93,7 @@ class Theme
     public function getThemeMods($key = null)
     {
         if ($this->themeMods === null) {
-            $this->themeMods = $this->optionRepository->getUnserialized('theme_mods_fishpig');
+            $this->themeMods = $this->optionRepository->getUnserialized('theme_mods_' . self::THEME_NAME);
         }
 
         if ($this->themeMods) {

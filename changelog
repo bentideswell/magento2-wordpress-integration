@@ -2,9 +2,18 @@
 
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
-- Auto disable Elementor experiments
-- Auto set page title selector in Elementor for Hide Title
-- Resolve CSP font issues without .htaccess (if possible)
+
+## [3.4.2] - 2021-01-04
+### [Fixed]
+- NoSuchEntityException caught when viewing invalid author URL.
+- Auto theme installation no longer creates a copy of the theme package in the WordPress themes dir (local mode).
+- Auto theme installation doesn't delete the old theme if it contains a local.php file. This should stop any old custom
+  code from being deleted.
+- App\Theme::isInstalled now checks current theme and not just the remote theme hash. This stops the theme being
+  enabled and then later disabled and still being reported as being enabled.
+- Invalid user URLs now go to noRoute action rather than an error message.
+### [Changed]
+- WordPress theme now flushes rewrites when updating the theme hash.
 
 ## [3.4.1] - 2021-01-04
 ### [Added]
