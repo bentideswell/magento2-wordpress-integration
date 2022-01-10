@@ -34,7 +34,7 @@ class ApiTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
                 );
             }
         } catch (\FishPig\WordPress\App\HTTP\InvalidStatusException $e) {
-            throw new IntegrationFatalException($e->getMessage(), null, $e);
+            throw new IntegrationFatalException($e->getMessage(), $e->getCode(), $e);
         } catch (\FishPig\WordPress\App\Api\Exception\MissingApiDataException $e) {
             throw new IntegrationFatalException($e->getMessage());
         }

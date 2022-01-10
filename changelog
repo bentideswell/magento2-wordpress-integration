@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.4.3] - 2021-01-10
+### [Fixed]
+- Changed post type check in Homepage controller from 'posts' to 'post'
+- Fixed Exception 'wrong parameters' error when ApiTest fails.
+
 ## [3.4.2] - 2021-01-04
 ### [Fixed]
 - NoSuchEntityException caught when viewing invalid author URL.
