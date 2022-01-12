@@ -3,12 +3,16 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
-## [3.4.3] - 2021-01-10
+## [3.4.4] - 2022-01-12
+### [Fixed]
+- WP Theme issue that stopped redirects working in WordPress Admin.
+
+## [3.4.3] - 2022-01-10
 ### [Fixed]
 - Changed post type check in Homepage controller from 'posts' to 'post'
 - Fixed Exception 'wrong parameters' error when ApiTest fails.
 
-## [3.4.2] - 2021-01-04
+## [3.4.2] - 2022-01-04
 ### [Fixed]
 - NoSuchEntityException caught when viewing invalid author URL.
 - Auto theme installation no longer creates a copy of the theme package in the WordPress themes dir (local mode).
@@ -20,24 +24,24 @@
 ### [Changed]
 - WordPress theme now flushes rewrites when updating the theme hash.
 
-## [3.4.1] - 2021-01-04
+## [3.4.1] - 2022-01-04
 ### [Added]
 - MetaDataProvider for Post. This was a virtual class but is now an actual class. This allows for ACF to add plugins.
 
-## [3.3.0] - 2021-01-04
+## [3.3.0] - 2022-01-04
 ### [Added]
 - Added option to POST using REST API.
 ### [Changed]
 - Improved RequestManager error handling
 
-## [3.2.2] - 2021-01-03
+## [3.2.2] - 2022-01-03
 ### [Changed]
 - Error messages for URLs when using Root.
 ### [Fixed]
 - Fixed Option::set when option exists but has a null value.
 - Allow br and a tags in comment content.
 
-## [3.2.1] - 2021-01-02
+## [3.2.1] - 2022-01-02
 ### [Fixed]
 - Resizable images when using Multisite in local mode. The correct path for the image is now used.
 

@@ -13,6 +13,7 @@ class Setup
      */
     public function __construct()
     {
+
         add_action('after_setup_theme', function() {
             // Ensures Theme hash is set correctly
             if (get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {
@@ -114,14 +115,30 @@ class Setup
         add_filter(
             'wp_redirect',
             function($url) {
+                // Allow redirects to siteurl
+                if (strpos($url, get_site_url() . '/index.php') === 0) {
+                    return $url;
+                } else if (strpos($url, get_site_url() . '/wp-') === 0) {
+                    return $url;
+                }
+
                 // Don't allow redirects to home URL because this can fire off many API calls and get us in a loop
-                if (strpos($url, '/wp-admin/') === false && strpos($url, rtrim(get_home_url(), '/')) === 0) {
+                if (strpos($url, rtrim(get_home_url(), '/')) === 0) {
                     return false;
                 }
 
                 return $url;
             }
         );
+
+        // Stop WPSEO (Yoast) redirecting when index.php is present as this is probably a Magento request
+        // This could be further improved to disable redirects when Magento token present
+        // But this would make debugging in a browser difficult
+        if (strpos($_SERVER['REQUEST_URI'], '/index.php') !== false) {
+            if (isset($GLOBALS['wpseo_rewrite'])) {
+                remove_filter('request', array($GLOBALS['wpseo_rewrite'], 'request'));
+            }
+        }
     }    
 }
 // phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
