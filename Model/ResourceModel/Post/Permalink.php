@@ -38,14 +38,24 @@ class Permalink
      */
     public function getPostIdByPathInfo($pathInfo)
     {
-        $cacheKey = strtolower(rtrim($pathInfo));
+        // This fixes issues with a starting slash
+        // But also fixes issues with encoded characters like %CC%
+        // getting confused as tokens (eg. %category%) later on
+        $pathInfo = urldecode(ltrim($pathInfo, '/'));
         
+        $cacheKey = strtolower(rtrim($pathInfo));
+
         if (isset($this->pathInfoIdMap[$cacheKey])) {
             return $this->pathInfoIdMap[$cacheKey];
         }
         
         $this->pathInfoIdMap[$cacheKey] = false;
-
+        
+        // No point in matching an empty pathInfo
+        if ($pathInfo === '') {
+            return $this->pathInfoIdMap[$cacheKey];
+        }
+        
         $fields = $this->getPermalinkSqlFields();
         $db = $this->getConnection();
 
@@ -138,9 +148,15 @@ class Permalink
         foreach ($matchedTokens as $mtoken) {
             if ($mtoken === '%postnames%') {
                 $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
-            } elseif ($taxonomy = $this->taxonomyRepository->get(trim($mtoken, '%'))) {
-                if ($termId = $this->getParentTermId($postId, $taxonomy->getTaxonomy())) {
-                    $slug = str_replace($mtoken, $taxonomy->getUriById($termId, false), $slug);
+            } else {
+                try {
+                    $taxonomy = $this->taxonomyRepository->get(trim($mtoken, '%'));
+                    if ($termId = $this->getParentTermId($postId, $taxonomy->getTaxonomy())) {
+                        $slug = str_replace($mtoken, $taxonomy->getUriById($termId, false), $slug);
+                    }
+                    // Change
+                } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+                    // We can ignore this exception
                 }
             }
         }

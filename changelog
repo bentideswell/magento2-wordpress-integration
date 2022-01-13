@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.5.0] - 2021-01-13
+### [Added]
+- Added bin/magento fishpig:wordpress:test command. 
+
 ## [3.4.4] - 2022-01-12
 ### [Fixed]
 - WP Theme issue that stopped redirects working in WordPress Admin.
