@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.5.1] - 2021-01-14
+### [Fixed]
+- Callback not passed to shortcode renderer so was not executed when shortcode provided.
+
 ## [3.5.0] - 2021-01-13
 ### [Added]
 - Added bin/magento fishpig:wordpress:test command. 

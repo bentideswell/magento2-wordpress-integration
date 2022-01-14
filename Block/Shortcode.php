@@ -43,7 +43,7 @@ class Shortcode extends \Magento\Framework\View\Element\AbstractBlock
 
         foreach ($this->shortcodeRendererPool as $shortcodeRenderer) {
             if ($shortcodeRenderer instanceof \FishPig\WordPress\Api\Block\ShortcodeRendererInterface) {
-                $shortcode = $shortcodeRenderer->render($shortcode);
+                $shortcode = $shortcodeRenderer->render($shortcode, $this->getCallback() ?: null);
             }
         }
         
