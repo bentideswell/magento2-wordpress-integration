@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.5.3] - 2022-01-18
+### [Added]
+- Added user agent to API requests.
+
 ## [3.5.2] - 2022-01-17
 ### [Added]
 - List option to test command to list all installed tests: bin/magento fishpig:wordpress:test --list
