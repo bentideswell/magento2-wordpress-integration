@@ -27,7 +27,9 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
     const OPT_BLOCKS = 'blocks';
     const OPT_QUICK = 'quick';
     const OPT_EXCLUDE = 'exclude';
-
+    const OPT_POST_ID = 'post';
+    const OPT_LIST = 'list';
+    
     /**
      * @var \FishPig\WordPress\App\Debug\TestPoolFactory
      */
@@ -55,7 +57,6 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
      */
     protected function configure()
     {
-        try {
         $this->setName('fishpig:wordpress:test');
         $this->setDescription('Run some basic tests on the code and data.');
         $this->setDefinition(
@@ -85,14 +86,24 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                     InputOption::VALUE_OPTIONAL | InputOption::VALUE_IS_ARRAY,
                     'Test codes to exclude',
                     []
+                ),
+                new InputOption(
+                    self::OPT_POST_ID,
+                    null,
+                    InputOption::VALUE_OPTIONAL,
+                    'Post ID to use for tests',
+                ),
+                new InputOption(
+                    self::OPT_LIST,
+                    null,
+                    InputOption::VALUE_NONE,
+                    'Lists all available tests.'
                 )
             ]
         );
         
         $this->addArgument('tests', InputOption::VALUE_OPTIONAL, 'Test codes');
-        } catch (\Exception $e) {
-            exit($e);
-        }
+
         return parent::configure();
     }
 
@@ -102,58 +113,106 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {            
+        try {     
             // Set the area code to stop errors in tests
             $this->appState->setAreaCode(
                 \Magento\Framework\App\Area::AREA_FRONTEND
             );
             
-            // Get the store
-            $store = $this->storeManager->getStore(
-                (int)($input->getOption(self::OPT_STORE) ?: $this->storeManager->getDefaultStoreView()->getId())
-            );
-
-            // Emulate the store
-            $this->emulation->startEnvironmentEmulation(
-                $store->getId(),
-                \Magento\Framework\App\Area::AREA_FRONTEND
-            );
-
-            $excludedTestCodes = $input->getOption(self::OPT_EXCLUDE);
-
-            // Get is quick
-            $isQuick = (int)$input->getOption(self::OPT_QUICK) === 1;
-
-            // Generate test options
-            $testOptions = [
-                TestPool::RUN_BLOCK_TESTS => (int)$input->getOption(self::OPT_BLOCKS) === 1,
-                TestPool::ENTITY_LIMIT => $isQuick ? 2 : 0,
-                'storeId' => $store->getId(),
-            ];
-
-            $testPool = $this->testPoolFactory->create();
-            $codes = $input->getArgument('tests') ?: $testPool->getCodes();
-
-            if ($excludedTestCodes) {
-                $codes = array_diff($codes, $excludedTestCodes);
-            }
-
-            $longest = $this->getLongestString($codes);
-            
-            $output->writeLn(__('Running %1 test(s) on store %2:', count($codes), $store->getId()));
-
-            foreach ($codes as $code) {
-                $output->write('<comment>' . str_pad($code, $longest, ' ') . '</comment>  ');
-                $testPool->run($code, $testOptions);
-                $output->writeLn('<info>Done</info>');    
+            if ($input->getOption(self::OPT_LIST)) {
+                $this->listAllTests($input, $output);
+            } else {
+                $this->runTests($input, $output);
             }
         } catch (\Exception $e) {
             $output->writeLn('<error>' . $e->getMessage() . '</error>');
             $output->writeLn("\nTrace:");
             $output->writeLn($e->getTraceAsString());
         }
+
+        // End with a new line to let things breathe
+        $output->writeLn('');
     }
-    
+
+    /**
+     * @param  InputInterface $input
+     * @param  OutputInterface $output
+     */
+    private function listAllTests(InputInterface $input, OutputInterface $output)
+    {
+        $codes = $this->testPoolFactory->create()->getCodes();
+        $output->writeLn('');
+        $output->writeLn(
+            __('<options=bold>%1</> test(s) available:', count($codes))
+        );
+           
+        foreach ($codes as $testCode) {
+            $output->writeLn('- <comment>' . $testCode . '</comment>');
+        }
+
+        $output->writeLn('');
+    }
+
+    /**
+     * @param  InputInterface $input
+     * @param  OutputInterface $output
+     */
+    private function runTests(InputInterface $input, OutputInterface $output)
+    {
+        // Get the store
+        $store = $this->storeManager->getStore(
+            (int)($input->getOption(self::OPT_STORE) ?: $this->storeManager->getDefaultStoreView()->getId())
+        );
+
+        // Emulate the store
+        $this->emulation->startEnvironmentEmulation(
+            $store->getId(),
+            \Magento\Framework\App\Area::AREA_FRONTEND
+        );
+
+        $excludedTestCodes = $input->getOption(self::OPT_EXCLUDE);
+
+        // Get is quick
+        $isQuick = (int)$input->getOption(self::OPT_QUICK) === 1;
+
+        // Generate test options
+        $testOptions = [
+            TestPool::RUN_BLOCK_TESTS => (int)$input->getOption(self::OPT_BLOCKS) === 1,
+            TestPool::ENTITY_LIMIT => $isQuick ? 2 : 0,
+            TestPool::POST_ID => (int)$input->getOption(self::OPT_POST_ID) ?: null,
+            'storeId' => $store->getId(),
+        ];
+
+        $testPool = $this->testPoolFactory->create();
+        $codes = $input->getArgument('tests') ?: $testPool->getCodes();
+
+        if ($excludedTestCodes) {
+            $codes = array_diff($codes, $excludedTestCodes);
+        }
+
+        $longest = $this->getLongestString($codes);
+        
+        // Start with a new line to let things breathe
+        $output->writeLn('');
+        $output->write(
+            __('Running <options=bold>%1</> test(s) on <options=bold>Store #%2</>', count($codes), $store->getId())
+        );
+        $output->writeLn(' - <options=bold>' . $store->getBaseUrl() . '</>');
+        $output->writeLn('');
+
+        foreach ($codes as $code) {
+            try {
+                $output->write('<comment>' . str_pad($code, $longest, ' ') . '</comment>  ');
+                $testPool->run($code, $testOptions);
+                $output->writeLn('<info>Done</info>');
+            } catch (\Exception $e) {
+                $output->writeLn('<error>' . $e->getMessage() . '</error>');
+                $output->writeLn("\nTrace:");
+                $output->writeLn($e->getTraceAsString() . "\n\n");
+            }
+        }
+    }
+
     /**
      * @return int
      */

@@ -17,6 +17,7 @@ class TestPool
      */
     const RUN_BLOCK_TESTS = 'runBlockTests';
     const ENTITY_LIMIT = 'entityLimit';
+    const POST_ID = 'postId';
 
     /**
      * @var array
