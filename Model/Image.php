@@ -8,6 +8,9 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model;
 
+use FishPig\WordPress\App\Integration\Exception\InvalidModeException;
+use FishPig\WordPress\Model\Image\NoSuchSourceFileException;
+
 class Image extends \FishPig\WordPress\Model\Post\Attachment
 {
     /**
@@ -29,6 +32,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
         array $data = []
     ) {
         $this->imageResizerFactory = $imageResizerFactory;
+        $this->logger = $wpContext->getLogger();
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
     
@@ -194,19 +198,22 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
         if ($this->resizer === null) {
             try {
                 $this->resizer = $this->imageResizerFactory->create()->setImage($this);
-            } catch (\FishPig\WordPress\App\Integration\Exception\InvalidModeException $modeException) {
+            } catch (InvalidModeException $modeException) {
                 $this->resizer = false;
+            } catch (NoSuchSourceFileException $e) {
+                $this->resizer = false;
+                $this->logger->notice($e->getMessage());
             }
         }
-        
+
         return $this->resizer;
     }
-    
+
     /**
      * Get the direct image URL
      *
      * @return string
-     */    
+     */
     public function getGuid(): string
     {
         return $this->url->getUploadUrl() . $this->getData('file');

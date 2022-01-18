@@ -119,7 +119,7 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
             if (count($modules) === 1) {
                 $module = array_shift($modules);
 
-                IntegrationException::throwException(
+                throw new IntegrationFatalException(
                     "The $module module uses '$blogRoute' as it's frontName."
                     . " Either fully disable this module or change your WordPress Home URL."
                 );
@@ -129,7 +129,7 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
                     array_slice($modules, 0, -1)
                 ) . ' and ' . implode('', array_slice($modules, -1));
 
-                IntegrationException::throwException(
+                throw new IntegrationFatalException(
                     "The modules $moduleString use '$blogRoute' as their frontName."
                     . " Either fully disable these modules or change your WordPress Home URL."
                 );

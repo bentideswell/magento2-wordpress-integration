@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Api;
 
+use FishPig\WordPress\App\Api\Exception\MissingApiDataException;
+
 class IntegrationDataRetriever
 {
     /**
@@ -27,12 +29,14 @@ class IntegrationDataRetriever
         \FishPig\WordPress\App\Api\Rest\RequestManager $restRequestManager,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\App\Cache $cache,
-        \Magento\Framework\Serialize\SerializerInterface $serializer
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \FishPig\WordPress\Model\UrlInterface $url
     ) {
         $this->restRequestManager = $restRequestManager;
         $this->storeManager = $storeManager;
         $this->cache = $cache;
         $this->serializer = $serializer;
+        $this->url = $url;
     }
 
     /**
@@ -52,8 +56,11 @@ class IntegrationDataRetriever
         }
 
         if (!isset($this->data[$storeId][$key])) {
-            throw new \FishPig\WordPress\App\Api\Exception\MissingApiDataException(
-                'Unable to get ' . $key . ' from API data.'
+            throw new MissingApiDataException(
+                (string)__(
+                    'Unable to get %1 from API data.',
+                    $key
+                )
             );
         }
 
@@ -72,6 +79,11 @@ class IntegrationDataRetriever
             return $this->serializer->unserialize($data);
         }
 
+        // This fires to check that API is actually available
+        // This is required because data request has authentication so may fail
+        // because of invalid auth token rather than api not being available
+        $this->sayHello();
+
         if ($data = $this->restRequestManager->getJson('/fishpig/v1/data')) {
             $this->cache->saveApiData(
                 $this->serializer->serialize($data),
@@ -81,5 +93,23 @@ class IntegrationDataRetriever
         }
 
         return $data;
+    }
+    
+    /**
+     * @return void
+     */
+    private function sayHello(): void
+    {
+        $helloEndpoint = '/fishpig/v1/hello';
+        $helloData = $this->restRequestManager->getJson($helloEndpoint);
+
+        if (!$helloData || !isset($helloData['status'])) {
+            throw new MissingApiDataException(
+                (string)__(
+                    'WordPress API not available. Hello (%1) failed.',
+                    $this->url->getRestUrl($helloEndpoint)
+                )
+            );
+        }
     }
 }

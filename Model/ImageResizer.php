@@ -70,15 +70,15 @@ class ImageResizer
         $siteUrl = $this->stripProtocolFromUrl($this->url->getSiteUrl());
         $wpRelativeFile = ltrim(str_replace($siteUrl, '', $this->stripProtocolFromUrl($image->getGuid())), '/');
         $wpDir = $this->wpDirectoryList->getBaseDirectory();
-        
+
         if (!$wpDir->isFile($wpRelativeFile)) {
-            throw new \FishPig\WordPress\App\Exception(
-                $wpRelativeFile . ' does not exist.'
+            throw \FishPig\WordPress\Model\Image\NoSuchSourceFileException::withFile(
+                $wpRelativeFile
             );
         }
-        
+
         $image = $wpDir->getAbsolutePath($wpRelativeFile);
-        
+
         $this->adapter = $this->imageFactory->create();
         $this->adapter->open($image);
         $this->args['original_file'] = $image;
