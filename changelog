@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.0] - 2022-01-19
+### [Added]
+- Block for displaying posts that can be used by add-ons (PSW + Related Products).
+
 ## [3.5.4] - 2022-01-18
 ### [Changed]
 - Added exception handling for missing source images when resizing in local mode.
