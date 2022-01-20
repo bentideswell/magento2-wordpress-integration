@@ -74,8 +74,8 @@ class SimpleRouter implements \Magento\Framework\App\RouterInterface
             '/^' . $front . 'search\/(?P<s>.*)$/' => '*/search/view',
             '/^' . $front . 'search$/' => '*/search/index',
             '/^(?P<request_uri>(newbloguser|wp-(content|includes|admin|cron\.php))\/.*)$/' => '*/forwarder/view',
-            '/^wp-json$/' => '*/json/view',
-            '/^wp-json\/(?P<json_route_data>.*)$/' => '*/json/view',
+            '/^wp-json$/' => '*/jsonApi/view',
+            '/^wp-json(?P<json_route_data>.*)$/' => '*/jsonApi/view',
         ];
     }
     

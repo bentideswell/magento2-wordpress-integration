@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.1] - 2022-01-20
+### [Fixed]
+- WP-JSON redirect correct rest URL.
+
 ## [3.6.0] - 2022-01-19
 ### [Added]
 - Block for displaying posts that can be used by add-ons (PSW + Related Products).
