@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.2] - 2022-01-23
+### [Fixed]
+- Post content not getting pre-rendered value when not using PSW add-on.
+
 ## [3.6.1] - 2022-01-20
 ### [Fixed]
 - WP-JSON redirect correct rest URL.

@@ -17,6 +17,11 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     const CACHE_TAG = 'wordpress_post';
 
     /**
+     * @const string
+     */
+    const RENDERED_CONTENT_META_KEY = '_post_content_rendered';
+    
+    /**
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post';
@@ -399,8 +404,12 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     {
         $content = $this->getData('post_content');
 
-        /*if (strpos($content, '<!-- wp:') !== false || strpos($content, 'wp-block-embed') !== false) {
-            if ($renderedContent = $this->getMetaValue('_post_content_rendered')) {
+        $canGetPreRenderedContent = strpos($content, '<!-- wp:') !== false 
+                                    || strpos($content, 'wp-block-embed') !== false
+                                    || strpos($content, '<p') === false;
+
+        if ($canGetPreRenderedContent) {
+            if ($renderedContent = $this->getMetaValue(self::RENDERED_CONTENT_META_KEY)) {
                 if (strpos($renderedContent, '[') !== false) {
                     $renderedContent = $this->shortcodeFactory->create()
                         ->setShortcode($renderedContent)
@@ -408,9 +417,9 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
                         ->toHtml();
                 }
 
-                return $renderedContent;
+               return $renderedContent;
             }
-        }*/
+        }
 
         $key = '__processed_post_content';
 
