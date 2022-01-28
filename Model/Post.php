@@ -236,7 +236,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     protected function _getTeaserAnchor()
     {
         // phpcs:ignore -- allows translation
-        return stripslashes(__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
+        return stripslashes((string)__('Continue reading <span class=\"meta-nav\">&rarr;</span>'));
     }
 
     /**

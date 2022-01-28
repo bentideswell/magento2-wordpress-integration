@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.3] - 2022-01-28
+### [Fixed]
+- Translation function return type cast to string when passed to stripslashes in Model/Post.
+- Modified tag cloud CSS to item inline-block. This fixes tag cloud links going out of their container.
+
 ## [3.6.2] - 2022-01-23
 ### [Fixed]
 - Post content not getting pre-rendered value when not using PSW add-on.
