@@ -61,4 +61,12 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     {
         return $this->_getData('search_var') ? $this->_getData('search_var') : 's';
     }
+    
+    /**
+     * @deprecated 3.0 use self::getSearchModel
+     */
+    public function getEntity()
+    {
+        return $this->getSearchModel();
+    }
 }

@@ -15,6 +15,7 @@ if (!defined('FISHPIG_SKIP_LEGACY_AUTOLOAD')) {
         }
 
         $classMap = [
+            \FishPig\WordPress\Block\Homepage\View::class,
             \FishPig\WordPress\Helper\Autop::class,
             \FishPig\WordPress\Helper\Core::class,
             \FishPig\WordPress\Model\Factory::class,

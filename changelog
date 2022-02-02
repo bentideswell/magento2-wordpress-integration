@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.4] - 2022-02-02
+### [Added]
+- Added getEntity to post list wrapper blocks for backwards compatibility.
+- Added Homepage/View block to legacy class list.
+
 ## [3.6.3] - 2022-01-28
 ### [Fixed]
 - Translation function return type cast to string when passed to stripslashes in Model/Post.

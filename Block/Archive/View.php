@@ -46,4 +46,12 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     {
         return $this->getArchive()->getPostCollection();
     }
+    
+    /**
+     * @deprecated 3.0 use self::getArchive
+     */
+    public function getEntity()
+    {
+        return $this->getArchive();
+    }
 }

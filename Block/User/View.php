@@ -44,4 +44,12 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     {
         return $this->getUser()->getPostCollection();
     }
+    
+    /**
+     * @deprecated 3.0 use self::getUser
+     */
+    public function getEntity()
+    {
+        return $this->getUser();
+    }
 }

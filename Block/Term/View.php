@@ -54,4 +54,13 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     {
         return (string)$this->getTerm()->getDescription();
     }
+    
+    /**
+     * @deprecated 3.0 use self::getTerm
+     */
+    public function getEntity()
+    {
+        return $this->getTerm();
+    }
+
 }

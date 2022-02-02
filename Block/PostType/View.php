@@ -23,7 +23,13 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     public function getPostType(): PostType
     {
         if ($this->postType === null) {
-            $this->postType = $this->registry->registry(PostType::ENTITY) ?? false;
+            if ($postType = $this->registry->registry(PostType::ENTITY)) {
+                $this->postType = $postType;
+            } else {
+                throw new \Magento\Framework\Exception\NoSuchEntityException(
+                    __("PostType not set in block '%1'.", $this->getNameInLayout())
+                );
+            }
         }
         
         return $this->postType;
@@ -41,5 +47,13 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
         }
 
         return $collection;
+    }
+    
+    /**
+     * @deprecated 3.0 use self::getPostType
+     */
+    public function getEntity()
+    {
+        return $this->getPostType();
     }
 }
