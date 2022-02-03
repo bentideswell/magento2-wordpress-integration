@@ -34,7 +34,7 @@ class InvalidStatusException extends \FishPig\WordPress\App\Exception
     public function setUrl(?string $url): self
     {
         if ($this->message) {
-            $this->message .= ' The URL was ' . $url;
+            $this->message .= ' The requested URL was ' . $url;
         }
 
         return $this;

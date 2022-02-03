@@ -119,19 +119,10 @@ class RequestManager
                 }
 
                 if (!in_array($client->getStatus(), $this->getAllowedStatusCodes())) {
-                    if (is_string($client->getBody()) && $pError = $this->extractPhpErrorMessage($client->getBody())) {
-                        $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
-                            'WordPress Server ' . $client->getStatus() . ' Error: ' . $pError,
-                            $client->getStatus()
-                        );
-                    } else {
-                        $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
-                            '',
-                            $client->getStatus()
-                        );
-                    }
-
-                    throw $e->setUrl($url);
+                    // Invalid status code found
+                    // The below method tries to extract helpful context and throws an exception
+                    // If no context can be found, generic status code exception is thrown
+                    throw $this->handleInvalidStatusCode($client, $method, $url, $args);
                 }
             } catch (\Exception $e) {
                 $logData['Error'] = $e->getMessage();
@@ -210,5 +201,38 @@ class RequestManager
             200,
             404
         ];
+    }
+    
+    /**
+     *
+     */
+    protected function handleInvalidStatusCode(
+        ClientInterface $client,
+        string $method,
+        string $url,
+        ?array $args
+    ): \Exception {
+        if (is_string($client->getBody()) && $pError = $this->extractPhpErrorMessage($client->getBody())) {
+            $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
+                'WordPress Server ' . $client->getStatus() . ' Error: ' . $pError,
+                $client->getStatus()
+            );
+        } else {
+            $msg = '';
+            if (in_array($client->getStatus(), [301, 302])) {
+                $headers = $client->getHeaders();
+                if (isset($headers['location'])) {
+                    $msg = __(
+                        "Invalid HTTP status code %1 (redirect). Redirect URL was %2.",
+                        $client->getStatus(),
+                        $headers['location']
+                    );
+                }
+            }
+            
+            $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException((string)$msg, $client->getStatus());
+        }
+        
+        return $e->setUrl($url);
     }
 }

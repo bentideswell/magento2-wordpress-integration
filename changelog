@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.5] - 2022-02-03
+### [Changed]
+- Improved exception messages when 301 or 302 redirects occur so that redirect URL is included. This should help with 
+  debugging.
+  
 ## [3.6.4] - 2022-02-02
 ### [Added]
 - Added getEntity to post list wrapper blocks for backwards compatibility.
