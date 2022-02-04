@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.6.6] - 2022-02-04
+### [Fixed]
+- WP URL redirect protection now only fires when auth token is present.
+- Fix for getRealHomepageUrl when changing store.
+
 ## [3.6.5] - 2022-02-03
 ### [Changed]
 - Improved exception messages when 301 or 302 redirects occur so that redirect URL is included. This should help with 

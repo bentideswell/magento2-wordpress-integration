@@ -124,7 +124,10 @@ class Setup
 
                 // Don't allow redirects to home URL because this can fire off many API calls and get us in a loop
                 if (strpos($url, rtrim(get_home_url(), '/')) === 0) {
-                    return false;
+                    if (\FishPig\WordPress\X\AuthorisationKey::isAuthorised()) {
+                        // This looks like an API URL so don't allow the redirect
+                        return false;
+                    }
                 }
 
                 return $url;

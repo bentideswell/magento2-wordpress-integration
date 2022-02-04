@@ -112,7 +112,9 @@ class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
     public function getRealHomepageUrl(): string
     {
         if ($frontPage = $this->getFrontPage()) {
-            return $frontPage->getUrl();
+            if ($frontPage->isPublished()) {
+                return $frontPage->getUrl();
+            }
         }
         
         return $this->url->getHomeUrl();
