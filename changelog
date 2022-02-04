@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.0] - 2022-02-04
+### [Added]
+- Class for Model\User\MetaDataProvider. Previously this was virtual type.
+
 ## [3.6.6] - 2022-02-04
 ### [Fixed]
 - WP URL redirect protection now only fires when auth token is present.

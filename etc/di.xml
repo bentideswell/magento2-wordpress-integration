@@ -171,13 +171,13 @@
             <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\User\MetaDataProvider</argument>
         </arguments>
     </type>
-    <virtualType name="FishPig\WordPress\Model\User\MetaDataProvider" type="FishPig\WordPress\Model\MetaDataProvider">
+    <type name="FishPig\WordPress\Model\User\MetaDataProvider">
         <arguments>
             <argument name="tableName" xsi:type="string">usermeta</argument>
             <argument name="objectField" xsi:type="string">user_id</argument>
             <argument name="useKeyPrefix" xsi:type="boolean">true</argument>
         </arguments>
-    </virtualType>
+    </type>
     <type name="FishPig\WordPress\Model\Archive">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Archive</argument>
