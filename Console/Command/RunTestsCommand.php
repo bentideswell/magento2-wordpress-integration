@@ -78,7 +78,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                     self::OPT_QUICK,
                     null,
                     InputOption::VALUE_NONE,
-                    'If set, entity limit is set to 5',
+                    'If set, entity limit is set to 5'
                 ),
                 new InputOption(
                     self::OPT_EXCLUDE,
@@ -91,7 +91,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                     self::OPT_POST_ID,
                     null,
                     InputOption::VALUE_OPTIONAL,
-                    'Post ID to use for tests',
+                    'Post ID to use for tests'
                 ),
                 new InputOption(
                     self::OPT_LIST,

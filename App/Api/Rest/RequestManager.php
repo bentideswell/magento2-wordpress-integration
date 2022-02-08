@@ -72,14 +72,41 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
             );
         }
     }
-    
+
+    /**
+     * @inheritDoc
+     */
+    protected function handleInvalidStatusCode(
+        \Magento\Framework\HTTP\ClientInterface $client,
+        string $method,
+        string $url,
+        ?array $args
+    ): \Exception {
+        if ($client->getStatus() !== 401 || strpos($client->getBody(), '{') === false) {
+            return parent::handleInvalidStatusCode($client, $method, $url, $args);
+        }
+
+        try {
+            if ($json = $this->serializer->unserialize($client->getBody())) {
+                if (!empty($json['message'])) {
+                    return new \FishPig\WordPress\App\HTTP\InvalidStatusException(
+                        'WP Rest Error: ' . $json['message'],
+                        $client->getStatus()
+                    );
+                }
+            }
+        } catch (\InvalidArgumentException $e) {
+            return parent::handleInvalidStatusCode($client, $method, $url, $args);
+        } catch (\Exception $e) {
+            return parent::handleInvalidStatusCode($client, $method, $url, $args);
+        }
+    }
+
     /**
      * @return array
      */
     protected function getAllowedStatusCodes(): array
     {
-        return [
-            200
-        ];
+        return [200];
     }
 }
