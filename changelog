@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.3] - 2022-02-09
+### [Fixed]
+- Cache busting parameter for preview URLs is now present so previews are not cached.
+
 ## [3.7.1] - 2022-02-08
 ### [Fixed]
 - Removed trailing comma in method calling (not allowed in PHP 7.2)

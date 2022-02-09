@@ -31,6 +31,15 @@ class Previews
             }
         );
 
+        // This adds a query string parameter to ensure each preview isn't cached
+        // As the URL will be different on each preview
+        add_filter(
+            'preview_post_link',
+            function ($link) {
+                return add_query_arg('preview_time', time(), $link);
+            }
+        );
+        
         if (\FishPig\WordPress\X\AuthorisationKey::isAuthorised()) {
             // All code here is only executed for AJAX requests from Magento
             // And will have the secret key present as a HTTP header
