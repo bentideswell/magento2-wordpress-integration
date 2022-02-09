@@ -65,7 +65,7 @@ class View extends \FishPig\WordPress\Controller\Action
                 if ($previewId = (int)$request->getParam($paramKey)) {
                     try {
                         $previewPost = $this->postRepository->get($previewId);
-    
+
                         if (!$previewPost->isPublished()) {
                             $request->setParam('preview_id', $previewPost->getId());
     
@@ -171,6 +171,18 @@ class View extends \FishPig\WordPress\Controller\Action
 
         if ($urlKey = preg_replace('/[^a-z0-9]+/', '_', strtolower(rtrim($post->getPermalink(), '/')))) {
             $layoutHandles[] = 'wordpress_' . $postType . '_view_' . $urlKey;
+        }
+
+        if ((int)$this->getRequest()->getParam('preview_id') > 0 || $this->getRequest()->getParam('preview', '') === 'true') {
+            $layoutHandles = array_merge(
+                $layoutHandles,
+                array_unique(
+                    [
+                        'wordpress_post_preview',
+                        'wordpress_' . $postType . '_preview'
+                    ]
+                )
+            );
         }
 
         return $layoutHandles;
