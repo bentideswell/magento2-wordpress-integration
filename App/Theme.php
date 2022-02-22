@@ -65,7 +65,7 @@ class Theme
      *
      * @return string
      */
-    private function getLocalHash(): string
+    public function getLocalHash(): string
     {
         $cacheKey = 'theme_local_hash';
         

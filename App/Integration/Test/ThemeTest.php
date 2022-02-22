@@ -59,7 +59,12 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 
         if (!$this->theme->isLatestVersion()) {
             throw new IntegrationFatalException(
-                'The WordPress FishPig theme has an update available. ' . $this->getErrorMessage()
+                sprintf(
+                    'The WordPress FishPig theme has an update available (latest=%s, current=%s). %s',
+                    $this->theme->getLocalHash(),
+                    $this->theme->getRemoteHash(),
+                    $this->getErrorMessage()
+                )
             );
         }
     }

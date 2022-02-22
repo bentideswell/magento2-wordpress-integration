@@ -36,6 +36,11 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
     private $testPoolFactory = null;
 
     /**
+     * @var int
+     */
+    private $consoleCols = null;
+
+    /**
      *
      */
     public function __construct(
@@ -206,9 +211,18 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                 $testPool->run($code, $testOptions);
                 $output->writeLn('<info>Done</info>');
             } catch (\Exception $e) {
-                $output->writeLn('<error>' . $e->getMessage() . '</error>');
-                $output->writeLn("\nTrace:");
-                $output->writeLn($e->getTraceAsString() . "\n\n");
+                $output->writeLn('<fg=red>Error</>');
+                $padding = '  ';
+                if ($cols = $this->getConsoleCols(strlen($padding))) {
+                    $output->writeLn("<error>\n\n" . $padding . wordwrap($e->getMessage(), $cols, "\n" . $padding) . "\n</error>\n");
+                } else {
+                    $output->writeLn("<error>\n\n  " . $e->getMessage() . "\n</error>\n");                    
+                }
+
+                if ($output->isVerbose()) {
+                    $output->writeLn("\nTrace:");
+                    $output->writeLn(str_replace(BP . '/', '', $e->getTraceAsString()) . "\n\n");
+                }
             }
         }
     }
@@ -225,5 +239,29 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
         }
         
         return isset($longest) ? $longest : 0;
+    }
+    
+    /**
+     * @return int
+     */
+    private function getConsoleCols(int $padding = 0): int
+    {
+        if ($this->consoleCols === null) {
+            $this->consoleCols = 0;
+            try {
+                if (($cols = (int)shell_exec('tput cols')) > 0) {
+                    $cols -= ($padding*2);
+                    
+                    if ($cols >= 64) {
+                        return $this->consoleCols = $cols;
+                    }
+                }
+            } catch (\Exception $e) {
+                // shell_exec might not be allowed
+                $this->consoleCols = 0;
+            }
+        }
+        
+        return $this->consoleCols;
     }
 }

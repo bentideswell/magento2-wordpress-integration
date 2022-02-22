@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.5] - 2022-02-22
+### [Changed]
+- Changed theme update integration error message to include expected theme hash and current theme hash. This is useful
+  for debugging.
+  
 ## [3.7.4] - 2022-02-09
 ### [Changed]
 - Added cachable=false block to post preview pages to fully stop them from being cached.
