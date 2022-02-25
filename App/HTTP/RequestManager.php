@@ -221,7 +221,8 @@ class RequestManager
             $msg = '';
             if (in_array($client->getStatus(), [301, 302])) {
                 $headers = $client->getHeaders();
-                if (isset($headers['location'])) {
+                $location = $headers['location'] ?? $headers['Location'] ?? false;
+                if ($location) {
                     $msg = __(
                         "Invalid HTTP status code %1 (redirect). Redirect URL was %2.",
                         $client->getStatus(),

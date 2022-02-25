@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.6] - 2022-02-25
+### [Fixed]
+- Redirect URL displayed in var/log/wp/http.log
+- Canvas template (Elementor) layout file updated to remove page title and copyright.
+
 ## [3.7.5] - 2022-02-22
 ### [Changed]
 - Changed theme update integration error message to include expected theme hash and current theme hash. This is useful
