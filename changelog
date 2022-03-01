@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.7] - 2022-03-01
+### [Fixed]
+- Removed index.php from Magento URL generation.
+
 ## [3.7.6] - 2022-02-25
 ### [Fixed]
 - Redirect URL displayed in var/log/wp/http.log
