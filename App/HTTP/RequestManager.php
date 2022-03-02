@@ -226,7 +226,7 @@ class RequestManager
                     $msg = __(
                         "Invalid HTTP status code %1 (redirect). Redirect URL was %2.",
                         $client->getStatus(),
-                        $headers['location']
+                        $location
                     );
                 }
             }
