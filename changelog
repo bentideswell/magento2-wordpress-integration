@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.8] - 2022-03-02
+### [Fixed]
+- Fixed missing $location variable.
+
 ## [3.7.7] - 2022-03-01
 ### [Fixed]
 - Removed index.php from Magento URL generation.
