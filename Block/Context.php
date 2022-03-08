@@ -14,6 +14,7 @@ use FishPig\WordPress\Block\ShortcodeFactory;
 use FishPig\WordPress\Model\OptionRepository;
 use FishPig\WordPress\App\Url;
 use Magento\Framework\Serialize\SerializerInterface;
+use FishPig\WordPress\Helper\BlogInfo;
 
 class Context
 {
@@ -53,6 +54,11 @@ class Context
     private $jsonSerializer;
     
     /**
+     * @var BlogInfo
+     */
+    private $blogInfo;
+
+    /**
      * @param Registry
      */
     public function __construct(
@@ -62,7 +68,8 @@ class Context
         OptionRepository $optionRepository,
         Url $url,
         SerializerInterface $serializer,
-        SerializerInterface $jsonSerializer
+        SerializerInterface $jsonSerializer,
+        BlogInfo $blogInfo
     ) {
         $this->registry = $registry;
         $this->logger = $logger;
@@ -71,6 +78,7 @@ class Context
         $this->url = $url;
         $this->serializer = $serializer;
         $this->jsonSerializer = $jsonSerializer;
+        $this->blogInfo = $blogInfo;
     }
     
     /**
@@ -127,5 +135,13 @@ class Context
     public function getJsonSerializer(): SerializerInterface
     {
         return $this->jsonSerializer;
+    }
+    
+    /**
+     * @return BlogInfo
+     */
+    public function getBlogInfo(): BlogInfo
+    {
+        return $this->blogInfo;
     }
 }

@@ -16,7 +16,27 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
      * @var PostType
      */
     private $postType = null;
-    
+
+    /**
+     * @var \FishPig\WordPress\Helper\BlogInfo
+     */
+    private $blogInfo = null;
+
+    /**
+     * @param  \Magento\Framework\View\Element\Template\Context $context,
+     * @param  \FishPig\WordPress\Block\Context $wpContext,
+     * @param  array $data = []
+     */
+    public function __construct(
+        \Magento\Framework\View\Element\Template\Context $context,
+        \FishPig\WordPress\Block\Context $wpContext,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory,
+        array $data = []
+    ) {
+        $this->blogInfo = $wpContext->getBlogInfo();
+        parent::__construct($context, $wpContext, $postCollectionFactory, $data);
+    }
+
     /**
      * @return PostType
      */
@@ -48,7 +68,16 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
 
         return $collection;
     }
-    
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return (string)$this->blogInfo->getBlogDescription();
+        return (string)$this->getTerm()->getDescription();
+    }
+
     /**
      * @deprecated 3.0 use self::getPostType
      */
