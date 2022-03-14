@@ -3,9 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
-## [3.7.10] - 2022-03-14
+## [3.7.11] - 2022-03-14
 ### [Fixed]
 - Undefined index issue in preview.php (WP theme file).
+- HTML tags sneaking into meta tags
 
 ## [3.7.9] - 2022-03-08
 ### [Fixed]

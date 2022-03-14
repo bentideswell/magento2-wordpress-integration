@@ -67,7 +67,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     protected function setMetaDescription(string $metaDescription): void
     {
         $this->resultPage->getConfig()->setDescription(
-            $metaDescription
+            $this->stripHtmlTags($metaDescription)
         );
     }
 
@@ -78,7 +78,9 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     protected function setPageTitle(string $pageTitle): void
     {
         if ($pageMainTitle = $this->resultPage->getLayout()->getBlock('page.main.title')) {
-            $pageMainTitle->setPageTitle($pageTitle);
+            $pageMainTitle->setPageTitle(
+                $this->stripHtmlTags($pageTitle)
+            );
         }
     }
 
@@ -125,5 +127,14 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     protected function getBlogInfo(): \FishPig\WordPress\Helper\BlogInfo
     {
         return $this->blogInfo;
+    }
+    
+    /**
+     * @param mixed
+     * @return ?string
+     */
+    private function stripHtmlTags($s)
+    {
+        return $s ? strip_tags((string)$s) : $s;
     }
 }
