@@ -19,7 +19,9 @@ class Previews
             function() {
                 // Create redirect for preview URLS
                 if (isset($_GET['preview']) && !empty($_SERVER['REQUEST_URI'])) {
-                    if (get_post($_GET['preview_id'])->post_status !== 'publish') {
+                    $previewId = $_GET['preview_id'] ?? ($_GET['p'] ?? null);
+
+                    if ($previewId && get_post($previewId)->post_status !== 'publish') {
                         if (preg_match('/^.*(\/index.php\/)(.*)(\?.*)$/', $_SERVER['REQUEST_URI'], $m)) {
                             if ($m[2]) {
                                 wp_redirect(get_site_url() . $m[1] . $m[3], 302, 'FishPig Preview');

@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.10] - 2022-03-14
+### [Fixed]
+- Undefined index issue in preview.php (WP theme file).
+
 ## [3.7.9] - 2022-03-08
 ### [Fixed]
 - Added \FishPig\WordPress\Block\PostType\View::getDescription(). This adds the WordPress tag line on the blog posts
