@@ -15,9 +15,11 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
      */
     public function __construct(
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
+        \FishPig\WordPress\Helper\FrontPage $frontPageHelper,
         \FishPig\WordPress\App\Logger $logger
     ) {
         $this->taxonomyRepository = $taxonomyRepository;
+        $this->frontPageHelper = $frontPageHelper;
         $this->logger = $logger;
     }
 
@@ -73,6 +75,12 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
                 if ($parent->getId()) {
                     $objects['parent_post_' . $parent->getId()] = $parent;
                 }*/
+            } elseif ($postType->isDefault() && ($postsPage = $this->frontPageHelper->getPostsPage())
+                      && $slugPart === $postsPage->getPostName()) {
+                $crumbs[$postType::ENTITY] = [
+                    'label' => $postsPage->getName(),
+                    'link' => $postsPage->getUrl(),
+                ];
             }
         }
 

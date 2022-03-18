@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.12] - 2022-03-18
+### [Fixed]
+- Static strings in permalink structure that point to the posts page (eg. /blog/%postname%) now add the post page to
+  the breadcrumbs structure (eg. Home > Blog > Post)
+  
 ## [3.7.11] - 2022-03-14
 ### [Fixed]
 - Undefined index issue in preview.php (WP theme file).
