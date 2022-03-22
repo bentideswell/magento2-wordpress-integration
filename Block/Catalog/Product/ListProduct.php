@@ -10,19 +10,19 @@ namespace FishPig\WordPress\Block\Catalog\Product;
 
 use Magento\Swatches\Block\Product\Renderer\Listing\Configurable as SwatchesConfigurableRendererBlock;
 
-class ListProduct extends \FishPig\WordPress\Block\AbstractBlock
+class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
 {
     /**
      *
      */
     public function __construct(
-        \Magento\Framework\View\Element\Template\Context $context,
+        \Magento\Catalog\Block\Product\Context $context,
         \FishPig\WordPress\Block\Context $wpContext,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
         $this->scopeConfig = $scopeConfig;
-        parent::__construct($context, $wpContext, $data);
+        parent::__construct($context, $data);
     }
 
     /**

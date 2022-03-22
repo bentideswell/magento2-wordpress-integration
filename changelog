@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.7.14] - 2022-03-22
+### [Changed]
+- Changed parent block for FishPig\WordPress\Block\Catalog\Product\ListProduct to \Magento\Catalog\Block\Product\AbstractProduct
+
 ## [3.7.12] - 2022-03-18
 ### [Fixed]
 - Static strings in permalink structure that point to the posts page (eg. /blog/%postname%) now add the post page to
