@@ -23,8 +23,9 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
     /**
      * @param FrontendPool $cacheFrontendPool
      */
-    public function __construct(\Magento\Framework\App\Cache\Type\FrontendPool $cacheFrontendPool)
-    {
+    public function __construct(
+        \Magento\Framework\App\Cache\Type\FrontendPool $cacheFrontendPool
+    ) {
         parent::__construct($cacheFrontendPool->get(self::TYPE_IDENTIFIER), self::CACHE_TAG);
     }
 
@@ -43,17 +44,5 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
             array_merge($tags, ['fishpig-wordpress-api']),
             $lifeTime ?? 60 * 60 * 4
         );
-    }
-
-   /**
-    * @param  mixed $data
-    * @param  string $identifier
-    * @param  array $tags
-    * @param  int $lifeTime = 30
-    * @return
-    */
-    public function quickSave($data, $identifier, array $tags = [], $lifeTime = 30)
-    {
-        return $this->save($data, $identifier, $tags, $lifeTime);
     }
 }

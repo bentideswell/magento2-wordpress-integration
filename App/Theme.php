@@ -74,7 +74,8 @@ class Theme
         }
 
         $localHash = $this->localHashProvider->getHash();
-        $this->cache->save($localHash, $cacheKey, [], 60*60);
+
+        $this->cache->save($localHash, $cacheKey, [], 604800);
 
         return $localHash;
     }

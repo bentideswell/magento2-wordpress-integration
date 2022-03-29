@@ -38,7 +38,7 @@ class IntegrationDataRetriever
         $this->serializer = $serializer;
         $this->url = $url;
     }
-
+    
     /**
      * @param $key = null
      * @return mixed
@@ -66,7 +66,7 @@ class IntegrationDataRetriever
 
         return $this->data[$storeId][$key];
     }
-
+    
     /**
      * @param  int $storeId
      * @return array

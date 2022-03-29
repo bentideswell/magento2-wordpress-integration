@@ -69,7 +69,7 @@ class AuthorisationKey
      * @param  string $key
      * @return bool
      */
-    private function isValidKey($key): bool
+    public function isValidKey($key): bool
     {
         return $key && (
             $key === $this->generateKey() ||

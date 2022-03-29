@@ -22,10 +22,29 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \FishPig\WordPress\Model\NetworkInterface $network,
+        \FishPig\WordPress\App\Cache $cache,
         array $urlModifiers = []
     ) {
+        $this->network = $network;
         $this->serializer = $serializer;
+        $this->cache = $cache;
         parent::__construct($url, $httpClientFactory, $requestLogger, $urlModifiers);
+    }
+
+    public function getJsonCached(string $endpoint, string $cacheId)
+    {
+        $cacheId = $this->network->getBlogId() . '::' . $cacheId;
+
+        if ($data = $this->cache->load($cacheId)) {
+            $data = $this->serializer->unserialize($data);
+        } else {
+            $data = $this->getJson($endpoint);
+            
+            $this->cache->save($this->serializer->serialize($data), $cacheId);
+        }
+        
+        return $data;
     }
 
     /**
@@ -63,12 +82,14 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         try {
             return $this->serializer->unserialize($httpResponse->getBody());
         } catch (\InvalidArgumentException $e) {
+            $errorMessage = $this->extractPhpErrorMessage($httpResponse->getBody()) ?? $e->getMessage();
             throw new \FishPig\WordPress\App\Exception(
-                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $e->getMessage()
+                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $errorMessage
             );
         } catch (\Exception $e) {
+            $errorMessage = $this->extractPhpErrorMessage($httpResponse->getBody()) ?? $e->getMessage();
             throw new \FishPig\WordPress\App\Exception(
-                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $e->getMessage()
+                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $errorMessage
             );
         }
     }

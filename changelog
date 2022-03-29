@@ -3,6 +3,15 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.8.0] - 2022-03-29
+### [Added]
+- Remote actions system. This is a unified system that allows authenticated WP requests to perform actions like
+  cleaning the cache for a specific post. Add-ons (eg. ACF) can use this to cache and clear data.
+### [Changed]
+- Updated FishPig WP theme files
+### [Removed]
+- wordpress/post/invalidate action. This has been replaced with RemoteActions system.
+
 ## [3.7.14] - 2022-03-22
 ### [Changed]
 - Changed parent block for FishPig\WordPress\Block\Catalog\Product\ListProduct to \Magento\Catalog\Block\Product\AbstractProduct

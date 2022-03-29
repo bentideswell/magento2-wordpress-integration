@@ -13,7 +13,6 @@ class Setup
      */
     public function __construct()
     {
-
         add_action('after_setup_theme', function() {
             // Ensures Theme hash is set correctly
             if (get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {

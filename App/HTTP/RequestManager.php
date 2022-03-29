@@ -94,7 +94,7 @@ class RequestManager
         if (($url = (string)$this->modifyUrl($url)) === '') {
             throw new \FishPig\WordPress\App\Exception('Empty URL in ' . get_class($this) . '::' . $method);
         }
-        
+
         // phpcs:ignore -- not cryptographic
         $cacheKey = md5($method . strtolower($url ?? '_current'));
         
@@ -185,8 +185,8 @@ class RequestManager
      */
     protected function extractPhpErrorMessage(string $str)
     {
-        if (preg_match('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
-            return trim($m[2]);
+        if (preg_match_all('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
+            return strip_tags(implode(' ' . PHP_EOL, $m[2]));
         }
         
         return false;

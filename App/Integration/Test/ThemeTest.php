@@ -27,6 +27,7 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         \FishPig\WordPress\App\DirectoryList $wpDirectoryList,
         \FishPig\WordPress\App\HTTP\RequestManager $requestManager,
         \FishPig\WordPress\Model\UrlInterface $wpUrl
+
     ) {
         $this->theme = $theme;
         $this->appMode = $appMode;
@@ -83,9 +84,9 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
                 $this->themePackageDeployer->deploy($packageFile, $this->wpDirectoryList->getBasePath());
 
                 // This activates the update in WordPress and sets the hash in the DB
-                $this->requestManager->get($this->wpUrl->getSiteUrl('/'));
+                $this->requestManager->get($this->wpUrl->getSiteUrl('index.php?theme-activation'));
 
-                return true;
+                return $this->theme->isLatestVersion();
             }
         } catch (\Exception $e) {
             $this->logger->error($e);

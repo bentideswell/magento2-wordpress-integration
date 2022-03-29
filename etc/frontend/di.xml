@@ -19,10 +19,24 @@
     <type name="FishPig\WordPress\Controller\Router">
         <arguments>
             <argument name="routerPool" xsi:type="array">
+                <item name="remote-action" xsi:type="object" sortOrder="3">FishPig\WordPress\Controller\Router\RemoteActionRouter</item>
                 <item name="homepage" xsi:type="object" sortOrder="10">FishPig\WordPress\Controller\Router\HomepageRouter</item>
                 <item name="simple" xsi:type="object" sortOrder="20">FishPig\WordPress\Controller\Router\SimpleRouter</item>
                 <item name="post" xsi:type="object" sortOrder="30">FishPig\WordPress\Controller\Router\PostRouter</item>
                 <item name="term" xsi:type="object" sortOrder="40">FishPig\WordPress\Controller\Router\TermRouter</item>
+            </argument>
+        </arguments>
+    </type>
+    <!--
+    /**
+     * Remote Actions
+     */
+    -->
+    <type name="FishPig\WordPress\App\RemoteActions">
+        <arguments>
+            <argument name="remoteActionPool" xsi:type="array">
+                <item name="cache.clean" xsi:type="object">FishPig\WordPress\App\RemoteActions\CacheCleanAction</item>
+                <item name="pagecache.clean.model" xsi:type="object">FishPig\WordPress\App\RemoteActions\PageCacheCleanModelAction</item>
             </argument>
         </arguments>
     </type>
