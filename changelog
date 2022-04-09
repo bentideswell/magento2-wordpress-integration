@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.9.0] - 2022-04-09
+### [Added]
+- Added "fishpig/wordpress/the_content/after" filer to WordPress theme's index.php
+
 ## [3.8.0] - 2022-03-29
 ### [Added]
 - Remote actions system. This is a unified system that allows authenticated WP requests to perform actions like
