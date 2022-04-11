@@ -31,13 +31,14 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\ResourceModel\PostType $resource,
         \FishPig\WordPress\Helper\FrontPage $frontPage,
+        \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         array $data = []
     ) {
         $this->url = $wpContext->getUrl();
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->_resource = $resource;
         $this->frontPage = $frontPage;
-        
+        $this->taxonomyRepository = $taxonomyRepository;
         parent::__construct($data);
     }
 
@@ -246,12 +247,12 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
 
         foreach ($prioritise as $type) {
             if ($this->isTaxonomySupported($type)) {
-                return $this->taxonomyManager->getTaxonomy($type);
+                return $this->taxonomyRepository->get($type);
             }
         }
 
         if ($taxonomies = $this->getTaxonomies()) {
-            return $this->taxonomyManager->getTaxonomy(array_shift($taxonomies));
+            return $this->taxonomyRepository->get(array_shift($taxonomies));
         }
 
         return false;
