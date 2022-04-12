@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.9.2] - 2022-04-12
+### [Fixed]
+- Magento 2.4.4 fix for \FishPig\WordPress\App\Logger
+
 ## [3.9.1] - 2022-04-1
 ### [Fixed]
 - Missing TaxonomyRepository in PostType model.
