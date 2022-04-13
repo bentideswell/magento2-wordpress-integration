@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.9.3] - 2022-04-13
+### [Changed]
+- Removed addRecord from \FishPig\WordPress\App\Logger and added this functionality to a new \FishPig\WordPress\App\Logger\BacktraceProcessor
+  object. This supports Magento 2.3.2.* and 2.4.4 as it no longer extends the addRecord method.
+
 ## [3.9.2] - 2022-04-12
 ### [Fixed]
 - Magento 2.4.4 fix for \FishPig\WordPress\App\Logger

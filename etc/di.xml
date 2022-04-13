@@ -295,8 +295,11 @@
     <type name="FishPig\WordPress\App\Logger">
         <arguments>
             <argument name="name" xsi:type="string">FishPig_WordPress</argument>
-            <argument name="handlers"  xsi:type="array">
+            <argument name="handlers" xsi:type="array">
                 <item name="system" xsi:type="object">FishPig\WordPress\App\Logger\Handler</item>
+            </argument>
+            <argument name="processors" xsi:type="array">
+                <item name="backtrace" xsi:type="object">FishPig\WordPress\App\Logger\BacktraceProcessor</item>
             </argument>
         </arguments>
     </type>
