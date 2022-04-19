@@ -3,6 +3,10 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.9.4] - 2022-04-19
+### [Added]
+- New router to redirect posts that have %category% in the permalink structure but use the wrong category.
+
 ## [3.9.3] - 2022-04-13
 ### [Changed]
 - Removed addRecord from \FishPig\WordPress\App\Logger and added this functionality to a new \FishPig\WordPress\App\Logger\BacktraceProcessor
