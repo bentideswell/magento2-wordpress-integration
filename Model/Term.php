@@ -11,7 +11,7 @@ namespace FishPig\WordPress\Model;
 use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 use FishPig\WordPress\Api\Data\ViewableModelInterface;
 
-class Term extends AbstractModel implements PostCollectionGeneratorInterface, ViewableModelInterface
+class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface, ViewableModelInterface
 {
     /**
      * @const string
@@ -42,6 +42,7 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
@@ -51,7 +52,7 @@ class Term extends AbstractModel implements PostCollectionGeneratorInterface, Vi
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->taxonomyRepository = $taxonomyRepository;
         $this->termRepository = $termRepository;
-        parent::__construct($context, $registry, $wpContext, $resource, $resourceCollection, $data);
+        parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
 
     /**

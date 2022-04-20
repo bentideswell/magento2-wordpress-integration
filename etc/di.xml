@@ -162,8 +162,16 @@
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
             <argument name="resourceCollection" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term\Collection</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Term\MetaDataProvider</argument>
         </arguments>
     </type>
+    <type name="FishPig\WordPress\Model\Term\MetaDataProvider">
+        <arguments>
+            <argument name="tableName" xsi:type="string"></argument>
+            <argument name="objectField" xsi:type="string"></argument>
+        </arguments>
+    </type>
+
     <type name="FishPig\WordPress\Model\User">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>

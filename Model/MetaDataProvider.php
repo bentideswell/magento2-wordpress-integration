@@ -51,14 +51,16 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
         
         $db = $this->resourceConnection->getConnection();
         
-        $select = $db->select()
-            ->from($this->getMetaTable(), 'meta_value')
-            ->where($this->objectField . '=?', (int)$object->getId())
-            ->where('meta_key=?', $this->processMetaKey($key))
-            ->limit(1);
-
-        if (($value = $db->fetchOne($select)) !== false) {
-            return $this->cache[$cacheKey] = is_string($value) ? trim($value) : $value;
+        if ($metaTable = $this->getMetaTable()) {
+            $select = $db->select()
+                ->from($metaTable, 'meta_value')
+                ->where($this->objectField . '=?', (int)$object->getId())
+                ->where('meta_key=?', $this->processMetaKey($key))
+                ->limit(1);
+    
+            if (($value = $db->fetchOne($select)) !== false) {
+                return $this->cache[$cacheKey] = is_string($value) ? trim($value) : $value;
+            }
         }
 
         return null;
@@ -69,10 +71,14 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
      */
     private function getMetaTable(): string
     {
-        return $this->resourceConnection->getTable(
-            $this->tableName,
-            !$this->useKeyPrefix
-        );
+        if ($this->tableName) {
+            return $this->resourceConnection->getTable(
+                $this->tableName,
+                !$this->useKeyPrefix
+            );
+        }
+        
+        return '';
     }
 
     /**
