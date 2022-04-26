@@ -203,6 +203,12 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
             } catch (NoSuchSourceFileException $e) {
                 $this->resizer = false;
                 $this->logger->notice($e->getMessage());
+            } catch (\Exception $e) {
+                if (strpos($e->getMessage(), 'Unsupported image format') === false) {
+                    throw $e;
+                }
+                $this->resizer = false;
+                $this->logger->notice($e->getMessage());
             }
         }
 
