@@ -3,6 +3,11 @@
 ## [Unreleased]
 - Add https://secure.gravatar.com to CSP whitelist
 
+## [3.9.7] - 2022-04-28
+### [Changed]
+- Uninstalled modules are now greyed out in the config, to make it clear which add-on modules are installed and which 
+  are not.
+  
 ## [3.9.6] - 2022-04-26
 ### [Changed]
 - Error suppression when webp image used in resizer. Error (unsupported image format) is logged and original image is used.

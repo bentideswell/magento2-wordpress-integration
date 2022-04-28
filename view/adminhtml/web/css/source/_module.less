@@ -21,6 +21,26 @@
     }
 }
 
+/**
+ * FishPig WordPress disabled modules
+ */
+.section-config.-module-not-installed {    
+    & .entry-edit-head {
+        background: #e3e3e3;
+        opacity: .3;
+        padding-left: 10px;
+        transition: all .2s ease-in-out;
+    }
+
+    &.active {
+        & .entry-edit-head {
+            background: transparent;
+            opacity: 1;
+            padding-left: 0;
+        }
+    }
+}
+
 .admin__menu {
     .item-wordpress.level-0 {
         & > a {
