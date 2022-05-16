@@ -100,7 +100,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
 
         return false;
     }
-
+    
     /**
      * Get the real widget area by using the Custom Sidebars plugin
      *
@@ -112,10 +112,8 @@ class Sidebar extends \Magento\Framework\View\Element\Template
             return $this->getWidgetArea();
         }
 
-        if ($csModifiableOption = $this->optionRepository->get('cs_modifiable')) {
-            if ($settings = $this->serializer->unserialize($csModifiableOption)) {
-                return $this->getWidgetArea();
-            }
+        if (!($settings = $this->getCustomSidebarsModifiable())) {
+            return $this->getWidgetArea();
         }
 
         $handles = $this->getLayout()->getUpdate()->getHandles();
@@ -143,6 +141,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
             }
 
             // Single post by category
+            /*
             if ($categoryIdResults = $post->getResource()->getParentTermsByPostId(
                 $post->getId(),
                 'category'
@@ -159,7 +158,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
                         }
                     }
                 }
-            }
+            }*/
         }
         
         if ($postType = $this->registry->registry('wordpress_post_type')) {
@@ -191,7 +190,7 @@ class Sidebar extends \Magento\Framework\View\Element\Template
                 return $widgetArea;
             }
         }
-        
+
         if (in_array('wordpress_search_index', $handles)) {
             if ($widgetArea = $this->_getArrayValue($settings, 'search/' . $this->getWidgetArea())) {
                 return $widgetArea;
@@ -243,5 +242,17 @@ class Sidebar extends \Magento\Framework\View\Element\Template
     public function canDisplay()
     {
         return 1;
+    }
+
+    /**
+     * @return ?array
+     */
+    private function getCustomSidebarsModifiable(): ?array
+    {
+        if ($csModifiableOption = $this->optionRepository->get('cs_modifiable')) {
+            return $this->serializer->unserialize($csModifiableOption) ?? null;
+        }
+        
+        return null;
     }
 }

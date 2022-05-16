@@ -21,6 +21,7 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
+        \FishPig\WordPress\App\HTTP\PhpErrorExtractor $phpErrorExtractor,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \FishPig\WordPress\Model\NetworkInterface $network,
         \FishPig\WordPress\App\Cache $cache,
@@ -29,7 +30,7 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         $this->network = $network;
         $this->serializer = $serializer;
         $this->cache = $cache;
-        parent::__construct($url, $httpClientFactory, $requestLogger, $urlModifiers);
+        parent::__construct($url, $httpClientFactory, $requestLogger, $phpErrorExtractor, $urlModifiers);
     }
 
     public function getJsonCached(string $endpoint, string $cacheId)

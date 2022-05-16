@@ -38,11 +38,13 @@ class RequestManager
         \FishPig\WordPress\Model\UrlInterface $url,
         \Magento\Framework\HTTP\ClientFactory $httpClientFactory,
         \FishPig\WordPress\App\HTTP\RequestManager\Logger $requestLogger,
+        \FishPig\WordPress\App\HTTP\PhpErrorExtractor $phpErrorExtractor,
         array $urlModifiers = []
     ) {
         $this->url = $url;
         $this->httpClientFactory = $httpClientFactory;
         $this->requestLogger = $requestLogger;
+        $this->phpErrorExtractor = $phpErrorExtractor;
 
         foreach ($urlModifiers as $key => $urlModifier) {
             if (false === ($urlModifier instanceof UrlModifierInterface)) {
@@ -180,19 +182,6 @@ class RequestManager
     }
     
     /**
-     * @param  string $str
-     * @return string|false
-     */
-    protected function extractPhpErrorMessage(string $str)
-    {
-        if (preg_match_all('/<b>(Fatal error|Warning|Notice|Parse error)<\/b>:(.*)\n/Uis', $str, $m)) {
-            return strip_tags(implode(' ' . PHP_EOL, $m[2]));
-        }
-        
-        return false;
-    }
-    
-    /**
      * @return array
      */
     protected function getAllowedStatusCodes(): array
@@ -212,7 +201,7 @@ class RequestManager
         string $url,
         ?array $args
     ): \Exception {
-        if (is_string($client->getBody()) && $pError = $this->extractPhpErrorMessage($client->getBody())) {
+        if (is_string($client->getBody()) && ($pError = $this->phpErrorExtractor->getError($client->getBody()))) {
             $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
                 'WordPress Server ' . $client->getStatus() . ' Error: ' . $pError,
                 $client->getStatus()

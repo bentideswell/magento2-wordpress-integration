@@ -1,7 +1,10 @@
 # Changelog
 
-## [Unreleased]
-- Add https://secure.gravatar.com to CSP whitelist
+## [3.10.0] - 2022-05-16
+### [Added]
+- App\HTTP\PhpErrorExtractor to extract PHP errors from WordPress HTTP requests.
+### [Fixed]
+- Block\Sidebar issue that stopped the Custom Sidebar plugin from working.
 
 ## [3.9.7] - 2022-04-28
 ### [Changed]
