@@ -12,7 +12,7 @@
             <?php foreach ($posts as $post): ?>
                 <?php if ($renderedPostHtml = $block->renderPost($post)): ?>
                     <?php // phpcs:ignore -- long line ?>
-                    <li class="item<?= $post->isSticky() ? 'featured is-sticky' : '' ?> <?= $block->escapeHtmlAttr($post->getPostFormat()) ?>">
+                    <li class="item<?php if ($post->isSticky()): ?> is-sticky<?php endif; ?><?php if ($postFormat = $post->getPostFormat()): ?> <?= $block->escapeHtmlAttr($postFormat) ?><?php endif; ?>">
                         <?= /* @noEscape */ $renderedPostHtml ?>
                     </li>
                 <?php endif; ?>

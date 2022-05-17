@@ -142,6 +142,12 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
         $this->getResource()->preparePosts($this->_items);
 
+        if ($stickyIds = $this->getFlag('_sticky_ids')) {
+            foreach ($this->_items as $item) {
+                $item->setData('is_sticky', in_array($item->getId(), $stickyIds));
+            }
+        }
+
         return $this;
     }
 
@@ -184,6 +190,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $stickyIds = $this->serializer->unserialize($sticky);
 
             if (count($stickyIds) > 0) {
+                $this->setFlag('_sticky_ids', $stickyIds);
                 if ($orders = $this->getSelect()->getPart('order')) {
                     $this->getSelect()->reset('order');
                 }
@@ -213,6 +220,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $stickyIds = $this->serializer->unserialize($sticky);
 
             if (count($stickyIds) > 0) {
+                $this->setFlag('_sticky_ids', $stickyIds);
                 $this->getSelect()->where('ID ' . ($flag ? 'IN' : ' NOT IN') . ' (?)', $stickyIds);
             }
         }
