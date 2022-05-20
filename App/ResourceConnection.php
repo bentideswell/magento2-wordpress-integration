@@ -86,12 +86,26 @@ class ResourceConnection
 
             $config = $this->connectionConfigRetriever->getConfig();
 
+            if (isset($config['ssl'])) {
+                if ((int)$config['ssl'] !== 0) {
+                    if (empty($config['driver_options'])) {
+                        $config['driver_options'] = [];
+                    }
+
+                    $config['driver_options'][\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+                }
+
+                unset($config['ssl']);
+            }
+
             $this->tablePrefix[$storeId] = $config['table_prefix'];
             $db = $this->connection[$storeId] = $this->connectionFactory->create($config);
 
             $db->query(
                 $db->quoteInto('SET NAMES ?', $config['charset'])
             );
+            
+            unset($config['driver_options']);
             // phpcs:ignore -- not cryptographic
             $tablesExistCacheKey = md5($storeId . '::' . implode(':', $config));
 

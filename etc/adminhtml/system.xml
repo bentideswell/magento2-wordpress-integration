@@ -65,6 +65,35 @@
                             <label>Table Prefix</label>
                             <config_path>wordpress/mode_external_db/table_prefix</config_path>
                         </field>
+
+                        <field id="ssl" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                            <label>Use TLS (SSL)</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <config_path>wordpress/mode_external_db/ssl</config_path>
+                        </field>
+                        <!--
+                        <field id="ssl_verify_server_cert" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                            <label>Verify Server Cert</label>
+                            <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                            <config_path>wordpress/mode_external_db/ssl_verify_server_cert</config_path>
+                            <depends><field id="ssl_enabled">1</field></depends>
+                        </field>
+                        <field id="ssl_key" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                            <label>SSL Key</label>
+                            <config_path>wordpress/mode_external_db/ssl_key</config_path>
+                            <depends><field id="ssl_enabled">1</field><field id="ssl_verify_server_cert">1</field></depends>
+                        </field>
+                        <field id="ssl_key" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                            <label>SSL Cert</label>
+                            <config_path>wordpress/mode_external_db/ssl_cert</config_path>
+                            <depends><field id="ssl_enabled">1</field><field id="ssl_verify_server_cert">1</field></depends>
+                        </field>
+                        <field id="ssl_ca" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                            <label>SSL CA</label>
+                            <config_path>wordpress/mode_external_db/ssl_ca</config_path>
+                            <depends><field id="ssl_enabled">1</field><field id="ssl_verify_server_cert">1</field></depends>
+                        </field>
+                        -->
                     </group>
                 </group>
             </group>
