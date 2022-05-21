@@ -93,6 +93,7 @@ class ResourceConnection
                     }
 
                     $config['driver_options'][\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
+                    $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = true;
                 }
 
                 unset($config['ssl']);

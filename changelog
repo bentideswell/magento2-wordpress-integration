@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.11.1] - 2022-05-21
+### [Fixed]
+- Fixed SSL support for DB connections.
+
 ## [3.11.0] - 2022-05-20
 ### [Added]
 - Added support for SSL connections to the WordPress DB.
