@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.12.1] - 2022-05-24
+### [Changed]
+- Added a call to is_file around the mu-plugin includes. This stop errors when removing an add-on but the MU ref remains.
+
 ## [3.12.0] - 2022-05-24
 ### [Added]
 - Added mu-plugins functionality to WordPress theme. This allows add-on modules to add to a mu-plugin (mu=must use)

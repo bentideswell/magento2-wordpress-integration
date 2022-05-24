@@ -18,12 +18,10 @@ class MuPlugins
      */
     public function __construct()
     {
-        
         add_action(
             'fishpig/wordpress/theme/updated',
             [$this, 'registerMuPlugin']
-        );
-        
+        );   
     }
     
     public function registerMuPlugin()
@@ -69,7 +67,9 @@ class MuPlugins
         ];
 
         foreach ($sourceFiles as $sourceFile) {
-            $muPluginLines[] = "require_once ABSPATH . '" . $sourceFile . "';";
+            $muPluginLines[] = "if (is_file(ABSPATH . '" . $sourceFile . "')) {
+    require_once ABSPATH . '" . $sourceFile . "';
+}";
         }
         
         $muPluginContent = implode("\n", $muPluginLines) . "\n";
