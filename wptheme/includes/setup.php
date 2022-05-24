@@ -15,11 +15,14 @@ class Setup
     {
         add_action('after_setup_theme', function() {
             // Ensures Theme hash is set correctly
-            if (get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {
+            $forceThemeUpdate = isset($_GET['_fishpig']) && $_GET['_fishpig'] === 'theme.update';
+            if ($forceThemeUpdate || get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {
                 update_option(FISHPIG_THEME_OPTION_NAME, FISHPIG_THEME_HASH);
 
                 // Being here means the theme has been updated/installed
                 flush_rewrite_rules(false);
+                
+                do_action('fishpig/wordpress/theme/updated');
             }
             
             // Setup theme supports
