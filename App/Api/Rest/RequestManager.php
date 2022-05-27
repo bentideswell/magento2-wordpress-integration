@@ -81,16 +81,15 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         }
 
         try {
-            return $this->serializer->unserialize($httpResponse->getBody());
-        } catch (\InvalidArgumentException $e) {
-            $errorMessage = $this->extractPhpErrorMessage($httpResponse->getBody()) ?? $e->getMessage();
-            throw new \FishPig\WordPress\App\Exception(
-                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $errorMessage
-            );
+             return $this->serializer->unserialize($httpResponse->getBody());
         } catch (\Exception $e) {
-            $errorMessage = $this->extractPhpErrorMessage($httpResponse->getBody()) ?? $e->getMessage();
+            if ($pError = $this->phpErrorExtractor->getError((string)$httpResponse->getBody())) {
+                $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException($pError, 500);
+                throw $e->setUrl($this->modifyUrl($endpoint));
+            }
+
             throw new \FishPig\WordPress\App\Exception(
-                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $errorMessage
+                'Unable to parse JSON response for ' . $this->modifyUrl($endpoint) . '. Error was: ' . $e->getMessage()
             );
         }
     }

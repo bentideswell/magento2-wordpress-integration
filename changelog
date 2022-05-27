@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.12.2] - 2022-05-267
+## [3.12.3] - 2022-05-27
+### [Fixed]
+- Fixed fatal error undefined method 'extractPhpErrorMessage' when WordPress API error occurs.
+
+## [3.12.2] - 2022-05-27
 ### [Changed]
 - Changed database default charset from utf8 to utfmb4 when using external integration mode. This can still be changed in
   the module config in the Magento admin.
