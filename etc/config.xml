@@ -9,7 +9,7 @@
 			</setup>
 			<mode_external_db>
     			<table_prefix>wp_</table_prefix>
-    			<charset>utf8</charset>
+    			<charset>utf8mb4</charset>
 			</mode_external_db>
             <xmlsitemap>
                 <enabled>1</enabled>

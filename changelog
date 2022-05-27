@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.12.2] - 2022-05-267
+### [Changed]
+- Changed database default charset from utf8 to utfmb4 when using external integration mode. This can still be changed in
+  the module config in the Magento admin.
+  
 ## [3.12.1] - 2022-05-24
 ### [Changed]
 - Added a call to is_file around the mu-plugin includes. This stop errors when removing an add-on but the MU ref remains.
