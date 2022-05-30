@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.12.5] - 2022-05-0
+### [Fixed]
+- PHP 8.1 type error in Block\Sidebar\Widget\Categories
+
 ## [3.12.4] - 2022-05-27
 ### [Removed]
 - Removed rogue layout XML instruction in full width template to remove porto header.

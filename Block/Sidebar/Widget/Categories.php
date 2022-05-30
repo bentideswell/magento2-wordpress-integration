@@ -60,7 +60,7 @@ class Categories extends AbstractWidget
      */
     public function getParentId()
     {
-        return number_format($this->getData('parent_id'), 0, '', '');
+        return number_format((int)$this->getData('parent_id'), 0, '', '');
     }
 
     /**
