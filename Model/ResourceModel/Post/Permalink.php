@@ -147,7 +147,7 @@ class Permalink
         
         foreach ($matchedTokens as $mtoken) {
             if ($mtoken === '%postnames%') {
-                $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId), $slug);
+                $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId) ?: '', $slug);
             } else {
                 try {
                     $taxonomy = $this->taxonomyRepository->get(trim($mtoken, '%'));

@@ -117,6 +117,7 @@ class Menu extends \FishPig\WordPress\Model\Term
         $items = $this->getMenuItems();
 
         if (count($items) > 0) {
+            $this->menuCache = [];
             foreach ($items as $item) {
                 $this->menuCache[] = $this->_getMenuTreeObjects($item);
             }

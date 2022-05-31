@@ -62,18 +62,20 @@ class Pages extends AbstractWidget
         if (!$this->hasData('excluded_page_ids')) {
             $this->setData('excluded_page_ids', false);
 
-            $excluded = explode(',', trim($this->getData('exclude')));
-            
-            foreach ($excluded as $key => $value) {
-                if (($value = (int)trim($value)) === 0) {
-                    unset($excluded[$key]);
-                } else {
-                    $excluded[$key] = $value;
+            if ($excluded = $this->getData('exclude')) {
+                $excluded = explode(',', trim($excluded));
+                
+                foreach ($excluded as $key => $value) {
+                    if (($value = (int)trim($value)) === 0) {
+                        unset($excluded[$key]);
+                    } else {
+                        $excluded[$key] = $value;
+                    }
                 }
-            }
-            
-            if ($excluded) {
-                $this->setData('excluded_page_ids', $excluded);
+                
+                if ($excluded) {
+                    $this->setData('excluded_page_ids', $excluded);
+                }
             }
         }
         

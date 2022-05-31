@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.12.5] - 2022-05-0
+## [3.12.6] - 2022-05-31
+### [Changed]
+- Fixed PHP 8.1 type errors.
+
+## [3.12.5] - 2022-05-30
 ### [Fixed]
 - PHP 8.1 type error in Block\Sidebar\Widget\Categories
 
