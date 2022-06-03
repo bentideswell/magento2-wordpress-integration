@@ -70,12 +70,12 @@ class Taxonomy extends \Magento\Framework\DataObject
     /**
      * @return string
      */
-    public function getSlug()
+    public function getSlug(): ?string
     {
-        $slug = trim($this->getData('rewrite/slug'), '/');
-
-        if ($this->withFront() && ($front = $this->url->getFront())) {
-            $slug = rtrim($front . '/' . $slug, '/');
+        if ($slug = trim((string)$this->getData('rewrite/slug'), '/')) {
+            if ($this->withFront() && ($front = $this->url->getFront())) {
+                $slug = rtrim($front . '/' . $slug, '/');
+            }
         }
 
         return $slug;

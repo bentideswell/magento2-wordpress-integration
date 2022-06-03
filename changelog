@@ -1,5 +1,8 @@
 # Changelog
 
+## [3.12.7] - 2022-06-03
+- PHP strict types fix.
+
 ## [3.12.6] - 2022-05-31
 ### [Changed]
 - Fixed PHP 8.1 type errors.
