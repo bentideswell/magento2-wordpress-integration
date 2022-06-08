@@ -23,10 +23,12 @@ class Router implements \Magento\Framework\App\RouterInterface
     public function __construct(
         \FishPig\WordPress\App\Integration\Tests $integrationTests,
         \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper,
+        \FishPig\WordPress\Controller\Router\RequestDispatcher $requestDispatcher,
         array $routerPool = []
     ) {
         $this->integrationTests = $integrationTests;
         $this->routerUrlHelper = $routerUrlHelper;
+        $this->requestDispatcher = $requestDispatcher;
         $this->routerPool = $routerPool;
     }
 
@@ -49,6 +51,14 @@ class Router implements \Magento\Framework\App\RouterInterface
             }
 
             if (($result = $router->match($request)) !== false) {
+                if ($redirectUrl = $this->routerUrlHelper->getRedirectUrlBasedOnTrailingSlash($request)) {
+                    return $this->requestDispatcher->redirect(
+                        $request,
+                        $redirectUrl,
+                        301
+                    );
+                }
+
                 return $result;
             }
         }

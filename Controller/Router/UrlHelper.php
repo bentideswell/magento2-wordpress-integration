@@ -21,9 +21,11 @@ class UrlHelper
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Url $url
+        \FishPig\WordPress\App\Url $url,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->url = $url;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -154,5 +156,26 @@ class UrlHelper
         }
 
         return $pathInfo;
+    }
+    
+    /**
+     *
+     */
+    public function getRedirectUrlBasedOnTrailingSlash(RequestInterface $request): ?string
+    {
+        $hasTrailingSlash = '/' === substr($request->getPathInfo(), -1);
+        $shouldHaveTrailingSlash = $this->url->hasTrailingSlash();
+
+        if ($shouldHaveTrailingSlash && !$hasTrailingSlash) {
+            $newPathInfo = $request->getPathInfo() . '/';
+        } elseif (!$shouldHaveTrailingSlash && $hasTrailingSlash) {
+            $newPathInfo = rtrim($request->getPathInfo(), '/');
+        }
+        
+        if (empty($newPathInfo)) {
+            return null;
+        }
+        
+        return $this->storeManager->getStore()->getUrl('', ['_direct' => ltrim($newPathInfo, '/')]);
     }
 }
