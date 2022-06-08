@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.14.0] - 2022-06-8
+## [3.14.1] - 2022-06-08
+## [Fixed]
+- New issue that caused 404 when post_type=page
+
+## [3.14.0] - 2022-06-08
 ### [Added]
 - Redirect functionality to correct missing - or extra - trailing slash.
 

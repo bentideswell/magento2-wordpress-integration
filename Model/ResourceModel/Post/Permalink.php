@@ -86,9 +86,24 @@ class Permalink
                             'post_status IN (?)',
                             ['publish', 'protected', 'private']
                         )
-                    ),
-                    (string)$postType->getSlug()
+                    )
                 );
+                
+                if ($routes) {
+                    if ($slug = $postType->getSlug()) {
+                        $token = '%postname%';
+                        if (strpos($slug, $token) === false) {
+                            $slug = rtrim($slug, '/') . '/' . $token;
+                        }
+                        
+                        foreach ($routes as $id => $route) {
+                            $routes[$id] = str_replace($token, $route, $slug);                        
+                        }
+                    }
+
+                }
+                
+
             } else {
                 if (($filters = $this->getPostTypeFilters($postType, $pathInfo)) === false) {
                     continue;
