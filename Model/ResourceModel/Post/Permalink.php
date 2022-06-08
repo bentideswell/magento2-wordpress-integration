@@ -86,7 +86,8 @@ class Permalink
                             'post_status IN (?)',
                             ['publish', 'protected', 'private']
                         )
-                    )
+                    ),
+                    (string)$postType->getSlug()
                 );
             } else {
                 if (($filters = $this->getPostTypeFilters($postType, $pathInfo)) === false) {
