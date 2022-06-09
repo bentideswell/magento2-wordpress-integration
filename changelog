@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.14.3] - 2022-06-09
+### [Changed]
+- Added Integration tests to AssetProvider. This ensures tests have been executed for non-WP pages.
+
 ## [3.14.2] - 2022-06-09
 ### [Changed]
 - Added name and email hidden fields to comment form when customer logged in.

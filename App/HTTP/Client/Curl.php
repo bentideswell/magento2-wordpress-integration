@@ -33,6 +33,11 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     private $realStatusCode = 0;
 
     /**
+     * @var string
+     */
+    private $requestedUrl = null;
+
+    /**
      *
      */
     public function __construct(
@@ -146,5 +151,19 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     public function getRequestHeaders(): array
     {
         return $this->_headers;
+    }
+    
+    protected function makeRequest($method, $uri, $params = [])
+    {
+        $this->requestedUrl = (string)$uri;
+        return parent::makeRequest($method, $uri, $params);
+    }
+    
+    /**
+     *
+     */
+    public function getUrl(): ?string
+    {
+        return $this->requestedUrl;
     }
 }

@@ -22,10 +22,12 @@ class AssetProvider implements AssetProviderInterface
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
+        \FishPig\WordPress\App\Integration\Tests $integrationTests,
         array $assetProviders = []
     ) {
         $this->appMode = $appMode;
-        
+        $this->integrationTests = $integrationTests;
+
         if ($this->appMode->isDisabled()) {
             return;
         }
@@ -58,6 +60,14 @@ class AssetProvider implements AssetProviderInterface
             return;
         }
 
+        if (count($this->assetProviderPool) === 0) {
+            return;
+        }
+        
+        if ($this->integrationTests->runTests() === false) {
+            return;
+        }
+    
         foreach ($this->assetProviderPool as $assetProvider) {
             $assetProvider->provideAssets($request, $response);
         }
