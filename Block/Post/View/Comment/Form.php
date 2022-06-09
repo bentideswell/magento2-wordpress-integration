@@ -86,6 +86,22 @@ class Form extends AbstractBlock
     {
         return $this->customerSession->isLoggedIn();
     }
+    
+    /**
+     * @return ?string
+     */
+    public function getCustomerName(): ?string
+    {
+        return $this->customerSession->getCustomer()->getName();
+    }
+
+    /**
+     * @return ?string
+     */
+    public function getCustomerEmail(): ?string
+    {
+        return $this->customerSession->getCustomer()->getEmail();
+    }
 
     /**
      * Retrieve the current post object

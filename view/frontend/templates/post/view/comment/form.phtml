@@ -29,6 +29,9 @@
                             <input type="text" id="email" name="email" class="input-text required-entry validate-email" value=""/>
                         </div>
                     </div>
+                <?php else: ?>
+                    <input type="hidden" id="author" name="author" value="<?= $block->escapeHtml($block->getCustomerName()) ?>"/>
+                    <input type="hidden" id="email" name="email" value="<?= $block->escapeHtml($block->getCustomerEmail()) ?>"/>
                 <?php endif; ?>
                 <div class="field">
                     <label for="url" class="label"><?= $block->escapeHtml(__('Website')) ?></label>

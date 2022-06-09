@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.14.2] - 2022-06-09
+### [Changed]
+- Added name and email hidden fields to comment form when customer logged in.
+
 ## [3.14.1] - 2022-06-08
 ## [Fixed]
 - New issue that caused 404 when post_type=page
