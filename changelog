@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.15.0] - 2022-07-15
+### [Removed]
+- Removed legacy-src files.
+
 ## [3.14.3] - 2022-06-09
 ### [Changed]
 - Added Integration tests to AssetProvider. This ensures tests have been executed for non-WP pages.
