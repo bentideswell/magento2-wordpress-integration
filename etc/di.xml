@@ -11,7 +11,7 @@
         <arguments>
             <argument name="integrationTestPool" xsi:type="array">
                 <item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\DBTest</item>
-                <item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>                
+                <item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>
                 <item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
                 <item name="api" xsi:type="object">FishPig\WordPress\App\Integration\Test\ApiTest</item>
                 <item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
@@ -113,7 +113,7 @@
             <argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Taxonomy</argument>
             <argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TaxonomyFactory</argument>
         </arguments>
-    </type>   
+    </type>
     <!--
     /**
      * Models
@@ -219,36 +219,42 @@
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post</argument>
             <argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post</argument>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\MetaDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\Post\Attachment\Collection">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Attachment</argument>
             <argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post\Attachment</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\Attachment\MetaDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\Post\Comment\Collection">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Post\Comment</argument>
             <argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Post\Comment</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Post\Comment\MetaDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\Term\Collection">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Term</argument>
             <argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Term</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Term\MetaDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\User\Collection">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\User</argument>
             <argument name="modelName" xsi:type="string">FishPig\WordPress\Model\User</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\User\MetaDataProvider</argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection">
         <arguments>
             <argument name="resource" xsi:type="object">FishPig\WordPress\Model\ResourceModel\Menu\Item</argument>
             <argument name="modelName" xsi:type="string">FishPig\WordPress\Model\Menu\Item</argument>
+            <argument name="metaDataProvider" xsi:type="object">FishPig\WordPress\Model\Menu\Item\MetaDataProvider</argument>
         </arguments>
     </type>
 
@@ -326,7 +332,7 @@
         </arguments>
     </type>
     <!--
-        
+
     -->
     <type name="FishPig\WordPress\App\HTTP\RequestManager">
         <arguments>
@@ -336,7 +342,7 @@
     <type name="FishPig\WordPress\App\HTTP\ClientFactory">
         <arguments>
             <argument name="instanceName" xsi:type="string">FishPig\WordPress\App\HTTP\Client\Curl</argument>
-        </arguments>        
+        </arguments>
     </type>
     <type name="FishPig\WordPress\App\Api\Rest\RequestManager">
         <arguments>

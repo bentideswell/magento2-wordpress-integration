@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model\ResourceModel\Post;
 
-class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractMetaCollection
 {
     /**
      * @var string
@@ -34,6 +34,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\ResourceModel\Post\Permalink $permalinkResource,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
@@ -43,6 +44,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
         string $modelName = null
     ) {
+
         $this->postTypeRepository = $postTypeRepository;
         $this->permalinkResource = $permalinkResource;
         $this->optionRepository = $optionRepository;
@@ -53,12 +55,13 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $logger,
             $fetchStrategy,
             $eventManager,
+            $metaDataProvider,
             $connection,
             $resource,
             $modelName
         );
     }
-    
+
     /**
      *
      */
@@ -80,7 +83,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
         $this->setOrder('main_table.menu_order', 'ASC');
         $this->setOrder('main_table.post_date', 'DESC');
-            
+
         return $this;
     }
 
@@ -127,7 +130,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
                 $this->getSelect()->columns(['permalink' => $sql]);
             }
         }
-        
+
         return $this;
     }
 
@@ -521,7 +524,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
 
         return $this;
     }
-    
+
     /**
      * @param  int $categoryId
      * @return self

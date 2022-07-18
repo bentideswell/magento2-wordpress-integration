@@ -10,7 +10,7 @@ namespace FishPig\WordPress\Model\ResourceModel\Post\Comment;
 
 use FishPig\WordPress\Model\Post;
 
-class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\AbstractCollection
+class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractMetaCollection
 {
     /**
      * @var string
@@ -31,6 +31,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
+        \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
         \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
@@ -43,12 +44,13 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Collection\Abstr
             $logger,
             $fetchStrategy,
             $eventManager,
+            $metaDataProvider,
             $connection,
             $resource,
             $modelName
         );
     }
-    
+
     /**
      * Order the comments by date
      *

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.16.0] - 2022-07-18
+### [Added]
+- Added MetaDataProvider functionality to collections. This includes addMetaFieldToSelect, addMetaFieldToFilter, addMetaFieldToSort
+
 ## [3.15.1] - 2022-07-15
 ### [Removed]
 - Removed legacy-src files.
@@ -46,7 +50,7 @@
 ### [Changed]
 - Changed database default charset from utf8 to utfmb4 when using external integration mode. This can still be changed in
   the module config in the Magento admin.
-  
+
 ## [3.12.1] - 2022-05-24
 ### [Changed]
 - Added a call to is_file around the mu-plugin includes. This stop errors when removing an add-on but the MU ref remains.
@@ -55,7 +59,7 @@
 ### [Added]
 - Added mu-plugins functionality to WordPress theme. This allows add-on modules to add to a mu-plugin (mu=must use)
   This allows functionality to be added to WP before the theme inits. Currently this is used by WPML.
-  
+
 ## [3.11.1] - 2022-05-21
 ### [Fixed]
 - Fixed SSL support for DB connections.
@@ -76,9 +80,9 @@
 
 ## [3.9.7] - 2022-04-28
 ### [Changed]
-- Uninstalled modules are now greyed out in the config, to make it clear which add-on modules are installed and which 
+- Uninstalled modules are now greyed out in the config, to make it clear which add-on modules are installed and which
   are not.
-  
+
 ## [3.9.6] - 2022-04-26
 ### [Changed]
 - Error suppression when webp image used in resizer. Error (unsupported image format) is logged and original image is used.
@@ -126,7 +130,7 @@
 ### [Fixed]
 - Static strings in permalink structure that point to the posts page (eg. /blog/%postname%) now add the post page to
   the breadcrumbs structure (eg. Home > Blog > Post)
-  
+
 ## [3.7.11] - 2022-03-14
 ### [Fixed]
 - Undefined index issue in preview.php (WP theme file).
@@ -155,7 +159,7 @@
 ### [Changed]
 - Changed theme update integration error message to include expected theme hash and current theme hash. This is useful
   for debugging.
-  
+
 ## [3.7.4] - 2022-02-09
 ### [Changed]
 - Added cachable=false block to post preview pages to fully stop them from being cached.
@@ -179,9 +183,9 @@
 
 ## [3.6.5] - 2022-02-03
 ### [Changed]
-- Improved exception messages when 301 or 302 redirects occur so that redirect URL is included. This should help with 
+- Improved exception messages when 301 or 302 redirects occur so that redirect URL is included. This should help with
   debugging.
-  
+
 ## [3.6.4] - 2022-02-02
 ### [Added]
 - Added getEntity to post list wrapper blocks for backwards compatibility.
@@ -223,7 +227,7 @@
 
 ## [3.5.0] - 2021-01-13
 ### [Added]
-- Added bin/magento fishpig:wordpress:test command. 
+- Added bin/magento fishpig:wordpress:test command.
 
 ## [3.4.4] - 2022-01-12
 ### [Fixed]
@@ -294,7 +298,7 @@
 
 ## [3.0.33] - 2021-12-24
 ### [Added]
-- Checks for HTTP auth and displays a message indicating HTTP auth failure. In a future version you will be able to 
+- Checks for HTTP auth and displays a message indicating HTTP auth failure. In a future version you will be able to
   specify HTTP auth details in the Admin. For now, just ensure Magento and WP use the same HTTP auth details and
   these will be shared with the WP API automatically.
 
@@ -302,7 +306,7 @@
 ### [Changed]
 - Changed \Magento\Framework\Filesystem\DriverInterface to \Magento\Framework\Filesystem and get individual directories
   from there.
-  
+
 ## [3.0.30] - 2021-12-22
 ### [Changed]
 - Code formatting clean up.
@@ -397,7 +401,7 @@
 ## [3.0.3] - 2021-12-15
 ### [Fixed]
 - PHP URL class error in HeadAdditional block
-  
+
 ## [3.0.1] - 2021-12-15
 ### [Changed]
 - References to FishPig\WordPress\Model\Logger have been changed to FishPig\WordPress\App\Logger
@@ -412,4 +416,4 @@ You can see the old change log here: https://github.com/bentideswell/magento2-wo
 
 ### [Removed]
 - No longer able to resize images dynamically
-- No longer able to run WP code in Magento using 
+- No longer able to run WP code in Magento using

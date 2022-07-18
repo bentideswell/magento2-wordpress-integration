@@ -27,7 +27,7 @@ class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
         $this->url = $url;
         $this->layout = $layout;
     }
-    
+
     public function run(array $options = []): void
     {
         foreach ($this->postTypeRepository->getAll() as $postType) {
@@ -38,11 +38,11 @@ class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
                 ->load();
 
             $this->permalinkResource->getPermalinkSqlColumn($postType->getPostType());
-    
+
             foreach ($posts as $post) {
                 $post = $this->postRepository->get($post->getId());
                 $taxonomy = $post->getSupportedTaxonomy('category') ?: $post->getSupportedTaxonomy(null);
-                
+
                 $post->getId();
                 $post->getName();
                 $post->isType($post->getPostType());
@@ -76,7 +76,7 @@ class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
                 $post->getMetaValue('_wp_page_template');
                 $post->getMetaValue('_does_not_exist');
                 $post->getMetaValue('does_not_exist');
-                
+
                 if ($post->isPublic() && !$post->isFrontPage()) {
                     if ($pathInfo = str_replace($this->url->getHomeUrl(), '', $post->getUrl())) {
                         if (0 === (int)$this->permalinkResource->getPostIdByPathInfo($pathInfo)) {
@@ -86,23 +86,23 @@ class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
                                     $pathInfo,
                                     $post->getId(),
                                     $post->getName()
-                                )   
+                                )
                             );
                         }
                     }
                 }
-                
+
                 $this->permalinkResource->getParentTermId(
                     $post->getId(),
                     $taxonomy ? $taxonomy->getTaxonomy() : 'category'
                 );
-                
+
                 if (isset($options[TestPool::RUN_BLOCK_TESTS]) && $options[TestPool::RUN_BLOCK_TESTS] === true) {
                     $this->layout->createBlock(\FishPig\WordPress\Block\Post\View::class)->setPost($post)->toHtml();
                 }
             }
         }
-    
+
         // Only needs to be called for 1 post
         $post->getResource();
         $post->getResource()->getPostsOnDayByYearMonth($post->getPostDate('Y/m/d'));
@@ -112,9 +112,16 @@ class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
         $post->getCollection()->addPostTypeFilter(['*', $post->getPostType()]);
         $post->getCollection()->addPostTypeFilter(['post', 'page']);
         $post->getCollection()->addPostTypeFilter(['post', 'page', 'does_not_Exist']);
-    
+
         $this->permalinkResource->getPermalinkSqlColumn(
             array_keys($this->postTypeRepository->getAll())
         );
+
+        $posts = $this->postCollectionFactory->create()
+            ->addMetaFieldToSelect('_yoast_wpseo_title')
+            ->addMetaFieldToFilter('_wp_page_template', 'default')
+            ->addMetaFieldToSort('_yoast_wpseo_title', 'desc')
+            ->setPageSize(5)
+            ->load();
     }
 }
