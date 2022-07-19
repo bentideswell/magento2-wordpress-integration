@@ -1,7 +1,7 @@
 {
     "name": "fishpig/magento2-wordpress-integration",
     "description": "Securely integrate WordPress and Magento 2.",
-    "version": "3.16.0",
+    "version": "3.17.0",
     "require": {
         "php": ">=7.0",
         "magento/framework": "*",
@@ -19,9 +19,6 @@
     	],
     	"psr-4": {
             "FishPig\\WordPress\\": ""
-    	},
-        "exclude-from-classmap": [
-            "**/wptheme/**"
-        ]
+    	}
     }
 }

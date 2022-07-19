@@ -48,10 +48,8 @@ class PackageBuilder
     {
         $mediaDir = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
         $packageFilename = Theme::THEME_NAME . '-wp-theme-' . substr($this->localHashProvider->getHash(), 0, 12) . '.zip';
-        
-        
 
-        if (!$mediaDir->isFile($packageFilename)) {     
+        if (!$mediaDir->isFile($packageFilename)) {
             $files = $this->fileCollector->getFiles();
 
             if (class_exists(\ZipArchive::class)) {
@@ -59,7 +57,7 @@ class PackageBuilder
                     $mediaDir->getAbsolutePath($packageFilename),
                     $files
                 );
-                
+
                 if (!$mediaDir->isFile($packageFilename)) {
                     throw new \FishPig\WordPress\App\Exception(
                         'Zip package does not exist. Built using ZipArchive.'
@@ -92,7 +90,7 @@ class PackageBuilder
             $relative = Theme::THEME_NAME . '/' . $relative;
             // phpcs:ignore -- file_get_contents
             $data = file_get_contents($file);
-            
+
             if (strpos($data, self::TOKEN_REMOTE_HASH) !== false) {
                 $zip->addFromString(
                     $relative,

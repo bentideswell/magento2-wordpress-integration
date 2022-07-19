@@ -43,7 +43,7 @@ class FileCollector
             if ($wpThemeDir->isDirectory()) {
                 foreach ($wpThemeDir->readRecursively() as $file) {
                     if ($wpThemeDir->isFile($file)) {
-                        $files[$file] = $wpThemeDir->getAbsolutePath($file);
+                        $files[str_replace('.php.sample', '.php', $file)] = $wpThemeDir->getAbsolutePath($file);
                     }
                 }
             }

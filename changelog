@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.17.0] - 2022-07-19
+### [Changed]
+- Fixed some auto load errors
+- Merged legacy-src into code base in PSR4 positions and added deprecated tags
+- Renamed .php files in wptheme to *.php.sample to avoid autoload and compilation issues.
+
 ## [3.16.0] - 2022-07-18
 ### [Added]
 - Added MetaDataProvider functionality to collections. This includes addMetaFieldToSelect, addMetaFieldToFilter, addMetaFieldToSort
