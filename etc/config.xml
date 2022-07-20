@@ -1,19 +1,22 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
-	<default>
-		<wordpress>
-			<setup>
+    <default>
+        <wordpress>
+            <setup>
                 <mode>local</mode>
-    			<theme_integration>1</theme_integration>
-    			<path>wp</path>
-			</setup>
-			<mode_external_db>
-    			<table_prefix>wp_</table_prefix>
-    			<charset>utf8mb4</charset>
-			</mode_external_db>
+                <theme_integration>1</theme_integration>
+                <path>wp</path>
+            </setup>
+            <mode_external_db>
+                <table_prefix>wp_</table_prefix>
+                <charset>utf8mb4</charset>
+            </mode_external_db>
+            <logging>
+                <http>2</http>
+            </logging>
             <xmlsitemap>
                 <enabled>1</enabled>
             </xmlsitemap>
-		</wordpress>
-	</default>
+        </wordpress>
+    </default>
 </config>

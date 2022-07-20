@@ -8,21 +8,32 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\HTTP\RequestManager;
 
+use FishPig\WordPress\Model\Config\Source\Logging\HTTP as HTTPLoggingFlag;
+
 class Logger extends \Monolog\Logger
 {
+    /**
+     *
+     */
+    private $scopeConfig = null;
+
     /**
      * @param  array $requestData
      * @return void
      */
     public function logApiRequest(array $requestData): void
     {
+        if (!$this->canSaveLog($requestData)) {
+            return;
+        }
+
         $longest = 0;
         foreach ($requestData as $key => $value) {
             if (strlen($key) > $longest) {
                 $longest = strlen($key);
             }
         }
-        
+
         if (!empty($requestData['Body'])) {
             $requestData['Body'] = "\n\n" . $requestData['Body'];
         }
@@ -53,5 +64,30 @@ class Logger extends \Monolog\Logger
         $logMsg = implode("\n", $requestData);
 
         $this->addRecord(self::INFO, $logMsg . "\n" . str_repeat('-', 90));
+    }
+
+    /**
+     *
+     */
+    private function canSaveLog(array $requestData): bool
+    {
+        if ($this->scopeConfig === null) {
+            // This uses the ObjectManager because injecting via the constructor is difficult
+            // Because the constructor signature is different for PHP 7.4 and PHP 8.1
+            // phpcs:ignore
+            $this->scopeConfig = \Magento\Framework\App\ObjectManager::getInstance()->get(
+                \Magento\Framework\App\Config\ScopeConfigInterface::class
+            );
+        }
+
+        $configValue = (int)$this->scopeConfig->getValue('wordpress/logging/http', \Magento\Store\Model\ScopeInterface::SCOPE_STORE);
+
+        if ($configValue === HTTPLoggingFlag::REDUCE) {
+            return !isset($requestData['Status']) || (int)$requestData['Status'] !== 200;
+        } elseif ($configValue === HTTPLoggingFlag::DISABLED) {
+            return false;
+        }
+
+        return true;
     }
 }

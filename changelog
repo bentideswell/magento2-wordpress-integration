@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.17.1] - 2022-07-20
+### [Changed]
+- HTTP logging can now be configured via the config to be either Enabled (log everything), Disabled (log nothing), Reduce (log HTTP errors).
+
 ## [3.17.0] - 2022-07-19
 ### [Changed]
 - Fixed some auto load errors

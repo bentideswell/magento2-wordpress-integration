@@ -65,7 +65,6 @@
                             <label>Table Prefix</label>
                             <config_path>wordpress/mode_external_db/table_prefix</config_path>
                         </field>
-
                         <field id="ssl" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>Use TLS (SSL)</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -96,98 +95,104 @@
                         -->
                     </group>
                 </group>
+                <field id="http_log" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>HTTP Log</label>
+                    <source_model>FishPig\WordPress\Model\Config\Source\Logging\HTTP</source_model>
+                    <config_path>wordpress/logging/http</config_path>
+                    <comment>var/log/wp/http.log</comment>
+                </field>
             </group>
             <group id="autologin" sortOrder="30" showInDefault="1">
                 <label>WP-Admin Auto Login</label>
                 <comment>Login to your WordPress Admin with a single click, right from the Magento Admin.</comment>
-				<field id="FishPig_WordPress_AutoLogin" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
+                <field id="FishPig_WordPress_AutoLogin" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
             </group>
-			<group id="root" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>Root</label>
+            <group id="root" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Root</label>
                 <comment>Remove /blog/ from your WordPress URLs and gain complete control over where you position WordPress content in your URL structure. This also allows you to start creating your CMS pages in WordPress.</comment>
-				<field id="FishPig_WordPress_Root" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-			</group>
-			<group id="multisite" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>Multisite (WordPress Network)</label>
-				<comment>Use the WordPress Network features to assign a different blog to each Magento store/language.</comment>
-				<field id="FishPig_WordPress_Multisite" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-			</group>
-			<group id="psw" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label><![CDATA[Plugins, Shortcodes &amp; Widgets]]></label>
+                <field id="FishPig_WordPress_Root" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+            </group>
+            <group id="multisite" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Multisite (WordPress Network)</label>
+                <comment>Use the WordPress Network features to assign a different blog to each Magento store/language.</comment>
+                <field id="FishPig_WordPress_Multisite" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+            </group>
+            <group id="psw" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label><![CDATA[Plugins, Shortcodes &amp; Widgets]]></label>
                 <comment>Adds shortcode and plugin support and so much more, including RSS feeds, Yoast XML sitemaps, AMP support and even Page Builders like Elementor and WP Bakery.</comment>
-				<field id="FishPig_WordPress_PluginShortcodeWidget" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-			</group>
+                <field id="FishPig_WordPress_PluginShortcodeWidget" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+            </group>
             <group id="contentblocks" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Content Blocks</label>
                 <comment><![CDATA[<p>Create CMS Blocks in WordPress using the WordPress editor and plugins and use them anywhere you want in Magento.</p><p>Select WP content blocks from any CMS/Static block drop down or use the shortcode anywhere:</p><p>[wp_block id="1234"]</p>]]></comment>
-				<field id="FishPig_WordPress_ContentBlocks" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
+                <field id="FishPig_WordPress_ContentBlocks" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
             </group>
             <group id="acf" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Advanced Custom Fields</label>
                 <comment>Access field data generated by the Advanced Custom Fields (ACF) plugin.</comment>
-				<field id="FishPig_WordPress_ACF" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
+                <field id="FishPig_WordPress_ACF" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
             </group>
             <group id="cpt" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label><![CDATA[Custom Post Types &amp; Taxonomies]]></label>
                 <comment>Use custom post types and custom taxonomies in your integrated blog. This data is automatically taken from WordPress.</comment>
-				<field id="FishPig_WordPress_PostTypeTaxonomy" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
+                <field id="FishPig_WordPress_PostTypeTaxonomy" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
             </group>
-			<group id="relatedproducts" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>Related Products</label>
-				<comment>Link Magento products and categories with your WordPress posts and display these products and categories automatically on the post view page and link to the posts from the product and category pages.</comment>
-				<field id="FishPig_WordPress_RelatedProducts" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-			</group>
-			<group id="wpml" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
-				<label>WPML</label>
-				<comment>Setup multilingual blogging using the WPML plugin.</comment>
-				<field id="FishPig_WordPress_WPML" showInDefault="1" showInWebsite="1" showInStore="1">
-					<label>Status</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-			</group>
+            <group id="relatedproducts" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Related Products</label>
+                <comment>Link Magento products and categories with your WordPress posts and display these products and categories automatically on the post view page and link to the posts from the product and category pages.</comment>
+                <field id="FishPig_WordPress_RelatedProducts" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+            </group>
+            <group id="wpml" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>WPML</label>
+                <comment>Setup multilingual blogging using the WPML plugin.</comment>
+                <field id="FishPig_WordPress_WPML" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+            </group>
             <group id="addon" sortOrder="9999" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Extra Add-On Modules</label>
-				<field id="FishPig_WordPress_IntegratedSearch" showInDefault="1">
-					<label>Integrated Search</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-				<field id="FishPig_PageSpeed" showInDefault="1">
-					<label>Page Speed</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-				<field id="FishPig_WordPress_PermalinkManager" showInDefault="1">
-					<label>Permalink Manager</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
-				<field id="FishPig_NoBots" showInDefault="1">
-					<label>Security Suite</label>
-					<frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
-				</field>
+                <field id="FishPig_WordPress_IntegratedSearch" showInDefault="1">
+                    <label>Integrated Search</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+                <field id="FishPig_PageSpeed" showInDefault="1">
+                    <label>Page Speed</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+                <field id="FishPig_WordPress_PermalinkManager" showInDefault="1">
+                    <label>Permalink Manager</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+                <field id="FishPig_NoBots" showInDefault="1">
+                    <label>Security Suite</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
             </group>
-        </section>      
+        </section>
     </system>
 </config>
