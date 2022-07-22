@@ -10,7 +10,7 @@ namespace FishPig\WordPress\Model\Repository;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 
-abstract class DataSourceRepository
+abstract class DataSourceRepository extends AbstractRepository
 {
     /**
      * @var []
@@ -22,15 +22,12 @@ abstract class DataSourceRepository
      */
     public function __construct(
         \FishPig\WordPress\Api\Data\PostTypeTaxonomyDataSourceInterface $dataSource,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\ObjectManagerInterface $objectManager,
-        string $factoryClass
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->dataSource = $dataSource;
         $this->storeManager = $storeManager;
-        $this->objectFactory = $objectManager->get($factoryClass);
     }
-    
+
     /**
      * @param  string $taxonomy
      * @return bool
@@ -39,13 +36,13 @@ abstract class DataSourceRepository
     {
         try {
             $this->get($id);
-            
+
             return true;
         } catch (NoSuchEntityException $e) {
             return false;
         }
     }
-    
+
     /**
      * @param  string $id
      * @return mixed
@@ -77,7 +74,7 @@ abstract class DataSourceRepository
             $this->objects[$storeId] = [];
 
             foreach ($this->dataSource->getAll() as $id => $data) {
-                $this->objects[$storeId][$id] = $this->objectFactory->create()->setData($data);
+                $this->objects[$storeId][$id] = $this->getObjectFactory()->create()->setData($data);
             }
         }
 

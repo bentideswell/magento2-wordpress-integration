@@ -11,6 +11,18 @@ namespace FishPig\WordPress\Model;
 class TermRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
     /**
+     *
+     */
+    public function __construct(
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \FishPig\WordPress\Model\TermFactory $objectFactory,
+        string $idFieldName = null
+    ) {
+        $this->objectFactory = $objectFactory;
+        parent::__construct($storeManager, $idFieldName);
+    }
+
+    /**
      * @param  int $id
      * @param  array|string $taxonomies
      * @return FishPig\WordPress\Model\Term
@@ -18,7 +30,7 @@ class TermRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
     public function getWithTaxonomy($id, $taxonomies)
     {
         $object = $this->get($id);
-        
+
         if (!in_array($object->getTaxonomy(), (array)$taxonomies)) {
             throw new NoSuchEntityException(
                 __(
@@ -28,7 +40,7 @@ class TermRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
                 )
             );
         }
-        
+
         return $object;
     }
 }

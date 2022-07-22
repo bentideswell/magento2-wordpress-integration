@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.18.0] - 2022-07-22
+### [Changed]
+- Changed repository's to declare the object factory in the constructor. This
+  allows the code compiler to detect the factory and auto generate it during
+  compilation. This stops permission issues when using the Magento cloud.
+- Changed the WP theme builder to save the theme ZIP in var/fishpig/wptheme-builds
+  This stops it being pushed to S3 when using the remote storage adapter.
+
 ## [3.17.1] - 2022-07-20
 ### [Changed]
 - HTTP logging can now be configured via the config to be either Enabled (log everything), Disabled (log nothing), Reduce (log HTTP errors).

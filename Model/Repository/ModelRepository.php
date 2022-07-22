@@ -10,7 +10,7 @@ namespace FishPig\WordPress\Model\Repository;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 
-abstract class ModelRepository
+abstract class ModelRepository extends AbstractRepository
 {
     /**
      * @var array
@@ -21,16 +21,13 @@ abstract class ModelRepository
      *
      */
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $objectManager,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        string $factoryClass,
-        string $idFieldName = 'ID'
+        string $idFieldName = null
     ) {
         $this->storeManager = $storeManager;
-        $this->objectFactory = $objectManager->get($factoryClass);
-        $this->idFieldName = $idFieldName;
+        $this->idFieldName = $idFieldName ?? 'ID';
     }
-    
+
     /**
      *
      */
@@ -38,7 +35,7 @@ abstract class ModelRepository
     {
         $storeId = (int)$this->getStoreId();
         $id = (int)$id;
-        
+
         if (!isset($this->cache[$storeId])) {
             $this->cache[$storeId] = [];
         }
@@ -48,7 +45,7 @@ abstract class ModelRepository
                 throw new NoSuchEntityException(
                     __(
                         "The %1 (%2=%3) that was requested doesn't exist. Verify the object and try again.",
-                        get_class($this->objectFactory->create()),
+                        get_class($this->getObjectFactory()->create()),
                         $this->idFieldName,
                         $id
                     )
@@ -57,14 +54,14 @@ abstract class ModelRepository
 
             return $this->cache[$storeId][$id];
         }
-        
+
         $this->cache[$storeId][$id] = false;
 
         $object = $this->loadObject($id, $this->idFieldName);
-        
+
         return $this->cache[$storeId][$id] = $object;
     }
-    
+
     /**
      * @param  mixed $id
      * @return false|\Magento\Framework\DataObject
@@ -77,7 +74,7 @@ abstract class ModelRepository
             return false;
         }
     }
-    
+
     /**
      *
      */
@@ -85,20 +82,20 @@ abstract class ModelRepository
     {
         $storeId = (int)$this->getStoreId();
         $id = (int)$id;
-        
+
         if (isset($this->cache[$storeId][$id])) {
             return $this->cache[$storeId][$id];
         }
-        
+
         if (!isset($this->cache[$storeId])) {
             $this->cache[$storeId] = [];
         }
-        
+
         $this->cache[$storeId][$id] = false;
 
         return $this->cache[$id][$storeId] = $this->loadObject($id, $this->idFieldName);
     }
-    
+
     /**
      * @param  mixed  $value
      * @param  string $field
@@ -107,7 +104,7 @@ abstract class ModelRepository
     public function getByField($value, $field)
     {
         $storeId = (int)$this->getStoreId();
-        
+
         if (!empty($this->cache[$storeId])) {
             foreach ($this->cache[$storeId] as $object) {
                 if ($object->getData($field) === $value) {
@@ -119,10 +116,10 @@ abstract class ModelRepository
         }
 
         $object = $this->loadObject($value, $field);
-        
+
         return $this->cache[$storeId][$object->getId()] = $object;
     }
-    
+
     /**
      * @param  mixed  $value
      * @param  string $field
@@ -130,7 +127,7 @@ abstract class ModelRepository
      */
     private function loadObject($value, $field)
     {
-        $object = $this->objectFactory->create();
+        $object = $this->getObjectFactory()->create();
 
         if (!$object->load($value, $field)->getId()) {
             throw new NoSuchEntityException(
@@ -145,7 +142,7 @@ abstract class ModelRepository
 
         return $object;
     }
-    
+
     /**
      * @return int
      */

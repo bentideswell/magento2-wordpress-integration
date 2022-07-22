@@ -13,6 +13,18 @@ use Magento\Framework\Exception\NoSuchEntityException;
 class PostRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
     /**
+     *
+     */
+    public function __construct(
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \FishPig\WordPress\Model\PostFactory $objectFactory,
+        string $idFieldName = null
+    ) {
+        $this->objectFactory = $objectFactory;
+        parent::__construct($storeManager, $idFieldName);
+    }
+
+    /**
      * @param  int $id
      * @param  array|string $types
      * @return FishPig\WordPress\Model\Post
@@ -30,7 +42,7 @@ class PostRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
                 )
             );
         }
-        
+
         return $post;
     }
 }
