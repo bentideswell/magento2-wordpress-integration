@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.18.1] - 2022-07-22
+### [Changed]
+- Changed the hash of the file path and name for each theme file to a relative
+  path rather than an absolute path. This stops the theme hash being affected
+  by the install location of Magento.
+
 ## [3.18.0] - 2022-07-22
 ### [Changed]
 - Changed repository's to declare the object factory in the constructor. This

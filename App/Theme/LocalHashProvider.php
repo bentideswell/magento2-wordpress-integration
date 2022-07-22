@@ -32,9 +32,9 @@ class LocalHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProvider
         if ($this->hash === null) {
             $hashes = [];
 
-            foreach ($this->themeFileCollector->getFiles() as $file) {
+            foreach ($this->themeFileCollector->getFiles() as $relative => $file) {
                 // phpcs:ignore -- not cryptographic
-                $hashes[] = md5($file) . '::' . hash_file('md5', $file);
+                $hashes[] = md5($relative) . '::' . hash_file('md5', $file);
             }
 
             // phpcs:ignore -- not cryptographic
