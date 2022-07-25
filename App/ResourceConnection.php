@@ -107,11 +107,20 @@ class ResourceConnection
             }
 
             $this->tablePrefix[$storeId] = $config['table_prefix'];
-            $db = $this->connection[$storeId] = $this->connectionFactory->create($config);
 
-            $db->query(
-                $db->quoteInto('SET NAMES ?', $config['charset'])
-            );
+            try {
+                $db = $this->connection[$storeId] = $this->connectionFactory->create($config);
+
+                $db->query(
+                    $db->quoteInto('SET NAMES ?', $config['charset'])
+                );
+            } catch (\Zend_Db_Adapter_Exception $e) {
+                unset($this->connection[$storeId]);
+                throw new IntegrationFatalException($e->getMessage());
+            } catch (\Exception $e) {
+                unset($this->connection[$storeId]);
+                throw $e;
+            }
 
             unset($config['driver_options']);
             // phpcs:ignore -- not cryptographic

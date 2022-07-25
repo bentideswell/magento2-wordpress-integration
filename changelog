@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.18.2] - 2022-0725
+## [3.18.3] - 2022-07-25
+### [Changed]
+- Converted exception types in ResourceConnection to IntegrationFatalExeption.
+
+## [3.18.2] - 2022-07-25
 ### [Changed]
 - Added better protection when configuration is not valid. Only direct routes
   (eg. blog URLs) will throw an integration exception. Things such as CSP collection
