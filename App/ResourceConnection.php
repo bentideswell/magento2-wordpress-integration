@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App;
 
+use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
+
 class ResourceConnection
 {
     /**
@@ -84,7 +86,12 @@ class ResourceConnection
         if (!isset($this->connection[$storeId])) {
             $this->connection[$storeId] = false;
 
-            $config = $this->connectionConfigRetriever->getConfig();
+            try {
+                $config = $this->connectionConfigRetriever->getConfig();
+            } catch (IntegrationFatalException $e) {
+                unset($this->connection[$storeId]);
+                throw $e;
+            }
 
             if (isset($config['ssl'])) {
                 if ((int)$config['ssl'] !== 0) {
@@ -105,7 +112,7 @@ class ResourceConnection
             $db->query(
                 $db->quoteInto('SET NAMES ?', $config['charset'])
             );
-            
+
             unset($config['driver_options']);
             // phpcs:ignore -- not cryptographic
             $tablesExistCacheKey = md5($storeId . '::' . implode(':', $config));
@@ -120,7 +127,7 @@ class ResourceConnection
                         ->where('table_name  = ?', $targetTable)
                         ->limit(1)
                 );
-   
+
                 if (!$tableExists) {
                     throw new \FishPig\WordPress\App\Exception(
                         "Database connected but table '$targetTable' does not exist."
@@ -143,7 +150,7 @@ class ResourceConnection
     {
         // This setups up the connection
         $this->isConnected();
-        
+
         $storeId = (int)$this->storeManager->getStore()->getId();
 
         if (isset($this->legacyTableMap[$table])) {
@@ -166,7 +173,7 @@ class ResourceConnection
 
         return $this->tableMap[$storeId][$table] = $mappedTable;
     }
-    
+
     /**
      * @return string
      */

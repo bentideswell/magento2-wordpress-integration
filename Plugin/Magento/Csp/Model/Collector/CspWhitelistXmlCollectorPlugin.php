@@ -18,12 +18,14 @@ class CspWhitelistXmlCollectorPlugin
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
+        \FishPig\WordPress\App\Integration\Tests $integrationTests,
         \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $whitelistPolicyCollector
     ) {
         $this->appMode = $appMode;
+        $this->integrationTests = $integrationTests;
         $this->whitelistPolicyCollector = $whitelistPolicyCollector;
     }
-    
+
     /**
      * @param  CspWhitelistXmlCollector $cspWhitelistXmlCollector
      * @param  $defaultPolicies = []
@@ -35,10 +37,18 @@ class CspWhitelistXmlCollectorPlugin
             return $defaultPolicies;
         }
 
-        if ($newPolicies = $this->whitelistPolicyCollector->collect()) {
-            $defaultPolicies += $newPolicies;
+        try {
+            if ($this->integrationTests->runTests() === false) {
+                return $defaultPolicies;
+            }
+
+            if ($newPolicies = $this->whitelistPolicyCollector->collect()) {
+                $defaultPolicies += $newPolicies;
+            }
+        } catch (\FishPig\WordPress\App\Integration\Exception\IntegrationFatalException  $e) {
+            // Do nothing
         }
-        
+
         return $defaultPolicies;
     }
 }

@@ -29,7 +29,7 @@ class WPConfig
         $this->directoryList = $directoryList;
         $this->storeManager = $storeManager;
     }
-    
+
     /**
      * @param  ?string $key = null
      * @return mixed
@@ -40,8 +40,6 @@ class WPConfig
 
         if (!isset($this->data[$storeId])) {
             $this->appMode->requireLocalMode();
-            
-            $this->data[$storeId] = [];
 
             if ($this->directoryList->isBasePathValid() === false) {
                 throw new IntegrationFatalException(
@@ -56,7 +54,7 @@ class WPConfig
             $wpConfig = preg_replace('/\n\#[^\n]{1,}\n/', "\n", $wpConfig);
             $wpConfig = preg_replace('/\n\\/\/[^\n]{1,}\n/', "\n", $wpConfig);
             $wpConfig = preg_replace('/\n\/\*.*\*\//Us', "\n", $wpConfig);
-    
+
             if (!preg_match_all(
                 '/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(["\']{1})([^\\2]*)\\2[\s]*\)/U',
                 $wpConfig,
@@ -64,16 +62,16 @@ class WPConfig
             )) {
                 IntegrationException::throwException('Unable to extract values from wp-config.php');
             }
-    
+
             $this->data[$storeId] = array_combine($matches[1], $matches[3]);
-    
+
             if (preg_match_all(
                 '/define\([\s]*["\']{1}([A-Z_0-9]+)["\']{1}[\s]*,[\s]*(true|false|[0-9]{1,})[\s]*\)/U',
                 $wpConfig,
                 $matches
             )) {
                 $temp = array_combine($matches[1], $matches[2]);
-    
+
                 foreach ($temp as $k => $v) {
                     if ($v === 'true') {
                         $this->data[$storeId][$k] = true;
@@ -84,20 +82,20 @@ class WPConfig
                     }
                 }
             }
-    
+
             if (preg_match('/\$table_prefix[\s]*=[\s]*(["\']{1})([a-zA-Z0-9_]+)\\1/', $wpConfig, $match)) {
                 $this->data[$storeId]['DB_TABLE_PREFIX'] = $match[2];
             } else {
                 $this->data[$storeId]['DB_TABLE_PREFIX'] = 'wp_';
             }
         }
-        
+
         if ($key === null) {
             return $this->data[$storeId];
         } elseif (isset($this->data[$storeId][$key])) {
             return $this->data[$storeId][$key];
         }
-        
+
         return $default;
     }
 }

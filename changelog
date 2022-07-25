@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.18.2] - 2022-0725
+### [Changed]
+- Added better protection when configuration is not valid. Only direct routes
+  (eg. blog URLs) will throw an integration exception. Things such as CSP collection
+  will squash the error so the page continues to load.
+
 ## [3.18.1] - 2022-07-22
 ### [Changed]
 - Changed the hash of the file path and name for each theme file to a relative

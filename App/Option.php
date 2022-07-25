@@ -87,7 +87,7 @@ class Option
             }
         }
     }
-    
+
     /**
      * @return string
      */

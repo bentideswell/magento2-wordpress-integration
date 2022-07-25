@@ -16,7 +16,7 @@ class AssetProvider implements AssetProviderInterface
      * @var []
      */
     private $assetProviderPool = [];
-    
+
     /**
      *
      */
@@ -46,7 +46,7 @@ class AssetProvider implements AssetProviderInterface
             }
         }
     }
-    
+
     /**
      * @param  \Magento\Framework\App\RequestInterface $request
      * @param  \Magento\Framework\App\ResponseInterface $response
@@ -63,11 +63,15 @@ class AssetProvider implements AssetProviderInterface
         if (count($this->assetProviderPool) === 0) {
             return;
         }
-        
-        if ($this->integrationTests->runTests() === false) {
+
+        try {
+            if ($this->integrationTests->runTests() === false) {
+                return;
+            }
+        } catch (\FishPig\WordPress\App\Integration\Exception\IntegrationFatalException  $e) {
             return;
         }
-    
+
         foreach ($this->assetProviderPool as $assetProvider) {
             $assetProvider->provideAssets($request, $response);
         }
