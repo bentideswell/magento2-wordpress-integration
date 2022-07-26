@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.18.4] - 2022-07-26
+### [Fixed]
+- PHP TypeError when searching for numerical values (eg. 2022).
+
 ## [3.18.3] - 2022-07-25
 ### [Changed]
 - Converted exception types in ResourceConnection to IntegrationFatalExeption.

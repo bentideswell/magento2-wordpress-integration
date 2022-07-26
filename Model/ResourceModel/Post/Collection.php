@@ -402,10 +402,10 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
      * @param  string
      * @return string
      */
-    protected function _escapeSearchString($s)
+    protected function _escapeSearchString($s): string
     {
         // phpcs:ignore -- todo
-        return htmlspecialchars($s);
+        return htmlspecialchars((string)$s);
     }
 
     /**
