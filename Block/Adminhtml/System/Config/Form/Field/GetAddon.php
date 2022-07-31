@@ -12,7 +12,7 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
      *
      */
     const INSTALL_URL_BASE = 'https://fishpig.co.uk/';
-    
+
     /**
      * @param  AbstractElement $element
      * @return string
@@ -36,10 +36,10 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
         }
 
         $moduleCode = strpos($moduleId, 'WordPress') !== false ? substr($moduleId, strlen('WordPress_')) : $moduleId;
-                
+
         return '<strong style="color:#91781a;">NOT INSTALLED</strong> - &nbsp;<a href="' . $this->getInstallUrl($moduleId) . '" target="_blank">View Module</a>';
     }
-    
+
     /**
      * @param  AbstractElement $element
      * @return string
@@ -89,6 +89,8 @@ class GetAddon extends \Magento\Config\Block\System\Config\Form\Field
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/1-click-wp-admin-login/';
         } elseif ($addonModule === 'WordPress_ContentBlocks') {
             return self::INSTALL_URL_BASE . 'magento/wordpress-integration/content-blocks/';
+        } elseif ($addonModule === 'WordPress_PermalinkManager') {
+            return self::INSTALL_URL_BASE . 'magento/wordpress-integration/permalink-manager/';
         }
 
         return '#';

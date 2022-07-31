@@ -158,6 +158,14 @@
                     <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
                 </field>
             </group>
+            <group id="permalinkmanager" sortOrder="85" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Permalink Manager</label>
+                <comment><![CDATA[<p>Select anything as your post/page URLs and gain complete control.</p>]]></comment>
+                <field id="FishPig_WordPress_PermalinkManager" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Status</label>
+                    <frontend_model>FishPig\WordPress\Block\Adminhtml\System\Config\Form\Field\GetAddon</frontend_model>
+                </field>
+            </group>
             <group id="relatedproducts" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Related Products</label>
                 <comment>Link Magento products and categories with your WordPress posts and display these products and categories automatically on the post view page and link to the posts from the product and category pages.</comment>
