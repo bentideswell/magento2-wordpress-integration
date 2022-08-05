@@ -48,7 +48,7 @@ class PageCacheCleanModelAction implements RemoteActionInterface
                 }
             }
         }
-        
+
         return [
             'status' => true,
             'count' => [

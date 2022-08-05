@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.18.6] - 2022-08-05
+### [Fixed]
+- Added correct post type to remote action page cache clean. This fixes a bug that
+  only allowed post_type=post to be auto flushed from the FPC.
+
 ## [3.18.5] - 2022-07-31
 ### [Changed]
 - Changed Admin CSS to include Permalink Manager icon.

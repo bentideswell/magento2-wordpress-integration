@@ -35,6 +35,7 @@ class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProvid
 
         foreach ($collection as $post) {
             if (!$post->isPublic()) {
+                // Don't include posts that are set to noindex in Yoast
                 continue;
             }
 
@@ -43,11 +44,6 @@ class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProvid
             if (!$relativePostUrl) {
                 // Probably post_type=page and set as homepage
                 // Don't add as Magento will add this URL for us
-                continue;
-            }
-
-            if (!$post->isPublic()) {
-                // Don't include posts that are set to noindex
                 continue;
             }
 

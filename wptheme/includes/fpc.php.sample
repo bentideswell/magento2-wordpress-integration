@@ -20,11 +20,14 @@ class Fpc
                 return;
             }
 
+            $post = get_post($postId);
+            $posType = $post->post_type;
+
             \FishPig\WordPress\X\RemoteActions::triggerAction(
                 'pagecache.clean.model',
                 [
                     'ids' => [
-                        'post' => [$postId]
+                        $posType => [$postId]
                     ]
                 ]
             );
