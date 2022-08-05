@@ -19,16 +19,18 @@ class OptionRepository
      * @var array
      */
     private $cache = [];
-    
+
     /**
      * @param \FishPig\WordPress\App\Option $dataSource
      */
     public function __construct(
         \FishPig\WordPress\App\Option $dataSource,
-        \Magento\Framework\Serialize\SerializerInterface $serializer
+        \Magento\Framework\Serialize\SerializerInterface $serializer,
+        \FishPig\WordPress\App\Logger $logger
     ) {
         $this->dataSource = $dataSource;
         $this->serializer = $serializer;
+        $this->logger = $logger;
     }
 
     /**
@@ -60,14 +62,24 @@ class OptionRepository
             $this->cache[$key] = $value;
         }
     }
-    
+
     /**
      * @return []
      */
     public function getUnserialized($key): array
     {
-        if ($data = $this->get($key)) {
-            return $this->serializer->unserialize($data);
+        if ($data = $this->get($key, '')) {
+            try {
+                return $this->serializer->unserialize($data);
+            } catch (\InvalidArgumentException $e) {
+                $this->logger->error(
+                    sprintf(
+                        'WordPress option (option_name=\'%s\') error: %s',
+                        $key,
+                        $e->getMessage()
+                    )
+                );
+            }
         }
 
         return [];
