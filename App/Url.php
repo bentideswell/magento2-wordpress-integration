@@ -43,7 +43,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
         if ($uri) {
             $homeUrl .= '/' . $uri;
         }
-        
+
         if (($queryPos = strpos($homeUrl, '?')) !== false) {
             $lastChar = substr($homeUrl, $queryPos-1, 1);
         } else {
@@ -65,7 +65,12 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
                 $homeUrl = rtrim($homeUrl, '/');
             }
         }
-        
+
+        // Fix new trailing slash when using .html as suffix
+        if (strlen($homeUrl) > 5 && strtolower(substr($homeUrl, -6)) === '.html/') {
+            $homeUrl = substr($homeUrl, 0, -1);
+        }
+
         return $homeUrl;
     }
 
@@ -76,11 +81,11 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     public function getSiteUrl($uri = ''): string
     {
         $siteUrl = rtrim($this->siteUrlResolver->getUrl(), '/');
-        
+
         if ($uri) {
             $siteUrl .= '/' . $uri;
         }
-        
+
         return $siteUrl;
     }
 
@@ -99,7 +104,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     {
         return rtrim($this->magentoUrl->getUrl(), '/');
     }
-    
+
     /**
      * @return string
      */
@@ -160,17 +165,17 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
             $url,
             $url2 ?? $this->magentoUrl->getCurrentUrl()
         ];
-        
+
         foreach ($urls as $key => $url) {
             $urls[$key] = rtrim(strtolower($urls[$key]), '/');
         }
-        
+
         if (!$strict) {
             foreach ($urls as $key => $url) {
                 $urls[$key] = str_replace(['https://', 'http://'], '', $urls[$key]);
             }
         }
-        
+
         return $urls[0] === $urls[1];
     }
 
@@ -181,7 +186,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     public function doUrlProtocolsMatch(string ...$urls): bool
     {
         $protocol = false;
-        
+
         foreach ($urls as $url) {
             if (false === $protocol) {
                 $protocol = substr($url, 0, strpos($url, '://')+3);
@@ -189,10 +194,10 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     /**
      * @return string
      */
@@ -200,11 +205,11 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     {
         $magentoUrl = $this->getMagentoUrl();
         $homeUrl = $this->getHomeUrl();
-        
+
         if (strpos($this->getHomeUrl(), $this->getMagentoUrl()) !== 0) {
             throw new \FishPig\WordPress\App\Exception('URLs appear to be invalid.');
         }
-        
+
         return trim(substr($homeUrl, strlen($magentoUrl)), '/');
     }
 
@@ -215,7 +220,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     {
         return false;
     }
-    
+
     /**
      * @return string
      */
