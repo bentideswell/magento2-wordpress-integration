@@ -58,7 +58,7 @@ class UrlHelper
                 if (strpos($alias . '/', $blogRoute .'/') === 0) {
                     return ltrim(substr($alias, strlen($blogRoute)), '/');
                 }
-                
+
                 return false;
             }
 
@@ -78,11 +78,11 @@ class UrlHelper
 
         // phpcs:ignore -- not cryptographic
         $cacheKey = md5('alias:' . $pathInfo);
-        
+
         if (isset($this->cache[$cacheKey])) {
             return $this->cache[$cacheKey];
         }
-        
+
         $blogRoute = $this->url->getBlogRoute();
 
         if ($blogRoute && strpos($pathInfo, $blogRoute) !== 0) {
@@ -134,7 +134,7 @@ class UrlHelper
     {
         return $this->url->getFront();
     }
-    
+
     /**
      * @param  RequestInterface $request
      * @return string
@@ -157,7 +157,7 @@ class UrlHelper
 
         return $pathInfo;
     }
-    
+
     /**
      *
      */
@@ -167,15 +167,21 @@ class UrlHelper
         $shouldHaveTrailingSlash = $this->url->hasTrailingSlash();
 
         if ($shouldHaveTrailingSlash && !$hasTrailingSlash) {
+            if (preg_match('/\.html$/', $request->getPathInfo())) {
+                // WP configured to use trailing slash but this URL has .html
+                // Suffix so lets not add one and see what happens!
+                return null;
+            }
+
             $newPathInfo = $request->getPathInfo() . '/';
         } elseif (!$shouldHaveTrailingSlash && $hasTrailingSlash) {
             $newPathInfo = rtrim($request->getPathInfo(), '/');
         }
-        
+
         if (empty($newPathInfo)) {
             return null;
         }
-        
+
         return $this->storeManager->getStore()->getUrl('', ['_direct' => ltrim($newPathInfo, '/')]);
     }
 }

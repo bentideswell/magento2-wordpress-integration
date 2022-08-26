@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.18.8] - 2022-08-26
+### [Fixed]
+- Stopped added trailing slashes to URLs ending in .html regardless of whether
+  permalink structure has a trailing slash.
+
 ## [3.18.7] - 2022-08-05
 ### [Fixed]
 - Added correct post type to remote action page cache clean. This fixes a bug that
