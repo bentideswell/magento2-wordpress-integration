@@ -90,9 +90,14 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 
         if (!$this->url->doUrlProtocolsMatch($magentoUrl, $homeUrl, $siteUrl)) {
             throw new IntegrationFatalException(
-                'URL Protocol Mismatch. Your WordPress URLs do not use the same URL protocol as Magento.'
-                . ' It is recommended to use https:// for all URLs but what ever you choose, all Magento and'
-                . ' WordPress URLs must use the same protocol.'
+                sprintf(
+                    'URL Protocol Mismatch. Your WordPress URLs (siteurl=%s home=%s) do not use the same URL protocol as Magento (%s).'
+                    . ' It is recommended to use https:// for all URLs but what ever you choose, all Magento and'
+                    . ' WordPress URLs must use the same protocol.',
+                    $homeUrl,
+                    $siteUrl,
+                    $magentoUrl
+                )
             );
         }
     }
@@ -136,7 +141,7 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
             }
         }
     }
-    
+
     private function getUpdateUrlCommand($url, $optionName = 'home'): string
     {
         return sprintf(

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.18.10] - 2022-08-31
+### [Changed]
+- Changed error message for protocol mismatch.
+
 ## [3.18.9] - 2022-08-26
 ### [Fixed]
 - Stopped added trailing slashes to URLs ending in .html regardless of whether
