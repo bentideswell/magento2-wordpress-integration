@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.18.11] - 2022-09-02
+### [Changed]
+- Modified URL generation for XML sitemap to now include the homepage URL
+- Includes a better URL absolute->relative conversion system.
+
 ## [3.18.10] - 2022-08-31
 ### [Changed]
 - Changed error message for protocol mismatch.

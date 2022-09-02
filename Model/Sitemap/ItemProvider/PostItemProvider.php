@@ -8,19 +8,25 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 
-class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProviderInterface
+class PostItemProvider extends AbstractItemProvider
 {
     /**
      *
      */
+    const PRIORITY = 0.5;
+    const CHANGE_FREQUENCY = 'monthly';
+
+    /**
+     *
+     */
     public function __construct(
-        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory,
         \Magento\Sitemap\Model\SitemapItemInterfaceFactory $itemFactory,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \FishPig\WordPress\App\Logger $logger,
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory
     ) {
-        $this->collectionFactory = $collectionFactory;
-        $this->itemFactory = $itemFactory;
-        $this->storeManager = $storeManager;
+        $this->postCollectionFactory = $postCollectionFactory;
+        parent::__construct($itemFactory, $storeManager, $logger);
     }
 
     /**
@@ -30,7 +36,7 @@ class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProvid
     public function getItems($storeId)
     {
         $storeBaseUrl =  rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
-        $collection   = $this->collectionFactory->create()->addIsViewableFilter();
+        $collection   = $this->postCollectionFactory->create()->addIsViewableFilter();
         $items = [];
 
         foreach ($collection as $post) {
@@ -39,11 +45,15 @@ class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProvid
                 continue;
             }
 
-            $relativePostUrl = ltrim(str_replace($storeBaseUrl, '', $post->getUrl()), '/');
-
-            if (!$relativePostUrl) {
+            if (!($relativePostUrl = $this->makeUrlRelative($post->getUrl()))) {
                 // Probably post_type=page and set as homepage
                 // Don't add as Magento will add this URL for us
+                continue;
+            }
+
+            if (!$this->canAddToSitemap($post)) {
+                // This can be used by plugins, alhough it's better to use
+                // Post::isPublic
                 continue;
             }
 
@@ -52,8 +62,8 @@ class PostItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProvid
                     'url' => $relativePostUrl,
                     'updatedAt' => $post->getPostModifiedDate('Y-m-d'),
                     'images' => $this->getPostImages($post),
-                    'priority' => 0.5,
-                    'changeFrequency' => 'monthly',
+                    'priority' => $this->getPriority($post),
+                    'changeFrequency' => $this->getChangeFrequency($post),
                 ]
             );
         }
