@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.18.12] - 2022-09-04
+### [Fixed]
+- Removed debugging code from sitemap generation.
+
 ## [3.18.11] - 2022-09-02
 ### [Changed]
 - Modified URL generation for XML sitemap to now include the homepage URL

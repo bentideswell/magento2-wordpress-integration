@@ -38,7 +38,6 @@ class FrontPageItemProvider extends AbstractItemProvider
         $urls = [];
 
         try {
-            throw new \Exception('tes');
             $urls[] = $this->frontPageHelper->getRealHomepageUrl();
         } catch (\Exception $e) {
             $this->logger->error($e);
