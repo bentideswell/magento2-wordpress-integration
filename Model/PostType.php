@@ -23,7 +23,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
      * @var \FishPig\WordPress\Model\ResourceModel\PostType
      */
     private $_resource;
-    
+
     /**
      * @param array $data = []
      */
@@ -61,25 +61,25 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
             if ($this->isFrontPage()) {
                 return $this->url->getHomeUrl();
             }
-            
+
             if ($postsPage = $this->frontPage->getPostsPage()) {
                 return $postsPage->getUrl();
             }
-            
+
             return $this->url->getHomeUrl();
         }
-        
+
         if (!$this->hasArchive()) {
             return '';
         }
 
         $urlPath = $this->getArchiveSlug() . ($this->permalinkHasTrainingSlash() ? '/' : '');
-        
+
         return $this->withFront()
             ? $this->url->getHomeUrlWithFront($urlPath)
             : $this->url->getHomeUrl($urlPath);
     }
-    
+
     /**
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
@@ -89,7 +89,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
             $this->getPostType()
         );
     }
-    
+
     /**
      * @return \FishPig\WordPress\Model\ResourceModel\PostType
      */
@@ -107,7 +107,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     {
         return substr($this->getSlug(), -1) === '/' || substr($this->getPermalinkStructure(), -1) === '/';
     }
-    
+
     /**
      * @return bool
      */
@@ -115,7 +115,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     {
         return (int)$this->_getData('public') === 1;
     }
-    
+
     /**
      * @return bool
      */
@@ -123,7 +123,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     {
         return (int)$this->_getData('_builtin') === 1;
     }
-    
+
     /**
      * @return bool
      */
@@ -147,7 +147,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     {
         return $this->getPostType() === 'post' && $this->frontPage->isFrontPageDefaultPostTypeArchive();
     }
-    
+
     /**
      * @return string
      */
@@ -167,7 +167,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
             $structure = ltrim($front . '/' . $structure, '/');
         }
 
-        return $structure;
+        return ltrim($structure, '/');
     }
 
     /**
@@ -185,7 +185,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     {
         return $this->getHasArchive() && $this->getHasArchive() !== '0';
     }
-    
+
     /**
      * Get the archive slug for the post type
      *
@@ -304,7 +304,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
         if (!$this->isHierarchical()) {
             return false;
         }
-        
+
         return $this->getResource()->getHierarchicalPostNames($this);
     }
 
