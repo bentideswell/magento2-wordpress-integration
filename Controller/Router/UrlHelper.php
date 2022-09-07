@@ -163,6 +163,11 @@ class UrlHelper
      */
     public function getRedirectUrlBasedOnTrailingSlash(RequestInterface $request): ?string
     {
+        // Don't redirect files
+        if (preg_match('/\.(jpg|jpeg|gif|png|css|js|ico)$/i', $request->getPathInfo())) {
+            return null;
+        }
+
         $hasTrailingSlash = '/' === substr($request->getPathInfo(), -1);
         $shouldHaveTrailingSlash = $this->url->hasTrailingSlash();
 

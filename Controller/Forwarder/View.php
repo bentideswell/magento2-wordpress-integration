@@ -35,6 +35,17 @@ class View extends \Magento\Framework\App\Action\Action
             throw new \FishPig\WordPress\App\Exception('Request URI not set so cannot redirect to WordPress.');
         }
 
+        // Lets check if the original path info has the same case
+        // This fies an issue where we redirect to image URLs but lose the casing
+        // And this can result in 404s for valid images that have uppercase chars in the filename
+        $originalPathInfo = $this->getRequest()->getPathInfo();
+        if (stripos($originalPathInfo, $requestUri) !== false && strpos($originalPathInfo, $requestUri) === false) {
+            $caseSensitiveRequestUri = substr($originalPathInfo, stripos($originalPathInfo, $requestUri), strlen($requestUri));
+            if ($caseSensitiveRequestUri) {
+                $requestUri = $caseSensitiveRequestUri;
+            }
+        }
+
         return $this->resultFactory->create(
             $this->resultFactory::TYPE_REDIRECT
         )->setUrl(

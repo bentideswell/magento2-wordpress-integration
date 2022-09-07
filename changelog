@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.18.14] - 2022-09-07
+### [Changed]
+- Stopped redirecting URLs for assets to include a trailing slash (if configured this way).
+- Use original case when forwarding a URL to WordPress siteurl. This fixes
+  issue for redirecting to images with uppercase characters in the filename.
+
 ## [3.18.13] - 2022-09-07
 ### [Changed]
 - Added an ltrim($s, '/') to the permalink structure for post types.
