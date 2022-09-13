@@ -276,6 +276,7 @@
     <type name="FishPig\WordPress\App\Debug\TestPool">
         <arguments>
             <argument name="tests" xsi:type="array">
+                <item name="core.security" xsi:type="object">FishPig\WordPress\App\Debug\Test\SecurityTest</item>
                 <item name="core.url" xsi:type="object">FishPig\WordPress\App\Debug\Test\UrlTest</item>
                 <item name="core.integrationData" xsi:type="object">FishPig\WordPress\App\Debug\Test\IntegrationDataTest</item>
                 <item name="core.post" xsi:type="object">FishPig\WordPress\App\Debug\Test\PostTest</item>

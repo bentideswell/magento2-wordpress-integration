@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.19.1] - 2022-09-13
+### [Added]
+- Added new test to check for infected files:
+  bin/magento fishpig:wordpress:test core.security
+
 ## [3.18.14] - 2022-09-07
 ### [Changed]
 - Stopped redirecting URLs for assets to include a trailing slash (if configured this way).
