@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.19.2] - 2022-09-14
+### [Removed]
+- From security test. This has been moved to its own module.
+
 ## [3.19.1] - 2022-09-13
 ### [Added]
 - Added new test to check for infected files:
