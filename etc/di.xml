@@ -86,6 +86,17 @@
      * Repositories
      */
     -->
+    <type name="FishPig\WordPress\Model\RepositoryPool">
+        <arguments>
+            <argument name="repositories" xsi:type="array">
+                <item name="post" xsi:type="object">FishPig\WordPress\Model\PostRepository</item>
+                <item name="term" xsi:type="object">FishPig\WordPress\Model\TermRepository</item>
+                <item name="user" xsi:type="object">FishPig\WordPress\Model\UserRepository</item>
+                <item name="postType" xsi:type="object">FishPig\WordPress\Model\PostTypeRepository</item>
+                <item name="taxonomy" xsi:type="object">FishPig\WordPress\Model\TaxonomyRepository</item>
+            </argument>
+        </arguments>
+    </type>
     <type name="FishPig\WordPress\Model\PostRepository">
         <arguments>
             <argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\PostFactory</argument>

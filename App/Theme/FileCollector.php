@@ -37,7 +37,8 @@ class FileCollector
 
         foreach ($this->modules as $module) {
             $wpThemeDir = $this->filesystem->getDirectoryReadByPath(
-                $this->moduleDir->getDir($module, '') . '/' . self::WPTHEME_DIR
+                $this->moduleDir->getDir($module, '') . '/' . self::WPTHEME_DIR,
+                \Magento\Framework\Filesystem\DriverPool::FILE
             );
 
             if ($wpThemeDir->isDirectory()) {

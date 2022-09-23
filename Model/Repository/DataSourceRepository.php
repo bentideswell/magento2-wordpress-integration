@@ -47,7 +47,7 @@ abstract class DataSourceRepository extends AbstractRepository
      * @param  string $id
      * @return mixed
      */
-    public function get(string $id)
+    public function get($id): \Magento\Framework\DataObject
     {
         $objects = $this->getAll();
 

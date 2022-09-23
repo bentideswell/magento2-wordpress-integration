@@ -13,6 +13,11 @@ abstract class AbstractRepository
     /**
      *
      */
+    abstract public function get($id): \Magento\Framework\DataObject;
+
+    /**
+     *
+     */
     protected $objectFactory = null;
 
     /**

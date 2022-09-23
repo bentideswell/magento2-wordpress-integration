@@ -42,7 +42,8 @@ class DataRetriever implements \FishPig\WordPress\Api\App\PostType\PostTypeRetri
                 'labels' => [
                     'name' => 'Posts',
                     'singular_name' => 'Post',
-                ]
+                ],
+                'show_in_rest' => true
             ],
             'page' => [
                 'post_type' => 'page',
@@ -58,7 +59,8 @@ class DataRetriever implements \FishPig\WordPress\Api\App\PostType\PostTypeRetri
                 'labels' => [
                     'name' => 'Pages',
                     'singular_name' => 'Page',
-                ]
+                ],
+                'show_in_rest' => true
             ]
         ];
     }

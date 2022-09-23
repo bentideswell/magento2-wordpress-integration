@@ -341,4 +341,12 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     {
         return (int)$this->getData('exclude_from_search') === 0;
     }
+
+    /**
+     *
+     */
+    public function showInRest(): bool
+    {
+        return (int)$this->getData('show_in_rest') === 1;
+    }
 }

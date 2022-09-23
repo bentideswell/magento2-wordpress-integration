@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.20.0] - 2022-09-23
+### [Added]
+- Added RepositoryPool object to gather all repositories into a single place.
+### [Changed]
+- Added show_in_rest => true to post and page post types.
+- Changed Repository get signature to match for both repository types
+### [Fixed]
+- Fixed bug with theme file collection when using S3 remote storage.
+
 ## [3.19.2] - 2022-09-14
 ### [Removed]
 - From security test. This has been moved to its own module.
