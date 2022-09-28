@@ -93,24 +93,33 @@ class ResourceConnection
                 throw $e;
             }
 
-            if (isset($config['ssl'])) {
-                if ((int)$config['ssl'] !== 0) {
-                    if (empty($config['driver_options'])) {
-                        $config['driver_options'] = [];
-                    }
-
-                    $config['driver_options'][\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = false;
-                    $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = true;
+            if (isset($config['ssl']) && (int)$config['ssl'] !== 0) {
+                if (empty($config['driver_options'])) {
+                    $config['driver_options'] = [];
                 }
 
-                unset($config['ssl']);
+                if (isset($config['ssl_verify_server_cert'])) {
+                    $config['driver_options'][\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = (bool)$config['ssl_verify_server_cert'];
+                }
+
+                if (isset($config['ssl_ca'])) {
+                    if (strtolower($config['ssl_ca']) === 'true') {
+                        $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = true;
+                    } elseif (strtolower($config['ssl_ca']) === 'false') {
+                        $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = false;
+                    } elseif (trim($config['ssl_ca']) !== '') {
+                        $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_ca'];
+                    }
+                }
             }
+
+            unset($config['ssl'], $config['ssl_verify_server_cert'], $config['ssl_ca']);
 
             $this->tablePrefix[$storeId] = $config['table_prefix'];
 
             try {
                 $db = $this->connection[$storeId] = $this->connectionFactory->create($config);
-
+                /* ToDo: move this into driver_options */
                 $db->query(
                     $db->quoteInto('SET NAMES ?', $config['charset'])
                 );

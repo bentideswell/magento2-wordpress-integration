@@ -10,6 +10,8 @@
             <mode_external_db>
                 <table_prefix>wp_</table_prefix>
                 <charset>utf8mb4</charset>
+                <ssl>0</ssl>
+                <ssl_verify_server_cert>0</ssl_verify_server_cert>
             </mode_external_db>
             <logging>
                 <http>2</http>

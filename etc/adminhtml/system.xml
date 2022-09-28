@@ -70,29 +70,30 @@
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <config_path>wordpress/mode_external_db/ssl</config_path>
                         </field>
-                        <!--
+
                         <field id="ssl_verify_server_cert" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                            <label>Verify Server Cert</label>
+                            <label>\PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT</label>
                             <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                             <config_path>wordpress/mode_external_db/ssl_verify_server_cert</config_path>
-                            <depends><field id="ssl_enabled">1</field></depends>
+                            <depends><field id="ssl">1</field></depends>
                         </field>
+                        <!--
                         <field id="ssl_key" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>SSL Key</label>
                             <config_path>wordpress/mode_external_db/ssl_key</config_path>
-                            <depends><field id="ssl_enabled">1</field><field id="ssl_verify_server_cert">1</field></depends>
+                            <depends><field id="ssl">1</field><field id="ssl_verify_server_cert">1</field></depends>
                         </field>
                         <field id="ssl_key" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                             <label>SSL Cert</label>
                             <config_path>wordpress/mode_external_db/ssl_cert</config_path>
-                            <depends><field id="ssl_enabled">1</field><field id="ssl_verify_server_cert">1</field></depends>
-                        </field>
+                            <depends><field id="ssl">1</field><field id="ssl_verify_server_cert">1</field></depends>
+                        </field>-->
                         <field id="ssl_ca" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                            <label>SSL CA</label>
+                            <label>\PDO::MYSQL_ATTR_SSL_CA</label>
                             <config_path>wordpress/mode_external_db/ssl_ca</config_path>
-                            <depends><field id="ssl_enabled">1</field><field id="ssl_verify_server_cert">1</field></depends>
+                            <depends><field id="ssl">1</field></depends>
+                            <comment>Enter TRUE, FALSE or the path to CA file. An empty value will not set anything.</comment>
                         </field>
-                        -->
                     </group>
                 </group>
                 <field id="http_log" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
