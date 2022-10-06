@@ -384,6 +384,7 @@
             <argument name="itemProviders" xsi:type="array">
                 <item name="front" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\FrontPageItemProvider</item>
                 <item name="post" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\PostItemProvider</item>
+                <item name="term" xsi:type="object">FishPig\WordPress\Model\Sitemap\ItemProvider\TermItemProvider</item>
             </argument>
         </arguments>
     </type>

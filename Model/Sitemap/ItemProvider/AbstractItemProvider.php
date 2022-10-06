@@ -13,6 +13,11 @@ abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvid
     /**
      *
      */
+    abstract protected function getCollection($storeId): iterable;
+
+    /**
+     *
+     */
     private $storeIdUrlMap = [];
 
     /**
@@ -31,6 +36,46 @@ abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvid
         $this->itemFactory = $itemFactory;
         $this->storeManager = $storeManager;
         $this->logger = $logger;
+    }
+
+    /**
+     * @param  int $storeId
+     * @return array
+     */
+    public function getItems($storeId)
+    {
+        $collection = $this->getCollection($storeId);
+        $items = [];
+
+        foreach ($collection as $item) {
+            if (!$item->isPublic()) {
+                // Don't include posts that are set to noindex in Yoast
+                continue;
+            }
+
+            if (!($relativeUrl = $this->makeUrlRelative($item->getUrl()))) {
+                // Probably post_type=page and set as homepage
+                // Don't add as Magento will add this URL for us
+                continue;
+            }
+
+            if (!$this->canAddToSitemap($item)) {
+                // This can be used by plugins, although it's better to use $item->isPublic()
+                continue;
+            }
+
+            $items[] = $this->itemFactory->create(
+                [
+                    'url' => $relativeUrl,
+                    'updatedAt' => $this->getModifiedDate($item),
+                    'images' => $this->getImages($item),
+                    'priority' => $this->getPriority($item),
+                    'changeFrequency' => $this->getChangeFrequency($item),
+                ]
+            );
+        }
+
+        return $items;
     }
 
     /**
@@ -69,7 +114,6 @@ abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvid
         return $url;
     }
 
-
     /**
      * This could be useful for plugins
      * $item may be a URL or a post, it's different for item provider
@@ -101,5 +145,22 @@ abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvid
     public function getChangeFrequency($item): string
     {
         return static::CHANGE_FREQUENCY;
+    }
+
+    /**
+     *
+     * @return ?\Magento\Framework\DataObject
+     */
+    public function getImages($item): ?\Magento\Framework\DataObject
+    {
+        return null;
+    }
+
+    /**
+     *
+     */
+    public function getModifiedDate($item): string
+    {
+        return date('Y-m-d');
     }
 }

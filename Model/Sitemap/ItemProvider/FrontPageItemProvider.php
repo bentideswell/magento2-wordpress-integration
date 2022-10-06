@@ -79,7 +79,7 @@ class FrontPageItemProvider extends AbstractItemProvider
             $items[] = $this->itemFactory->create(
                 [
                     'url' => $url,
-                    'updatedAt' => $this->getUpdatedAt($url),
+                    'updatedAt' => $this->getModifiedDate($url),
                     'images' => $this->getImages($url),
                     'priority' => $this->getPriority($url),
                     'changeFrequency' => $this->getChangeFrequency($url),
@@ -91,17 +91,9 @@ class FrontPageItemProvider extends AbstractItemProvider
     }
 
     /**
-     * @return string
+     *
      */
-    public function getUpdatedAt(string $url): string
-    {
-        return date('Y-m-d');
-    }
-
-    /**
-     * @return []]
-     */
-    public function getImages(string $url): array
+    protected function getCollection($storeId): iterable
     {
         return [];
     }

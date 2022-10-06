@@ -15,7 +15,7 @@ class MagentoBaseUrl
      */
     const URL_USE_DEFAULT = '';
     const URL_USE_BASE = 'base';
-    
+
     /**
      *
      */
@@ -36,14 +36,14 @@ class MagentoBaseUrl
     public function toOptionArray()
     {
         $options = [];
-        
+
         foreach ($this->getOptions() as $value => $label) {
             $options[] = [
                 'value' => $value,
                 'label' => $label
             ];
         }
-        
+
         return $options;
     }
 
@@ -54,14 +54,14 @@ class MagentoBaseUrl
     {
         $store = $this->storeManager->getStore();
         $storeId = (int)$store->getId();
-        
+
         if (!isset($this->options[$storeId])) {
             $baseUrl = trim($this->storeManager->getStore()->getBaseUrl(), '/');
-            
+
             $this->options[$storeId] = [
                 self::URL_USE_DEFAULT => $baseUrl
             ];
-            
+
             if (($pos = strpos($baseUrl, '/', strlen('https://'))) !== false) {
                 $this->options[$storeId][self::URL_USE_BASE] = substr($baseUrl, 0, $pos);
             }
@@ -69,12 +69,12 @@ class MagentoBaseUrl
 
         return $this->options[$storeId];
     }
-    
+
     /**
      * @return bool
      */
     public function isEnabled(): bool
     {
-        return count($this->options) > 1;
+        return count($this->getOptions()) > 1;
     }
 }

@@ -29,7 +29,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
      * @var \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory
      */
     private $postCollectionFactory;
-    
+
     /**
      * @var \FishPig\WordPress\Model\Term
      */
@@ -94,7 +94,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     {
         return $this->_getData('description');
     }
-    
+
     /**
      * @return \FishPig\WordPress\Model\Taxonomy
      */
@@ -118,7 +118,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
                 }
             }
         }
-        
+
         return $this->parentTerm;
     }
 
@@ -166,7 +166,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     {
         return $this->getName();
     }
-    
+
     /**
      * @deprecated since 3.0
      * @return string
@@ -175,7 +175,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     {
         return $this->getTaxonomy();
     }
-    
+
     /**
      * @deprecated since 3.0
      * @return int
@@ -183,5 +183,13 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     public function getItemCount(): int
     {
         return (int)$this->getCount();
+    }
+
+    /**
+     *
+     */
+    public function isPublic(): bool
+    {
+        return true;
     }
 }

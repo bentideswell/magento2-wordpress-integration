@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.21.0] - 2022-10-06
+### [Added]
+- Added terms to XML sitemap.
+### [Fixed]
+- Store base URL options detection fixed to include store ID when checking.
+
 ## [3.20.1] - 2022-09-28
 ### [Changed]
 - Changed SSL/TLS config options for DB when using External integration mode.

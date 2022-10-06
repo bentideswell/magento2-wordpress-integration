@@ -23,52 +23,18 @@ class PostItemProvider extends AbstractItemProvider
         \Magento\Sitemap\Model\SitemapItemInterfaceFactory $itemFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\App\Logger $logger,
-        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $postCollectionFactory
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory
     ) {
-        $this->postCollectionFactory = $postCollectionFactory;
+        $this->collectionFactory = $collectionFactory;
         parent::__construct($itemFactory, $storeManager, $logger);
     }
 
     /**
-     * @param  int $storeId
-     * @return array
+     *
      */
-    public function getItems($storeId)
+    protected function getCollection($storeId): iterable
     {
-        $storeBaseUrl =  rtrim($this->storeManager->getStore()->getBaseUrl(), '/');
-        $collection   = $this->postCollectionFactory->create()->addIsViewableFilter();
-        $items = [];
-
-        foreach ($collection as $post) {
-            if (!$post->isPublic()) {
-                // Don't include posts that are set to noindex in Yoast
-                continue;
-            }
-
-            if (!($relativePostUrl = $this->makeUrlRelative($post->getUrl()))) {
-                // Probably post_type=page and set as homepage
-                // Don't add as Magento will add this URL for us
-                continue;
-            }
-
-            if (!$this->canAddToSitemap($post)) {
-                // This can be used by plugins, alhough it's better to use
-                // Post::isPublic
-                continue;
-            }
-
-            $items[] = $this->itemFactory->create(
-                [
-                    'url' => $relativePostUrl,
-                    'updatedAt' => $post->getPostModifiedDate('Y-m-d'),
-                    'images' => $this->getPostImages($post),
-                    'priority' => $this->getPriority($post),
-                    'changeFrequency' => $this->getChangeFrequency($post),
-                ]
-            );
-        }
-
-        return $items;
+        return $this->collectionFactory->create()->addIsViewableFilter();
     }
 
     /**
@@ -90,5 +56,21 @@ class PostItemProvider extends AbstractItemProvider
         }
 
         return null;
+    }
+
+    /**
+     *
+     */
+    public function getImages($item): ?\Magento\Framework\DataObject
+    {
+        return $this->getPostImages($item);
+    }
+
+    /**
+     *
+     */
+    public function getModifiedDate($item): string
+    {
+        return $item->getPostModifiedDate('Y-m-d');
     }
 }
