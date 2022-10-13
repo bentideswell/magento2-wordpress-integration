@@ -40,7 +40,7 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
         $this->shortcodeFactory = $wpContext->getShortcodeFactory();
         $this->optionRepository = $wpContext->getOptionRepository();
         $this->url = $wpContext->getUrl();
-
+        $this->integrationTests = $wpContext->getIntegrationTests();
         parent::__construct($context, $data);
     }
 
@@ -71,15 +71,16 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     }
 
     /**
-     * Catch and log any excep§tions to var/log/wordpress.log
+     * Catch and log any exceptions to var/log/wp/error.log
      */
     public function toHtml()
     {
         try {
-            return parent::toHtml();
+            if ($this->integrationTests->runTests() !== false){
+                return parent::toHtml();
+            }
         } catch (\Exception $e) {
             $this->logger->error($e);
-
             throw $e;
         }
     }

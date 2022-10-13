@@ -15,6 +15,7 @@ use FishPig\WordPress\Model\OptionRepository;
 use FishPig\WordPress\App\Url;
 use Magento\Framework\Serialize\SerializerInterface;
 use FishPig\WordPress\Helper\BlogInfo;
+use FishPig\WordPress\App\Integration\Tests\Proxy as IntegrationTests;
 
 class Context
 {
@@ -22,22 +23,22 @@ class Context
      * @var Registry
      */
     private $registry;
-    
+
     /**
      * @var Logger
      */
     private $logger;
-    
+
     /**
      * @var ShortcodeFactory
      */
     private $shortcodeFactory;
-    
+
     /**
      * @var OptionRepository
      */
     private $optionRepository;
-    
+
     /**
      * @var Url
      */
@@ -47,16 +48,21 @@ class Context
      * @var SerializerInterface
      */
     private $serializer;
-    
+
     /**
      * @var SerializerInterface
      */
     private $jsonSerializer;
-    
+
     /**
      * @var BlogInfo
      */
     private $blogInfo;
+
+    /**
+     * @var IntegrationTests
+     */
+    private $integrationTests;
 
     /**
      * @param Registry
@@ -69,7 +75,8 @@ class Context
         Url $url,
         SerializerInterface $serializer,
         SerializerInterface $jsonSerializer,
-        BlogInfo $blogInfo
+        BlogInfo $blogInfo,
+        IntegrationTests $integrationTests
     ) {
         $this->registry = $registry;
         $this->logger = $logger;
@@ -79,8 +86,9 @@ class Context
         $this->serializer = $serializer;
         $this->jsonSerializer = $jsonSerializer;
         $this->blogInfo = $blogInfo;
+        $this->integrationTests = $integrationTests;
     }
-    
+
     /**
      * @return Registry
      */
@@ -88,7 +96,7 @@ class Context
     {
         return $this->registry;
     }
-    
+
     /**
      * @return Logger
      */
@@ -96,7 +104,7 @@ class Context
     {
         return $this->logger;
     }
-    
+
     /**
      * @return ShortcodeFactory
      */
@@ -104,7 +112,7 @@ class Context
     {
         return $this->shortcodeFactory;
     }
-    
+
     /**
      * @return Option
      */
@@ -112,7 +120,7 @@ class Context
     {
         return $this->optionRepository;
     }
-    
+
     /**
      * @return Url
      */
@@ -136,12 +144,20 @@ class Context
     {
         return $this->jsonSerializer;
     }
-    
+
     /**
      * @return BlogInfo
      */
     public function getBlogInfo(): BlogInfo
     {
         return $this->blogInfo;
+    }
+
+    /**
+     *
+     */
+    public function getIntegrationTests(): IntegrationTests
+    {
+        return $this->integrationTests;
     }
 }

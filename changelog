@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.22.0] - 2022-10-13
+### [Added]
+- Added integration tests into AbstractBlock. This fixes issue where blocks
+  are included on stores that have the module disabled. It checks this before
+  running and fixes ObjectResolver issues.
+
 ## [3.21.1] - 2022-10-07
 ### [Changed]
 - Added fishpig wrapper tags to wp_footer
