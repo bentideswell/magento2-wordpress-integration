@@ -90,9 +90,6 @@ class Post extends AbstractResourceModel
     {
         foreach ($posts as $post) {
             if ($permalink = $post->getData('permalink')) {
-                if (!$post->getTypeInstance()) {
-                    echo $post->getPostType().'--';exit;
-                }
                 $post->setData(
                     'permalink',
                     $this->permalinkResource->completePostSlug(

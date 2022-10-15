@@ -38,7 +38,7 @@ class Tests
         $this->logger = $logger;
         $this->integrationTestPool = $integrationTestPool;
     }
-    
+
     /**
      * @return bool
      * @throws \Exception
@@ -72,13 +72,21 @@ class Tests
             }
         }
 
+        // Throw the existing exception
         if ($this->result[$storeId] instanceof \Exception) {
-            throw $this->result[$storeId];
+            // Wrap it in a new exception so the trace makes sense
+            // Otherwise it will be confusing as to where/why this is thrown
+            $exceptionType = get_class($this->result[$storeId]);
+            throw new $exceptionType(
+                $this->result[$storeId]->getMessage(),
+                $this->result[$storeId]->getCode(),
+                $this->result[$storeId]
+            );
         }
 
         return $this->result[$storeId];
     }
-    
+
     /**
      * @return array|false
      */

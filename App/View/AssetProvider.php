@@ -22,7 +22,7 @@ class AssetProvider implements AssetProviderInterface
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
-        \FishPig\WordPress\App\Integration\Tests $integrationTests,
+        \FishPig\WordPress\App\Integration\Tests\Proxy $integrationTests,
         array $assetProviders = []
     ) {
         $this->appMode = $appMode;
@@ -68,7 +68,7 @@ class AssetProvider implements AssetProviderInterface
             if ($this->integrationTests->runTests() === false) {
                 return;
             }
-        } catch (\FishPig\WordPress\App\Integration\Exception\IntegrationFatalException  $e) {
+        } catch (\FishPig\WordPress\App\Exception  $e) {
             return;
         }
 
