@@ -10,12 +10,12 @@
     <type name="FishPig\WordPress\App\Integration\Tests">
         <arguments>
             <argument name="integrationTestPool" xsi:type="array">
-                <item name="mode" xsi:type="object">FishPig\WordPress\App\Integration\Test\DBTest</item>
-                <item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Test\ThemeTest</item>
-                <item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Test\UrlTest</item>
-                <item name="api" xsi:type="object">FishPig\WordPress\App\Integration\Test\ApiTest</item>
-                <item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Test\PermalinkTest</item>
-                <item name="yoast" xsi:type="object">FishPig\WordPress\App\Integration\Test\YoastTest</item>
+                <item name="database" xsi:type="object">FishPig\WordPress\App\Integration\Tests\DatabaseTest</item>
+                <item name="theme" xsi:type="object">FishPig\WordPress\App\Integration\Tests\ThemeTest</item>
+                <item name="url" xsi:type="object">FishPig\WordPress\App\Integration\Tests\UrlTest</item>
+                <item name="api" xsi:type="object">FishPig\WordPress\App\Integration\Tests\ApiTest</item>
+                <item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Tests\PermalinkTest</item>
+                <item name="yoast" xsi:type="object">FishPig\WordPress\App\Integration\Tests\YoastTest</item>
             </argument>
         </arguments>
     </type>
@@ -287,22 +287,22 @@
     <type name="FishPig\WordPress\App\Debug\TestPool">
         <arguments>
             <argument name="tests" xsi:type="array">
-                <item name="core.url" xsi:type="object">FishPig\WordPress\App\Debug\Test\UrlTest</item>
-                <item name="core.integrationData" xsi:type="object">FishPig\WordPress\App\Debug\Test\IntegrationDataTest</item>
-                <item name="core.post" xsi:type="object">FishPig\WordPress\App\Debug\Test\PostTest</item>
-                <item name="core.taxonomy" xsi:type="object">FishPig\WordPress\App\Debug\Test\TaxonomyTest</item>
-                <item name="core.user" xsi:type="object">FishPig\WordPress\App\Debug\Test\UserTest</item>
-                <item name="core.archive" xsi:type="object">FishPig\WordPress\App\Debug\Test\ArchiveTest</item>
-                <item name="core.comments" xsi:type="object">FishPig\WordPress\App\Debug\Test\CommentsTest</item>
-                <item name="core.search" xsi:type="object">FishPig\WordPress\App\Debug\Test\SearchTest</item>
-                <item name="core.plugins" xsi:type="object">FishPig\WordPress\App\Debug\Test\PluginsTest</item>
-                <item name="core.menu" xsi:type="object">FishPig\WordPress\App\Debug\Test\MenuTest</item>
-                <item name="core.blogInfo" xsi:type="object">FishPig\WordPress\App\Debug\Test\BlogInfoTest</item>
-                <item name="core.frontPage" xsi:type="object">FishPig\WordPress\App\Debug\Test\FrontPageTest</item>
-                <item name="core.network" xsi:type="object">FishPig\WordPress\App\Debug\Test\NetworkTest</item>
-                <item name="core.theme" xsi:type="object">FishPig\WordPress\App\Debug\Test\ThemeTest</item>
-                <item name="core.sidebar" xsi:type="object">FishPig\WordPress\App\Debug\Test\SidebarTest</item>
-                <item name="core.misc" xsi:type="object">FishPig\WordPress\App\Debug\Test\MiscTest</item>
+                <item name="core.url" xsi:type="object">FishPig\WordPress\App\Debug\Tests\UrlTest</item>
+                <item name="core.integrationData" xsi:type="object">FishPig\WordPress\App\Debug\Tests\IntegrationDataTest</item>
+                <item name="core.post" xsi:type="object">FishPig\WordPress\App\Debug\Tests\PostTest</item>
+                <item name="core.taxonomy" xsi:type="object">FishPig\WordPress\App\Debug\Tests\TaxonomyTest</item>
+                <item name="core.user" xsi:type="object">FishPig\WordPress\App\Debug\Tests\UserTest</item>
+                <item name="core.archive" xsi:type="object">FishPig\WordPress\App\Debug\Tests\ArchiveTest</item>
+                <item name="core.comments" xsi:type="object">FishPig\WordPress\App\Debug\Tests\CommentsTest</item>
+                <item name="core.search" xsi:type="object">FishPig\WordPress\App\Debug\Tests\SearchTest</item>
+                <item name="core.plugins" xsi:type="object">FishPig\WordPress\App\Debug\Tests\PluginsTest</item>
+                <item name="core.menu" xsi:type="object">FishPig\WordPress\App\Debug\Tests\MenuTest</item>
+                <item name="core.blogInfo" xsi:type="object">FishPig\WordPress\App\Debug\Tests\BlogInfoTest</item>
+                <item name="core.frontPage" xsi:type="object">FishPig\WordPress\App\Debug\Tests\FrontPageTest</item>
+                <item name="core.network" xsi:type="object">FishPig\WordPress\App\Debug\Tests\NetworkTest</item>
+                <item name="core.theme" xsi:type="object">FishPig\WordPress\App\Debug\Tests\ThemeTest</item>
+                <item name="core.sidebar" xsi:type="object">FishPig\WordPress\App\Debug\Tests\SidebarTest</item>
+                <item name="core.misc" xsi:type="object">FishPig\WordPress\App\Debug\Tests\MiscTest</item>
             </argument>
         </arguments>
     </type>

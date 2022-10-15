@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 use FishPig\WordPress\App\Debug\TestPool;
 

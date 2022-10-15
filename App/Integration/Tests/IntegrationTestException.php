@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Test;
+namespace FishPig\WordPress\App\Integration\Tests;
 
 class IntegrationTestException extends \Exception
 {

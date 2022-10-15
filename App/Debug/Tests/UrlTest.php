@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 class UrlTest implements \FishPig\WordPress\App\Debug\TestInterface
 {

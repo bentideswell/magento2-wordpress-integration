@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 class BlogInfoTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
@@ -18,7 +18,7 @@ class BlogInfoTest implements \FishPig\WordPress\App\Debug\TestInterface
     ) {
         $this->blogInfo = $blogInfo;
     }
-    
+
     /**
      * @return void
      */

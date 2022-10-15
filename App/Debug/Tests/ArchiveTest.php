@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 use FishPig\WordPress\App\Debug\TestPool;
 
@@ -24,7 +24,7 @@ class ArchiveTest implements \FishPig\WordPress\App\Debug\TestInterface
         $this->postCollectionFactory = $postCollectionFactory;
         $this->layout = $layout;
     }
-    
+
     /**
      * @return void
      */
@@ -35,7 +35,7 @@ class ArchiveTest implements \FishPig\WordPress\App\Debug\TestInterface
             ->addPostTypeFilter('post')
             ->setPageSize(1)
             ->load();
-        
+
         if (count($posts) === 0) {
             throw new \InvalidArgumentException(
                 'Unable to run tests. Could not load post.'
@@ -53,7 +53,7 @@ class ArchiveTest implements \FishPig\WordPress\App\Debug\TestInterface
             $archive->getPostCollection();
             $archive->getId();
             $archive->getResource();
-            
+
             if (isset($options[TestPool::RUN_BLOCK_TESTS]) && $options[TestPool::RUN_BLOCK_TESTS] === true) {
                 $this->layout->createBlock(
                     \FishPig\WordPress\Block\Archive\View::class

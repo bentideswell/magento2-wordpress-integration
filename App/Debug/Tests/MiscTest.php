@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 use FishPig\WordPress\App\Debug\TestPool;
 
@@ -35,7 +35,7 @@ class MiscTest implements \FishPig\WordPress\App\Debug\TestInterface
     {
         $this->cspPolicyCollector->collect();
         $this->magentoBaseUrlSelector->toOptionArray();
-    
+
         // Sitemap
         if (count($this->sitemapItemProvider->getItems(1)) === 0) {
             throw new \Exception('Sitemap items empty.');

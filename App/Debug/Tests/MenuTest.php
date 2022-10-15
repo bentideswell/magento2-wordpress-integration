@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 class MenuTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
@@ -20,7 +20,7 @@ class MenuTest implements \FishPig\WordPress\App\Debug\TestInterface
         $this->menuFactory = $menuFactory;
         $this->termCollectionFactory = $termCollectionFactory;
     }
-    
+
     /**
      * @return void
      */
@@ -30,7 +30,7 @@ class MenuTest implements \FishPig\WordPress\App\Debug\TestInterface
             ->addTaxonomyFilter('nav_menu')
             ->setPageSize(1)
             ->load();
-        
+
         if (count($menus) === 0) {
             return;
         }

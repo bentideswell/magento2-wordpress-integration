@@ -21,7 +21,7 @@ class Router implements \Magento\Framework\App\RouterInterface
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Integration\Tests $integrationTests,
+        \FishPig\WordPress\App\Integration\Tests\Proxy $integrationTests,
         \FishPig\WordPress\Controller\Router\UrlHelper $routerUrlHelper,
         \FishPig\WordPress\Controller\Router\RequestDispatcher $requestDispatcher,
         array $routerPool = []

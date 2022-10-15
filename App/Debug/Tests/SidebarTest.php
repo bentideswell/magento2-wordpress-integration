@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 use FishPig\WordPress\App\Debug\TestPool;
 
@@ -29,7 +29,7 @@ class SidebarTest implements \FishPig\WordPress\App\Debug\TestInterface
             return;
         }
 
-        $this->layout->createBlock(\FishPig\WordPress\Block\Sidebar::class)->toHtml();    
+        $this->layout->createBlock(\FishPig\WordPress\Block\Sidebar::class)->toHtml();
 
         // Widget Blocks
         foreach ($this->widgetRepository->getAll() as $widgetName => $widgetClass) {

@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 use FishPig\WordPress\App\Debug\TestPool;
 
@@ -24,7 +24,7 @@ class UserTest implements \FishPig\WordPress\App\Debug\TestInterface
         $this->userCollectionFactory = $userCollectionFactory;
         $this->layout = $layout;
     }
-    
+
     /**
      * @return void
      */
@@ -46,7 +46,7 @@ class UserTest implements \FishPig\WordPress\App\Debug\TestInterface
             $user->getGravatarUrl();
             $user->getResource();
             $user->getCollection();
-            
+
             if (isset($options[TestPool::RUN_BLOCK_TESTS]) && $options[TestPool::RUN_BLOCK_TESTS] === true) {
                 $this->layout->createBlock(\FishPig\WordPress\Block\User\View::class)->setUser($user)->toHtml();
             }

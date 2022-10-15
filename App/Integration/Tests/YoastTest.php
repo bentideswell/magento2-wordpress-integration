@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Integration\Test;
+namespace FishPig\WordPress\App\Integration\Tests;
 
 use FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException;
 
@@ -24,7 +24,7 @@ class YoastTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         $this->pluginManager = $pluginManager;
         $this->moduleManager = $moduleManager;
     }
-    
+
     /**
      * @return void
      */
@@ -35,7 +35,7 @@ class YoastTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         } catch (\Exception $e) {
             $isAdmin = false;
         }
-        
+
         if ($this->isYoastPluginInstalled() && $this->isYoastModuleInstalled()) {
             return;
         } elseif ($this->isYoastPluginInstalled()) {
@@ -65,7 +65,7 @@ class YoastTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         return $this->pluginManager->isEnabled('wordpress-seo/wp-seo.php')
             || $this->pluginManager->isEnabled('wordpress-seo-premium/wp-seo-premium.php');
     }
-    
+
     /**
      * @return bool
      */

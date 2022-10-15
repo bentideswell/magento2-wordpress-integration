@@ -6,7 +6,7 @@
  */
 declare(strict_types=1);
 
-namespace FishPig\WordPress\App\Debug\Test;
+namespace FishPig\WordPress\App\Debug\Tests;
 
 class NetworkTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
@@ -18,12 +18,12 @@ class NetworkTest implements \FishPig\WordPress\App\Debug\TestInterface
     ) {
         $this->network = $network;
     }
-    
+
     /**
      * @return void
      */
     public function run(array $options = []): void
-    {    
+    {
         $this->network->isEnabled();
         $this->network->getBlogId();
         $this->network->getSiteId();
