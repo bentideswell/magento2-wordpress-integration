@@ -37,7 +37,11 @@ class Router implements \Magento\Framework\App\RouterInterface
      */
     public function match(\Magento\Framework\App\RequestInterface $request)
     {
-        if ($this->integrationTests->runTests() === false) {
+        try {
+            if ($this->integrationTests->runTests() === false) {
+                return false;
+            }
+        } catch (\FishPig\WordPress\App\Exception $e) {
             return false;
         }
 

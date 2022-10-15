@@ -1,6 +1,12 @@
 # Changelog
 
+## [3.23.1] - 2022-11-15
+### [Changed]
+- Improved debug command (bin/magento fishpig:wordpress:debug)
+- Improved error log display in blocks and Router when integration not setup right
+
 ## [3.23.0] - 2022-11-15
+### [Changed]
 - Renamed Test folder to Tests so that classes are added to the optimised
   Composer autoloader.
 

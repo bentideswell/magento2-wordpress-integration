@@ -11,9 +11,9 @@ namespace FishPig\WordPress\App\Integration\Mode;
 class ObjectResolver
 {
     /**
-     * @var object
+     * @var object[]
      */
-    private $resolvedObject = null;
+    private $resolvedObject = [];
 
     /**
      * @param  \FishPig\WordPress\App\Integration\Mode $appMode
@@ -36,25 +36,24 @@ class ObjectResolver
      */
     public function resolve()
     {
-        if ($this->resolvedObject === null) {
-            $this->resolvedObject = false;
+        $mode = $this->appMode->getMode() ?? 'disabled';
 
-            $mode = $this->appMode->getMode();
-    
+        if (!isset($this->resolvedObject[$mode])) {
+            $this->resolvedObject[$mode] = false;
             if (!isset($this->objects[$mode])) {
                 if ($this->throwExceptionIfObjectNotSet) {
                     throw new \FishPig\WordPress\App\Exception(
                         'Unable to find object in ' . get_class($this) . '::getObject(' . $mode . ')'
                     );
                 }
-                
-                return $this->resolvedObject;
             } else {
-                $this->resolvedObject = $this->objectManager->get($this->objects[$mode]);
+                $this->resolvedObject[$mode] = $this->objectManager->get(
+                    $this->objects[$mode]
+                );
             }
         }
-        
-        return $this->resolvedObject;
+
+        return $this->resolvedObject[$mode];
     }
 
     /**

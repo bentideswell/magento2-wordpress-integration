@@ -7,6 +7,7 @@ namespace FishPig\WordPress\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Magento\Store\Model\ScopeInterface;
 
 class DebugCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -20,7 +21,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
      */
     const FORMAT_JSON = 'json';
     const FORMAT_ARRAY = 'array';
-    
+
     /**
      *
      */
@@ -32,6 +33,11 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\App\Logger $logger,
+        \Magento\Framework\App\State $appState,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Store\Model\App\Emulation $storeEmulation,
+        \FishPig\WordPress\Model\UrlInterface $wpUrlBuilder,
+        \FishPig\WordPress\App\Integration\Mode $appMode,
         string $name = null
     ) {
         $this->fullModuleList = $fullModuleList;
@@ -41,6 +47,11 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         $this->storeManager = $storeManager;
         $this->resourceConnection = $resourceConnection;
         $this->logger = $logger;
+        $this->scopeConfig = $scopeConfig;
+        $this->appState = $appState;
+        $this->storeEmulation = $storeEmulation;
+        $this->wpUrlBuilder = $wpUrlBuilder;
+        $this->appMode = $appMode;
         parent::__construct($name);
     }
 
@@ -57,7 +68,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         ];
 
         $this->setDefinition($options);
-        
+
         return parent::configure();
     }
 
@@ -67,9 +78,11 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->appState->setAreaCode('frontend');
+
         /* Get the output format */
         $format = $input->getOption(self::FORMAT) ? $input->getOption(self::FORMAT) : self::FORMAT_JSON;
-        
+
         if (!in_array($format, $this->getAllowedOutputFormats())) {
             $format = self::FORMAT_JSON;
         }
@@ -78,8 +91,9 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
             'magento' => $this->getMagentoDebugData(),
             'modules' => $this->getModulesDebugData(),
             'config' => $this->getConfigDebugData(),
+            'debug' => $this->getDebugData()
         ];
-        
+
         if ($format === self::FORMAT_ARRAY) {
             $output->writeLn(
                 print_r($debug, true) // phpcs:ignore
@@ -88,7 +102,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
             $output->writeLn(json_encode($debug, JSON_UNESCAPED_SLASHES));
         }
     }
-     
+
     /**
      * @return array|false
      */
@@ -99,24 +113,24 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
             'edition' => $this->productMetadata->getEdition(),
             'stores' => count($this->storeManager->getStores(false)),
         ];
-        
+
         return $data;
     }
-    
+
     /**
      * @return array|false
      */
     private function getModulesDebugData()
     {
         $modules = [];
-        
+
         foreach ($this->fullModuleList->getAll() as $module) {
             $moduleName = $module['name'];
-            
+
             if (stripos($moduleName, 'FishPig') === false) {
                 continue;
             }
-            
+
             $moduleDir = $this->moduleDir->getDir($moduleName, '');
             $modules[$moduleName] = [
                 'is_enabled' => (int)$this->moduleManager->isEnabled($moduleName),
@@ -125,17 +139,17 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
                 'license' => $this->getKey($moduleName, $moduleDir)
             ];
         }
-        
+
         return $modules;
     }
-    
+
     /**
      * @return false|array
      */
     private function getConfigDebugData()
     {
         $db = $this->resourceConnection->getConnection('');
-        
+
         return $db->fetchAll(
             $db->select()
                 ->from(
@@ -154,12 +168,38 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
     }
 
     /**
+     * @return false|array
+     */
+    private function getDebugData()
+    {
+        $data = [];
+        foreach ($this->storeManager->getStores(false) as $store) {
+            $storeId = $store->getId();
+            $data[$storeId] = [];
+
+            $this->storeEmulation->startEnvironmentEmulation($store->getId());
+
+            try {
+                $data[$storeId]['mode'] = $this->appMode->getMode();
+                $data[$storeId]['home'] = $this->wpUrlBuilder->getHomeUrl();
+                $data[$storeId]['siteurl'] = $this->wpUrlBuilder->getSiteUrl();
+            } catch (\Exception $e) {
+                $data[$storeId]['exception'] = $e->getMessage();
+            } finally {
+                $this->storeEmulation->stopEnvironmentEmulation();
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * @return string
      */
     private function getComposerJsonVersion(string $path)
     {
         $composerFile = $path . '/composer.json';
-        
+
         // phpcs:ignore -- is_file
         if (!is_file($composerFile)) {
             return false;
@@ -168,7 +208,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         // phpcs:ignore -- file_get_contents
         $jsonString = file_get_contents($composerFile);
         $json = json_decode($jsonString, true);
-        
+
         if (!$json) {
             throw new \FishPig\WordPress\App\Exception('Unable to parse JSON.');
         }
@@ -176,7 +216,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         if (!empty($json['version'])) {
             return $json['version'];
         }
-        
+
         return false;
     }
 
@@ -190,7 +230,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
             self::FORMAT_ARRAY
         ];
     }
-    
+
     /**
      *
      */
@@ -202,25 +242,25 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
             } else {
                 $className = str_replace('_', '\\', $module);
             }
-            
+
             $className .= '\\Helper\\License';
-            
+
             if (!class_exists($className)) {
                 return false;
             }
-            
+
             if ($object = \Magento\Framework\App\ObjectManager::getInstance()->get($className)) {
                 if (is_callable($object, 'getLicenseCode')) {
                     return $object->getLicenseCode();
                 }
-                
+
                 return false;
             }
         } catch (\Exception $e) {
             $this->logger->error($e);
             return false;
         }
-        
+
         return false;
     }
 }

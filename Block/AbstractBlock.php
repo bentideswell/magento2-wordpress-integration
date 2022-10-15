@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Block;
 
+use Magento\Framework\App\State as AppState;
+
 abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 {
     /**
@@ -41,6 +43,7 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
         $this->optionRepository = $wpContext->getOptionRepository();
         $this->url = $wpContext->getUrl();
         $this->integrationTests = $wpContext->getIntegrationTests();
+        $this->appState = $wpContext->getAppState();
         parent::__construct($context, $data);
     }
 
@@ -81,7 +84,20 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
             }
         } catch (\Exception $e) {
             $this->logger->error($e);
-            throw $e;
+
+            if ($this->isDeveloperMode()) {
+                return __('Exception: %1', $e->getMessage());
+            }
+
+            return 'An error has happened during application run. See var/log/wp/error.log for details';
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDeveloperMode(): bool
+    {
+        return $this->appState->getMode() === AppState::MODE_DEVELOPER;
     }
 }

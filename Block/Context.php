@@ -16,6 +16,7 @@ use FishPig\WordPress\App\Url;
 use Magento\Framework\Serialize\SerializerInterface;
 use FishPig\WordPress\Helper\BlogInfo;
 use FishPig\WordPress\App\Integration\Tests\Proxy as IntegrationTests;
+use Magento\Framework\App\State as AppState;
 
 class Context
 {
@@ -65,6 +66,11 @@ class Context
     private $integrationTests;
 
     /**
+     * @var AppState
+     */
+    private $appState;
+
+    /**
      * @param Registry
      */
     public function __construct(
@@ -76,7 +82,8 @@ class Context
         SerializerInterface $serializer,
         SerializerInterface $jsonSerializer,
         BlogInfo $blogInfo,
-        IntegrationTests $integrationTests
+        IntegrationTests $integrationTests,
+        AppState $appState
     ) {
         $this->registry = $registry;
         $this->logger = $logger;
@@ -87,6 +94,7 @@ class Context
         $this->jsonSerializer = $jsonSerializer;
         $this->blogInfo = $blogInfo;
         $this->integrationTests = $integrationTests;
+        $this->appState = $appState;
     }
 
     /**
@@ -159,5 +167,13 @@ class Context
     public function getIntegrationTests(): IntegrationTests
     {
         return $this->integrationTests;
+    }
+
+    /**
+     * @return AppState
+     */
+    public function getAppState(): AppState
+    {
+        return $this->appState;
     }
 }
