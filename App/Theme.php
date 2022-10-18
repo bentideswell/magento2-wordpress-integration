@@ -50,7 +50,7 @@ class Theme
     {
         return $this->isInstalled() && $this->getLocalHash() === $this->getRemoteHash();
     }
-    
+
     /**
      * @return ?string
      */
@@ -68,7 +68,7 @@ class Theme
     public function getLocalHash(): string
     {
         $cacheKey = 'theme_local_hash';
-        
+
         if (PHP_SAPI !== 'cli' && ($localHash = $this->cache->load($cacheKey))) {
             return $localHash;
         }
@@ -79,7 +79,7 @@ class Theme
 
         return $localHash;
     }
-    
+
     /**
      * @return string
      */
@@ -87,7 +87,7 @@ class Theme
     {
         return $this->remoteHashProvider->getHash();
     }
-    
+
     /**
      * @return mixed
      */

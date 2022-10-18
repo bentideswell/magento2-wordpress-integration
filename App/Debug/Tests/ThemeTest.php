@@ -14,10 +14,12 @@ class ThemeTest implements \FishPig\WordPress\App\Debug\TestInterface
      *
      */
     public function __construct(
+        \FishPig\WordPress\App\Integration\Tests\ThemeTest $themeTest,
         \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
         \FishPig\WordPress\App\Theme\PackagePublisher $packagePublisher
 
     ) {
+        $this->themeTest = $themeTest;
         $this->packageBuilder = $packageBuilder;
         $this->packagePublisher = $packagePublisher;
     }
@@ -37,5 +39,8 @@ class ThemeTest implements \FishPig\WordPress\App\Debug\TestInterface
         if (!is_file($this->packageBuilder->getFilename())) {
             throw new \Exception('Unable to create theme file at ' . $this->packageBuilder->getFilename());
         }
+
+        // Check theme version
+        $this->themeTest->runTest();
     }
 }

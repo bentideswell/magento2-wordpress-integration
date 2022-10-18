@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.23.3] - 2022-11-18
+### [Changed]
+- Changed outdated WP theme from exception to warning.
+
 ## [3.23.2] - 2022-11-15
 ### [Changed]
 - Improved debug command (bin/magento fishpig:wordpress:debug)
