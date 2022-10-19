@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.24.0] - 2022-11-19
+### [Added]
+- Added option to add Auth key in URL as well as HTTP header.
+- Added time stamp into REST URLs
+### [Changed]
+- Changed WP theme files to accept Auth keys via URL.
+
 ## [3.23.3] - 2022-11-18
 ### [Changed]
 - Changed outdated WP theme from exception to warning.

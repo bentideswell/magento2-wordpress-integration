@@ -152,13 +152,17 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     {
         return $this->_headers;
     }
-    
+
+    /**
+     *
+     */
     protected function makeRequest($method, $uri, $params = [])
     {
-        $this->requestedUrl = (string)$uri;
+        $this->requestedUrl = $uri = $this->authorisationKey->addKeyToUrl((string)$uri);
+
         return parent::makeRequest($method, $uri, $params);
     }
-    
+
     /**
      *
      */

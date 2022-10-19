@@ -45,12 +45,9 @@ class Api
                     [
                         'methods' => 'GET',
                         'callback' => function(\WP_REST_Request $request) {
-                            return [
-                                'status' => 1,
-                                'theme' => get_option(FISHPIG_THEME_OPTION_NAME)
-                            ];
+                            return ['status' => 1];
                         },
-                        'permission_callback' => '__return_true',
+                        'permission_callback' => '__return_true'
                     ]
                 );
 
@@ -73,7 +70,7 @@ class Api
 
                             return $data;
                         },
-                        'permission_callback' => '\FishPig\WordPress\X\AuthorisationKey::isRestRequestAuthorised',
+                        'permission_callback' => '\FishPig\WordPress\X\AuthorisationKey::isRestRequestAuthorised'
                     ]
                 );
 

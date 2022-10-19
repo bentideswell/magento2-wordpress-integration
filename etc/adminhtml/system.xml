@@ -17,13 +17,13 @@
                     <frontend_model>FishPig\WordPress\Block\Adminhtml\Form\Renderer\Config\MagentoBaseUrlSelector</frontend_model>
                     <comment>The URL used as the Magento base URL</comment>
                 </field>
-                <field id="theme_integration" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>Theme Integration</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
                 <field id="mode" translate="label comment" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Mode</label>
                     <source_model>FishPig\WordPress\App\Integration\Mode</source_model>
+                </field>
+                <field id="theme_integration" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                    <label>Theme Integration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <group id="mode_local"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Local Integration</label>
@@ -101,6 +101,10 @@
                     <source_model>FishPig\WordPress\Model\Config\Source\Logging\HTTP</source_model>
                     <config_path>wordpress/logging/http</config_path>
                     <comment>var/log/wp/http.log</comment>
+                </field>
+                <field id="auth_key_in_url" translate="label" type="select" sortOrder="40" showInDefault="1" canRestore="1">
+                    <label>Auth Key in URL</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
             <group id="autologin" sortOrder="30" showInDefault="1">

@@ -94,7 +94,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
      */
     public function getRestUrl($uri = ''): string
     {
-        return $this->getSiteUrl('index.php?rest_route=' . $uri);
+        return $this->getSiteUrl('index.php?rest_route=' . $uri . '&_' . time() . '=1');
     }
 
     /**

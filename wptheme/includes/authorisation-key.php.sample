@@ -9,13 +9,14 @@ declare(strict_types=1);
 namespace FishPig\WordPress\X;
 
 class AuthorisationKey
-{    
+{
     /**
      * @const string
      */
     const KEY_HEADER_NAME = 'X-FishPig-Auth';
     const KEY_OPTION_NAME = 'fishpig_auth_key';
     const KEY_OPTION_NAME_PREVIOUS = 'fishpig_auth_key_previous';
+    const URL_PARAM = '__fpk';
 
     /**
      * @var array
@@ -39,7 +40,7 @@ class AuthorisationKey
                 )
             );
         }
-        
+
         return self::$keys;
     }
 
@@ -50,7 +51,7 @@ class AuthorisationKey
     {
         return ($keys = self::getKeys()) ? (string)$keys[0] : null;
     }
-    
+
     /**
      * @param  string $key
      * @return bool
@@ -65,9 +66,29 @@ class AuthorisationKey
      */
     static public function isRestRequestAuthorised(\WP_REST_Request $request): bool
     {
-        return self::isKeyValid($request->get_header(self::KEY_HEADER_NAME) ?: '');
+        if (defined('FP_AUTH_KEY_IGNORE') && FP_AUTH_KEY_IGNORE === true) {
+            return true;
+        }
+
+        if (self::isKeyValid($request->get_header(self::KEY_HEADER_NAME) ?: '')) {
+            return true;
+        }
+
+        if (self::isKeyInUrlEnabled()) {
+            return self::isKeyValid($request->get_param(self::URL_PARAM) ?? '');
+        }
+
+        return false;
     }
-    
+
+    /**
+     * @return bool
+     */
+    static public function isKeyInUrlEnabled(): bool
+    {
+        return apply_filters('fishpig_auth_key_in_url', true);
+    }
+
     /**
      * @return bool
      */
@@ -75,12 +96,17 @@ class AuthorisationKey
     {
         $serverHeaderKey = 'HTTP_' . str_replace('-', '_', strtoupper(self::KEY_HEADER_NAME));
 
-
-        if (empty($_SERVER[$serverHeaderKey])) {
-            return false;
+        if (!empty($_SERVER[$serverHeaderKey])) {
+            if (self::isKeyValid($_SERVER[$serverHeaderKey])) {
+                return true;
+            }
         }
-        
-        return self::isKeyValid($_SERVER[$serverHeaderKey]);
+
+        if (self::isKeyInUrlEnabled() && !empty($_GET[self::URL_PARAM])) {
+            return self::isKeyValid($_GET[self::URL_PARAM]);
+        }
+
+        return false;
     }
 }
 // phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
