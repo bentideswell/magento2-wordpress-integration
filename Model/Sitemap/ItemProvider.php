@@ -41,7 +41,7 @@ class ItemProvider implements ItemProviderInterface
         if ($this->appMode->isDisabled()) {
             return $items;
         }
-        
+
         if (count($this->itemProviders) === 0) {
             return $items;
         }
@@ -62,18 +62,5 @@ class ItemProvider implements ItemProviderInterface
             $this->logger->error($e);
             throw $e;
         }
-    }
-
-    /**
-     * @param  int $storeId
-     * @return bool
-     */
-    protected function isEnabledForStore($storeId): bool
-    {
-        return $this->scopeConfig->isSetFlag(
-            'wordpress/xmlsitemap/enabled',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            $storeId
-        );
     }
 }

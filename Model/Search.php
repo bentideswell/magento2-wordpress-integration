@@ -56,7 +56,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
         if (!($searchTerm = trim($this->getSearchTerm()))) {
             return false;
         }
-        
+
         $extra = [];
 
         if ($postTypes = $this->getPostTypes()) {
@@ -126,7 +126,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
         if ($tagSlug = $this->request->getParam('tag')) {
             $collection->addTermFilter($tagSlug, 'post_tag');
         }
-        
+
         return $collection;
     }
 
@@ -143,7 +143,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
 
         return $this->getData('search_term');
     }
-    
+
     /**
      * Get an array of post types
      *
@@ -153,7 +153,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
     {
         return $this->request->getParam(self::VAR_NAME_POST_TYPE);
     }
-    
+
     /**
      * Retrieve a parsed version of the search string
      * If search by single word, string will be split on each space

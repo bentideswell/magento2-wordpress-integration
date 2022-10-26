@@ -1,22 +1,26 @@
 # Changelog
 
-## [3.24.1] - 2022-11-19
+## [3.24.2] - 2022-10-26
+### [Changed]
+- Changed form action URL to fix redirect not working issue.
+
+## [3.24.1] - 2022-10-19
 ### [Added]
 - Added time stamp into REST URLs
 
 ### [Changed]
 - Changed WP theme files to accept Auth keys via URL.
 
-## [3.23.3] - 2022-11-18
+## [3.23.3] - 2022-10-18
 ### [Changed]
 - Changed outdated WP theme from exception to warning.
 
-## [3.23.2] - 2022-11-15
+## [3.23.2] - 2022-10-15
 ### [Changed]
 - Improved debug command (bin/magento fishpig:wordpress:debug)
 - Improved error log display in blocks and Router when integration not setup right
 
-## [3.23.0] - 2022-11-15
+## [3.23.0] - 2022-10-15
 ### [Changed]
 - Renamed Test folder to Tests so that classes are added to the optimised
   Composer autoloader.

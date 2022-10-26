@@ -18,13 +18,12 @@
             <strong><?= $block->escapeHtml(__($title)) ?></strong>
         </div>
     <?php endif; ?>
-    <div class="block-content"> 
+    <div class="block-content">
         <form method="get" action="<?= $block->escapeUrl($block->getFormActionUrl()) ?>" id="blog-search-form">
             <?php if ($block->getPostType()): ?>
                 <input type="hidden" name="post_type" value="<?= $block->escapeHtml($block->getPostType()) ?>"/>
             <?php endif; ?>
             <fieldset class="fieldset">
-
                 <div class="field required">
                     <div class="control">
                         <input type="text" name="s" class="input-text" value="<?= $block->escapeHtml($block->getSearchTerm()) ?>" placeholder="<?= $block->escapeHtml(__('Search blog...')) ?>"/>
