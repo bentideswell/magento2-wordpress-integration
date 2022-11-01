@@ -31,7 +31,7 @@ class Permalink
         $this->taxonomyRepository = $taxonomyRepository;
         $this->hierarchicalUrlGenerator = $hierarchicalUrlGenerator;
     }
-    
+
     /**
      * @param  string $pathInfo
      * @return int|false
@@ -42,20 +42,20 @@ class Permalink
         // But also fixes issues with encoded characters like %CC%
         // getting confused as tokens (eg. %category%) later on
         $pathInfo = urldecode(ltrim($pathInfo, '/'));
-        
+
         $cacheKey = strtolower(rtrim($pathInfo));
 
         if (isset($this->pathInfoIdMap[$cacheKey])) {
             return $this->pathInfoIdMap[$cacheKey];
         }
-        
+
         $this->pathInfoIdMap[$cacheKey] = false;
-        
+
         // No point in matching an empty pathInfo
         if ($pathInfo === '') {
             return $this->pathInfoIdMap[$cacheKey];
         }
-        
+
         $fields = $this->getPermalinkSqlFields();
         $db = $this->getConnection();
 
@@ -88,21 +88,21 @@ class Permalink
                         )
                     )
                 );
-                
+
                 if ($routes) {
                     if ($slug = $postType->getSlug()) {
                         $token = '%postname%';
                         if (strpos($slug, $token) === false) {
                             $slug = rtrim($slug, '/') . '/' . $token;
                         }
-                        
+
                         foreach ($routes as $id => $route) {
-                            $routes[$id] = str_replace($token, $route, $slug);                        
+                            $routes[$id] = str_replace($token, $route, $slug);
                         }
                     }
 
                 }
-                
+
 
             } else {
                 if (($filters = $this->getPostTypeFilters($postType, $pathInfo)) === false) {
@@ -125,7 +125,7 @@ class Permalink
                     )->limit(
                         1
                     );
-    
+
                 foreach ($filters as $field => $value) {
                     if (isset($fields[$field])) {
                         $select->where($fields[$field] . ' = ?', urlencode($value));
@@ -134,7 +134,7 @@ class Permalink
 
                 $routes = $this->getConnection()->fetchPairs($select);
             }
-            
+
             if ($routes) {
                 foreach ($routes as $id => $permalink) {
                     if (rtrim($pathInfo, '/') === rtrim($this->completePostSlug($permalink, $id, $postType), '/')) {
@@ -160,7 +160,7 @@ class Permalink
         }
 
         $matchedTokens = $matches[0];
-        
+
         foreach ($matchedTokens as $mtoken) {
             if ($mtoken === '%postnames%') {
                 $slug = str_replace($mtoken, $postType->getHierarchicalPostName($postId) ?: '', $slug);
@@ -254,7 +254,7 @@ class Permalink
                 if (substr($token, 0, 1) === '%') {
                     if (!isset($fields[trim($token, '%')])) {
                         $taxonomyToken = trim($token, '%');
-                        
+
                         if ($this->taxonomyRepository->exists($taxonomyToken)) {
                             $taxonomy = $this->taxonomyRepository->get($taxonomyToken);
                             $endsWithPostname = isset($tokens[$key+1]) && $tokens[$key+1] === '/'
@@ -299,7 +299,7 @@ class Permalink
 
         return count($filters) > 0 ? $filters : false;
     }
-            
+
     /**
      * @return array
      */
@@ -332,7 +332,7 @@ class Permalink
         $sqlColumns = [];
         $fields = $this->getPermalinkSqlFields();
         $db = $this->resourceConnection->getConnection();
-        
+
         foreach ($postTypes as $postType) {
             if ($requiredPostTypes !== null && !in_array($postType->getPostType(), $requiredPostTypes)) {
                 continue;
@@ -351,14 +351,14 @@ class Permalink
 
             if (count($sqlFields) > 0) {
                 $sqlColumns[$postType->getPostType()] = $db->quoteInto(
-                    'WHEN post_type = ?  THEN CONCAT(' . implode(', ', $sqlFields) . ')',
+                    'WHEN post_type = ? THEN CONCAT(' . implode(', ', $sqlFields) . ')',
                     $postType->getPostType()
                 );
             }
         }
 
         return count($sqlColumns) > 0
-            ? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode('', $sqlColumns)) . ')')
+            ? new \Zend_Db_Expr('(' . sprintf('CASE %s END', implode(' ', $sqlColumns)) . ')')
             : '';
     }
 

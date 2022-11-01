@@ -107,11 +107,13 @@ class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
         $post->getResource();
         $post->getResource()->getPostsOnDayByYearMonth($post->getPostDate('Y/m/d'));
         $post->getCollection()->addStickyPostsToCollection()->load();
-        $post->getCollection()->addPostTypeFilter($post->getPostType());
-        $post->getCollection()->addPostTypeFilter('*');
-        $post->getCollection()->addPostTypeFilter(['*', $post->getPostType()]);
-        $post->getCollection()->addPostTypeFilter(['post', 'page']);
-        $post->getCollection()->addPostTypeFilter(['post', 'page', 'does_not_Exist']);
+        $post->getCollection()->addPostTypeFilter($post->getPostType())->setPageSize(1)->load();
+        $post->getCollection()->addPostTypeFilter('*')->setPageSize(1)->load();
+        $post->getCollection()->addPostTypeFilter(['*', $post->getPostType()])->setPageSize(1)->load();
+        $post->getCollection()->addPostTypeFilter(['post', 'page'])->setPageSize(1)->load();
+        $post->getCollection()->addPostTypeFilter(['post', 'page', 'does_not_Exist'])->setPageSize(1)->load();
+        $post->getCollection()->addTermFilter("Value", "someterm", "name")->setPageSize(1)->load();
+        $post->getCollection()->addTermFilter("Value", "term-with-dash", "name")->setPageSize(1)->load();
 
         $this->permalinkResource->getPermalinkSqlColumn(
             array_keys($this->postTypeRepository->getAll())

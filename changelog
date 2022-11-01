@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.24.3] - 2022-11-01
+### [Fixed]
+- Using terms with a hyphen (-) in the post collection addTermFilter caused an
+  SQL error as the everything after the hyphen wasn't used as an alias.
+
 ## [3.24.2] - 2022-10-26
 ### [Changed]
 - Changed form action URL to fix redirect not working issue.

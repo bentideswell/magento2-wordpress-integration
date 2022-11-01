@@ -438,9 +438,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
         $this->joinTermTables($type);
 
         if (is_array($term)) {
-            $this->getSelect()->where("terms_{$type}.{$field} IN (?)", $term);
+            $this->getSelect()->where("`terms_{$type}`.`{$field}` IN (?)", $term);
         } else {
-            $this->getSelect()->where("terms_{$type}.{$field} = ?", $term);
+            $this->getSelect()->where("`terms_{$type}`.`{$field}` = ?", $term);
         }
 
         return $this;
@@ -459,15 +459,15 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
             $tableTermRel     = $this->getTable('wordpress_term_relationship');
             $tableTerms = $this->getTable('wordpress_term');
 
-            $this->getSelect()->join(['rel_' . $type => $tableTermRel], "rel_{$type}.object_id=main_table.ID", '')
+            $this->getSelect()->join(['rel_' . $type => $tableTermRel], "`rel_{$type}`.object_id=main_table.ID", '')
                 ->join(
                     [
                         'tax_' . $type => $tableTax
                     ],
-                    "tax_{$type}.term_taxonomy_id=rel_{$type}.term_taxonomy_id AND tax_{$type}.taxonomy='{$type}'",
+                    "`tax_{$type}`.term_taxonomy_id=`rel_{$type}`.term_taxonomy_id AND `tax_{$type}`.taxonomy='{$type}'",
                     null
                 )
-                ->join(['terms_' . $type => $tableTerms], "terms_{$type}.term_id = tax_{$type}.term_id", '')
+                ->join(['terms_' . $type => $tableTerms], "`terms_{$type}`.term_id = `tax_{$type}`.term_id", '')
                 ->distinct();
 
             $this->_termTablesJoined[$type] = true;
