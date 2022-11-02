@@ -27,7 +27,7 @@ class Search extends AbstractWidget
      */
     public function getFormActionUrl()
     {
-        return $this->url->getUrl('wordpress/search');
+        return $this->_urlBuilder->getUrl('wordpress/search');
     }
 
     /**
@@ -48,7 +48,6 @@ class Search extends AbstractWidget
     public function getSearchTerm()
     {
         return $this->searchModel->getSearchTerm();
-        return '';
     }
 
     /**

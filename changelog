@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.24.4] - 2022-11-02
+### [Changed]
+- Changed object that generates search form URL to Magento URL builder. This
+  fixes search 404s.
+
 ## [3.24.3] - 2022-11-01
 ### [Fixed]
 - Using terms with a hyphen (-) in the post collection addTermFilter caused an
