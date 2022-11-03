@@ -86,7 +86,11 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
             $this->logger->error($e);
 
             if ($this->isDeveloperMode()) {
-                return __('Exception: %1', $e->getMessage());
+                return sprintf(
+                    '<strong>Exception:</strong> %s<br/><br/><pre>%s</pre>',
+                    $e->getMessage(),
+                    str_replace(BP . '/', '', $e->getTraceAsString())
+                );
             }
 
             return 'An error has happened during application run. See var/log/wp/error.log for details';

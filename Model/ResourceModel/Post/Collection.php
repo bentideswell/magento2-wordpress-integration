@@ -417,13 +417,10 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
     public function addTermIdFilter($termId, $type)
     {
         $this->joinTermTables($type);
-
-        if (is_array($termId)) {
-            $this->getSelect()->where("tax_{$type}.term_id IN (?)", $termId);
-        } else {
-            $this->getSelect()->where("tax_{$type}.term_id = ?", $termId);
-        }
-
+        $this->getSelect()->where(
+            sprintf('`tax_%s`.term_id %s', $type, is_array($termId) ? 'IN (?)' : '=?'),
+            $termId
+        );
         return $this;
     }
 

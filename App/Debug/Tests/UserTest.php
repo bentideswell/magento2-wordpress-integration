@@ -34,7 +34,7 @@ class UserTest implements \FishPig\WordPress\App\Debug\TestInterface
             $user = $this->userRepository->get($user->getId());
             $user->getName();
             $user->getUrl();
-            $user->getPostCollection();
+            $user->getPostCollection()->load();
             $user->getContent();
             $user->getImage();
             $user->getTablePrefix();
@@ -45,7 +45,7 @@ class UserTest implements \FishPig\WordPress\App\Debug\TestInterface
             $user->getNickname();
             $user->getGravatarUrl();
             $user->getResource();
-            $user->getCollection();
+            $user->getCollection()->load();
 
             if (isset($options[TestPool::RUN_BLOCK_TESTS]) && $options[TestPool::RUN_BLOCK_TESTS] === true) {
                 $this->layout->createBlock(\FishPig\WordPress\Block\User\View::class)->setUser($user)->toHtml();

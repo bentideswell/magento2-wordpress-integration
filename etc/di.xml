@@ -288,6 +288,7 @@
         <arguments>
             <argument name="tests" xsi:type="array">
                 <item name="core.url" xsi:type="object">FishPig\WordPress\App\Debug\Tests\UrlTest</item>
+                <item name="core.theme" xsi:type="object">FishPig\WordPress\App\Debug\Tests\ThemeTest</item>
                 <item name="core.integrationData" xsi:type="object">FishPig\WordPress\App\Debug\Tests\IntegrationDataTest</item>
                 <item name="core.post" xsi:type="object">FishPig\WordPress\App\Debug\Tests\PostTest</item>
                 <item name="core.taxonomy" xsi:type="object">FishPig\WordPress\App\Debug\Tests\TaxonomyTest</item>
@@ -300,7 +301,6 @@
                 <item name="core.blogInfo" xsi:type="object">FishPig\WordPress\App\Debug\Tests\BlogInfoTest</item>
                 <item name="core.frontPage" xsi:type="object">FishPig\WordPress\App\Debug\Tests\FrontPageTest</item>
                 <item name="core.network" xsi:type="object">FishPig\WordPress\App\Debug\Tests\NetworkTest</item>
-                <item name="core.theme" xsi:type="object">FishPig\WordPress\App\Debug\Tests\ThemeTest</item>
                 <item name="core.sidebar" xsi:type="object">FishPig\WordPress\App\Debug\Tests\SidebarTest</item>
                 <item name="core.misc" xsi:type="object">FishPig\WordPress\App\Debug\Tests\MiscTest</item>
             </argument>

@@ -16,7 +16,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
      * @var Term
      */
     private $term = null;
-    
+
     /**
      * @return Term
      */
@@ -25,7 +25,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
         if ($this->term === null) {
             $this->term = $this->registry->registry(Term::ENTITY) ?? false;
         }
-        
+
         return $this->term;
     }
 
@@ -46,7 +46,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     {
         return $this->getTerm()->getPostCollection();
     }
-    
+
     /**
      * @return string
      */
@@ -54,7 +54,7 @@ class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrappe
     {
         return (string)$this->getTerm()->getDescription();
     }
-    
+
     /**
      * @deprecated 3.0 use self::getTerm
      */

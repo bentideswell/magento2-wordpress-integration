@@ -43,7 +43,7 @@ class TaxonomyTest implements \FishPig\WordPress\App\Debug\TestInterface
                 $term = $this->termRepository->get($term->getId());
                 $term->getName();
                 $term->getUrl();
-                $term->getPostCollection();
+                $term->getPostCollection()->load();
                 $term->getContent();
                 $term->getTaxonomyInstance();
                 $term->getParentTerm();
@@ -52,7 +52,7 @@ class TaxonomyTest implements \FishPig\WordPress\App\Debug\TestInterface
                 $term->getPostCount();
                 $term->getChildIds();
                 $term->getResource();
-                $term->getCollection();
+                $term->getCollection()->load();
 
                 if (isset($options[TestPool::RUN_BLOCK_TESTS]) && $options[TestPool::RUN_BLOCK_TESTS] === true) {
                     $this->layout->createBlock(\FishPig\WordPress\Block\Term\View::class)->setTerm($term)->toHtml();

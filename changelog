@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.24.5] - 2022-11-03
+### [Fixed]
+- Another Term issue when using a hyphen in taxonomy type.
+- Modified exception output in blocks to include trace. Exception output is
+  only enabled in developer mode. For production mode, see var/log/wp/error.log.
+
 ## [3.24.4] - 2022-11-02
 ### [Changed]
 - Changed object that generates search form URL to Magento URL builder. This
