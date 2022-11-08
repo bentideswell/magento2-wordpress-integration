@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.25.0] - 2022-11-08
+### [Added]
+- Search now uses WP API to get results. This allows for WP search plugins
+  to be used to affect the results. This can be disabled via the code.
+### [Changed]
+- Changed HTTP requests to include Connection: close
+
 ## [3.24.5] - 2022-11-03
 ### [Fixed]
 - Another Term issue when using a hyphen in taxonomy type.

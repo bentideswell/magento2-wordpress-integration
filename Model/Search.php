@@ -29,12 +29,14 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \Magento\Framework\App\RequestInterface $request,
+        \FishPig\WordPress\App\Api\Rest\RequestManager $restRequestManager,
         array $data = []
     ) {
         $this->url = $wpContext->getUrl();
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->postTypeRepository = $postTypeRepository;
         $this->request = $request;
+        $this->restRequestManager = $restRequestManager;
         parent::__construct($data);
     }
 
@@ -89,13 +91,25 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
      */
     public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
-        $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
-            $this->getParsedSearchString(),
-            [
-                'post_title' => 5,
-                'post_content' => 1
-            ]
-        );
+        // TO revert to default search, return null from self::getSearchApiEndpoint
+        if ($searchEndpoint = $this->getSearchApiEndpoint()) {
+            $postIds = array_column(
+                $this->restRequestManager->getJsonCached($searchEndpoint),
+                'id'
+            );
+
+            $collection = $this->postCollectionFactory->create();
+            $collection->addFieldToFilter('ID', ['in' => $postIds]);
+            $collection->getSelect()->order('FIELD(ID, ' . implode(',', $postIds) . ')');
+        } else {
+            $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
+                $this->getParsedSearchString(),
+                [
+                    'post_title' => 5,
+                    'post_content' => 1
+                ]
+            );
+        }
 
         // Post Types
         $searchablePostTypes = $this->request->getParam('post_type');
@@ -151,7 +165,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
      */
     public function getPostTypes()
     {
-        return $this->request->getParam(self::VAR_NAME_POST_TYPE);
+        return (array)$this->request->getParam(self::VAR_NAME_POST_TYPE);
     }
 
     /**
@@ -175,5 +189,17 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
         }
 
         return $words;
+    }
+
+    /**
+     *
+     */
+    public function getSearchApiEndpoint(): ?string
+    {
+        return sprintf(
+            '/wp/v2/search&search=%s&per_page=%d',
+            urlencode($this->getSearchTerm()),
+            100
+        );
     }
 }

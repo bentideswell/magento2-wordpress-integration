@@ -66,6 +66,9 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
             // as it's safe to assume that WP is covered by the same http auth
             $this->addHeader('Authorization', $_SERVER['HTTP_AUTHORIZATION']);
         }
+
+        // Stop CLOSE_WAIT connections being left open
+        $this->addHeader('Connection', 'close');
         // phpcs:enable
     }
 

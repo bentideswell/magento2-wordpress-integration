@@ -33,18 +33,18 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         parent::__construct($url, $httpClientFactory, $requestLogger, $phpErrorExtractor, $urlModifiers);
     }
 
-    public function getJsonCached(string $endpoint, string $cacheId)
+    public function getJsonCached(string $endpoint, string $cacheId = '')
     {
-        $cacheId = $this->network->getBlogId() . '::' . $cacheId;
+        $cacheId = $this->network->getBlogId() . '::' . ($cacheId ?: md5($endpoint));
 
         if ($data = $this->cache->load($cacheId)) {
             $data = $this->serializer->unserialize($data);
         } else {
             $data = $this->getJson($endpoint);
-            
+
             $this->cache->save($this->serializer->serialize($data), $cacheId);
         }
-        
+
         return $data;
     }
 
