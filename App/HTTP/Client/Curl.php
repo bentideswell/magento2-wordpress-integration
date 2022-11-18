@@ -43,10 +43,13 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     public function __construct(
         \FishPig\WordPress\App\HTTP\AuthorisationKey $authorisationKey,
         \FishPig\WordPress\App\Integration\Mode $appMode,
+        \FishPig\WordPress\App\HTTP\Config $config,
         $sslVersion = null
     ) {
         $this->authorisationKey = $authorisationKey;
         $this->appMode = $appMode;
+        $this->config = $config;
+
         parent::__construct($sslVersion);
 
         $this->setOption(CURLOPT_SSL_VERIFYHOST, false);
@@ -69,6 +72,16 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
 
         // Stop CLOSE_WAIT connections being left open
         $this->addHeader('Connection', 'close');
+
+        // This allows for overriding the IP for the WordPress siteurl
+        // This is useful for many reasons.
+        // The first reason is it can make working without DNS (eg. dev) easier
+        // It can also be used to bypass Cloudflare and other CDNs for API requests
+        // which will speed things up.
+        if ($resolveHeaderValue = $this->config->getCurlOptionResolve()) {
+            $this->setOption(CURLOPT_DNS_USE_GLOBAL_CACHE, false);
+            $this->setOption(CURLOPT_RESOLVE, $resolveHeaderValue);
+        }
         // phpcs:enable
     }
 

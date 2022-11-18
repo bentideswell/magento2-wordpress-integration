@@ -21,12 +21,13 @@
                     <label>Mode</label>
                     <source_model>FishPig\WordPress\App\Integration\Mode</source_model>
                 </field>
+
                 <field id="theme_integration" translate="label" type="select" sortOrder="13" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                     <label>Theme Integration</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <group id="mode_local"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Local Integration</label>
+                    <label>Integration Mode: Local</label>
                     <depends><field id="mode">local</field></depends>
                     <field id="path" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
                         <label>Path</label>
@@ -35,7 +36,7 @@
                     </field>
                 </group>
                 <group id="mode_external"  sortOrder="15" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>External Integration</label>
+                    <label>Integration Mode: External</label>
                     <depends><field id="mode">external</field></depends>
                     <group id="db"  sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                         <label>Database</label>
@@ -96,16 +97,28 @@
                         </field>
                     </group>
                 </group>
-                <field id="http_log" translate="label" type="select" sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
-                    <label>HTTP Log</label>
-                    <source_model>FishPig\WordPress\Model\Config\Source\Logging\HTTP</source_model>
-                    <config_path>wordpress/logging/http</config_path>
-                    <comment>var/log/wp/http.log</comment>
-                </field>
+                <group id="advanced"  sortOrder="35" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Advanced</label>
+
+                    <group id="http"  sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                        <label>HTTP</label>
+                        <field id="http_log" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1" canRestore="1">
+                            <label>Request Log</label>
+                            <source_model>FishPig\WordPress\Model\Config\Source\Logging\HTTP</source_model>
+                            <config_path>wordpress/logging/http</config_path>
+                            <comment>var/log/wp/http.log</comment>
+                        </field>
+                        <field id="curlopt_resolve" type="text" sortOrder="50" showInDefault="1" canRestore="1">
+                            <label>CURLOPT_RESOLVE</label>
+                            <tooltip>Enter multiple values separated by a comma.</tooltip>
+                            <config_path>wordpress/http/curlopt_resolve</config_path>
+                        </field>
+                    </group>
                 <!--<field id="auth_key_in_url" translate="label" type="select" sortOrder="40" showInDefault="1" canRestore="1">
                     <label>Auth Key in URL</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>-->
+                </group>
             </group>
             <group id="autologin" sortOrder="30" showInDefault="1">
                 <label>WP-Admin Auto Login</label>

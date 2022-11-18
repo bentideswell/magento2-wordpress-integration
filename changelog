@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.26.0] - 2022-11-18
+### [Added]
+- Added curlopt_resolve option to Admin config. This allows you to specify a
+  different IP for the WP domain to resolve to. This can be used to bypass
+  Cloudflare to speed up API requests or it can be used to set a dev IP, which
+  is useful if you cannot edit the hosts file on the Magento server. Value
+  should be in the format: HOST:PORT:IP so an example would be:
+  www.yoursite.com:443:127.0.0.1
+  Multiple values can be entered by separating with a comma:
+  www.yoursite.com:443:127.0.0.1,yoursite.com:443:127.0.0.1
+
 ## [3.25.0] - 2022-11-08
 ### [Added]
 - Search now uses WP API to get results. This allows for WP search plugins
