@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.26.1] - 2022-11-25
+### [Changed]
+- Changed WordPress theme index.php to include post excerpt data.
+
 ## [3.26.0] - 2022-11-18
 ### [Added]
 - Added curlopt_resolve option to Admin config. This allows you to specify a
