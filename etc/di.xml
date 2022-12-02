@@ -400,7 +400,6 @@
                 <item name="categories" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Categories</item>
                 <item name="tag_cloud" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Cloud</item>
                 <item name="text" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Text</item>
-                <item name="meta" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Meta</item>
                 <item name="nav_menu" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\NavMenu</item>
                 <item name="calendar" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\Calendar</item>
                 <item name="media_image" xsi:type="string">FishPig\WordPress\Block\Sidebar\Widget\MediaImage</item>
