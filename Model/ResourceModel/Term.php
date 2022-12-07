@@ -11,10 +11,13 @@ namespace FishPig\WordPress\Model\ResourceModel;
 class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
 {
     /**
-     * @static bool
+     * @static []bool
      */
-    protected $useTermOrderField = null;
+    protected $useTermOrderField = [];
 
+    /**
+     *
+     */
     public function _construct()
     {
         $this->_init('terms', 'term_id');
@@ -55,19 +58,19 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
      */
     public function tableHasTermOrderField(): bool
     {
-        if ($this->useTermOrderField !== null) {
-            return $this->useTermOrderField;
+        $table = $this->getMainTable();
+
+        if (!isset($this->useTermOrderField[$table])) {
+            try {
+                $this->useTermOrderField[$table] = $this->getConnection()->fetchOne(
+                    'SHOW COLUMNS FROM ' . $table . ' WHERE Field = \'term_order\''
+                ) !== false;
+            } catch (Exception $e) {
+                $this->useTermOrderField[$table] = false;
+            }
         }
 
-        try {
-            $this->useTermOrderField = $this->getConnection()->fetchOne(
-                'SHOW COLUMNS FROM ' . $this->getMainTable() . ' WHERE Field = \'term_order\''
-            ) !== false;
-        } catch (Exception $e) {
-            $this->useTermOrderField = false;
-        }
-
-        return $this->useTermOrderField;
+        return $this->useTermOrderField[$table];
     }
 
     /**

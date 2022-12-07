@@ -99,8 +99,15 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
             );
 
             $collection = $this->postCollectionFactory->create();
-            $collection->addFieldToFilter('ID', ['in' => $postIds]);
-            $collection->getSelect()->order('FIELD(ID, ' . implode(',', $postIds) . ')');
+
+            if (!$postIds) {
+                // No post IDs so force collection to be empty
+                $collection->getSelect()->where('1=2')->limit(1);
+                return $collection;
+            } else {
+                $collection->addFieldToFilter('ID', ['in' => $postIds]);
+                $collection->getSelect()->order('FIELD(ID, ' . implode(',', $postIds) . ')');
+            }
         } else {
             $collection = $this->postCollectionFactory->create()->addSearchStringFilter(
                 $this->getParsedSearchString(),

@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.26.2] - 2022-12-07
+### [Fixed]
+- SQL error when search term produced zero results.
+- SQL error when using Multisite and term_order field.
+
 ## [3.26.1] - 2022-11-25
 ### [Changed]
 - Changed WordPress theme index.php to include post excerpt data.
