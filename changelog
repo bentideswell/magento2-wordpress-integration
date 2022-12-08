@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.26.3] - 2022-12-08
+### [Changed]
+- Changed CURL HTTP request for RemoteActions from WordPress to include a
+  user agent (currently FishPig/M2WP).
+
 ## [3.26.2] - 2022-12-07
 ### [Fixed]
 - SQL error when search term produced zero results.

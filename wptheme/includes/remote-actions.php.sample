@@ -7,14 +7,14 @@
 namespace FishPig\WordPress\X;
 
 class RemoteActions
-{    
+{
     /**
      *
      */
     static public function triggerAction(string $name, array $args = [])
     {
         $permalinkStructure = get_option('permalink_structure');
-        
+
         if ($permalinkStructure && substr($permalinkStructure, -1) === '/') {
             $homeUrl = trailingslashit(get_home_url());
         } else {
@@ -38,16 +38,17 @@ class RemoteActions
         // Send the HTTP request
         if (function_exists('curl_init')) {
             $ch = curl_init($actionUrl);
-    
+
             curl_setopt_array($ch, [
                 CURLOPT_URL => $actionUrl,
                 CURLOPT_HEADER => false,
                 CURLOPT_RETURNTRANSFER => true,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
-                CURLOPT_CONNECTTIMEOUT => 10
+                CURLOPT_CONNECTTIMEOUT => 10,
+                CURLOPT_USERAGENT => 'FishPig/M2WP'
             ]);
-    
+
             curl_exec($ch);
             curl_close($ch);
         } else {
