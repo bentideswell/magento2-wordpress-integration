@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.27.0] - 2022-12-12
+### [Added]
+- Added flag to integration data retriever. This stops the data retrieval HTTP
+  request from being fired unless an add-on module is installed that specifically
+  requires this. Currently only Multisite and Post Types require this.
+
 ## [3.26.3] - 2022-12-08
 ### [Changed]
 - Changed CURL HTTP request for RemoteActions from WordPress to include a

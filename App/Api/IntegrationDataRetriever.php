@@ -30,15 +30,17 @@ class IntegrationDataRetriever
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\App\Cache $cache,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \FishPig\WordPress\Model\UrlInterface $url
+        \FishPig\WordPress\Model\UrlInterface $url,
+        bool $isDataRequestEnabled = false
     ) {
         $this->restRequestManager = $restRequestManager;
         $this->storeManager = $storeManager;
         $this->cache = $cache;
         $this->serializer = $serializer;
         $this->url = $url;
+        $this->isDataRequestEnabled = $isDataRequestEnabled;
     }
-    
+
     /**
      * @param $key = null
      * @return mixed
@@ -66,13 +68,17 @@ class IntegrationDataRetriever
 
         return $this->data[$storeId][$key];
     }
-    
+
     /**
      * @param  int $storeId
      * @return array
      */
     private function loadData(int $storeId): array
     {
+        if ($this->isDataRequestEnabled === false) {
+            return [];
+        }
+
         $cacheKey = 'integration-data-' . $storeId;
 
         if ($data = $this->cache->load($cacheKey)) {
@@ -94,7 +100,7 @@ class IntegrationDataRetriever
 
         return $data;
     }
-    
+
     /**
      * @return void
      */
