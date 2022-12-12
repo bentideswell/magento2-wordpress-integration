@@ -76,7 +76,7 @@ class IntegrationDataRetriever
     private function loadData(int $storeId): array
     {
         if ($this->isDataRequestEnabled === false) {
-            return [];
+            return ['time' => time()];
         }
 
         $cacheKey = 'integration-data-' . $storeId;

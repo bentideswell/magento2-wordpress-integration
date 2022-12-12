@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.27.1] - 2022-12-12
+### [Fixed]
+- Fixed an issue caused by removing the data from integration data retriever
+  when no add-on modules that specifically require it are installed.
+
 ## [3.27.0] - 2022-12-12
 ### [Added]
 - Added flag to integration data retriever. This stops the data retrieval HTTP
