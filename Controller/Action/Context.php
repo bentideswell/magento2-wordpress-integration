@@ -10,6 +10,7 @@ namespace FishPig\WordPress\Controller\Action;
 
 use Magento\Framework\Registry;
 use FishPig\WordPress\Model\UrlInterface;
+use FishPig\WordPress\App\Logger;
 
 class Context
 {
@@ -19,10 +20,12 @@ class Context
      */
     public function __construct(
         Registry $registry,
-        UrlInterface $url
+        UrlInterface $url,
+        Logger $logger
     ) {
         $this->registry = $registry;
         $this->url = $url;
+        $this->logger = $logger;
     }
 
     /**
@@ -39,5 +42,13 @@ class Context
     public function getUrl(): UrlInterface
     {
         return $this->url;
+    }
+
+    /**
+     * @return Logger
+     */
+    public function getLogger(): Logger
+    {
+        return $this->logger;
     }
 }

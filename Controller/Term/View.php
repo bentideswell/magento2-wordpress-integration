@@ -38,10 +38,14 @@ class View extends \FishPig\WordPress\Controller\Action
     {
         $request = $this->getRequest();
 
-        // This will throw Exception is post does not exist
-        $term = $this->termRepository->get(
-            (int)$request->getParam('id')
-        );
+        try {
+            $term = $this->termRepository->get((int)$request->getParam('id'));
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            // The term does not exist
+            // This may be that it does but it doesn't exist for this scope (WPML)
+            $this->logger->warning($e->getMessage());
+            return $this->getNoRouteForward();
+        }
 
         $this->registry->register($term::ENTITY, $term);
 

@@ -36,20 +36,26 @@ class View extends \FishPig\WordPress\Controller\Action
 
         parent::__construct($context, $wpContext);
     }
-    
+
     /**
      *
      */
     public function execute()
     {
         $request = $this->getRequest();
-        
-        // This will throw Exception is post does not exist
-        $post = $this->postRepository->get((int)$request->getParam('id'));
-        
+
+        try {
+            $post = $this->postRepository->get((int)$request->getParam('id'));
+        } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
+            // The post does not exist
+            // This may be that it does but it doesn't exist for this scope (WPML)
+            $this->logger->warning($e->getMessage());
+            return $this->getNoRouteForward();
+        }
+
         $this->registry->register($post::ENTITY, $post);
         $this->registry->register(\FishPig\WordPress\Controller\Action::ENTITY_CURRENT, $post);
-        
+
         if ($post->isFrontPage()) {
             // URL is post URL but this is front page so redirect to home URL
             if (!$this->url->doUrlsMatch($this->url->getHomeUrl())) {
@@ -68,9 +74,9 @@ class View extends \FishPig\WordPress\Controller\Action
 
                         if (!$previewPost->isPublished()) {
                             $request->setParam('preview_id', $previewPost->getId());
-    
+
                             $this->registry->unregister($previewPost::ENTITY);
-    
+
                             return $this->resultFactory
                                 ->create(
                                     \Magento\Framework\Controller\ResultFactory::TYPE_FORWARD
@@ -88,17 +94,17 @@ class View extends \FishPig\WordPress\Controller\Action
                 }
             }
         }
-        
+
         if ($post->getPostStatus() === 'private' && !$this->customerSession->isLoggedIn()) {
             return $this->getNoRouteForward();
         }
-            
+
         // Check for comments
         // This could be improved, maybe using cookies in WP?
         $commentId = (int)$this->getRequest()->getParam('comment-id');
         $commentStatus = (int)$this->getRequest()->getParam('comment-status');
         $unapproved = (int)$this->getRequest()->getParam('unapproved');
-        
+
         if ($unapproved > 0 || ($commentId > 0 && $commentStatus === 0)) {
             $this->messageManager->addSuccess(
                 __('Your comment has been posted and is awaiting moderation.')
@@ -108,7 +114,7 @@ class View extends \FishPig\WordPress\Controller\Action
                 __('Your comment has been posted.')
             );
         }
-        
+
         // We got here, we must be good.
         $resultPage = $this->resultFactory->create(
             \Magento\Framework\Controller\ResultFactory::TYPE_PAGE
@@ -135,10 +141,10 @@ class View extends \FishPig\WordPress\Controller\Action
     {
         $postType = $post->getPostType();
         $template = $post->getMetaValue('_wp_page_template');
-        
+
         if ($postType == 'revision' && $post->getParentPost()) {
             $postType = $post->getParentPost()->getPostType();
-            
+
             if (!$template) {
                 $template = $post->getParentPost()->getMetaValue('_wp_page_template');
             }

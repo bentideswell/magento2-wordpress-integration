@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.27.2] - 2022-12-21
+### [Changed]
+- Changed response to entity not existing in controller. Rather than throw
+  exception, the noRoute (404) page is now shown and the error logged.
+
 ## [3.27.1] - 2022-12-12
 ### [Fixed]
 - Fixed an issue caused by removing the data from integration data retriever

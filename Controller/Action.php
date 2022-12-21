@@ -35,7 +35,8 @@ abstract class Action extends \Magento\Framework\App\Action\Action
     ) {
         $this->registry = $wpContext->getRegistry();
         $this->url = $wpContext->getUrl();
-        
+        $this->logger = $wpContext->getLogger();
+
         parent::__construct($context);
 
         // Used to prevent some installations overwriting this
@@ -107,18 +108,18 @@ abstract class Action extends \Magento\Framework\App\Action\Action
             $this->getBaseBreadcrumbs(),
             $crumbs
         );
-        
+
         $eventTransport = new \Magento\Framework\DataObject(['breadcrumbs' => $crumbs]);
-        
+
         $this->_eventManager->dispatch('wordpress_breadcrumbs', ['transport' => $eventTransport]);
-        
+
         if ($crumbs = $eventTransport->getBreadcrumbs()) {
             if (count($crumbs) > 1) {
                 foreach ($crumbs as $key => $crumb) {
                     if (!isset($crumb['title'])) {
                         $crumb['title'] = $crumb['label'];
                     }
-    
+
                     $breadcrumbsBlock->addCrumb($key, $crumb);
                 }
             }
