@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.27.3]
+### [Fixed]
+- Search term returning NULL causing trim/string error.
+
 ## [3.27.2] - 2022-12-21
 ### [Changed]
 - Changed response to entity not existing in controller. Rather than throw

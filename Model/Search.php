@@ -156,13 +156,13 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
      *
      * @return string
      */
-    public function getSearchTerm()
+    public function getSearchTerm(): string
     {
         if (!$this->getData('search_term')) {
-            return $this->request->getParam(self::VAR_NAME);
+            return (string)$this->request->getParam(self::VAR_NAME);
         }
 
-        return $this->getData('search_term');
+        return (string)$this->getData('search_term');
     }
 
     /**
