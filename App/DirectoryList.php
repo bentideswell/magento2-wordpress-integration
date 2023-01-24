@@ -8,6 +8,8 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App;
 
+use Magento\Framework\Filesystem\DriverPool;
+
 class DirectoryList
 {
     /**
@@ -38,20 +40,29 @@ class DirectoryList
 
         if (!isset($this->basePath[$storeId])) {
             $this->basePath[$storeId] = false;
-            
+
             // Get path or default to wp
             $path = $this->pathResolver->resolve()->getPath($storeId) ?: 'wp';
 
             if (substr($path, 0, 1) !== '/') {
-                $wpDir = $this->filesystem->getDirectoryReadByPath(BP . '/pub/' . $path);
+                $wpDir = $this->filesystem->getDirectoryReadByPath(
+                    BP . '/pub/' . $path,
+                    DriverPool::FILE
+                );
 
                 if (!$wpDir->isDirectory()) {
-                    $wpDir = $this->filesystem->getDirectoryReadByPath(BP . '/' . $path);
+                    $wpDir = $this->filesystem->getDirectoryReadByPath(
+                        BP . '/' . $path,
+                        DriverPool::FILE
+                    );
                 }
             } else {
-                $wpDir = $this->filesystem->getDirectoryReadByPath($path);
+                $wpDir = $this->filesystem->getDirectoryReadByPath(
+                    $path,
+                    DriverPool::FILE
+                );
             }
-            
+
             if (isset($wpDir) && $wpDir->isDirectory()) {
                 if ($wpDir->isFile('wp-config.php')) {
                     $this->basePath[$storeId] = $wpDir;
@@ -59,9 +70,9 @@ class DirectoryList
             }
         }
 
-        return $this->basePath[$storeId];   
+        return $this->basePath[$storeId];
     }
-    
+
     /**
      * @return bool
      */
@@ -78,7 +89,7 @@ class DirectoryList
         if ($wpDirectory = $this->getBaseDirectory()) {
             return $wpDirectory->getAbsolutePath();
         }
-        
+
         return false;
     }
 }

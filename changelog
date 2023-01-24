@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.27.4]
+### [Fixed]
+- Fixed issue when using Remote Storage.
+
 ## [3.27.3]
 ### [Fixed]
 - Search term returning NULL causing trim/string error.
