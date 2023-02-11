@@ -357,6 +357,7 @@
     </type>
     <type name="FishPig\WordPress\App\Api\Rest\RequestManager">
         <arguments>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
             <argument name="urlModifiers" xsi:type="array">
                 <item name="rest_url" xsi:type="object">FishPig\WordPress\App\Api\Rest\RequestManager\UrlModifier</item>
             </argument>

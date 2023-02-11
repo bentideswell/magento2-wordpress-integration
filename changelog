@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.27.5]
+### [Fixed]
+- String null type error in AdditionalCss
+### [Changed]
+- Forced Serializer in API RequestManager class to use JSON serializer.
+
 ## [3.27.4]
 ### [Fixed]
 - Fixed issue when using Remote Storage.

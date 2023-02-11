@@ -27,6 +27,7 @@ class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
         \FishPig\WordPress\App\Cache $cache,
         array $urlModifiers = []
     ) {
+        echo get_class($serializer);exit;
         $this->network = $network;
         $this->serializer = $serializer;
         $this->cache = $cache;

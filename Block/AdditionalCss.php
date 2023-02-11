@@ -65,7 +65,7 @@ class AdditionalCss extends \Magento\Framework\View\Element\Template
             return false;
         }
 
-        if ($customCss = trim($post->getData('post_content'))) {
+        if ($customCss = trim($post->getData('post_content') ?? '')) {
             return '<style type="text/css" id="wp-custom-css">' . $customCss . '</style>';
         }
 
