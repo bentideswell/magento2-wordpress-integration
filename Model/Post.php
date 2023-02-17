@@ -183,7 +183,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     }
 
     /**
-     * Determine twhether the post has a more tag in it's content field
+     * Determine whether the post has a more tag in its content field
      *
      * @return bool
      */

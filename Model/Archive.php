@@ -53,7 +53,7 @@ class Archive extends AbstractModel implements ViewableModelInterface, PostColle
     }
     
     /**
-     * Load an archive model by it's YYYY/MM
+     * Load an archive model by its YYYY/MM
      * EG: 2010/06
      *
      * @param string $value

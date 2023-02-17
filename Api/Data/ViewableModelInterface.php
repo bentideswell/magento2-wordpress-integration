@@ -6,7 +6,7 @@ namespace FishPig\WordPress\Api\Data;
 
 /**
  * Interface for all entities in the integration that are viewable on the frontend
- * By viewable, it means that the entity has it's own page (eg. posts, categories, tags, users etc)
+ * By viewable, it means that the entity has its own page (e.g. posts, categories, tags, users, etc.)
  */
 interface ViewableModelInterface
 {
