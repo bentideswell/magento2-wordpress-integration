@@ -144,7 +144,7 @@ class IntegrationStatus extends \Magento\Backend\Block\Template
     }
 
     /**
-     * Get the module's version from it's composer.json file
+     * Get the module's version from its composer.json file
      *
      * @param  string $module
      * @return string|false

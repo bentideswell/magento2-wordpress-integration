@@ -1,4 +1,10 @@
 # Changelog
+
+## [3.27.8]
+### [Changed]
+- minor grammatical and spelling mistakes in comments.
+- Post Collection getSize method to account for post_type filters.
+
 ## [3.27.7]
 ### [Fixed]
 - Debug code removed.

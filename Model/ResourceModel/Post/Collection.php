@@ -503,6 +503,10 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 
             $countSelect->columns(new \Zend_Db_Expr('main_table.ID'));
 
+            if ($this->postTypes) {
+                $countSelect->where('post_type IN (?)', $this->postTypes);
+            }
+
             $this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));
         }
 

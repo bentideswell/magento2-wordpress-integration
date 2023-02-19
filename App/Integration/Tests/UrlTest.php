@@ -125,7 +125,7 @@ class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
                 $module = array_shift($modules);
 
                 throw new IntegrationFatalException(
-                    "The $module module uses '$blogRoute' as it's frontName."
+                    "The $module module uses '$blogRoute' as its frontName."
                     . " Either fully disable this module or change your WordPress Home URL."
                 );
             } else {
