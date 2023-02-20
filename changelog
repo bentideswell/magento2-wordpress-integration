@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.27.9]
+### [Fixed]
+- Injected in missing Logger class into catalog product list block.
+
 ## [3.27.8]
 ### [Changed]
 - minor grammatical and spelling mistakes in comments.

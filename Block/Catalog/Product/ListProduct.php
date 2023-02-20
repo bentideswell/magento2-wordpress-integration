@@ -19,9 +19,11 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
         \Magento\Catalog\Block\Product\Context $context,
         \FishPig\WordPress\Block\Context $wpContext,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \FishPig\WordPress\App\Logger $logger,
         array $data = []
     ) {
         $this->scopeConfig = $scopeConfig;
+        $this->logger = $logger;
         parent::__construct($context, $data);
     }
 
@@ -37,13 +39,14 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
         try {
             $productListBlock = $this->getLayout()
                 ->createBlock(\Magento\Catalog\Block\Product\ListProduct::class)
-                    ->setTemplate($this->getData('product_list_template') ?: 'Magento_Catalog::product/list.phtml')
-                    ->setCollection($collection);
+                    ->setTemplate(
+                        $this->getData('product_list_template') ?: 'Magento_Catalog::product/list.phtml'
+                    )->setCollection($collection);
 
             $this->fixProductListBlock($productListBlock);
             $this->applySwatches($productListBlock);
             $this->setProductListHtml($productListBlock->toHtml());
-            
+
             if (!$this->getTemplate()) {
                 return $this->getProductListHtml();
             }
@@ -51,13 +54,12 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
             return parent::_toHtml();
         } catch (\Exception $e) {
             $this->logger->error($e);
+            return $e->getMessage();
         }
-
-        return '';
     }
 
     /**
-     * It's too late to add the page-products class via _preparLayout
+     * It's too late to add the page-products class via _prepareLayout
      * So add it here using JS. This fixed the product styles
      *
      * @inheritDoc
@@ -88,7 +90,7 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
 
         // Fixes setIsBottom fatal error
         $productListHelper = $om->get(\Magento\Catalog\Helper\Product\ProductList::class);
-        
+
         $toolbarBlock = $this->getLayout()->createBlock(
             \Magento\Framework\View\Element\Template::class
         );
