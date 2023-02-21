@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.27.10]
+### [Changed]
+- Wrapped swatch injection in product list in a try catch to stop errors
+  when in GraphQL
+
 ## [3.27.9]
 ### [Fixed]
 - Injected in missing Logger class into catalog product list block.

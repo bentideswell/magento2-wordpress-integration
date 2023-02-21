@@ -44,7 +44,14 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
                     )->setCollection($collection);
 
             $this->fixProductListBlock($productListBlock);
-            $this->applySwatches($productListBlock);
+
+            try {
+                $this->applySwatches($productListBlock);
+            } catch (\OutOfBoundsException $e) {
+                // This exception occurs in GraphQL when block doesn't exist
+                // so we can just ignore it
+            }
+
             $this->setProductListHtml($productListBlock->toHtml());
 
             if (!$this->getTemplate()) {
