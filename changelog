@@ -1,4 +1,10 @@
 # Changelog
+## [3.27.11]
+### [Fixed]
+- Fixed another getSize issue on Post collection when no post type filters set.
+  Default post types (post + page) are now applied.
+### [Changed]
+- Changed exception message when term fails taxonomy check to fix spelling error.
 
 ## [3.27.10]
 ### [Changed]

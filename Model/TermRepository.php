@@ -32,9 +32,9 @@ class TermRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
         $object = $this->get($id);
 
         if (!in_array($object->getTaxonomy(), (array)$taxonomies)) {
-            throw new NoSuchEntityException(
+            throw new \Magento\Framework\Exception\NoSuchEntityException(
                 __(
-                    'The WordPress term exits but failed the taxonomy check. ID is %1, taxonomy is %2',
+                    'The WordPress term exists but failed the taxonomy check. ID=%1, taxonomy=%2',
                     $object->getId(),
                     $object->getTaxonomy()
                 )

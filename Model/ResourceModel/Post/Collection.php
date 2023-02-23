@@ -113,25 +113,37 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
             }
         }*/
 
-        if (count($this->postTypes) === 1) {
-            if ($this->postTypes[0] === '*') {
-                $this->postTypes = [];
-            }
-        }
+        $postTypes = $this->getPostTypeFilters();
 
-        if (count($this->postTypes) === 0) {
-            $this->postTypes = array_keys($this->postTypeRepository->getAll());
-        }
-
-        $this->addFieldToFilter('post_type', ['in' => $this->postTypes]);
+        $this->addFieldToFilter('post_type', ['in' => $postTypes]);
 
         if (!$this->getFlag('skip_permalink_generation')) {
-            if ($sql = $this->permalinkResource->getPermalinkSqlColumn($this->postTypes)) {
+            if ($sql = $this->permalinkResource->getPermalinkSqlColumn($postTypes)) {
                 $this->getSelect()->columns(['permalink' => $sql]);
             }
         }
 
         return $this;
+    }
+
+    /**
+     *
+     */
+    public function getPostTypeFilters(): array
+    {
+        $postTypes = $this->postTypes;
+
+        if (count($postTypes) === 1) {
+            if ($postTypes[0] === '*') {
+                $postTypes = [];
+            }
+        }
+
+        if (count($postTypes) === 0) {
+            $postTypes = array_keys($this->postTypeRepository->getAll());
+        }
+
+        return $postTypes;
     }
 
     /**
@@ -503,8 +515,8 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
 
             $countSelect->columns(new \Zend_Db_Expr('main_table.ID'));
 
-            if ($this->postTypes) {
-                $countSelect->where('post_type IN (?)', $this->postTypes);
+            if ($postTypes = $this->getPostTypeFilters()) {
+                $countSelect->where('post_type IN (?)', $postTypes);
             }
 
             $this->_totalRecords = count($this->getConnection()->fetchCol($countSelect));
