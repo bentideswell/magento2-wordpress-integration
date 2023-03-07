@@ -37,8 +37,12 @@
     <type name="FishPig\WordPress\App\RemoteActions">
         <arguments>
             <argument name="remoteActionPool" xsi:type="array">
+                <!--/** Clean fishpig_wordpress cache type */-->
                 <item name="cache.clean" xsi:type="object">FishPig\WordPress\App\RemoteActions\CacheCleanAction</item>
+                <!--/** Clean full_page and bolt_fpc */-->
                 <item name="pagecache.clean.model" xsi:type="object">FishPig\WordPress\App\RemoteActions\PageCacheCleanModelAction</item>
+                <!--/** Clean multiple cache types using tags */-->
+                <item name="caches.clean.tags" xsi:type="object">FishPig\WordPress\App\RemoteActions\CachesCleanTagsAction</item>
             </argument>
         </arguments>
     </type>

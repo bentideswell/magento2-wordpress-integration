@@ -13,10 +13,16 @@ use Magento\Framework\DataObject\IdentityInterface;
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
     /**
+     * This allows us to flush all WP cache by flushing this tag
+     * @const string
+     */
+    const CACHE_TAG_WP = 'wordpress';
+
+    /**
      * @var \FishPig\WordPress\Model\UrlInterface
      */
     protected $url;
-    
+
     /**
      *
      */
@@ -33,18 +39,21 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     }
 
     /**
-     * @retur array
-     */
-    public function getIdentities()
-    {
-        return [static::CACHE_TAG . '_' . $this->getId()];
-    }
-    
-    /**
      * @return int
      */
     public function getId()
     {
         return (int)parent::getId();
+    }
+
+    /**
+     * @retur array
+     */
+    public function getIdentities()
+    {
+        return [
+              self::CACHE_TAG_WP,
+            static::CACHE_TAG . '_' . $this->getId()
+        ];
     }
 }

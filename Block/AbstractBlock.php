@@ -104,4 +104,20 @@ abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
     {
         return $this->appState->getMode() === AppState::MODE_DEVELOPER;
     }
+
+    /**
+     * Adds in a WP cache tag
+     * @return array
+     */
+    protected function getCacheTags()
+    {
+        $tags = array_merge(
+            parent::getCacheTags(),
+            [
+                \FishPig\WordPress\Model\AbstractModel::CACHE_TAG_WP
+            ]
+        );
+
+        return $tags;
+    }
 }

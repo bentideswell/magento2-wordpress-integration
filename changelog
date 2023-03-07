@@ -1,4 +1,11 @@
 # Changelog
+
+## [3.27.12] - 2023-03-07
+### [Changed]
+- Made post_excerpt display in direct WP requests optional, based on a filter
+- Modified save_post in WP to flush whole WP cache when new post added or
+  post is moved to the trash.
+
 ## [3.27.11]
 ### [Fixed]
 - Fixed another getSize issue on Post collection when no post type filters set.
