@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.27.14] - 2023-03-08
+### [Fixed]
+- Featured image URLS when using a custom upload path.
+
 ## [3.27.12] - 2023-03-07
 ### [Changed]
 - Made post_excerpt display in direct WP requests optional, based on a filter

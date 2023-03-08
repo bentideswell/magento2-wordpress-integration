@@ -234,6 +234,10 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
      */
     public function getUploadUrl(): string
     {
+        if ($uploadPath = $this->option->get('upload_path')) {
+            return $this->getSiteUrl(trim($uploadPath, '/') . '/');
+        }
+
         return $this->getWpContentUrl() . 'uploads/';
     }
 

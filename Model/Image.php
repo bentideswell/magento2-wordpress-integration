@@ -35,7 +35,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
         $this->logger = $wpContext->getLogger();
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
-    
+
     /**
      * @param  string $code
      * @return string
@@ -43,17 +43,25 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
     public function getImageUrl($codes): string
     {
         $codes = (array)$codes;
-        
+
         foreach ($codes as $code) {
             if ($imageFile = $this->getImageByCode($code, 'file')) {
-                // phpcs:ignore -- dirname
-                return $this->url->getUploadUrl() . dirname($this->getFile()) . '/' . $imageFile;
+                return $this->getUrlPath() . $imageFile;
             }
         }
-        
+
         return '';
     }
-    
+
+    /**
+     *
+     */
+    public function getUrlPath(): string
+    {
+        // phpcs:ignore -- dirname
+        return $this->url->getUploadUrl() . dirname($this->getFile()) . '/';
+    }
+
     /**
      * @return array
      */
@@ -70,18 +78,18 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
     private function getImageByCode(string $code, $field = null)
     {
         $sizes = $this->getSizes();
-        
+
         if (!isset($sizes[$code])) {
             return false;
         }
-        
+
         if ($field === null) {
             return $sizes[$code];
         }
-        
+
         return $sizes[$code][$field];
     }
-    
+
     /**
      * This allows you to access image URLs using nice methods:
      * $this->getMediumUrl() calls $this->getImageUrl('medium')
@@ -95,10 +103,10 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
                 } elseif (substr($method, -5) === 'Image') {
                     $imageCode = $this->_underscore(substr($method, 3, -5));
                 }
-                
+
                 if (!empty($imageCode)) {
                     $sizes = $this->getSizes();
-            
+
                     if (isset($sizes[$imageCode])) {
                         return $this->getImageUrl($imageCode);
                     } else {
@@ -111,10 +119,10 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
                 }
             }
         }
-        
+
         return parent::__call($method, $args);
     }
-    
+
     /**
      * @return string
      */
@@ -176,7 +184,7 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
     {
         return $this->_getData('post_excerpt');
     }
-    
+
     /**
      * @deprecated since 2.0
      * @param  string $type = 'thumbnail'
