@@ -11,6 +11,21 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class ThemeTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $themeTest = null;
+
+    /**
+     * @auto
+     */
+    protected $packageBuilder = null;
+
+    /**
+     * @auto
+     */
+    protected $packagePublisher = null;
+
+    /**
      *
      */
     public function __construct(

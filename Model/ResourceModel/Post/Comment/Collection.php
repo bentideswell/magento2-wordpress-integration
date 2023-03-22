@@ -13,6 +13,11 @@ use FishPig\WordPress\Model\Post;
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractMetaCollection
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post_comment_collection';

@@ -13,6 +13,11 @@ use \Magento\Framework\App\RequestInterface;
 class Router
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      * @var []
      */
     private $cache = [];

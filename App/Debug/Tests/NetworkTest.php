@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class NetworkTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $network = null;
+
+    /**
      *
      */
     public function __construct(

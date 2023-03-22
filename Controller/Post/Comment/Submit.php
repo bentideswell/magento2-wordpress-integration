@@ -9,6 +9,16 @@ namespace FishPig\WordPress\Controller\Post\Comment;
 class Submit extends \Magento\Framework\App\Action\Action
 {
     /**
+     * @auto
+     */
+    protected $postFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $wpUrlBuilder = null;
+
+    /**
      *
      */
     public function __construct(

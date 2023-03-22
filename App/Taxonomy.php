@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App;
 class Taxonomy implements \FishPig\WordPress\Api\Data\PostTypeTaxonomyDataSourceInterface
 {
     /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var
      */
     private $dataRetrievers;

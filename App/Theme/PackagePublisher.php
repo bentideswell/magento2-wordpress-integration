@@ -11,6 +11,26 @@ namespace FishPig\WordPress\App\Theme;
 class PackagePublisher
 {
     /**
+     * @auto
+     */
+    protected $packageBuilder = null;
+
+    /**
+     * @auto
+     */
+    protected $resultFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $request = null;
+
+    /**
+     * @auto
+     */
+    protected $fileReadFactory = null;
+
+    /**
      *
      */
     public function __construct(

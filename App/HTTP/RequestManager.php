@@ -14,6 +14,26 @@ use FishPig\WordPress\App\HTTP\RequestManager\UrlModifierInterface;
 class RequestManager
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $httpClientFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $requestLogger = null;
+
+    /**
+     * @auto
+     */
+    protected $phpErrorExtractor = null;
+
+    /**
      * @const bool
      */
     const LOG_DATA = false;

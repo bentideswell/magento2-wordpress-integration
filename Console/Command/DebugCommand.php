@@ -12,6 +12,66 @@ use Magento\Store\Model\ScopeInterface;
 class DebugCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
+     * @auto
+     */
+    protected $fullModuleList = null;
+
+    /**
+     * @auto
+     */
+    protected $moduleManager = null;
+
+    /**
+     * @auto
+     */
+    protected $moduleDir = null;
+
+    /**
+     * @auto
+     */
+    protected $productMetadata = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
+     * @auto
+     */
+    protected $appState = null;
+
+    /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $storeEmulation = null;
+
+    /**
+     * @auto
+     */
+    protected $wpUrlBuilder = null;
+
+    /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
      * @const string
      */
     const FORMAT  = 'format';
@@ -101,6 +161,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         } else {
             $output->writeLn(json_encode($debug, JSON_UNESCAPED_SLASHES));
         }
+        return parent::SUCCESS;
     }
 
     /**

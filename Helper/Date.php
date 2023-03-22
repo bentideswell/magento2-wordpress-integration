@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Helper;
 class Date extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
      * @var \FishPig\WordPress\App\Option
      */
     private $option;

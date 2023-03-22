@@ -12,6 +12,36 @@ use FishPig\WordPress\App\Debug\TestPool;
 
 class PostTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
+    /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $permalinkResource = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
     public function __construct(
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\PostRepository $postRepository,

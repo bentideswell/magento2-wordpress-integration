@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Comments extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $commentCollectionFactory = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

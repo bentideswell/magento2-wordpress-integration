@@ -13,6 +13,21 @@ use FishPig\WordPress\Api\App\View\AssetProviderInterface;
 class AssetProvider implements AssetProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
+     * @auto
+     */
+    protected $assetProviders = null;
+
+    /**
      * @var []
      */
     private $assetProviderPool = [];

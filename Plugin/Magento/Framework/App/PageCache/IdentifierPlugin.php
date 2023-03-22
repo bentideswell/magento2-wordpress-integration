@@ -7,6 +7,21 @@ namespace FishPig\WordPress\Plugin\Magento\Framework\App\PageCache;
 class IdentifierPlugin
 {
     /**
+     * @auto
+     */
+    protected $request = null;
+
+    /**
+     * @auto
+     */
+    protected $postPasswordManager = null;
+
+    /**
+     * @auto
+     */
+    protected $registry = null;
+
+    /**
      *
      */
     public function __construct(

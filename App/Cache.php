@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App;
 class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
 {
     /**
+     * @auto
+     */
+    protected $cacheFrontendPool = null;
+
+    /**
      * @const string
      */
     const TYPE_IDENTIFIER = 'fishpig_wordpress';

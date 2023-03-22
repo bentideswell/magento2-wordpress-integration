@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Controller\Post;
 class Password extends \Magento\Framework\App\Action\Action
 {
     /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $postPasswordManager = null;
+
+    /**
      *
      */
     public function __construct(

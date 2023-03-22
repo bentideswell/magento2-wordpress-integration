@@ -14,6 +14,21 @@ use Magento\Csp\Model\Policy\FetchPolicy;
 class CspWhitelistXmlCollectorPlugin
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
+     * @auto
+     */
+    protected $whitelistPolicyCollector = null;
+
+    /**
      * @param  \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $whitelistPolicyCollector
      */
     public function __construct(

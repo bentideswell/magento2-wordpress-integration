@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model;
 class Menu extends \FishPig\WordPress\Model\Term
 {
     /**
+     * @auto
+     */
+    protected $menuItemCollectionFactory = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_menu';

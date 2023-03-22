@@ -14,6 +14,21 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class Tests
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
      * @var array
      */
     private $result = [];

@@ -13,6 +13,36 @@ use Magento\Framework\App\State as AppState;
 abstract class AbstractBlock extends \Magento\Framework\View\Element\Template
 {
     /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
+     * @auto
+     */
+    protected $appState = null;
+
+    /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
      * @var OptionManager
      */
     protected $optionManager;

@@ -14,6 +14,16 @@ use Magento\Framework\Exception\LocalizedException;
 class PackageBuilder
 {
     /**
+     * @auto
+     */
+    protected $localHashProvider = null;
+
+    /**
+     * @auto
+     */
+    protected $fileCollector = null;
+
+    /**
      * @const string
      */
     const TOKEN_REMOTE_HASH = '{REMOTE_HASH}';

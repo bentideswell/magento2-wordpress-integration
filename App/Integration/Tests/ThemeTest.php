@@ -14,6 +14,56 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $theme = null;
+
+    /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $appState = null;
+
+    /**
+     * @auto
+     */
+    protected $themePackageBuilder = null;
+
+    /**
+     * @auto
+     */
+    protected $themePackageDeployer = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
+     * @auto
+     */
+    protected $wpDirectoryList = null;
+
+    /**
+     * @auto
+     */
+    protected $requestManager = null;
+
+    /**
+     * @auto
+     */
+    protected $wpUrl = null;
+
+    /**
      * @param \FishPig\WordPress\App\ThemeResolver $themeResolver
      */
     public function __construct(

@@ -13,6 +13,21 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException;
 class YoastTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $appState = null;
+
+    /**
+     * @auto
+     */
+    protected $pluginManager = null;
+
+    /**
+     * @auto
+     */
+    protected $moduleManager = null;
+
+    /**
      * @param \FishPig\WordPress\App\Option $option
      */
     public function __construct(

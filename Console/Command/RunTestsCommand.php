@@ -16,10 +16,30 @@ use FishPig\WordPress\App\Debug\TestPool;
 class RunTestsCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
+     * @auto
+     */
+    protected $appState = null;
+
+    /**
+     * @auto
+     */
+    protected $state = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $emulation = null;
+
+    /**
      * @const string
      */
     const ARG_TESTS = 'tests';
-    
+
     /**
      * @const string
      */
@@ -29,7 +49,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
     const OPT_EXCLUDE = 'exclude';
     const OPT_POST_ID = 'post';
     const OPT_LIST = 'list';
-    
+
     /**
      * @var \FishPig\WordPress\App\Debug\TestPoolFactory
      */
@@ -106,7 +126,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                 )
             ]
         );
-        
+
         $this->addArgument('tests', InputOption::VALUE_OPTIONAL, 'Test codes');
 
         return parent::configure();
@@ -118,12 +138,12 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {     
+        try {
             // Set the area code to stop errors in tests
             $this->appState->setAreaCode(
                 \Magento\Framework\App\Area::AREA_FRONTEND
             );
-            
+
             if ($input->getOption(self::OPT_LIST)) {
                 $this->listAllTests($input, $output);
             } else {
@@ -133,10 +153,12 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
             $output->writeLn('<error>' . $e->getMessage() . '</error>');
             $output->writeLn("\nTrace:");
             $output->writeLn($e->getTraceAsString());
+            return parent::FAILURE;
         }
 
         // End with a new line to let things breathe
         $output->writeLn('');
+        return parent::SUCCESS;
     }
 
     /**
@@ -150,7 +172,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
         $output->writeLn(
             __('<options=bold>%1</> test(s) available:', count($codes))
         );
-           
+
         foreach ($codes as $testCode) {
             $output->writeLn('- <comment>' . $testCode . '</comment>');
         }
@@ -196,7 +218,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
         }
 
         $longest = $this->getLongestString($codes);
-        
+
         // Start with a new line to let things breathe
         $output->writeLn('');
         $output->write(
@@ -216,7 +238,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                 if ($cols = $this->getConsoleCols(strlen($padding))) {
                     $output->writeLn("<error>\n\n" . $padding . wordwrap($e->getMessage(), $cols, "\n" . $padding) . "\n</error>\n");
                 } else {
-                    $output->writeLn("<error>\n\n  " . $e->getMessage() . "\n</error>\n");                    
+                    $output->writeLn("<error>\n\n  " . $e->getMessage() . "\n</error>\n");
                 }
 
                 if ($output->isVerbose()) {
@@ -237,10 +259,10 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                 $longest = strlen($s);
             }
         }
-        
+
         return isset($longest) ? $longest : 0;
     }
-    
+
     /**
      * @return int
      */
@@ -251,7 +273,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
             try {
                 if (($cols = (int)shell_exec('tput cols')) > 0) {
                     $cols -= ($padding*2);
-                    
+
                     if ($cols >= 64) {
                         return $this->consoleCols = $cols;
                     }
@@ -261,7 +283,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
                 $this->consoleCols = 0;
             }
         }
-        
+
         return $this->consoleCols;
     }
 }

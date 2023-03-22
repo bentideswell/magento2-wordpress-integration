@@ -13,6 +13,36 @@ use FishPig\WordPress\App\Api\Exception\MissingApiDataException;
 class IntegrationDataRetriever
 {
     /**
+     * @auto
+     */
+    protected $restRequestManager = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $cache = null;
+
+    /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $isDataRequestEnabled = null;
+
+    /**
      * @const string
      */
     const CACHE_TAG = 'fishpig-wordpress-api-data';

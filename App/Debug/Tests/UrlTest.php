@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class UrlTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      * @param  \FishPig\WordPress\Model\UrlInterface $url
      */
     public function __construct(\FishPig\WordPress\Model\UrlInterface $url)

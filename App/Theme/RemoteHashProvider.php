@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Theme;
 class RemoteHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $optionDataSource = null;
+
+    /**
      * @param \FishPig\WordPress\App\Option $optionDataSource
      */
     public function __construct(

@@ -13,6 +13,26 @@ use FishPig\WordPress\Model\Post;
 class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $dateHelper = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_post_comment';

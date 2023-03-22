@@ -9,6 +9,16 @@ namespace FishPig\WordPress\Model;
 class Plugin
 {
     /**
+     * @auto
+     */
+    protected $pluginManager = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
      * @param \FishPig\WordPress\Model\PluginManager $pluginManager
      * @param \FishPig\WordPress\Model\OptionRepository $optionRepository
      */

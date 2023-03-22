@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 abstract class AbstractItemProvider implements \Magento\Sitemap\Model\ItemProvider\ItemProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $itemFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      *
      */
     abstract protected function getCollection($storeId): iterable;

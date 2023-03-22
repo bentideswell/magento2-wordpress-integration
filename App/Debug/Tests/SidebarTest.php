@@ -12,6 +12,16 @@ use FishPig\WordPress\App\Debug\TestPool;
 
 class SidebarTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
+    /**
+     * @auto
+     */
+    protected $widgetRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
     public function __construct(
         \FishPig\WordPress\Model\WidgetRepository $widgetRepository,
         \Magento\Framework\View\Layout $layout

@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Controller\Router;
 class RemoteActionRouter implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $remoteActions = null;
+
+    /**
      *
      */
     public function __construct(

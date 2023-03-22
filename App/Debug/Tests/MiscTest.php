@@ -12,6 +12,36 @@ use FishPig\WordPress\App\Debug\TestPool;
 
 class MiscTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
+    /**
+     * @auto
+     */
+    protected $cspPolicyCollector = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
+    /**
+     * @auto
+     */
+    protected $magentoBaseUrlSelector = null;
+
+    /**
+     * @auto
+     */
+    protected $appState = null;
+
+    /**
+     * @auto
+     */
+    protected $request = null;
+
+    /**
+     * @auto
+     */
+    protected $sitemapItemProvider = null;
+
     public function __construct(
         \FishPig\WordPress\Model\Csp\WhitelistPolicyCollector $cspPolicyCollector,
         \Magento\Framework\View\Layout $layout,

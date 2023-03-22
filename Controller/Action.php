@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Controller;
 abstract class Action extends \Magento\Framework\App\Action\Action
 {
     /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
      * @const string
      */
     const LAYOUT_HANDLE_DEFAULT = 'wordpress_default';
@@ -24,6 +29,21 @@ abstract class Action extends \Magento\Framework\App\Action\Action
      * @var int
      */
     private $pageStorage = 0;
+
+    /**
+     *
+     */
+    protected $registry = null;
+
+    /**
+     *
+     */
+    protected $url = null;
+
+    /**
+     *
+     */
+    protected $logger = null;
 
     /**
      * @param \Magento\Framework\App\Action\Context $context

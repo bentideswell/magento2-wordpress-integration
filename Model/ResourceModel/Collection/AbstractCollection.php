@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Model\ResourceModel\Collection;
 abstract class AbstractCollection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     /**
+     * @auto
+     */
+    protected $_mainTable = null;
+
+    /**
+     * @auto
+     */
+    protected $modelName = null;
+
+    /**
      *
      */
     public function __construct(

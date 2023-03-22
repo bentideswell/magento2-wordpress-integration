@@ -13,6 +13,16 @@ use Magento\Framework\Exception\NoSuchEntityException;
 abstract class ModelRepository extends AbstractRepository
 {
     /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $idFieldName = null;
+
+    /**
      * @var array
      */
     private $cache = [];

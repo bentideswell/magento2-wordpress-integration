@@ -11,6 +11,21 @@ namespace FishPig\WordPress\Controller\Router;
 class HomepageRouter implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $requestDispatcher = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $frontPage = null;
+
+    /**
      *
      */
     public function __construct(

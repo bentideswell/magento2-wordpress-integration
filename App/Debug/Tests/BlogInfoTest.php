@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class BlogInfoTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $blogInfo = null;
+
+    /**
      *
      */
     public function __construct(

@@ -13,6 +13,26 @@ use FishPig\WordPress\App\Debug\TestPool;
 class TaxonomyTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $termRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $termCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
+    /**
      *
      */
     public function __construct(

@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 class PostItemProvider extends AbstractItemProvider
 {
     /**
+     * @auto
+     */
+    protected $collectionFactory = null;
+
+    /**
      *
      */
     const PRIORITY = 0.5;

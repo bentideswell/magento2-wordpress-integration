@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Cloud extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $termCollectionFactory = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

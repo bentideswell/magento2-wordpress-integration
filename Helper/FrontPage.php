@@ -11,6 +11,26 @@ namespace FishPig\WordPress\Helper;
 class FrontPage extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var []
      */
     private $frontPage = [];

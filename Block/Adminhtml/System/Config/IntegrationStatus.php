@@ -11,6 +11,36 @@ namespace FishPig\WordPress\Block\Adminhtml\System\Config;
 class IntegrationStatus extends \Magento\Backend\Block\Template
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
+     * @auto
+     */
+    protected $wpUrl = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $emulator = null;
+
+    /**
+     * @auto
+     */
+    protected $moduleDirReader = null;
+
+    /**
      * @var array
      */
     private $messages = [];

@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Model;
 class ResourceConnection
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
      * @var
      */
     public function __construct(

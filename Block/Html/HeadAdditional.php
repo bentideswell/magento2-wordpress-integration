@@ -7,6 +7,21 @@ namespace FishPig\WordPress\Block\Html;
 class HeadAdditional extends \Magento\Framework\View\Element\AbstractBlock
 {
     /**
+     * @auto
+     */
+    protected $moduleManager = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      * @param Context $contenxt
      * @param array   $data     = []
      */

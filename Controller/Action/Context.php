@@ -15,6 +15,21 @@ use FishPig\WordPress\App\Logger;
 class Context
 {
     /**
+     * @auto
+     */
+    protected $registry = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
      * @param Registry $registry
      * @param Url      $url
      */

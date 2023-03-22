@@ -14,6 +14,11 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class ApiTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $integrationDataRetriever = null;
+
+    /**
      * @param \FishPig\WordPress\App\Api\IntegrationDataRetriever $integrationDataRetriever
      */
     public function __construct(

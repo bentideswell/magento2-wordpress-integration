@@ -13,6 +13,16 @@ use Magento\Store\Model\ScopeInterface;
 class Pager extends \Magento\Theme\Block\Html\Pager
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $wpUrl = null;
+
+    /**
      * @param \Magento\Framework\View\Element\Template\Context $context
      * @param \FishPig\WordPress\Model\OptionRepository $optionRepository
      * @param \FishPig\WordPress\Model\UrlInterface $wpUrl

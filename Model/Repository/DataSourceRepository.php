@@ -13,6 +13,16 @@ use Magento\Framework\Exception\NoSuchEntityException;
 abstract class DataSourceRepository extends AbstractRepository
 {
     /**
+     * @auto
+     */
+    protected $dataSource = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var []
      */
     private $objects = [];

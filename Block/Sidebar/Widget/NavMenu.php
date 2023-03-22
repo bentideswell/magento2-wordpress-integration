@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class NavMenu extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $menuFactory = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

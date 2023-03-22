@@ -13,6 +13,26 @@ use FishPig\WordPress\Model\PostType;
 class Permalink
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $hierarchicalUrlGenerator = null;
+
+    /**
      * @var array
      */
     private $pathInfoIdMap = [];

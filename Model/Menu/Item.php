@@ -11,6 +11,21 @@ namespace FishPig\WordPress\Model\Menu;
 class Item extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $termRepository = null;
+
+    /**
      * Link types used to determine menu item functionality
      *
      * @const string

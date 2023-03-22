@@ -11,6 +11,21 @@ namespace FishPig\WordPress\App\RemoteActions;
 class CachesCleanTagsAction implements RemoteActionInterface
 {
     /**
+     * @auto
+     */
+    protected $cachePool = null;
+
+    /**
+     * @auto
+     */
+    protected $cacheState = null;
+
+    /**
+     * @auto
+     */
+    protected $cacheTypes = null;
+
+    /**
      *
      */
     public function __construct(

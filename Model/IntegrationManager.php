@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Model;
 class IntegrationManager
 {
     /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
      *
      */
     public function __construct(\FishPig\WordPress\App\Integration\Tests $integrationTests)

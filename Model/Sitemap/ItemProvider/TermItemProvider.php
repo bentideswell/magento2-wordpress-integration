@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 class TermItemProvider extends AbstractItemProvider
 {
     /**
+     * @auto
+     */
+    protected $collectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
      *
      */
     const PRIORITY = 0.5;

@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Posts extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
      * Cache for post collection
      *
      * @var FishPig_WordPressModel_Resource_Post_Collection

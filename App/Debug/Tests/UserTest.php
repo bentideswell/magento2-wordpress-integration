@@ -13,6 +13,21 @@ use FishPig\WordPress\App\Debug\TestPool;
 class UserTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $userRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $userCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
+    /**
      *
      */
     public function __construct(

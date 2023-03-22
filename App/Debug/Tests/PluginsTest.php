@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class PluginsTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $pluginManager = null;
+
+    /**
      *
      */
     public function __construct(

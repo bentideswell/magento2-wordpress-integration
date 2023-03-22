@@ -14,6 +14,36 @@ use FishPig\WordPress\Api\Data\ViewableModelInterface;
 class Search extends \Magento\Framework\DataObject implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $request = null;
+
+    /**
+     * @auto
+     */
+    protected $restRequestManager = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_search';

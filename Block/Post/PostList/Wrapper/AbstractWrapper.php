@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Block\Post\PostList\Wrapper;
 abstract class AbstractWrapper extends \FishPig\WordPress\Block\AbstractBlock
 {
     /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
      * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
      */
     abstract protected function getBasePostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection;

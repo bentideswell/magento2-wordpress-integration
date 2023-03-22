@@ -7,6 +7,21 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Calendar extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $postResource = null;
+
+    /**
+     * @auto
+     */
+    protected $dateHelper = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

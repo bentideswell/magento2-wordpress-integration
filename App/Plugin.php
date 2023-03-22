@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App;
 class Plugin
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
      * @return void
      */
     public function __construct(

@@ -11,6 +11,41 @@ namespace FishPig\WordPress\Model\ResourceModel\Post;
 class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractMetaCollection
 {
     /**
+     * @auto
+     */
+    protected $_orders = null;
+
+    /**
+     * @auto
+     */
+    protected $_totalRecords = null;
+
+    /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $permalinkResource = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $customerSession = null;
+
+    /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
      * @var string
      */
     protected $_eventPrefix = 'wordpress_post_collection';

@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Controller\Router;
 class SimpleRouter implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $requestDispatcher = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
      *
      */
     public function __construct(

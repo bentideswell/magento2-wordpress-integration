@@ -11,6 +11,16 @@ namespace FishPig\WordPress\App;
 class Option
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
      * @param \FishPig\WordPress\App\ResourceConnection $resourceConnection
      */
     public function __construct(

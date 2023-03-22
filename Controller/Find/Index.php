@@ -7,6 +7,21 @@ namespace FishPig\WordPress\Controller\Find;
 class Index extends \Magento\Framework\App\Action\Action
 {
     /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
+     * @auto
+     */
+    protected $frontPageHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      *
      */
     public function __construct(

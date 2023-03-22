@@ -15,6 +15,21 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class RequestManager extends \FishPig\WordPress\App\HTTP\RequestManager
 {
     /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
+     * @auto
+     */
+    protected $network = null;
+
+    /**
+     * @auto
+     */
+    protected $cache = null;
+
+    /**
      *
      */
     public function __construct(

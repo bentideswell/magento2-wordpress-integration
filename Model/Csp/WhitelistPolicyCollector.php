@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\Csp;
 class WhitelistPolicyCollector
 {
     /**
+     * @auto
+     */
+    protected $policyGeneratorPool = null;
+
+    /**
      * @const string
      */
     const POLCY_ID_PREFIX = 'fishpig_wp_';

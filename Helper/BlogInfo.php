@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Helper;
 class BlogInfo extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
      *
      */
     public function __construct(

@@ -11,6 +11,26 @@ namespace FishPig\WordPress\App\Integration\Mode;
 class ObjectResolver
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $objectManager = null;
+
+    /**
+     * @auto
+     */
+    protected $objects = null;
+
+    /**
+     * @auto
+     */
+    protected $throwExceptionIfObjectNotSet = null;
+
+    /**
      * @var object[]
      */
     private $resolvedObject = [];

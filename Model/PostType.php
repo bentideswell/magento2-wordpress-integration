@@ -14,6 +14,36 @@ use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 class PostType extends \Magento\Framework\DataObject implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $resource = null;
+
+    /**
+     * @auto
+     */
+    protected $frontPage = null;
+
+    /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_post_type';

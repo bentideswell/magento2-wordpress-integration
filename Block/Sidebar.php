@@ -11,6 +11,31 @@ namespace FishPig\WordPress\Block;
 class Sidebar extends \Magento\Framework\View\Element\Template
 {
     /**
+     * @auto
+     */
+    protected $widgetRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $pluginManager = null;
+
+    /**
+     * @auto
+     */
+    protected $registry = null;
+
+    /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
      *
      */
     public function __construct(

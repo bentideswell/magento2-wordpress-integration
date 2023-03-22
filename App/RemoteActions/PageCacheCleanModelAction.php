@@ -13,6 +13,21 @@ use Magento\Framework\Exception\NoSuchEntityException;
 class PageCacheCleanModelAction implements RemoteActionInterface
 {
     /**
+     * @auto
+     */
+    protected $cache = null;
+
+    /**
+     * @auto
+     */
+    protected $eventManager = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
      *
      */
     public function __construct(

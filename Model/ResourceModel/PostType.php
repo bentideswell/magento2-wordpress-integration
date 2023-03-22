@@ -13,6 +13,26 @@ use FishPig\WordPress\Model\PostType as PostTypeModel;
 class PostType
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $hierarchicalUrlGenerator = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var array
      */
     private $cache = [];

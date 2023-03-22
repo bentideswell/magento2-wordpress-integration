@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Url;
 class SiteUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
      *
      */
     public function __construct(

@@ -14,6 +14,21 @@ use \Magento\Framework\App\ActionInterface;
 class RequestDispatcher
 {
     /**
+     * @auto
+     */
+    protected $response = null;
+
+    /**
+     * @auto
+     */
+    protected $actionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
      * @param \Magento\Framework\App\ActionFactory $actionFactory,
      * @param \FishPig\WordPress\App\Url\Router $routerUrlHelper
      */

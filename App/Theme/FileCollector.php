@@ -11,6 +11,21 @@ namespace FishPig\WordPress\App\Theme;
 class FileCollector
 {
     /**
+     * @auto
+     */
+    protected $moduleDir = null;
+
+    /**
+     * @auto
+     */
+    protected $filesystem = null;
+
+    /**
+     * @auto
+     */
+    protected $modules = null;
+
+    /**
      * @const string
      */
     const WPTHEME_DIR = 'wptheme';

@@ -13,6 +13,21 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class WPConfig
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $directoryList = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var array
      */
     private $data = [];

@@ -13,6 +13,16 @@ use Magento\Framework\DataObject\IdentityInterface;
 abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel implements IdentityInterface
 {
     /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $data = null;
+
+    /**
      * This allows us to flush all WP cache by flushing this tag
      * @const string
      */

@@ -11,6 +11,31 @@ namespace FishPig\WordPress\Controller\Router;
 class PostWithCategoryFallbackRouter implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $requestDispatcher = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
      *
      */
     public function __construct(

@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Theme;
 class PackageDeployer
 {
     /**
+     * @auto
+     */
+    protected $filesystemDriver = null;
+
+    /**
      * @param \Magento\Framework\Filesystem\DriverInterface $filesystemDriver
      */
     public function __construct(\Magento\Framework\Filesystem\DriverInterface $filesystemDriver)

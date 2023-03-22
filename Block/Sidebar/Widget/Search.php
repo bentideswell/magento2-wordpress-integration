@@ -7,6 +7,11 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Search extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $searchModel = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

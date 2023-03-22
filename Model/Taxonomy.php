@@ -11,6 +11,21 @@ namespace FishPig\WordPress\Model;
 class Taxonomy extends \Magento\Framework\DataObject
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $resource = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_taxonomy';

@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class CommentsTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $commentCollectionFactory = null;
+
+    /**
      *
      */
     public function __construct(

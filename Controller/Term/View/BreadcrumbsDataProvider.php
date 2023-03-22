@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Controller\Term\View;
 class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Action\BreadcrumbsDataProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
      * @param \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository
      */
     public function __construct(

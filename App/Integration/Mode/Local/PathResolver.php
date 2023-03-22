@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Integration\Mode\Local;
 class PathResolver
 {
     /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
      * @param  \FishPig\WordPress\App\Integration\Mode $appMode
      * @return void
      */

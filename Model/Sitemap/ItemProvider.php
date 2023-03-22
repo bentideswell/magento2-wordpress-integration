@@ -13,6 +13,36 @@ use Magento\Sitemap\Model\ItemProvider\ItemProviderInterface;
 class ItemProvider implements ItemProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $emulation = null;
+
+    /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $network = null;
+
+    /**
+     * @auto
+     */
+    protected $itemProviders = null;
+
+    /**
      *
      */
     public function __construct(

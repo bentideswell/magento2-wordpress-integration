@@ -13,6 +13,11 @@ use Magento\Framework\Controller\ResultFactory;
 class Index extends Action
 {
     /**
+     * @auto
+     */
+    protected $wpUrl = null;
+
+    /**
      * @var SearchFactory
      */
     protected $searchFactory;

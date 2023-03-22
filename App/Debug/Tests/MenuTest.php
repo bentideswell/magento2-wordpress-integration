@@ -11,6 +11,16 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class MenuTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $menuFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $termCollectionFactory = null;
+
+    /**
      *
      */
     public function __construct(

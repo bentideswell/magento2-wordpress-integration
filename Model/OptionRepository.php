@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Model;
 class OptionRepository
 {
     /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
      * @var \FishPig\WordPress\App\Option
      */
     private $dataSource = null;

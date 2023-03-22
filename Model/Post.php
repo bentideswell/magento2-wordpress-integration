@@ -11,6 +11,61 @@ namespace FishPig\WordPress\Model;
 class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\ViewableModelInterface
 {
     /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $postRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $termRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $userRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $shortcodeFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $termCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $imageFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $frontPage = null;
+
+    /**
+     * @auto
+     */
+    protected $dateHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $passwordManager = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_post';

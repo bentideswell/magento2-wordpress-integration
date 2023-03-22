@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class FrontPageTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $frontPage = null;
+
+    /**
      *
      */
     public function __construct(

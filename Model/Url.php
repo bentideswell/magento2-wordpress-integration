@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Model;
 class Url
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      * @param \FishPig\WordPress\App\Url $url
      */
     public function __construct(\FishPig\WordPress\App\Url $url)

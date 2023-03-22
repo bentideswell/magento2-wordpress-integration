@@ -9,6 +9,11 @@ use FishPig\WordPress\Block\AbstractBlock;
 class Form extends AbstractBlock
 {
     /**
+     * @auto
+     */
+    protected $customerSession = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

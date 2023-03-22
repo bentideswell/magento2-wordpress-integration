@@ -13,6 +13,11 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationRecoverableException;
 class PermalinkTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $option = null;
+
+    /**
      * @param \FishPig\WordPress\App\Option $option
      */
     public function __construct(

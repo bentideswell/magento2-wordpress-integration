@@ -15,6 +15,21 @@ use Magento\Framework\Exception\NoSuchEntityException;
 class View extends \FishPig\WordPress\Controller\Action
 {
     /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $seoMetaDataProvider = null;
+
+    /**
+     * @auto
+     */
+    protected $breadcrumbsDataProvider = null;
+
+    /**
      * @param \Magento\Framework\App\Action\Context $context
      * @param \FishPig\WordPress\Controller\Action\Context $wpContext
      * @param \FishPig\WordPress\Model\PostRepository $postRepository,

@@ -15,6 +15,21 @@ use Symfony\Component\Console\Input\InputOption;
 class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
+     * @auto
+     */
+    protected $packageBuilder = null;
+
+    /**
+     * @auto
+     */
+    protected $packageDeployer = null;
+
+    /**
+     * @auto
+     */
+    protected $fileDriver = null;
+
+    /**
      * @const string
      */
     const INSTALL_PATH = 'install-path';
@@ -44,7 +59,7 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
         $this->setDefinition([
             new InputOption(self::INSTALL_PATH, null, InputOption::VALUE_OPTIONAL, 'Optional local installation path')
         ]);
-        
+
         return parent::configure();
     }
 
@@ -74,8 +89,11 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
             } else {
                 $output->writeLn($packageFile);
             }
+
+            return parent::SUCCESS;
         } catch (\Exception $e) {
             $output->writeLn('<error>' . $e->getMessage() . '</error>');
+            return parent::FAILURE;
         }
     }
 }

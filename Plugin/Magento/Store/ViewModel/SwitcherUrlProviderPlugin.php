@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Plugin\Magento\Store\ViewModel;
 class SwitcherUrlProviderPlugin
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $emulation = null;
+
+    /**
      * @var \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface
      */
     private $storeSwitcherUrlProvider = null;

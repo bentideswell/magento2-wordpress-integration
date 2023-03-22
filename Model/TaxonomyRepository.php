@@ -13,6 +13,11 @@ use Magento\Framework\Exception\NoSuchEntityException;
 class TaxonomyRepository extends \FishPig\WordPress\Model\Repository\DataSourceRepository
 {
     /**
+     * @auto
+     */
+    protected $objectFactory = null;
+
+    /**
      * @param \FishPig\WordPress\Model\PostFactory $postFactory
      */
     public function __construct(

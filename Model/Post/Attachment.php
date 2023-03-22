@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\Post;
 class Attachment extends \FishPig\WordPress\Model\AbstractMetaModel
 {
     /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
      *
      */
     public function __construct(

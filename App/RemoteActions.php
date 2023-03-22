@@ -13,6 +13,16 @@ use FishPig\WordPress\App\RemoteActions\RemoteActionInterface;
 class RemoteActions
 {
     /**
+     * @auto
+     */
+    protected $authorisationKey = null;
+
+    /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
      * @const string
      */
     const PARAM_NAME = 'fishpig-wp';

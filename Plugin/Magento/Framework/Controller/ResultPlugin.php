@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Plugin\Magento\Framework\Controller;
 class ResultPlugin
 {
     /**
+     * @auto
+     */
+    protected $assetProvider = null;
+
+    /**
+     * @auto
+     */
+    protected $request = null;
+
+    /**
      * @param \FishPig\WordPress\App\View\AssetProvider $assetProvider
      */
     public function __construct(

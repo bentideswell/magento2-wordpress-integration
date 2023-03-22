@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Url;
 class HomeUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
     /**
+     * @auto
+     */
+    protected $option = null;
+
+    /**
      *
      */
     public function __construct(

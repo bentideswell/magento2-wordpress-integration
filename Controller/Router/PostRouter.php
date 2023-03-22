@@ -11,6 +11,26 @@ namespace FishPig\WordPress\Controller\Router;
 class PostRouter implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $requestDispatcher = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $permalinkResource = null;
+
+    /**
+     * @auto
+     */
+    protected $frontPage = null;
+
+    /**
      *
      */
     public function __construct(

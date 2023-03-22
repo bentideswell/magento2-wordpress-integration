@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 class FrontPageItemProvider extends AbstractItemProvider
 {
     /**
+     * @auto
+     */
+    protected $frontPageHelper = null;
+
+    /**
      *
      */
     const PRIORITY = 0.75;

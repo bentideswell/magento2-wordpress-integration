@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Model;
 class Homepage
 {
     /**
+     * @auto
+     */
+    protected $frontPage = null;
+
+    /**
      * @param \FishPig\WordPress\Helper\FrontPage $frontPage
      */
     public function __construct(

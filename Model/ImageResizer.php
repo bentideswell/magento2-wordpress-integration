@@ -13,6 +13,41 @@ use FishPig\WordPress\Model\Image;
 class ImageResizer
 {
     /**
+     * @auto
+     */
+    protected $filesystem = null;
+
+    /**
+     * @auto
+     */
+    protected $imageFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $wpDirectoryList = null;
+
+    /**
+     * @auto
+     */
+    protected $writeFactory = null;
+
+    /**
      * @const string
      */
     const RESIZE_MEDIA_DIR = 'wordpress';

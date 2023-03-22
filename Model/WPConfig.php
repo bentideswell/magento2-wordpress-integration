@@ -7,6 +7,11 @@ namespace FishPig\WordPress\Model;
 class WPConfig
 {
     /**
+     * @auto
+     */
+    protected $wpConfig = null;
+
+    /**
      *
      */
     public function __construct(

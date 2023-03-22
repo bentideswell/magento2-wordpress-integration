@@ -11,6 +11,21 @@ namespace FishPig\WordPress\Model\ResourceModel;
 class Post extends AbstractResourceModel
 {
     /**
+     * @auto
+     */
+    protected $permalinkResource = null;
+
+    /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $commentCollectionFactory = null;
+
+    /**
      * @var array
      */
     protected $uriPermalinksMapCache = [];

@@ -11,6 +11,16 @@ namespace FishPig\WordPress\App\Debug\Tests;
 class SearchTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $searchFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
      *
      */
     private $post = false;

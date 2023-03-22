@@ -14,6 +14,16 @@ use FishPig\WordPress\Api\Data\ViewableModelInterface;
 class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface, ViewableModelInterface
 {
     /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $termRepository = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_term';

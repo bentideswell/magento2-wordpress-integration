@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Theme;
 class LocalHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $themeFileCollector = null;
+
+    /**
      * @var string
      */
     private $hash = null;

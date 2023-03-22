@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Block\Widget;
 class ListPosts extends \Magento\Framework\View\Element\Template implements \Magento\Widget\Block\BlockInterface
 {
     /**
+     * @auto
+     */
+    protected $collectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $integrationManager = null;
+
+    /**
      *
      */
     private $collection;

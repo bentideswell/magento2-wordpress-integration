@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\ResourceModel;
 abstract class AbstractResourceModel extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
      * @var \FishPig\WordPress\App\ResourceConnection
      */
     private $resourceConnection = null;

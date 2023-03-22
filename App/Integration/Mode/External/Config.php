@@ -11,6 +11,16 @@ namespace FishPig\WordPress\App\Integration\Mode\External;
 class Config implements \FishPig\WordPress\Api\App\ResourceConnection\ConfigRetrieverInterface
 {
     /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $encryptor = null;
+
+    /**
      * @return void
      */
     public function __construct(

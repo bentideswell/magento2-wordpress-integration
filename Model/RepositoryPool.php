@@ -13,6 +13,11 @@ use FishPig\WordPress\Model\Repository\AbstractRepository;
 class RepositoryPool
 {
     /**
+     * @auto
+     */
+    protected $repositories = null;
+
+    /**
      * @var []
      */
     private $pool = [];

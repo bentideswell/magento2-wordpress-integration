@@ -15,6 +15,21 @@ use Symfony\Component\Console\Input\InputOption;
 class SetOptionCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $storeEmulation = null;
+
+    /**
      * @const string
      */
     const OPTION = 'option';
@@ -48,7 +63,7 @@ class SetOptionCommand extends \Symfony\Component\Console\Command\Command
             new InputOption(self::VALUE, null, InputOption::VALUE_REQUIRED, 'Option value'),
             new InputOption(self::STORE, null, InputOption::VALUE_OPTIONAL, 'Store ID'),
         ]);
-        
+
         return parent::configure();
     }
 
@@ -76,7 +91,7 @@ class SetOptionCommand extends \Symfony\Component\Console\Command\Command
                     'More than 1 store found. Please specify store using --store {{STORE-ID}}'
                 );
             }
-            
+
             $storeId = (int)$stores[0]->getId();
         }
 
@@ -93,8 +108,9 @@ class SetOptionCommand extends \Symfony\Component\Console\Command\Command
         }
 
         $output->writeLn('<info>Value was saved.</info>');
+        return parent::SUCCESS;
     }
-    
+
     /**
      *
      */

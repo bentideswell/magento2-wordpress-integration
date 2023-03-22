@@ -13,6 +13,21 @@ use Magento\Framework\Filesystem\DriverPool;
 class DirectoryList
 {
     /**
+     * @auto
+     */
+    protected $pathResolver = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $filesystem = null;
+
+    /**
      * @var array
      */
     private $basePath = [];

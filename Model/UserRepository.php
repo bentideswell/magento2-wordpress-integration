@@ -13,6 +13,11 @@ use Magento\Framework\Exception\NoSuchEntityException;
 class UserRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
     /**
+     * @auto
+     */
+    protected $objectFactory = null;
+
+    /**
      *
      */
     public function __construct(

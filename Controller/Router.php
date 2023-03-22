@@ -13,6 +13,21 @@ use \Magento\Framework\App\RequestInterface;
 class Router implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $integrationTests = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $requestDispatcher = null;
+
+    /**
      * @var []
      */
     private $routerPool = [];

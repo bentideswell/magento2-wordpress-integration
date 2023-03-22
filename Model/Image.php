@@ -14,6 +14,16 @@ use FishPig\WordPress\Model\Image\NoSuchSourceFileException;
 class Image extends \FishPig\WordPress\Model\Post\Attachment
 {
     /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
+     * @auto
+     */
+    protected $imageResizerFactory = null;
+
+    /**
      * @var
      */
     private $resizer = null;

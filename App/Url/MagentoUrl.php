@@ -11,6 +11,21 @@ namespace FishPig\WordPress\App\Url;
 class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 {
     /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $magentoBaseUrlSource = null;
+
+    /**
      * @var []
      */
     private $cache = [];

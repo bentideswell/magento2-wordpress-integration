@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
 {
     /**
+     * @auto
+     */
+    protected $serializer = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

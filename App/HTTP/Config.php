@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\HTTP;
 class Config
 {
     /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
      * @return void
      */
     public function __construct(

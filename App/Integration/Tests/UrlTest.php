@@ -14,6 +14,26 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class UrlTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $routeConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $config = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @param \FishPig\WordPress\App\Url $url
      */
     public function __construct(

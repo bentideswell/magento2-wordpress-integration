@@ -14,6 +14,16 @@ use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 class Archive extends AbstractModel implements ViewableModelInterface, PostCollectionGeneratorInterface
 {
     /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $dateHelper = null;
+
+    /**
      * @const string
      */
     const ENTITY = 'wordpress_archive';

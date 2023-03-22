@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\Csp;
 class WhitelistPolicyGenerator implements \FishPig\WordPress\Api\Data\CspPolicyGeneratorInterface
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      * @param  \FishPig\WordPress\Model\UrlInterface $url
      */
     public function __construct(

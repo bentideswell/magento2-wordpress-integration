@@ -13,6 +13,26 @@ use FishPig\WordPress\Model\Taxonomy as TaxonomyModel;
 class Taxonomy
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $hierarchicalUrlGenerator = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var array
      */
     private $cache = [];

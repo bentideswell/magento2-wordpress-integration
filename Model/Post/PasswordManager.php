@@ -7,6 +7,31 @@ namespace FishPig\WordPress\Model\Post;
 class PasswordManager
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $deploymentConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $cookieManager = null;
+
+    /**
+     * @auto
+     */
+    protected $cookieMetadataFactory = null;
+
+    /**
      * @const string
      */
     const PASSWORD_STORE_KEY_PREFIX = 'post_password_';

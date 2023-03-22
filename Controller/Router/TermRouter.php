@@ -11,6 +11,26 @@ namespace FishPig\WordPress\Controller\Router;
 class TermRouter implements \Magento\Framework\App\RouterInterface
 {
     /**
+     * @auto
+     */
+    protected $requestDispatcher = null;
+
+    /**
+     * @auto
+     */
+    protected $routerUrlHelper = null;
+
+    /**
+     * @auto
+     */
+    protected $taxonomyRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
      *
      */
     public function __construct(

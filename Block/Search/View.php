@@ -11,6 +11,16 @@ namespace FishPig\WordPress\Block\Search;
 class View extends \FishPig\WordPress\Block\Post\PostList\Wrapper\AbstractWrapper
 {
     /**
+     * @auto
+     */
+    protected $searchModel = null;
+
+    /**
+     * @auto
+     */
+    protected $postTypeRepository = null;
+
+    /**
      * @param  \Magento\Framework\View\Element\Template\Context $context,
      * @param  \FishPig\WordPress\Block\Context $wpContext,
      * @param  array $data = []

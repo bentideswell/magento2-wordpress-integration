@@ -11,6 +11,31 @@ namespace FishPig\WordPress\App;
 class Url implements \FishPig\WordPress\Model\UrlInterface
 {
     /**
+     * @auto
+     */
+    protected $siteUrlResolver = null;
+
+    /**
+     * @auto
+     */
+    protected $homeUrlResolver = null;
+
+    /**
+     * @auto
+     */
+    protected $magentoUrl = null;
+
+    /**
+     * @auto
+     */
+    protected $option = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var []
      */
     private $front = [];

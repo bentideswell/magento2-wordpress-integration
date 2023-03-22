@@ -13,6 +13,31 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class ResourceConnection
 {
     /**
+     * @auto
+     */
+    protected $appMode = null;
+
+    /**
+     * @auto
+     */
+    protected $connectionConfigRetriever = null;
+
+    /**
+     * @auto
+     */
+    protected $connectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
+     * @auto
+     */
+    protected $cache = null;
+
+    /**
      * @var []
      */
     private $connection = [];

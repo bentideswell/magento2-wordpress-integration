@@ -13,6 +13,21 @@ use FishPig\WordPress\App\Debug\TestPool;
 class ArchiveTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $archiveFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $postCollectionFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $layout = null;
+
+    /**
      *
      */
     public function __construct(

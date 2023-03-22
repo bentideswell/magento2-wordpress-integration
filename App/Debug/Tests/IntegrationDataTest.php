@@ -13,6 +13,11 @@ use FishPig\WordPress\App\Debug\TestPool;
 class IntegrationDataTest implements \FishPig\WordPress\App\Debug\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $integrationData = null;
+
+    /**
      *
      */
     public function __construct(

@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model;
 class TermRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
 {
     /**
+     * @auto
+     */
+    protected $objectFactory = null;
+
+    /**
      *
      */
     public function __construct(

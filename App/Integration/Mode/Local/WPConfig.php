@@ -13,6 +13,11 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class WPConfig implements \FishPig\WordPress\Api\App\ResourceConnection\ConfigRetrieverInterface
 {
     /**
+     * @auto
+     */
+    protected $wpConfig = null;
+
+    /**
      * @return void
      */
     public function __construct(

@@ -9,6 +9,11 @@ namespace FishPig\WordPress\Controller\Adminhtml\Theme;
 class Build extends \Magento\Backend\App\Action
 {
     /**
+     * @auto
+     */
+    protected $packagePublisher = null;
+
+    /**
      * @const string
      */
     const ADMIN_RESOURCE = 'FishPig_WordPress::wp';

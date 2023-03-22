@@ -12,6 +12,16 @@ use FishPig\WordPress\App\Integration\Exception\InvalidModeException;
 
 class Mode
 {
+    /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
     /**#@+
      * Integration modes
      */

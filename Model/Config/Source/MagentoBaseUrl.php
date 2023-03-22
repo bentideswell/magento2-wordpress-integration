@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model\Config\Source;
 class MagentoBaseUrl
 {
     /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var string
      */
     const URL_USE_DEFAULT = '';

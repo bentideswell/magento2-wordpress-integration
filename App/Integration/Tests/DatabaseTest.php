@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Integration\Tests;
 class DatabaseTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
      * @param  \FishPig\WordPress\App\ResourceConnection $resourceConnection
      * @return void
      */

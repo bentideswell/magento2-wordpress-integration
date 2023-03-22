@@ -11,6 +11,26 @@ namespace FishPig\WordPress\App;
 class Theme
 {
     /**
+     * @auto
+     */
+    protected $localHashProvider = null;
+
+    /**
+     * @auto
+     */
+    protected $remoteHashProvider = null;
+
+    /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $cache = null;
+
+    /**
      *
      */
     const THEME_NAME = 'fishpig';

@@ -13,6 +13,16 @@ use \Magento\Framework\App\RequestInterface;
 class UrlHelper
 {
     /**
+     * @auto
+     */
+    protected $url = null;
+
+    /**
+     * @auto
+     */
+    protected $storeManager = null;
+
+    /**
      * @var []
      */
     private $cache = [];

@@ -7,6 +7,16 @@ namespace FishPig\WordPress\Block\Sidebar\Widget;
 class Archives extends AbstractWidget
 {
     /**
+     * @auto
+     */
+    protected $archiveFactory = null;
+
+    /**
+     * @auto
+     */
+    protected $archiveResource = null;
+
+    /**
      * Cache for archive collection
      *
      * @var null|Varien_Data_Collection

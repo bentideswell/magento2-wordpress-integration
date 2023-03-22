@@ -11,6 +11,11 @@ namespace FishPig\WordPress\Model;
 class Config
 {
     /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
      * @return void
      */
     public function __construct(

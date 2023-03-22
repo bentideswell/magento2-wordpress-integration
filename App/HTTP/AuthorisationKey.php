@@ -11,6 +11,21 @@ namespace FishPig\WordPress\App\HTTP;
 class AuthorisationKey
 {
     /**
+     * @auto
+     */
+    protected $optionRepository = null;
+
+    /**
+     * @auto
+     */
+    protected $deploymentConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
      * @var string
      */
     private $key = null;

@@ -13,6 +13,31 @@ use FishPig\WordPress\Model\ResourceModel\Meta\Collection\AbstractMetaCollection
 class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderInterface
 {
     /**
+     * @auto
+     */
+    protected $resourceConnection = null;
+
+    /**
+     * @auto
+     */
+    protected $tableName = null;
+
+    /**
+     * @auto
+     */
+    protected $objectField = null;
+
+    /**
+     * @auto
+     */
+    protected $primaryKeyField = null;
+
+    /**
+     * @auto
+     */
+    protected $useKeyPrefix = null;
+
+    /**
      * @var []
      */
     const COLLECTION_FLAG = '_meta_fields_joined';

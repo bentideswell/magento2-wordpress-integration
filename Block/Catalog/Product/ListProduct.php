@@ -13,6 +13,21 @@ use Magento\Swatches\Block\Product\Renderer\Listing\Configurable as SwatchesConf
 class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
 {
     /**
+     * @auto
+     */
+    protected $wpContext = null;
+
+    /**
+     * @auto
+     */
+    protected $scopeConfig = null;
+
+    /**
+     * @auto
+     */
+    protected $logger = null;
+
+    /**
      *
      */
     public function __construct(
