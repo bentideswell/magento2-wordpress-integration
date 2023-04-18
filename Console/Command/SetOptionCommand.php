@@ -108,7 +108,7 @@ class SetOptionCommand extends \Symfony\Component\Console\Command\Command
         }
 
         $output->writeLn('<info>Value was saved.</info>');
-        return parent::SUCCESS;
+        return 0;
     }
 
     /**

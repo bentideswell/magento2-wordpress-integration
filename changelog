@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.28.1] - 2023-04-18
+### [Changed]
+- Changed console command return types to direct int's, rather than constants
+  which only exist on 2.4.6 and above.
+
 ## [3.28.0] - 2023-03-22
 ### [Added]
 - Added PHP 8.2 support.

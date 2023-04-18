@@ -90,10 +90,10 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
                 $output->writeLn($packageFile);
             }
 
-            return parent::SUCCESS;
+            return 0;
         } catch (\Exception $e) {
             $output->writeLn('<error>' . $e->getMessage() . '</error>');
-            return parent::FAILURE;
+            return 1;
         }
     }
 }

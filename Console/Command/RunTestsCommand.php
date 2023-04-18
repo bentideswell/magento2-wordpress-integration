@@ -153,12 +153,12 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
             $output->writeLn('<error>' . $e->getMessage() . '</error>');
             $output->writeLn("\nTrace:");
             $output->writeLn($e->getTraceAsString());
-            return parent::FAILURE;
+            return 1;
         }
 
         // End with a new line to let things breathe
         $output->writeLn('');
-        return parent::SUCCESS;
+        return 0;
     }
 
     /**

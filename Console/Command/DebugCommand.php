@@ -161,7 +161,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         } else {
             $output->writeLn(json_encode($debug, JSON_UNESCAPED_SLASHES));
         }
-        return parent::SUCCESS;
+        return 0;
     }
 
     /**
