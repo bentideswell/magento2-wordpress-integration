@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.2] - 2023-04-19
+### [Changed]
+- Changed cache type to always be enabled. If disabled, it will auto enable. This
+  ensures all caching is available for HTTP data, which is required for even
+  performance.
+
 ## [3.28.1] - 2023-04-18
 ### [Changed]
 - Changed console command return types to direct int's, rather than constants

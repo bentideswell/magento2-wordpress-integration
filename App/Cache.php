@@ -29,9 +29,23 @@ class Cache extends \Magento\Framework\Cache\Frontend\Decorator\TagScope
      * @param FrontendPool $cacheFrontendPool
      */
     public function __construct(
-        \Magento\Framework\App\Cache\Type\FrontendPool $cacheFrontendPool
+        \Magento\Framework\App\Cache\Type\FrontendPool $cacheFrontendPool,
+        \Magento\Framework\App\Cache\State $cacheState,
+        $tag = self::CACHE_TAG
     ) {
-        parent::__construct($cacheFrontendPool->get(self::TYPE_IDENTIFIER), self::CACHE_TAG);
+        parent::__construct(
+            $cacheFrontendPool->get(self::TYPE_IDENTIFIER),
+            $tag
+        );
+
+        try {
+            if (!$cacheState->isEnabled(self::TYPE_IDENTIFIER)) {
+                $cacheState->setEnabled(self::TYPE_IDENTIFIER, true);
+                $cacheState->persist();
+            }
+        } catch (\Throwable $e) {
+            // Ignore
+        }
     }
 
     /**
