@@ -38,7 +38,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
 
         parent::__construct($context, $wpContext, $data);
     }
-    
+
     /**
      * Returns the collection of posts
      *
@@ -64,7 +64,7 @@ class ListPost extends \FishPig\WordPress\Block\Post
         }
 
         $this->postCollection = $collection;
-        
+
         if ($pager = $this->getChildBlock('pager')) {
             $pager->setPostListBlock(
                 $this
@@ -90,10 +90,13 @@ class ListPost extends \FishPig\WordPress\Block\Post
      * Retrieve the correct renderer and template for $post
      *
      * @param  \FishPig\WordPress\Model\Post $post
-     * @return FishPig\WordPress\Block_Post_List_Renderer
+     * @param  array $blockData = []
+     * @return string
      */
-    public function renderPost(\FishPig\WordPress\Model\Post $post)
-    {
+    public function renderPost(
+        \FishPig\WordPress\Model\Post $post,
+        array $blockData = []
+    ) {
         // Create post block
         $postBlock = $this->getLayout()->createBlock(\FishPig\WordPress\Block\Post::class)->setPost($post);
 
@@ -125,6 +128,8 @@ class ListPost extends \FishPig\WordPress\Block\Post
                 break;
             }
         }
+
+        $postBlock->addData($blockData);
 
         // Get HTML and return
         return $postBlock->toHtml();

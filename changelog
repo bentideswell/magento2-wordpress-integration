@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.3] - 2023-04-26
+### [Changed]
+- Added (array $blockData = []) parameter to FishPig\WordPress\Block\Post\ListPost::renderPost
+
 ## [3.28.2] - 2023-04-19
 ### [Changed]
 - Changed cache type to always be enabled. If disabled, it will auto enable. This
