@@ -49,7 +49,7 @@ class Taxonomy
         $this->hierarchicalUrlGenerator = $hierarchicalUrlGenerator;
         $this->storeManager = $storeManager;
     }
-    
+
     /**
      * @param  TaxonomyModel $taxonomy
      * @return array
@@ -58,17 +58,17 @@ class Taxonomy
     {
         $storeId = (int)$this->storeManager->getStore()->getId();
         $cacheKey = $storeId . '::get_all_routes::' . $taxonomy->getTaxonomy();
-        
+
         if (isset($this->cache[$cacheKey])) {
             return $this->cache[$cacheKey];
         }
-        
+
         $this->cache[$cacheKey] = [];
 
         $results = $this->resourceConnection->getConnection()->fetchAll(
             $this->getSelectForGetAllUris($taxonomy)
         );
-    
+
         if ($results) {
             $slug = $taxonomy->getSlug();
 
@@ -114,10 +114,10 @@ class Taxonomy
                 ),
                 'parent'
             );
-            
+
         return $select;
     }
-    
+
     /**
      * @param  TaxonomyModel $taxonomy
      * @return array
@@ -145,7 +145,7 @@ class Taxonomy
         foreach ($redirectableUris as &$redirectableUri) {
             $redirectableUri['parent'] = 0;
         }
-        
+
         // These are the URIs we redirect to
         $targetUris = $this->hierarchicalUrlGenerator->generateRoutes($redirectableUris, $taxonomy->getSlug());
         $redirectableData = [];

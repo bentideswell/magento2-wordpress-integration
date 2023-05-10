@@ -35,7 +35,7 @@ class Taxonomy extends \Magento\Framework\DataObject
      * @var \FishPig\WordPress\Model\ResourceModel\Taxonomy
      */
     private $_resource;
-    
+
     /**
      * @param array $data = []
      */
@@ -46,10 +46,10 @@ class Taxonomy extends \Magento\Framework\DataObject
     ) {
         $this->url = $wpContext->getUrl();
         $this->_resource = $resource;
-        
+
         parent::__construct($data);
     }
-    
+
     /**
      * @return string
      */
@@ -65,7 +65,7 @@ class Taxonomy extends \Magento\Framework\DataObject
     {
         return $this->getData('labels/singular_name') ?: $this->getName();
     }
-    
+
     /**
      * @return bool
      */
@@ -87,10 +87,10 @@ class Taxonomy extends \Magento\Framework\DataObject
      */
     public function getSlug(): ?string
     {
-        if ($slug = trim((string)$this->getData('rewrite/slug'), '/')) {
-            if ($this->withFront() && ($front = $this->url->getFront())) {
-                $slug = rtrim($front . '/' . $slug, '/');
-            }
+        $slug = trim((string)$this->getData('rewrite/slug'), '/');
+
+        if ($this->withFront() && ($front = $this->url->getFront())) {
+            $slug = rtrim($front . '/' . $slug, '/');
         }
 
         return $slug;
@@ -103,7 +103,7 @@ class Taxonomy extends \Magento\Framework\DataObject
     {
         return (int)$this->getData('rewrite/with_front') === 1;
     }
-    
+
     /**
      * @return array
      */
@@ -134,7 +134,7 @@ class Taxonomy extends \Magento\Framework\DataObject
 
         return false;
     }
-    
+
     /**
      * @return string
      */
@@ -142,7 +142,7 @@ class Taxonomy extends \Magento\Framework\DataObject
     {
         return $this->getData('taxonomy');
     }
-    
+
     /**
      * @return \FishPig\WordPress\Model\ResourceModel\Taxonomy
      */
@@ -150,7 +150,7 @@ class Taxonomy extends \Magento\Framework\DataObject
     {
         return $this->_resource;
     }
-    
+
     /**
      * Convert the object to a string and return the taxonomy type code
      *

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.4] - 2023-05-10
+### [Changed]
+- Changed Taxonomy/Term URL generation to include front, even if no slug is set.
+
 ## [3.28.3] - 2023-04-26
 ### [Changed]
 - Added (array $blockData = []) parameter to FishPig\WordPress\Block\Post\ListPost::renderPost
