@@ -183,7 +183,17 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
      */
     public function getPermalinkStructure(): string
     {
-        $structure = ltrim(str_replace('index.php/', '', ltrim($this->getData('rewrite/slug'), ' -/')), '/');
+        $structure = ltrim(
+            str_replace(
+                'index.php/',
+                '',
+                ltrim(
+                    $this->getData('rewrite/slug') ?? '',
+                    ' -/'
+                )
+            ),
+            '/'
+        );
 
         if (!$this->isDefault() && strpos($structure, '%postname%') === false) {
             $structure = rtrim($structure, '/') . '/%postname%/';
