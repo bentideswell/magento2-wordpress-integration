@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.28.6] - 2023-05-19
+## [3.28.7] - 2023-05-19
 ### [Changed]
 - Elevated theme update exception to a fatal integration exception.
 - Added --install-path to theme update exception message when using local mode.

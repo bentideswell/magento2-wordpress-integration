@@ -97,9 +97,9 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     public function runTest(): void
     {
         if ((!$this->theme->isInstalled() || !$this->theme->isLatestVersion()) && $this->appMode->isLocalMode()) {
-#            if ($this->buildAndDeployTheme()) {
-#                return;
-#            }
+            if ($this->buildAndDeployTheme()) {
+                return;
+            }
         }
 
         if (!$this->theme->isInstalled()) {
