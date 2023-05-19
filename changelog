@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.28.6] - 2023-05-19
+### [Changed]
+- Elevated theme update exception to a fatal integration exception.
+- Added --install-path to theme update exception message when using local mode.
+
 ## [3.28.5] - 2023-05-11
 ### [Fixed]
 - PHP 8.1 string/ltrim issue.

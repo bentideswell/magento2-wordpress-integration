@@ -3,4 +3,6 @@
  *
  */
 ?>
-<div class="wp-sidebar"><?= $block->getChildHtml() ?></div>
+<?php if ($html = $block->getChildHtml()): ?>
+    <div class="wp-sidebar"><?=  /* @noEscape */ $html ?></div>
+<?php endif; ?>

@@ -84,6 +84,7 @@ class Tests
             } catch (\Exception $e) {
                 $this->result[$storeId] = $e;
                 $this->logger->error($e);
+                throw $e;
             }
         }
 

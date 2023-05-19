@@ -97,9 +97,9 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     public function runTest(): void
     {
         if ((!$this->theme->isInstalled() || !$this->theme->isLatestVersion()) && $this->appMode->isLocalMode()) {
-            if ($this->buildAndDeployTheme()) {
-                return;
-            }
+#            if ($this->buildAndDeployTheme()) {
+#                return;
+#            }
         }
 
         if (!$this->theme->isInstalled()) {
@@ -109,7 +109,7 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
         }
 
         if (!$this->theme->isLatestVersion()) {
-            throw new IntegrationRecoverableException(
+            throw new IntegrationFatalException(
                 sprintf(
                     'The WordPress FishPig theme has an update available (latest=%s, current=%s). %s',
                     $this->theme->getLocalHash(),
@@ -151,6 +151,19 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     private function getErrorMessage(): string
     {
         if (php_sapi_name() === 'cli' || $this->appState->getAreaCode() !== 'adminhtml') {
+            if ($this->appMode->isLocalMode()) {
+                $basePath = rtrim($this->wpDirectoryList->getBasePath(), '/');
+
+                if (strpos($basePath, BP . '/') === 0) {
+                    $basePath = substr($basePath, strlen(BP . '/'));
+                }
+
+                return sprintf(
+                    'Run \'%s\' in the CLI to auto install the WordPress theme in WordPress',
+                    'bin/magento fishpig:wordpress:build-theme --install-path=' . $basePath
+                );
+            }
+
             return sprintf(
                 'Run \'%s\' in the CLI to generate A ZIP archive of the theme and then install it in WordPress.',
                 'bin/magento fishpig:wordpress:build-theme'

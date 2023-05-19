@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace FishPig\WordPress\Controller;
 
 use \Magento\Framework\App\RequestInterface;
+use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 
 class Router implements \Magento\Framework\App\RouterInterface
 {
@@ -56,6 +57,8 @@ class Router implements \Magento\Framework\App\RouterInterface
             if ($this->integrationTests->runTests() === false) {
                 return false;
             }
+        } catch (IntegrationFatalException $e) {
+            throw $e;
         } catch (\FishPig\WordPress\App\Exception $e) {
             return false;
         }
