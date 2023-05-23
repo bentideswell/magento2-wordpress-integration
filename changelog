@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.8] - 2023-05-23
+### [Changed]
+- Changed theme installation to use deployment service. This can now install and
+  upgrade theme for local and external installations.
+  bin/magento fishpig:wordpress:theme --deploy
+
 ## [3.28.7] - 2023-05-19
 ### [Changed]
 - Elevated theme update exception to a fatal integration exception.

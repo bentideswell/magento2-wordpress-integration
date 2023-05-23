@@ -14,81 +14,24 @@ use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
 class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
 {
     /**
-     * @auto
+     *
      */
-    protected $theme = null;
+    private $theme = null;
 
     /**
-     * @auto
+     *
      */
-    protected $appMode = null;
+    private $themeDeployer = null;
 
     /**
-     * @auto
-     */
-    protected $url = null;
-
-    /**
-     * @auto
-     */
-    protected $appState = null;
-
-    /**
-     * @auto
-     */
-    protected $themePackageBuilder = null;
-
-    /**
-     * @auto
-     */
-    protected $themePackageDeployer = null;
-
-    /**
-     * @auto
-     */
-    protected $logger = null;
-
-    /**
-     * @auto
-     */
-    protected $wpDirectoryList = null;
-
-    /**
-     * @auto
-     */
-    protected $requestManager = null;
-
-    /**
-     * @auto
-     */
-    protected $wpUrl = null;
-
-    /**
-     * @param \FishPig\WordPress\App\ThemeResolver $themeResolver
+     *
      */
     public function __construct(
         \FishPig\WordPress\App\Theme $theme,
-        \FishPig\WordPress\App\Integration\Mode $appMode,
-        \Magento\Backend\Model\Url $url,
-        \Magento\Framework\App\State $appState,
-        \FishPig\WordPress\App\Theme\PackageBuilder $themePackageBuilder,
-        \FishPig\WordPress\App\Theme\PackageDeployer $themePackageDeployer,
-        \FishPig\WordPress\App\Logger $logger,
-        \FishPig\WordPress\App\DirectoryList $wpDirectoryList,
-        \FishPig\WordPress\App\HTTP\RequestManager $requestManager,
-        \FishPig\WordPress\Model\UrlInterface $wpUrl
-
+        \FishPig\WordPress\App\Theme\Deployer $themeDeployer
     ) {
         $this->theme = $theme;
-        $this->appMode = $appMode;
-        $this->url = $url;
-        $this->appState = $appState;
-        $this->themePackageBuilder = $themePackageBuilder;
-        $this->themePackageDeployer = $themePackageDeployer;
-        $this->logger = $logger;
-        $this->wpDirectoryList = $wpDirectoryList;
-        $this->requestManager = $requestManager;
-        $this->wpUrl = $wpUrl;
+        $this->themeDeployer = $themeDeployer;
     }
 
     /**
@@ -96,10 +39,8 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
      */
     public function runTest(): void
     {
-        if ((!$this->theme->isInstalled() || !$this->theme->isLatestVersion()) && $this->appMode->isLocalMode()) {
-            if ($this->buildAndDeployTheme()) {
-                return;
-            }
+        if (!$this->theme->isInstalled() || !$this->theme->isLatestVersion()) {
+            $this->themeDeployer->deploy();
         }
 
         if (!$this->theme->isInstalled()) {
@@ -121,58 +62,13 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     }
 
     /**
-     * Try to build and deploy the theme in local mode.
-     *
-     * @return bool
-     */
-    private function buildAndDeployTheme(): bool
-    {
-        try {
-            if ($this->wpDirectoryList->isBasePathValid()) {
-                $packageFile = $this->themePackageBuilder->getFilename();
-
-                $this->themePackageDeployer->deploy($packageFile, $this->wpDirectoryList->getBasePath());
-
-                // This activates the update in WordPress and sets the hash in the DB
-                $this->requestManager->get($this->wpUrl->getSiteUrl('index.php?theme-activation'));
-
-                return $this->theme->isLatestVersion();
-            }
-        } catch (\Exception $e) {
-            $this->logger->error($e);
-        }
-
-        return false;
-    }
-
-    /**
      * @return string
      */
     private function getErrorMessage(): string
     {
-        if (php_sapi_name() === 'cli' || $this->appState->getAreaCode() !== 'adminhtml') {
-            if ($this->appMode->isLocalMode()) {
-                $basePath = rtrim($this->wpDirectoryList->getBasePath(), '/');
-
-                if (strpos($basePath, BP . '/') === 0) {
-                    $basePath = substr($basePath, strlen(BP . '/'));
-                }
-
-                return sprintf(
-                    'Run \'%s\' in the CLI to auto install the WordPress theme in WordPress',
-                    'bin/magento fishpig:wordpress:build-theme --install-path=' . $basePath
-                );
-            }
-
-            return sprintf(
-                'Run \'%s\' in the CLI to generate A ZIP archive of the theme and then install it in WordPress.',
-                'bin/magento fishpig:wordpress:build-theme'
-            );
-        }
-
         return sprintf(
-            '<a href="%s">Click here to download the theme</a> and then install it in WordPress.',
-            $this->url->getUrl('wordpress/theme/build')
+            'Automatic WordPress theme installation/upgrade failed. You can manually generate the WordPress theme using the CLI command: "%s"',
+            'bin/magento fishpig:wordpress:theme --zip'
         );
     }
 }

@@ -1,0 +1,6 @@
+<?php
+/**
+ *
+ */
+$remoteHash = '{REMOTE_HASH}';
+return $remoteHash;

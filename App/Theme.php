@@ -78,6 +78,17 @@ class Theme
     {
         return $this->optionRepository->get('template');
     }
+
+    /**
+     *
+     */
+    public function enable(): self
+    {
+        $this->optionRepository->set('template', self::THEME_NAME);
+        $this->optionRepository->set('stylesheet', self::THEME_NAME);
+        return $this;
+    }
+
     /**
      * Local theme hash (file collection + hashing) is cached for an hour
      * Flushing or disabling the cache will force a rebuild of hash

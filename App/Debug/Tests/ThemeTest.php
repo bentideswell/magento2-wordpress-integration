@@ -18,25 +18,24 @@ class ThemeTest implements \FishPig\WordPress\App\Debug\TestInterface
     /**
      * @auto
      */
-    protected $packageBuilder = null;
+    protected $themeBuilder = null;
 
     /**
      * @auto
      */
-    protected $packagePublisher = null;
+    protected $themeDeployer = null;
 
     /**
      *
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Tests\ThemeTest $themeTest,
-        \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
-        \FishPig\WordPress\App\Theme\PackagePublisher $packagePublisher
-
+        \FishPig\WordPress\App\Theme\Builder $themeBuilder,
+        \FishPig\WordPress\App\Theme\Deployer $themeDeployer
     ) {
         $this->themeTest = $themeTest;
-        $this->packageBuilder = $packageBuilder;
-        $this->packagePublisher = $packagePublisher;
+        $this->themeBuilder = $themeBuilder;
+        $this->themeDeployer = $themeDeployer;
     }
 
     /**
@@ -44,16 +43,26 @@ class ThemeTest implements \FishPig\WordPress\App\Debug\TestInterface
      */
     public function run(array $options = []): void
     {
-        $filename = $this->packageBuilder->getFilename();
+        // Throws on error
+        $this->themeBuilder->getBlob();
 
-        unlink($filename); // Delete file as it may be old
+        // Get theme blob as local file
+        $localFile = $this->themeBuilder->getLocalFile();
 
-        // Publish, which triggers recreation of theme file
-        $this->packagePublisher->publish();
-
-        if (!is_file($this->packageBuilder->getFilename())) {
-            throw new \Exception('Unable to create theme file at ' . $this->packageBuilder->getFilename());
+        if (!is_file($localFile)) {
+            throw new \Exception(
+                sprintf(
+                    'Cannot create local theme file at "%s"',
+                    $localFile
+                )
+            );
         }
+
+        unlink($localFile); // Delete file as it's good to be clean
+
+        $this->themeDeployer->deployUsing('local');
+        $this->themeDeployer->deployUsing('http');
+        $this->themeDeployer->deploy(true);
 
         // Check theme version
         $this->themeTest->runTest();

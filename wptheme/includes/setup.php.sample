@@ -14,8 +14,16 @@ class Setup
     public function __construct()
     {
         add_action('after_setup_theme', function() {
-            // Ensures Theme hash is set correctly
+            /**
+             * Allows for Magento to send a HTTP request to WP when updating theme
+             * This can trigger the below actions (eg. cache clearing).
+             * Other plugins can also hook into this
+             **/
             $forceThemeUpdate = isset($_GET['_fishpig']) && $_GET['_fishpig'] === 'theme.update';
+
+            /**
+             * This will also be activated during normal WP requests if the theme hash is not correct
+             */
             if ($forceThemeUpdate || get_option(FISHPIG_THEME_OPTION_NAME) !== FISHPIG_THEME_HASH) {
                 update_option(FISHPIG_THEME_OPTION_NAME, FISHPIG_THEME_HASH);
 

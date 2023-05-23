@@ -11,6 +11,11 @@ namespace FishPig\WordPress\App\Theme;
 class RemoteHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProviderInterface
 {
     /**
+     *
+     */
+    const OPTION_NAME = 'fishpig-theme-hash';
+
+    /**
      * @auto
      */
     protected $optionDataSource = null;
@@ -33,6 +38,6 @@ class RemoteHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProvide
      */
     public function getHash(): string
     {
-        return $this->optionDataSource->get('fishpig-theme-hash') ?: '';
+        return $this->optionDataSource->get(self::OPTION_NAME) ?: '';
     }
 }

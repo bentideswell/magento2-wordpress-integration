@@ -11,41 +11,49 @@ namespace FishPig\WordPress\Console\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use FishPig\WordPress\App\Exception;
+use FishPig\WordPress\App\Theme;
+use FishPig\WordPress\App\Theme\DeploymentInterface;
 
 class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Command
 {
     /**
-     * @auto
+     *
      */
-    protected $packageBuilder = null;
+    const DEPLOY = 'deploy';
+    const FORCE = 'force';
+    const ZIP = 'zip';
+    const LOCAL = 'local';
+    const HTTP = 'http';
 
     /**
-     * @auto
+     *
      */
-    protected $packageDeployer = null;
+    private $theme = null;
 
     /**
-     * @auto
+     *
      */
-    protected $fileDriver = null;
+    private $themeBuilder = null;
 
     /**
-     * @const string
+     *
      */
-    const INSTALL_PATH = 'install-path';
+    private $themeDeployer = null;
 
     /**
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Theme\PackageBuilder $packageBuilder,
-        \FishPig\WordPress\App\Theme\PackageDeployer $packageDeployer,
+        \FishPig\WordPress\App\Theme $theme,
+        \FishPig\WordPress\App\Theme\Builder $themeBuilder,
+        \FishPig\WordPress\App\Theme\Deployer $themeDeployer,
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
         string $name = null
     ) {
-        $this->packageBuilder = $packageBuilder;
-        $this->packageDeployer = $packageDeployer;
-        $this->fileDriver = $fileDriver;
+        $this->theme = $theme;
+        $this->themeBuilder = $themeBuilder;
+        $this->themeDeployer = $themeDeployer;
         parent::__construct($name);
     }
 
@@ -54,13 +62,52 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
      */
     protected function configure()
     {
-        $this->setName('fishpig:wordpress:build-theme');
-        $this->setDescription('Generate a ZIP file containing the FishPig WordPress theme.');
+        $this->setName('fishpig:wordpress:theme');
+        $this->setDescription('Deploy or generate the FishPig theme.');
         $this->setDefinition([
-            new InputOption(self::INSTALL_PATH, null, InputOption::VALUE_OPTIONAL, 'Optional local installation path')
+            new InputOption(
+                self::DEPLOY,
+                null,
+                InputOption::VALUE_NONE,
+                'Auto deploy theme to WordPress via the DB'
+            ),
+            new InputOption(
+                self::FORCE,
+                null,
+                InputOption::VALUE_NONE,
+                'Deploys theme even if version matches.'
+            ),
+            new InputOption(
+                self::ZIP,
+                null,
+                InputOption::VALUE_NONE,
+                'Generates a ZIP locally, rather than auto deploying.'
+            ),
+            new InputOption(
+                self::LOCAL,
+                null,
+                InputOption::VALUE_NONE,
+                'Force using the local deployment service'
+            ),
+            new InputOption(
+                self::HTTP,
+                null,
+                InputOption::VALUE_NONE,
+                'Force using the HTTP deployment service'
+            ),
         ]);
 
         return parent::configure();
+    }
+
+    /**
+     *
+     */
+    public function getAliases()
+    {
+        return [
+            'fishpig:wordpress:build-theme'
+        ];
     }
 
     /**
@@ -69,31 +116,60 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $packageFile = $this->packageBuilder->getFilename();
-
-            if ($installPath = $input->getOption(self::INSTALL_PATH)) {
-                $installPath = $this->fileDriver->getRealPath($installPath);
-
-                if (!$installPath) {
-                    throw new \FishPig\WordPress\App\Exception(
-                        'Invalid install path. Package file is at ' . $packageFile
-                    );
-                }
-
-                $this->packageDeployer->deploy($packageFile, $installPath);
-
+        if ($input->getOption(self::ZIP)) {
+            $output->writeLn(
+                sprintf(
+                    'Latest theme published as a ZIP to %s. Download this and install it in the WordPress Admin to update the theme.',
+                    $this->themeBuilder->getLocalFile()
+                )
+            );
+        } elseif ($input->getOption(self::DEPLOY)) {
+            if ($this->theme->isLatestVersion() && !$input->getOption(self::FORCE)) {
                 $output->writeLn(
-                    "Theme installed to WordPress at $installPath. Visit a WP Admin page to complete the installation."
+                    sprintf(
+                        '<comment>Skipped</comment> - theme "%s" version "%s" already deployed. Use --force to reinstall',
+                        Theme::THEME_NAME,
+                        $this->theme->getRemoteHash()
+                    )
                 );
-            } else {
-                $output->writeLn($packageFile);
+                // Success
+                return 0;
             }
 
-            return 0;
-        } catch (\Exception $e) {
-            $output->writeLn('<error>' . $e->getMessage() . '</error>');
-            return 1;
+            if ($input->getOption(self::LOCAL)) {
+                $result = $this->themeDeployer->deployUsing('local', true);
+            } elseif ($input->getOption(self::HTTP)) {
+                $result = $this->themeDeployer->deployUsing('http', true);
+            } else {
+                $result = $this->themeDeployer->deploy(true);
+            }
+
+            if ($result === DeploymentInterface::DEPLOY_FAIL) {
+                $output->writeLn(
+                    sprintf(
+                        '<error>Fail</error> - theme "%s" could not be updated. Check logs.',
+                        Theme::THEME_NAME
+                    )
+                );
+                // Error
+                return 1;
+            } elseif ($result === DeploymentInterface::DEPLOY_OK) {
+                $output->writeLn(
+                    sprintf(
+                        '<info>Success</info> - theme "%s" version "%s" installed.',
+                        Theme::THEME_NAME,
+                        $this->theme->getRemoteHash()
+                    )
+                );
+                return 0; // Success
+            } else {
+                throw new \Exception('Unknown response from deployment services.');
+            }
+        } else {
+            throw new Exception('No input arguments provided.');
         }
+
+        // Success
+        return 0;
     }
 }
