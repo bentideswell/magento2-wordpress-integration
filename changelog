@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.9] - 2023-05-25
+### [Changed]
+- Modified local theme installation to remove rename and just remove instead.
+
 ## [3.28.8] - 2023-05-23
 ### [Changed]
 - Changed theme installation to use deployment service. This can now install and

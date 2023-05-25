@@ -23,6 +23,11 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
     /**
      *
      */
+    private $appMode = null;
+
+    /**
+     *
+     */
     private $theme = null;
 
     /**
@@ -54,6 +59,7 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
      *
      */
     public function __construct(
+        \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\Theme $theme,
         \FishPig\WordPress\App\Theme\Builder $themeBuilder,
         \FishPig\WordPress\App\Url $wpUrl,
@@ -61,6 +67,7 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
         \FishPig\WordPress\App\ResourceConnection $resourceConnection,
         \FishPig\WordPress\App\HTTP\Config $httpConfig
     ) {
+        $this->appMode = $appMode;
         $this->theme = $theme;
         $this->themeBuilder = $themeBuilder;
         $this->wpUrl = $wpUrl;
@@ -74,7 +81,7 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
      */
     public function isEnabled(): bool
     {
-        return true;
+        return $this->appMode->isExternalMode();
     }
 
     /**

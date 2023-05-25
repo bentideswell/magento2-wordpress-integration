@@ -88,20 +88,10 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
 
         $wpThemesPath = $this->getThemesPath();
 
-        // Backup existing fishpig theme, if exists
+        // Remove existing theme if exists
         $existingFishPigTheme = $wpThemesPath . '/' . Theme::THEME_NAME;
         if (is_dir($existingFishPigTheme)) {
-            $existingFishPigThemeBackup = $existingFishPigTheme . '-backup-'. time();
-
-            if (!rename($existingFishPigTheme, $existingFishPigThemeBackup)) {
-                throw new Exception(
-                    sprintf(
-                        'Unable to move FishPig theme from "%s" to "%s"',
-                        $existingFishPigTheme,
-                        $existingFishPigThemeBackup
-                    )
-                );
-            }
+            $this->removeDirectory($existingFishPigTheme);
         }
 
         // Write the ZIP file to disk
@@ -183,10 +173,6 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
 
         // Now lets clean thing sup
         unlink($themeZipFile);
-
-        if (isset($existingFishPigThemeBackup)) {
-            $this->removeDirectory($existingFishPigThemeBackup);
-        }
     }
 
     /**
