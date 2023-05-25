@@ -39,7 +39,7 @@ class ThemeTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
      */
     public function runTest(): void
     {
-        if (!$this->theme->isInstalled() || !$this->theme->isLatestVersion()) {
+        if (!$this->themeDeployer->isLatestVersion()) {
             $this->themeDeployer->deploy();
         }
 

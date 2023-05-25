@@ -81,7 +81,8 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
      */
     public function isEnabled(): bool
     {
-        return $this->appMode->isExternalMode();
+        return false;
+        return true;
     }
 
     /**
@@ -247,7 +248,9 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
                 );
             }
         } finally {
-            $ch ? curl_close($ch) : null;
+            if (!empty($ch)) {
+                curl_close($ch);
+            }
         }
     }
 

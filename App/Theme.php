@@ -84,8 +84,11 @@ class Theme
      */
     public function enable(): self
     {
-        $this->optionRepository->set('template', self::THEME_NAME);
-        $this->optionRepository->set('stylesheet', self::THEME_NAME);
+        foreach (['template', 'stylesheet'] as $optionName) {
+            if ($this->optionRepository->get($optionName) !== self::THEME_NAME) {
+                $this->optionRepository->set($optionName, self::THEME_NAME);
+            }
+        }
         return $this;
     }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.10] - 2023-05-25
+### [Changed]
+- Removed any HTTP requests from local theme deploy.
+
 ## [3.28.9] - 2023-05-25
 ### [Changed]
 - Modified local theme installation to remove rename and just remove instead.

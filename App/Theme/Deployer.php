@@ -16,13 +16,6 @@ class Deployer
     /**
      *
      */
-    const DEPLOY_OK = true;
-    const DEPLOY_FAIL = false;
-    const DEPLOY_SKIPPED = null;
-
-    /**
-     *
-     */
     private $theme = null;
 
     /**
@@ -33,7 +26,7 @@ class Deployer
     /**
      *
      */
-    private $deployments = [];
+    private $deploymentPool = null;
 
     /**
      *
@@ -41,60 +34,53 @@ class Deployer
     public function __construct(
         \FishPig\WordPress\App\Theme $theme,
         \FishPig\WordPress\App\Logger $logger,
-        array $deployments = []
+        Deployment\Pool $deploymentPool
     ) {
         $this->theme = $theme;
         $this->logger = $logger;
-
-        foreach ($deployments as $id => $deployment) {
-            if (false === ($deployment instanceof DeploymentInterface)) {
-                throw new \InvalidArgumentException(
-                    sprintf(
-                        'Deployment "%s" is not an instance of "%s".',
-                        $id,
-                        DeploymentInterface::class
-                    )
-                );
-            }
-        }
-
-        $this->deployments = $deployments;
+        $this->deploymentPool = $deploymentPool;
     }
 
     /**
      *
      */
-    public function deploy(bool $force = false): ?bool
+    public function isLatestVersion(): bool
     {
-        return $this->_deploy($this->deployments, $force);
+        return $this->theme->isInstalled() && $this->theme->isLatestVersion();
     }
 
     /**
      *
      */
-    public function deployUsing(string $deploymentId, bool $force = false): ?bool
+    public function deploy(): ?string
     {
-        if (!isset($this->deployments[$deploymentId])) {
+        return $this->_deploy($this->deploymentPool->getAll());
+    }
+
+    /**
+     *
+     */
+    public function deployUsing(string $deploymentId, bool $force = false): ?string
+    {
+        $deployment = $this->deploymentPool->get($deploymentId);
+
+        if (!$deployment->isEnabled()) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    'Cannot find theme deployment service using "%s".',
+                    'Cannot deploy using "%s" with the current configuration.',
                     $deploymentId
                 )
             );
         }
 
-        return $this->_deploy([$this->deployments[$deploymentId]], $force);
+        return $this->_deploy([$deploymentId => $deployment], $force);
     }
 
     /**
      *
      */
-    private function _deploy(array $deployments, bool $force = false): ?bool
+    private function _deploy(array $deployments): ?string
     {
-        if (!$force && $this->theme->isLatestVersion()) {
-            return DeploymentInterface::DEPLOY_SKIPPED;
-        }
-
         $targetThemeHash = $this->theme->getLocalHash();
         $exception = null;
 
@@ -107,14 +93,14 @@ class Deployer
                 $deployment->deploy();
 
                 if ($this->theme->getRemoteHash() === $targetThemeHash) {
-                    return DeploymentInterface::DEPLOY_OK;
+                    return $deploymentId;
                 }
             } catch (\Throwable $e) {
                 $this->logger->error($e);
 
                 $exception = new DeploymentException(
                     sprintf(
-                        'Deployment "%s" exception: %s',
+                        'Exception during "%s" theme deployment: %s',
                         $deploymentId,
                         $e->getMessage()
                     ),
@@ -128,6 +114,8 @@ class Deployer
             throw $exception;
         }
 
-        return DeploymentInterface::DEPLOY_FAIL;
+        throw new DeploymentException(
+            'Deployment failed, but no exceptions were raised.'
+        );
     }
 }

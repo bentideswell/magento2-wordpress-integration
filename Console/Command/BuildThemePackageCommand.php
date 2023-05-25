@@ -123,53 +123,52 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
                     $this->themeBuilder->getLocalFile()
                 )
             );
-        } elseif ($input->getOption(self::DEPLOY)) {
-            if ($this->theme->isLatestVersion() && !$input->getOption(self::FORCE)) {
-                $output->writeLn(
-                    sprintf(
-                        '<comment>Skipped</comment> - theme "%s" version "%s" already deployed. Use --force to reinstall',
-                        Theme::THEME_NAME,
-                        $this->theme->getRemoteHash()
-                    )
-                );
-                // Success
-                return 0;
-            }
+            return 0;
+        }
 
-            if ($input->getOption(self::LOCAL)) {
-                $result = $this->themeDeployer->deployUsing('local', true);
-            } elseif ($input->getOption(self::HTTP)) {
-                $result = $this->themeDeployer->deployUsing('http', true);
-            } else {
-                $result = $this->themeDeployer->deploy(true);
-            }
-
-            if ($result === DeploymentInterface::DEPLOY_FAIL) {
-                $output->writeLn(
-                    sprintf(
-                        '<error>Fail</error> - theme "%s" could not be updated. Check logs.',
-                        Theme::THEME_NAME
-                    )
-                );
-                // Error
-                return 1;
-            } elseif ($result === DeploymentInterface::DEPLOY_OK) {
-                $output->writeLn(
-                    sprintf(
-                        '<info>Success</info> - theme "%s" version "%s" installed.',
-                        Theme::THEME_NAME,
-                        $this->theme->getRemoteHash()
-                    )
-                );
-                return 0; // Success
-            } else {
-                throw new \Exception('Unknown response from deployment services.');
-            }
-        } else {
+        if (!$input->getOption(self::DEPLOY)) {
             throw new Exception('No input arguments provided.');
         }
 
-        // Success
-        return 0;
+        if ($this->themeDeployer->isLatestVersion() && !$input->getOption(self::FORCE)) {
+            $output->writeLn(
+                sprintf(
+                    '<comment>Skipped</comment> - theme "%s" version "%s" already deployed. Use --force to reinstall',
+                    Theme::THEME_NAME,
+                    $this->theme->getRemoteHash()
+                )
+            );
+            // Success
+            return 0;
+        }
+
+        if ($input->getOption(self::LOCAL)) {
+            $deploymentId = $this->themeDeployer->deployUsing('local');
+        } elseif ($input->getOption(self::HTTP)) {
+            $deploymentId = $this->themeDeployer->deployUsing('http');
+        } else {
+            $deploymentId = $this->themeDeployer->deploy();
+        }
+
+        if ($deploymentId === null) {
+            $output->writeLn(
+                sprintf(
+                    '<error>Fail</error> - theme "%s" could not be updated. Check logs.',
+                    Theme::THEME_NAME
+                )
+            );
+
+            return 1; // Error
+        }
+
+        $output->writeLn(
+            sprintf(
+                '<info>Success</info> - theme "%s" version "%s" installed using "%s" deployment.',
+                Theme::THEME_NAME,
+                $this->theme->getRemoteHash(),
+                $deploymentId
+            )
+        );
+        return 0; // Success
     }
 }

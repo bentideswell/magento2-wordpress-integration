@@ -7,9 +7,6 @@
  *
  */
 // phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
-
-define('FISHPIG_THEME_OPTION_NAME', 'fishpig-theme-hash');
-define('FISHPIG_THEME_HASH', '{REMOTE_HASH}');
 define('FISHPIG_CLASS_PREFIX', 'FishPig\WordPress\X\\');
 
 // Turn of deprecated errors
@@ -26,7 +23,7 @@ spl_autoload_register(function($className) {
 
     $baseName = trim(
         preg_replace_callback(
-            '/[A-Z]{1}/', 
+            '/[A-Z]{1}/',
             function($x) {
                 return '-' . strtolower($x[0]);
             },
@@ -43,16 +40,15 @@ spl_autoload_register(function($className) {
             return true;
         }
     }
-    
+
     return false;
 });
 
-/**
- * Initialise base objets
- */
+// Initialise base objets
 $fishpigObjects = [
     new \FishPig\WordPress\X\MuPlugins(),
     new \FishPig\WordPress\X\Helper(),
+    new \FishPig\WordPress\X\Theme(),
     new \FishPig\WordPress\X\Setup(),
     new \FishPig\WordPress\X\AuthorisationKey(),
     new \FishPig\WordPress\X\Api(),
@@ -62,9 +58,7 @@ $fishpigObjects = [
     new \FishPig\WordPress\X\Misc(),
 ];
 
-/**
- * Init add-on files
- */
+// Init add-on files
 $addonsDir = __DIR__ . '/add-ons';
 
 if (is_dir($addonsDir)) {
@@ -77,7 +71,7 @@ if (is_dir($addonsDir)) {
                     str_replace('-', ' ', $file)
                 )
             );
-            
+
             $fishpigObjects[$className] = new $className();
         }
     }

@@ -40,4 +40,13 @@ class RemoteHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProvide
     {
         return $this->optionDataSource->get(self::OPTION_NAME) ?: '';
     }
+
+    /**
+     *
+     */
+    public function update(string $hash): self
+    {
+        $this->optionDataSource->set(self::OPTION_NAME, $hash);
+        return $this;
+    }
 }

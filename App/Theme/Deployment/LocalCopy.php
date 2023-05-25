@@ -23,7 +23,7 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
     /**
      *
      */
-    private $theme= null;
+    private $theme = null;
 
     /**
      *
@@ -38,12 +38,7 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
     /**
      *
      */
-    private $wpUrl = null;
-
-    /**
-     *
-     */
-    private $requestManager = null;
+    private $remoteHashProvider = null;
 
     /**
      *
@@ -53,15 +48,13 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
         \FishPig\WordPress\App\Theme $theme,
         \FishPig\WordPress\App\Theme\Builder $themeBuilder,
         \FishPig\WordPress\App\DirectoryList $wpDirectoryList,
-        \FishPig\WordPress\App\Url $wpUrl,
-        \FishPig\WordPress\App\HTTP\RequestManager $requestManager
+        RemoteHashProvider $remoteHashProvider
     ) {
         $this->appMode = $appMode;
         $this->theme = $theme;
         $this->themeBuilder = $themeBuilder;
         $this->wpDirectoryList = $wpDirectoryList;
-        $this->wpUrl = $wpUrl;
-        $this->requestManager = $requestManager;
+        $this->remoteHashProvider = $remoteHashProvider;
     }
 
     /**
@@ -90,13 +83,16 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
 
         // Remove existing theme if exists
         $existingFishPigTheme = $wpThemesPath . '/' . Theme::THEME_NAME;
+
         if (is_dir($existingFishPigTheme)) {
             $this->removeDirectory($existingFishPigTheme);
         }
 
         // Write the ZIP file to disk
         $themeZipFile = $wpThemesPath . '/' . Theme::THEME_NAME . '-' . $localHash . '.zip';
+
         file_put_contents($themeZipFile, $blob);
+
         if (!is_file($themeZipFile)) {
             throw new Exception(
                 sprintf(
@@ -106,6 +102,7 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
             );
         }
 
+        // Extract the ZIP file
         $zip = new \ZipArchive();
 
         if ($zip->open($themeZipFile) !== true) {
@@ -120,6 +117,9 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
         $zip->extractTo($wpThemesPath);
         $zip->close();
 
+        unlink($themeZipFile);
+
+        // Check that the ZIP has extracted and the theme folder now exists
         if (!is_dir($existingFishPigTheme)) {
             throw new Exception(
                 sprintf(
@@ -129,6 +129,7 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
             );
         }
 
+        // Check the remote hash in the theme
         $remoteHashFile = $existingFishPigTheme . '/remote-hash.php';
 
         if (!is_file($remoteHashFile)) {
@@ -152,15 +153,10 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
             );
         }
 
-        // Ensure that the theme is enabled
-        if ($this->theme->getEnabledThemeName() !== Theme::THEME_NAME) {
-            $this->theme->enable();
-        }
+        // Update the remote hash in the DB
+        $this->remoteHashProvider->update($remoteHash);
 
-        $client = $this->requestManager->get(
-            $this->wpUrl->getSiteUrl('index.php?_fishpig=theme.update')
-        );
-
+        // And check that the DB remote hash is correct
         if ($localHash !== $this->theme->getRemoteHash()) {
             throw new Exception(
                 sprintf(
@@ -170,9 +166,6 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
                 )
             );
         }
-
-        // Now lets clean thing sup
-        unlink($themeZipFile);
     }
 
     /**

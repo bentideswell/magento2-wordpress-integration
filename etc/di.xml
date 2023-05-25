@@ -435,7 +435,7 @@
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
         </arguments>
     </type>
-    <type name="FishPig\WordPress\App\Theme\Deployer">
+    <type name="FishPig\WordPress\App\Theme\Deployment\Pool">
         <arguments>
             <argument name="deployments" xsi:type="array">
                 <item name="local" xsi:type="object">FishPig\WordPress\App\Theme\Deployment\LocalCopy</item>
