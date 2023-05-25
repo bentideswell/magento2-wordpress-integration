@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.28.10] - 2023-05-25
+## [3.28.11] - 2023-05-25
 ### [Changed]
 - Removed any HTTP requests from local theme deploy.
 

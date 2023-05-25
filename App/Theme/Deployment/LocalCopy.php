@@ -146,7 +146,7 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
         if ($remoteHash !== $localHash) {
             throw new Exception(
                 sprintf(
-                    'Theme installed but new remote hash "%s" does not match the local hash "%s"',
+                    'Hash comparison failed using the include method. External remote hash is "%s" but the local hash is "%s"',
                     $remoteHash,
                     $localHash
                 )
