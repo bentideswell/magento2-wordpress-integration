@@ -205,13 +205,13 @@ class LocalCopy implements \FishPig\WordPress\App\Theme\DeploymentInterface
                 $file = $dir . DIRECTORY_SEPARATOR . $item;
 
                 if (is_file($file)) {
-                    unlink($file);
+                    @unlink($file);
                 } elseif (is_dir($file)) {
                     $this->removeDirectory($file);
                 }
             }
 
-            rmdir($dir);
+            @rmdir($dir);
         }
     }
 }
