@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.14] - 2023-05-31
+### [Changed]
+- Admin layout XML to include config block where required.
+
 ## [3.28.12] - 2023-05-26
 ### [Changed]
 - Theme deployment optimisation for local mode.
