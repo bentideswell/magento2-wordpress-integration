@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace FishPig\WordPress\App\Theme;
 
 use FishPig\WordPress\App\Theme\DeploymentInterface;
+use FishPig\WordPress\App\Theme\DeploymentException;
 use FishPig\WordPress\App\Exception;
 
 class Deployer
@@ -28,17 +29,23 @@ class Deployer
      */
     private $deploymentPool = null;
 
+private $appMode = null;
+private $themeUrl = null;
     /**
      *
      */
     public function __construct(
         \FishPig\WordPress\App\Theme $theme,
         \FishPig\WordPress\App\Logger $logger,
-        Deployment\Pool $deploymentPool
+        Deployment\Pool $deploymentPool,
+        \FishPig\WordPress\App\Integration\Mode $appMode,
+        \FishPig\WordPress\App\Theme\Url $themeUrl
     ) {
         $this->theme = $theme;
         $this->logger = $logger;
         $this->deploymentPool = $deploymentPool;
+        $this->appMode = $appMode;
+        $this->themeUrl= $themeUrl;
     }
 
     /**
@@ -81,41 +88,86 @@ class Deployer
      */
     private function _deploy(array $deployments): ?string
     {
-        $targetThemeHash = $this->theme->getLocalHash();
-        $exception = null;
+        try {
 
-        foreach ($deployments as $deploymentId => $deployment) {
-            if (!$deployment->isEnabled()) {
-                continue;
-            }
+            $targetThemeHash = $this->theme->getLocalHash();
+            $exception = null;
 
-            try {
-                $deployment->deploy();
-
-                if ($this->theme->getRemoteHash() === $targetThemeHash) {
-                    return $deploymentId;
+            foreach ($deployments as $deploymentId => $deployment) {
+                if (!$deployment->isEnabled()) {
+                    continue;
                 }
-            } catch (\Throwable $e) {
-                $this->logger->error($e);
 
-                $exception = new DeploymentException(
-                    sprintf(
-                        'Exception during "%s" theme deployment: %s',
-                        $deploymentId,
-                        $e->getMessage()
-                    ),
-                    $e->getCode(),
-                    $exception ?? null
-                );
+                try {
+                    $deployment->deploy();
+
+                    if ($this->theme->getRemoteHash() === $targetThemeHash) {
+                        return $deploymentId;
+                    }
+                } catch (\Throwable $e) {
+                    $this->logger->error($e);
+
+                    $exception = new DeploymentException(
+                        sprintf(
+                            'Exception during "%s" theme deployment: %s',
+                            $deploymentId,
+                            $e->getMessage()
+                        ),
+                        $e->getCode(),
+                        $exception ?? null
+                    );
+                }
             }
+
+            if ($exception) {
+                throw $exception;
+            }
+
+            throw new DeploymentException(
+                'No theme deployment service is available for your integration context.',
+                DeploymentException::NO_DEPLOYMENTS
+            );
+        } catch (\Throwable $e) {
+
+
+
+            throw new DeploymentException(
+                $this->getErrorMessage(),
+                0,
+                $e->getCode() === DeploymentException::NO_DEPLOYMENTS ? null : $e
+            );
+        }
+    }
+
+    /**
+     * @return string
+     */
+    private function getErrorMessage(): string
+    {
+        $contextFailureStatus = 'failed';
+
+        if ($this->appMode->isExternalMode()) {
+            $contextFailureStatus = 'is not possible in external mode';
         }
 
-        if ($exception) {
-            throw $exception;
+        $debugVars = '';
+        $currentVersion = $this->theme->isInstalled() ? $this->theme->getRemoteHash() : '** not installed **';
+        $requiredVersion = $this->theme->getLocalHash();
+
+        if ($currentVersion !== $requiredVersion) {
+            $debugVars = sprintf(
+                " Current Version: %s\nRequired Version: %s\n\n",
+                $currentVersion,
+                $requiredVersion
+            );
         }
 
-        throw new DeploymentException(
-            'Deployment failed, but no exceptions were raised.'
+        return sprintf(
+            "\n\nA WordPress theme update is available but automatic theme installation %s.\n\nManual installation is required!\n\nYou can access the latest version of theme by one of the following methods:\n\n     Browser: %s\n CLI command: %s\n\nLogin to the WP Admin and go to Appearance > Themes > Add New > Upload Theme and then upload the ZIP file.\n\n%s",
+            $contextFailureStatus,
+            $this->themeUrl->getUrl(),
+            'bin/magento fishpig:wordpress:theme --zip',
+            $debugVars
         );
     }
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.28.16] - 2023-06-08
+### [Changed]
+- Improved error messages when theme deployment fails. This now provides steps for
+  manual installation and updates of the WP theme. It also provides a URL
+  to download the theme ZIP, so you no longer have to run the CLI command
+  to generate it.
+
 ## [3.28.15] - 2023-06-08
 ### [Changed]
 - Changed AssetProvider to filter list of asset providers before running. This

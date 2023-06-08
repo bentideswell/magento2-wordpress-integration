@@ -82,7 +82,6 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
     public function isEnabled(): bool
     {
         return false;
-        return true;
     }
 
     /**

@@ -28,6 +28,7 @@
                       sortOrder="60">FishPig\WordPress\Controller\Router\PostWithCategoryFallbackRouter</item>
             </argument>
         </arguments>
+        <plugin name="fishpig-wp" type="FishPig\WordPress\Plugin\FishPig\WordPress\Controller\RouterPlugin"/>
     </type>
     <!--
     /**

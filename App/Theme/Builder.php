@@ -30,6 +30,11 @@ class Builder
     /**
      *
      */
+    private $themeUrl = null;
+
+    /**
+     *
+     */
     private $blob = null;
 
     /**
@@ -37,10 +42,12 @@ class Builder
      */
     public function __construct(
         \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
-        \FishPig\WordPress\App\Theme\FileCollector $fileCollector
+        \FishPig\WordPress\App\Theme\FileCollector $fileCollector,
+        \FishPig\WordPress\App\Theme\Url $themeUrl
     ) {
         $this->localHashProvider = $localHashProvider;
         $this->fileCollector = $fileCollector;
+        $this->themeUrl = $themeUrl;
     }
 
     /**
@@ -58,6 +65,14 @@ class Builder
         }
 
         return $localFile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        return $this->themeUrl->getUrl();
     }
 
     /**

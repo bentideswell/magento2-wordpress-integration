@@ -14,6 +14,7 @@ use Symfony\Component\Console\Input\InputOption;
 use FishPig\WordPress\App\Exception;
 use FishPig\WordPress\App\Theme;
 use FishPig\WordPress\App\Theme\DeploymentInterface;
+use FishPig\WordPress\App\Theme\DeploymentException;
 
 class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -117,11 +118,8 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($input->getOption(self::ZIP)) {
-            $output->writeLn(
-                sprintf(
-                    'Latest theme published as a ZIP to %s. Download this and install it in the WordPress Admin to update the theme.',
-                    $this->themeBuilder->getLocalFile()
-                )
+            $output->write(
+                $this->themeBuilder->getLocalFile()
             );
             return 0;
         }

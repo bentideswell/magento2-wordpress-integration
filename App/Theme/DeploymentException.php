@@ -10,4 +10,8 @@ namespace FishPig\WordPress\App\Theme;
 
 class DeploymentException extends \FishPig\WordPress\App\Exception
 {
+    /**
+     *
+     */
+    const NO_DEPLOYMENTS = 324324;
 }
