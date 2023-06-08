@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.28.15] - 2023-06-08
+### [Changed]
+- Changed AssetProvider to filter list of asset providers before running. This
+  allows us to skip calling the integration tests on some requests.
+
 ## [3.28.14] - 2023-05-31
 ### [Changed]
 - Admin layout XML to include config block where required.

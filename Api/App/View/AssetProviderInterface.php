@@ -19,4 +19,14 @@ interface AssetProviderInterface
         \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\App\ResponseInterface $response
     ): void;
+
+    /**
+     * @param  \Magento\Framework\App\RequestInterface $request
+     * @param  \Magento\Framework\App\ResponseInterface $response
+     * @return bool
+     */
+    public function canProvideAssets(
+        \Magento\Framework\App\RequestInterface $request,
+        \Magento\Framework\App\ResponseInterface $response
+    ): bool;
 }
