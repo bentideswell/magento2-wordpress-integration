@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.17] - 2023-06-08
+### [Changed]
+- Added caching to CSP policy collection.
+
 ## [3.28.16] - 2023-06-08
 ### [Changed]
 - Improved error messages when theme deployment fails. This now provides steps for

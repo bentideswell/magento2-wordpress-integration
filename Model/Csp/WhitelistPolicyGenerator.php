@@ -35,18 +35,24 @@ class WhitelistPolicyGenerator implements \FishPig\WordPress\Api\Data\CspPolicyG
 
         return $data;
     }
-    
+
     /**
      * @return string
      */
     private function getDomain(): string
     {
-        $wpDomain = rtrim(str_replace(['https://', 'http://'], '', $this->url->getSiteUrl()), '/');
-        
+        $wpDomain = rtrim(
+            str_replace(
+                ['https://', 'http://'],
+                '',
+                $this->url->getSiteUrl()
+            ),
+        '/');
+
         if (($pos = strpos($wpDomain, '/')) !== false) {
             $wpDomain = substr($wpDomain, 0, $pos);
         }
-        
+
         return $wpDomain;
     }
 }
