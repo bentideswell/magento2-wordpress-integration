@@ -28,7 +28,7 @@ class CspWhitelistXmlCollectorPlugin
      */
     public function __construct(
         \FishPig\WordPress\App\Integration\Mode $appMode,
-        WhitelistPolicyCollector $whitelistPolicyCollector,
+        WhitelistPolicyCollector $whitelistPolicyCollector
     ) {
         $this->appMode = $appMode;
         $this->whitelistPolicyCollector = $whitelistPolicyCollector;

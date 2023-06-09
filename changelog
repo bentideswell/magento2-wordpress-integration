@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.18] - 2023-06-09
+### [Fixed]
+- Fixed trailing comma in CSP plugin.
+
 ## [3.28.17] - 2023-06-08
 ### [Changed]
 - Added caching to CSP policy collection.
