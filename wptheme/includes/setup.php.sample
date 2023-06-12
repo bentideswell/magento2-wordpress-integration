@@ -50,6 +50,13 @@ class Setup
 
             /* Remove wptexturize to fix shortcodes */
             remove_filter('the_content', 'wptexturize');
+
+            /**
+             * Stop spaces in URLs being converted by WP into dashes.
+             * This causes an issue in Magento where /hello world/ loads
+             * /hello-world/, which is wrong as this is not the right URL.
+             */
+            remove_filter( 'sanitize_title', 'sanitize_title_with_dashes', 10, 3 );
         });
 
         // Setup templates from Magento

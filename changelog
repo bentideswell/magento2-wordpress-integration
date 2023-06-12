@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.19] - 2023-06-12
+### [Changed]
+- Changed WP theme to remove the title sanitization for the query. The URL is used
+  as its found. This fixes an issue where adding spaces into the URL still loaded
+  the post, even though the URL was wrong.
+
 ## [3.28.18] - 2023-06-09
 ### [Fixed]
 - Fixed trailing comma in CSP plugin.
