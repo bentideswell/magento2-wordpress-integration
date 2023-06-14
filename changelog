@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.20] - 2023-06-14
+### [Changed]
+- Improved theme deployment process when using external integration or when
+  it fails using local integration. WP now alerts that a theme update is available
+  and provides a link to download the latest version.
+
 ## [3.28.19] - 2023-06-12
 ### [Changed]
 - Changed WP theme to remove the title sanitization for the query. The URL is used

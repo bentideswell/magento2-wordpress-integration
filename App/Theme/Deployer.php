@@ -29,8 +29,21 @@ class Deployer
      */
     private $deploymentPool = null;
 
-private $appMode = null;
-private $themeUrl = null;
+    /**
+     *
+     */
+    private $appMode = null;
+
+    /**
+     *
+     */
+    private $themeUrl = null;
+
+    /**
+     *
+     */
+    private $option = null;
+
     /**
      *
      */
@@ -39,13 +52,15 @@ private $themeUrl = null;
         \FishPig\WordPress\App\Logger $logger,
         Deployment\Pool $deploymentPool,
         \FishPig\WordPress\App\Integration\Mode $appMode,
-        \FishPig\WordPress\App\Theme\Url $themeUrl
+        \FishPig\WordPress\App\Theme\Url $themeUrl,
+        \FishPig\WordPress\App\Option $option
     ) {
         $this->theme = $theme;
         $this->logger = $logger;
         $this->deploymentPool = $deploymentPool;
         $this->appMode = $appMode;
-        $this->themeUrl= $themeUrl;
+        $this->themeUrl = $themeUrl;
+        $this->option = $option;
     }
 
     /**
@@ -89,7 +104,6 @@ private $themeUrl = null;
     private function _deploy(array $deployments): ?string
     {
         try {
-
             $targetThemeHash = $this->theme->getLocalHash();
             $exception = null;
 
@@ -102,6 +116,7 @@ private $themeUrl = null;
                     $deployment->deploy();
 
                     if ($this->theme->getRemoteHash() === $targetThemeHash) {
+                        $this->setThemeUpdateAvailableFlag(null);
                         return $deploymentId;
                     }
                 } catch (\Throwable $e) {
@@ -128,8 +143,9 @@ private $themeUrl = null;
                 DeploymentException::NO_DEPLOYMENTS
             );
         } catch (\Throwable $e) {
-
-
+            $this->setThemeUpdateAvailableFlag(
+                $this->theme->getLocalHash()
+            );
 
             throw new DeploymentException(
                 $this->getErrorMessage(),
@@ -168,6 +184,22 @@ private $themeUrl = null;
             $this->themeUrl->getUrl(),
             'bin/magento fishpig:wordpress:theme --zip',
             $debugVars
+        );
+    }
+
+    /**
+     *
+     */
+    private function setThemeUpdateAvailableFlag($value): void
+    {
+        $this->option->set(
+            'fishpig-theme-update-available-hash',
+            $value
+        );
+
+        $this->option->set(
+            'fishpig-theme-update-available-url',
+            $value !== null ? $this->themeUrl->getUrl() : null
         );
     }
 }

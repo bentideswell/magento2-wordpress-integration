@@ -8,7 +8,9 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\App\Theme;
 
-class DeploymentException extends \FishPig\WordPress\App\Exception
+use FishPig\WordPress\App\Integration\Exception\IntegrationFatalException;
+
+class DeploymentException extends IntegrationFatalException
 {
     /**
      *

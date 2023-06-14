@@ -3,7 +3,7 @@ Theme Name: FishPig
 Theme URI: https://fishpig.co.uk/magento/wordpress-integration/
 Author: FishPig
 Author URI: https://fishpig.co.uk/
-Description: This theme is required if you are integrating WordPress into Magento using the FishPig extension. To customize this theme, create a local.php file in the theme and add your modifications there.
+Description: This theme is required if you are integrating WordPress into Magento 2 using the FishPig extension. You cannot edit this theme. To make changes, create your own plugin and put the changes in there.
 Version: {REMOTE_HASH}
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html

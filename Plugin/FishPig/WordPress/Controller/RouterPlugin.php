@@ -17,10 +17,17 @@ class RouterPlugin
     /**
      *
      */
+    private $localHashProvider = null;
+
+    /**
+     *
+     */
     public function __construct(
-        \FishPig\WordPress\App\Theme\Builder $themeBuilder
+        \FishPig\WordPress\App\Theme\Builder $themeBuilder,
+        \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider
     ) {
         $this->themeBuilder = $themeBuilder;
+        $this->localHashProvider = $localHashProvider;
     }
 
     /**
@@ -63,8 +70,9 @@ class RouterPlugin
     private function publishTheme(): void
     {
         $blob = $this->themeBuilder->getBlob();
+        $filename = 'fishpig-' . $this->localHashProvider->getHash() . '.zip';
         header('Content-Type: application/zip');
-        header("Content-Disposition: attachment; filename=" . ThemeUrl::FILENAME);
+        header("Content-Disposition: attachment; filename=" . $filename);
         header("Content-Length: " . strlen($blob));
         header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
         header("Cache-Control: post-check=0, pre-check=0", false);
