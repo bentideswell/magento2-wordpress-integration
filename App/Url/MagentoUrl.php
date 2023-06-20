@@ -13,23 +13,23 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
     /**
      * @auto
      */
-    protected $storeManager = null;
+    private $storeManager = null;
 
     /**
      * @auto
      */
-    protected $scopeConfig = null;
+    private $scopeConfig = null;
 
     /**
      * @auto
      */
-    protected $magentoBaseUrlSource = null;
+    private $magentoBaseUrlSource = null;
 
     /**
      * @var []
      */
     private $cache = [];
-    
+
     /**
      * @var array
      */
@@ -47,7 +47,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
         $this->scopeConfig = $scopeConfig;
         $this->magentoBaseUrlSource = $magentoBaseUrlSource;
     }
-    
+
     /**
      * @return string
      */
@@ -60,6 +60,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
             $magentoUrl = $this->getBaseUrl();
 
             if ($this->isCustomBaseUrl()) {
+
                 if (($pos = strpos($magentoUrl, '/', strlen('https://'))) !== false) {
                     $magentoUrl = substr($magentoUrl, 0, $pos);
                 }
@@ -83,7 +84,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
             $storeUrl = $store->getCurrentUrl(false);
 
             if (strpos($storeUrl, 'index.php') !== false) {
-                $storeUrl = str_replace('/index.php', '', $storeUrl);    
+                $storeUrl = str_replace('/index.php', '', $storeUrl);
             }
 
             if ($withQuery) {
@@ -126,7 +127,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
 
         return $this->currentUrl[$cacheKey];
     }
-    
+
     /**
      * @return string
      */
@@ -152,8 +153,7 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
     {
         return $this->scopeConfig->isSetFlag(
             'web/secure/use_in_frontend',
-            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
-            (int)$this->storeManager->getStore()->getId()
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
         );
     }
 
@@ -164,7 +164,8 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
     {
         return $this->magentoBaseUrlSource->isEnabled()
             && (string)$this->scopeConfig->getValue(
-                'wordpress/setup/custom_base_url'
+                'wordpress/setup/custom_base_url',
+                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             ) === \FishPig\WordPress\Model\Config\Source\MagentoBaseUrl::URL_USE_BASE;
     }
 }

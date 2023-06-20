@@ -8,18 +8,26 @@ declare(strict_types=1);
 
 namespace FishPig\WordPress\Model\Config\Source;
 
+use Magento\Framework\App\RequestInterface;
+use Magento\Store\Model\StoreManagerInterface;
+
 class MagentoBaseUrl
 {
     /**
-     * @auto
-     */
-    protected $storeManager = null;
-
-    /**
-     * @var string
+     * @const string
      */
     const URL_USE_DEFAULT = '';
     const URL_USE_BASE = 'base';
+
+    /**
+     *
+     */
+    private $storeManager = null;
+
+    /**
+     *
+     */
+    private $request = null;
 
     /**
      *
@@ -30,9 +38,11 @@ class MagentoBaseUrl
      * @return void
      */
     public function __construct(
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        StoreManagerInterface $storeManager,
+        RequestInterface $request = null
     ) {
         $this->storeManager = $storeManager;
+        $this->request = $request;
     }
 
     /**
@@ -58,7 +68,10 @@ class MagentoBaseUrl
     public function getOptions(): array
     {
         $store = $this->storeManager->getStore();
-        $storeId = (int)$store->getId();
+
+        // This allows getting custom store ID from request when in admin
+        // config area
+        $storeId = (int)$this->request->getParam('store', 0) ?: (int)$store->getId();
 
         if (!isset($this->options[$storeId])) {
             $baseUrl = trim($this->storeManager->getStore()->getBaseUrl(), '/');

@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.21] - 2023-06-20
+### [Fixed]
+- Fixed issue with custom base URL when setting via store context.
+
 ## [3.28.20] - 2023-06-14
 ### [Changed]
 - Improved theme deployment process when using external integration or when
