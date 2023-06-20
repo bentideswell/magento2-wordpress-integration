@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.28.21] - 2023-06-20
+## [3.28.22] - 2023-06-20
 ### [Fixed]
 - Fixed issue with custom base URL when setting via store context.
 

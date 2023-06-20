@@ -39,7 +39,7 @@ class MagentoBaseUrl
      */
     public function __construct(
         StoreManagerInterface $storeManager,
-        RequestInterface $request = null
+        RequestInterface $request
     ) {
         $this->storeManager = $storeManager;
         $this->request = $request;
