@@ -1,5 +1,14 @@
 # Changelog
 
+## [3.28.24] - 2023-06-23
+### [Fixed]
+- Fixed theme issue in WP where post title conversion to URL key was not
+  sanitized.
+
+## [3.28.23] - 2023-06-21
+### [Fixed]
+- CORS issue with Popular Posts plugin.
+
 ## [3.28.22] - 2023-06-20
 ### [Fixed]
 - Fixed issue with custom base URL when setting via store context.

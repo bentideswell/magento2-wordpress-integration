@@ -56,7 +56,17 @@ class Setup
              * This causes an issue in Magento where /hello world/ loads
              * /hello-world/, which is wrong as this is not the right URL.
              */
-            remove_filter( 'sanitize_title', 'sanitize_title_with_dashes', 10, 3 );
+            remove_filter('sanitize_title', 'sanitize_title_with_dashes', 10, 3);
+            add_filter(
+                'sanitize_title',
+                function ($title, $raw_title = '', $context = 'display') {
+                    return $context === 'query'
+                        ? $title
+                        : sanitize_title_with_dashes($title, $raw_title, $context);
+                },
+                10,
+                3
+            );
         });
 
         // Setup templates from Magento
