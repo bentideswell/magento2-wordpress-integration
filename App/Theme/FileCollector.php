@@ -67,4 +67,37 @@ class FileCollector
 
         return $files;
     }
+
+    /**
+     *
+     */
+    public function getTags(): array
+    {
+        $tags = [
+            'FishPig',
+            'Magento 2'
+        ];
+
+        foreach ($this->modules as $module) {
+            $composerJsonFile = $this->moduleDir->getDir($module, '') . '/composer.json';
+            $version = '';
+
+            if (is_file($composerJsonFile)) {
+                $composerJsonData = json_decode(
+                    file_get_contents($composerJsonFile),
+                    true
+                );
+
+                $version = $composerJsonData['version'] ?? '';;
+            }
+
+            $tags[] = sprintf(
+                '%s-%s',
+                preg_replace('/^FishPig_WordPress_/', '', $module),
+                $version
+            );
+        }
+
+        return $tags;
+    }
 }

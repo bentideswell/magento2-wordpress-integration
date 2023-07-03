@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.25] - 2023-07-03
+### [Changed]
+- Changed tags in WP theme to reflect installed add-on modules and versions.
+
 ## [3.28.24] - 2023-06-23
 ### [Fixed]
 - Fixed theme issue in WP where post title conversion to URL key was not

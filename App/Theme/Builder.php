@@ -20,6 +20,11 @@ class Builder
     /**
      *
      */
+    const TAGS = '{TAGS}';
+
+    /**
+     *
+     */
     private $localHashProvider = null;
 
     /**
@@ -137,6 +142,14 @@ class Builder
             // phpcs:ignore -- file_get_contents
             $data = file_get_contents($file);
 
+            if (strpos($data, self::TAGS) !== false) {
+                $data = str_replace(
+                    self::TAGS,
+                    $this->getTags(),
+                    $data
+                );
+            }
+
             if (strpos($data, self::TOKEN_REMOTE_HASH) !== false) {
                 $zip->addFromString(
                     $relative,
@@ -150,5 +163,17 @@ class Builder
         $zip->close();
 
         return file_get_contents($tempFileLocation);
+    }
+
+    /**
+     *
+     */
+    private function getTags(): ?string
+    {
+        if ($tags = $this->fileCollector->getTags()) {
+            return implode(', ', $tags);
+        }
+
+        return 'fishpig, magento';
     }
 }
