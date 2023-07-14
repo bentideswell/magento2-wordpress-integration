@@ -178,6 +178,11 @@ class UrlHelper
             return null;
         }
 
+        if ($request->getParam('preview', null) !== null) {
+            // Do not redirect preview URLs
+            return null;
+        }
+
         $hasTrailingSlash = '/' === substr($request->getPathInfo(), -1);
         $shouldHaveTrailingSlash = $this->url->hasTrailingSlash();
 

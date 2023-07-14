@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.26] - 2023-07-14
+### [Changed]
+- Stopped redirecting to canonical URL if the request is a preview URL.
+
 ## [3.28.25] - 2023-07-03
 ### [Changed]
 - Changed tags in WP theme to reflect installed add-on modules and versions.
