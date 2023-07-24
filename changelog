@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.27] - 2023-07-24
+### [Changed]
+- Refactored PostRouter to allow for PSW to add plugin efficiently.
+
 ## [3.28.26] - 2023-07-14
 ### [Changed]
 - Stopped redirecting to canonical URL if the request is a preview URL.

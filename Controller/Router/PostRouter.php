@@ -50,15 +50,15 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
      */
     public function match(\Magento\Framework\App\RequestInterface $request)
     {
-        $postId = $this->permalinkResource->getPostIdByPathInfo(
+        $postId = $this->getPostIdByPathInfo(
             $this->routerUrlHelper->getRelativePathInfo($request)
         );
 
-        if ($postId === false) {
+        if (!$postId) {
             return false;
         }
 
-        if ($this->frontPage->getPostsPageId() === $postId) {
+        if ($this->isPostIdPostsPageId($postId)) {
             return $this->requestDispatcher->dispatch(
                 $request,
                 '*/postType/view',
@@ -71,5 +71,21 @@ class PostRouter implements \Magento\Framework\App\RouterInterface
             '*/post/view',
             ['id' => $postId]
         );
+    }
+
+    /**
+     *
+     */
+    public function getPostIdByPathInfo(string $pathInfo): ?int
+    {
+        return (int)$this->permalinkResource->getPostIdByPathInfo($pathInfo) ?: null;
+    }
+
+    /**
+     *
+     */
+    public function isPostIdPostsPageId(int $postId): bool
+    {
+        return $this->frontPage->getPostsPageId() === $postId;
     }
 }
