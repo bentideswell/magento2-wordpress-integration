@@ -13,6 +13,11 @@ class InvalidStatusException extends \FishPig\WordPress\App\Exception
     /**
      *
      */
+    private $redirectLocation = null;
+
+    /**
+     *
+     */
     public function __construct(string $message = "", int $code = 0, ?\Throwable $previous = null)
     {
         if ($message === '') {
@@ -26,7 +31,7 @@ class InvalidStatusException extends \FishPig\WordPress\App\Exception
 
         parent::__construct($message, $code, $previous);
     }
-    
+
     /**
      * @param ?string $url
      * @param return self
@@ -38,5 +43,30 @@ class InvalidStatusException extends \FishPig\WordPress\App\Exception
         }
 
         return $this;
+    }
+
+    /**
+     *
+     */
+    public function isRedirect(): bool
+    {
+        return $this->getCode() === 301 || $this->getCode() === 302;
+    }
+
+    /**
+     *
+     */
+    public function setRedirectLocation(string $location): self
+    {
+        $this->redirectLocation = $location;
+        return $this;
+    }
+
+    /**
+     *
+     */
+    public function getRedirectLocation(): ?string
+    {
+        return $this->redirectLocation;
     }
 }

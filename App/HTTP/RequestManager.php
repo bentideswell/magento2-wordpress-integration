@@ -10,6 +10,7 @@ namespace FishPig\WordPress\App\HTTP;
 
 use Magento\Framework\HTTP\ClientInterface;
 use FishPig\WordPress\App\HTTP\RequestManager\UrlModifierInterface;
+use FishPig\WordPress\App\HTTP\InvalidStatusException;
 
 class RequestManager
 {
@@ -72,7 +73,7 @@ class RequestManager
                     get_class($urlModifier) . ' does not implement ' . UrlModifierInterface::class
                 );
             }
-            
+
             $this->urlModifiers[$key] = $urlModifier;
         }
     }
@@ -119,7 +120,7 @@ class RequestManager
 
         // phpcs:ignore -- not cryptographic
         $cacheKey = md5($method . strtolower($url ?? '_current'));
-        
+
         if (!isset($this->cache[$cacheKey])) {
             $this->cache[$cacheKey] = $client = $this->httpClientFactory->create();
 
@@ -187,7 +188,7 @@ class RequestManager
 
         return false;
     }
-    
+
     /**
      * @param  string $url
      * @return ?string
@@ -197,10 +198,10 @@ class RequestManager
         foreach ($this->urlModifiers as $urlModifier) {
             $url = $urlModifier->modifyUrl($url);
         }
-        
+
         return $url;
     }
-    
+
     /**
      * @return array
      */
@@ -211,7 +212,7 @@ class RequestManager
             404
         ];
     }
-    
+
     /**
      *
      */
@@ -222,7 +223,7 @@ class RequestManager
         ?array $args
     ): \Exception {
         if (is_string($client->getBody()) && ($pError = $this->phpErrorExtractor->getError($client->getBody()))) {
-            $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException(
+            $e = new InvalidStatusException(
                 'WordPress Server ' . $client->getStatus() . ' Error: ' . $pError,
                 $client->getStatus()
             );
@@ -231,6 +232,7 @@ class RequestManager
             if (in_array($client->getStatus(), [301, 302])) {
                 $headers = $client->getHeaders();
                 $location = $headers['location'] ?? $headers['Location'] ?? false;
+
                 if ($location) {
                     $msg = __(
                         "Invalid HTTP status code %1 (redirect). Redirect URL was %2.",
@@ -239,10 +241,14 @@ class RequestManager
                     );
                 }
             }
-            
-            $e = new \FishPig\WordPress\App\HTTP\InvalidStatusException((string)$msg, $client->getStatus());
+
+            $e = new InvalidStatusException((string)$msg, $client->getStatus());
+
+            if (!empty($location)) {
+                $e->setRedirectLocation($location);
+            }
         }
-        
+
         return $e->setUrl($url);
     }
 }
