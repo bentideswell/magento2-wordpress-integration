@@ -81,7 +81,9 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
         $cacheKey = (int)$store->getId() . '-' . (int)$withQuery;
 
         if (!isset($this->currentUrl[$cacheKey])) {
-            $storeUrl = $store->getCurrentUrl(false);
+            $storeUrl = $this->fixUrlWithNoProtocol(
+                $store->getCurrentUrl(false)
+            );
 
             if (strpos($storeUrl, 'index.php') !== false) {
                 $storeUrl = str_replace('/index.php', '', $storeUrl);
@@ -133,16 +135,18 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
      */
     private function getBaseUrl(): string
     {
-        return rtrim(
-            str_ireplace(
-                'index.php',
-                '',
-                $this->storeManager->getStore()->getBaseUrl(
-                    \Magento\Framework\UrlInterface::URL_TYPE_LINK,
-                    $this->isFrontendUrlSecure()
-                )
-            ),
-            '/'
+        return $this->fixUrlWithNoProtocol(
+                rtrim(
+                str_ireplace(
+                    'index.php',
+                    '',
+                    $this->storeManager->getStore()->getBaseUrl(
+                        \Magento\Framework\UrlInterface::URL_TYPE_LINK,
+                        $this->isFrontendUrlSecure()
+                    )
+                ),
+                '/'
+            )
         );
     }
 
@@ -167,5 +171,17 @@ class MagentoUrl implements \FishPig\WordPress\Api\App\Url\UrlInterface
                 'wordpress/setup/custom_base_url',
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE
             ) === \FishPig\WordPress\Model\Config\Source\MagentoBaseUrl::URL_USE_BASE;
+    }
+
+    /**
+     *
+     */
+    private function fixUrlWithNoProtocol(string $url): string
+    {
+        if (strpos($url, '//') === 0) {
+            $url = 'https:' . $url;
+        }
+
+        return $url;
     }
 }

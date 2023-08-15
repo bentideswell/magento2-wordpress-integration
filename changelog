@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.29] - 2023-08-15
+### [Changed]
+- Changed Magento URL provider to return URL relative protocol URLs as secure.
+### [Fixed]
+- Fixed issue in ModelRepository with $object being null.
+
 ## [3.28.28] - 2023-07-27
 ### [Changed]
 - Changed Invalid status exceptions to include redirect location if available.

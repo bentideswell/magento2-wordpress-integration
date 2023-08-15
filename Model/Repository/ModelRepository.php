@@ -117,7 +117,7 @@ abstract class ModelRepository extends AbstractRepository
 
         if (!empty($this->cache[$storeId])) {
             foreach ($this->cache[$storeId] as $object) {
-                if ($object->getData($field) === $value) {
+                if ($object && $object->getData($field) === $value) {
                     return $object;
                 }
             }
