@@ -109,7 +109,9 @@ class IntegrationDataRetriever
             return ['time' => time()];
         }
 
-        $cacheKey = 'integration-data-' . $storeId;
+        $cacheKey = 'integration-data-' . $storeId . '-' . md5(
+            $this->storeManager->getStore($storeId)->getBaseUrl()
+        );
 
         if ($data = $this->cache->load($cacheKey)) {
             return $this->serializer->unserialize($data);
@@ -121,10 +123,9 @@ class IntegrationDataRetriever
         $this->sayHello();
 
         if ($data = $this->restRequestManager->getJson('/fishpig/v1/data')) {
-            $this->cache->saveApiData(
+            $this->cache->save(
                 $this->serializer->serialize($data),
-                $cacheKey,
-                [self::CACHE_TAG]
+                $cacheKey
             );
         }
 
