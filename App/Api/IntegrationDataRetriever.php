@@ -109,9 +109,7 @@ class IntegrationDataRetriever
             return ['time' => time()];
         }
 
-        $cacheKey = 'integration-data-' . $storeId . '-' . md5(
-            $this->storeManager->getStore($storeId)->getBaseUrl()
-        );
+        $cacheKey = 'integration-data-' . $storeId;
 
         if ($data = $this->cache->load($cacheKey)) {
             return $this->serializer->unserialize($data);

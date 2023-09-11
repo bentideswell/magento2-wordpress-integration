@@ -11,19 +11,24 @@ namespace FishPig\WordPress\Model;
 class OptionRepository
 {
     /**
-     * @auto
+     * @var \Magento\Framework\Serialize\SerializerInterface
      */
-    protected $serializer = null;
+    private $serializer = null;
 
     /**
-     * @auto
+     * @var \FishPig\WordPress\App\Logger
      */
-    protected $logger = null;
+    private $logger = null;
 
     /**
      * @var \FishPig\WordPress\App\Option
      */
     private $dataSource = null;
+
+    /**
+     * @var \Magento\Store\Model\StoreManagerInterface
+     */
+    private $storeManager = null;
 
     /**
      * @var array
@@ -36,11 +41,13 @@ class OptionRepository
     public function __construct(
         \FishPig\WordPress\App\Option $dataSource,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \FishPig\WordPress\App\Logger $logger
+        \FishPig\WordPress\App\Logger $logger,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->dataSource = $dataSource;
         $this->serializer = $serializer;
         $this->logger = $logger;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -50,11 +57,13 @@ class OptionRepository
      */
     public function get(string $key, $default = null)
     {
-        if (!isset($this->cache[$key])) {
-            $this->cache[$key] = $this->dataSource->get($key) ?? $default;
+        $cacheKey = $this->getCacheKey($key);
+
+        if (!isset($this->cache[$cacheKey])) {
+            $this->cache[$cacheKey] = $this->dataSource->get($key) ?? $default;
         }
 
-        return $this->cache[$key];
+        return $this->cache[$cacheKey];
     }
 
     /**
@@ -66,10 +75,12 @@ class OptionRepository
     {
         $this->dataSource->set($key, $value);
 
-        if (isset($this->cache[$key]) && $value === null) {
-            unset($this->cache[$key]);
+        $cacheKey = $this->getCacheKey($key);
+
+        if (isset($this->cache[$cacheKey]) && $value === null) {
+            unset($this->cache[$cacheKey]);
         } else {
-            $this->cache[$key] = $value;
+            $this->cache[$cacheKey] = $value;
         }
     }
 
@@ -93,5 +104,14 @@ class OptionRepository
         }
 
         return [];
+    }
+
+    /**
+     * @param  string $key
+     * @return string
+     */
+    private function getCacheKey(string $key): string
+    {
+        return $this->storeManager->getStore()->getId() . '::' . $key;;
     }
 }

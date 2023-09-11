@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.31] - 2023-09-11
+## [Fixed]
+- Reverted 3.28.30 and applied a better fix. The issue was caused because the
+  OptionRepository model had a cache that was not scoped by store ID so cache
+  collisions could occur.
+
 ## [3.28.30] - 2023-09-06
 ### [Changed]
 - Changed cache key for integration data. This fixes issue with data collision
