@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.28.32] - 2023-09-22
+### [Fixed]
+- Added an AssetProvider to cleanup shortcodes added to the content from the
+  Related Products add-on module. This can happen after uninstalling the RP
+  module, the shortcodes can remain in the pre-rendered content.
+
 ## [3.28.31] - 2023-09-11
 ## [Fixed]
 - Reverted 3.28.30 and applied a better fix. The issue was caused because the

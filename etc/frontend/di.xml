@@ -123,4 +123,12 @@
     <type name="Magento\Csp\Model\Collector\CspWhitelistXmlCollector">
         <plugin name="fishpig-wordpress" type="FishPig\WordPress\Plugin\Magento\Csp\Model\Collector\CspWhitelistXmlCollectorPlugin"/>
     </type>
+    <!--/** Asset Providers */-->
+    <type name="FishPig\WordPress\App\View\AssetProvider">
+        <arguments>
+            <argument name="assetProviders" xsi:type="array">
+                <item name="cleanup" xsi:type="object" sortOrder="400">FishPig\WordPress\App\View\AssetProvider\CleanUp</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

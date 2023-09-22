@@ -91,11 +91,27 @@ class Api
 
                             if (get_http_origin() === $integratedMagentoUrl) {
                             	header('Access-Control-Allow-Origin: ' . get_http_origin());
+                                header( 'Access-Control-Allow-Headers: Authorization, Content-Type, X-WP-Wpml-Language', true );
                             }
                         }
 
                         return $result;
                     }
+                );
+
+                // Add support for the popular posts plugin
+                add_action(
+                    'rest_pre_serve_request',
+                    function ($false, $result, $request) {
+                        if ($request->get_route() === '/wordpress-popular-posts/v1/popular-posts') {
+                            header(
+                                'Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With',
+                                true
+                            );
+                        }
+                    },
+                    10,
+                    3
                 );
             }
         );
