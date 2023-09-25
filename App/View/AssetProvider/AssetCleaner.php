@@ -10,7 +10,7 @@ namespace FishPig\WordPress\App\View\AssetProvider;
 
 use FishPig\WordPress\Api\App\View\AssetProviderInterface;
 
-class CleanUp implements AssetProviderInterface
+class AssetCleaner implements AssetProviderInterface
 {
     /**
      * @const string

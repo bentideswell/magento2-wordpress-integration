@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.33] - 2023-09-25
+### [Fixed]
+- Renamed CleanUp class to fix a name casing issue. New class is now AssetCleaner
+
 ## [3.28.32] - 2023-09-22
 ### [Fixed]
 - Added an AssetProvider to cleanup shortcodes added to the content from the
