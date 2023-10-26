@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.28.34] - 2023-10-26
+### [Changed]
+- Moved CSP whitelist to Admin context.
+
 ## [3.28.33] - 2023-09-25
 ### [Fixed]
 - Renamed CleanUp class to fix a name casing issue. New class is now AssetCleaner
