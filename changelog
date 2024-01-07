@@ -1,11 +1,15 @@
 # Changelog
 
+## [3.28.35] - 2023-01-41
+### [Fixed]
+- Fixed deprecated string functionality (passing null to trim) in local path resolver.
+
 ## [3.28.34] - 2023-10-26
 ### [Changed]
 - Moved CSP whitelist to Admin context.
 
 ## [3.28.33] - 2023-09-25
-### [Fixed]
+### [Fixed]
 - Renamed CleanUp class to fix a name casing issue. New class is now AssetCleaner
 
 ## [3.28.32] - 2023-09-22
@@ -173,7 +177,7 @@
 - Injected in missing Logger class into catalog product list block.
 
 ## [3.27.8]
-### [Changed]
+### [Changed]
 - minor grammatical and spelling mistakes in comments.
 - Post Collection getSize method to account for post_type filters.
 
@@ -196,7 +200,7 @@
 - Search term returning NULL causing trim/string error.
 
 ## [3.27.2] - 2022-12-21
-### [Changed]
+### [Changed]
 - Changed response to entity not existing in controller. Rather than throw
   exception, the noRoute (404) page is now shown and the error logged.
 
@@ -295,7 +299,7 @@
 - Added fishpig wrapper tags to wp_footer
 
 ## [3.21.0] - 2022-10-06
-### [Added]
+### [Added]
 - Added terms to XML sitemap.
 ### [Fixed]
 - Store base URL options detection fixed to include store ID when checking.
@@ -386,7 +390,7 @@
   by the install location of Magento.
 
 ## [3.18.0] - 2022-07-22
-### [Changed]
+### [Changed]
 - Changed repository's to declare the object factory in the constructor. This
   allows the code compiler to detect the factory and auto generate it during
   compilation. This stops permission issues when using the Magento cloud.
@@ -546,7 +550,7 @@
 - Fixed Elementor layout files for canvas and full width.
 
 ## [3.7.8] - 2022-03-02
-### [Fixed]
+### [Fixed]
 - Fixed missing $location variable.
 
 ## [3.7.7] - 2022-03-01
@@ -564,7 +568,7 @@
   for debugging.
 
 ## [3.7.4] - 2022-02-09
-### [Changed]
+### [Changed]
 - Added cachable=false block to post preview pages to fully stop them from being cached.
 
 ## [3.7.3] - 2022-02-09
@@ -711,7 +715,7 @@
   from there.
 
 ## [3.0.30] - 2021-12-22
-### [Changed]
+### [Changed]
 - Code formatting clean up.
 
 ## [3.0.29] - 2021-12-21

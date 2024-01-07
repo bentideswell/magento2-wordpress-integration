@@ -24,7 +24,7 @@ class PathResolver
     ) {
         $this->scopeConfig = $scopeConfig;
     }
-    
+
     /**
      * @param  int $storeId
      * @return ?string
@@ -36,7 +36,7 @@ class PathResolver
                 'wordpress/setup/path',
                 \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
                 $storeId
-            )
+            ) ?? ''
         );
 
         return $path ?? null;
