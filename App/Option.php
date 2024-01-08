@@ -49,6 +49,22 @@ class Option
 
     /**
      * @param  string $key
+     * @return mixed
+     */
+    public function getMultiple(array $keys): array
+    {
+        $db = $this->resourceConnection->getConnection();
+
+        return $db->fetchPairs(
+            $db->select()
+                ->from($this->getOptionsTable(), ['option_name', 'option_value'])
+                ->where('option_name IN (?)', $keys)
+                ->limit(count($keys))
+        ) ?: [];
+    }
+
+    /**
+     * @param  string $key
      * @return bool
      */
     public function exists(string $key): bool

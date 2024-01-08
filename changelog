@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.29.0] - 2024-01-08
+### [Added]
+- Added an autoload feature to the option repository. This gets all autoloaded
+  option values in a single query and caches, rather than multiple individual
+  queries.
+
 ## [3.28.35] - 2023-01-41
 ### [Fixed]
 - Fixed deprecated string functionality (passing null to trim) in local path resolver.

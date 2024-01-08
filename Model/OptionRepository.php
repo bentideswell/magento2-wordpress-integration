@@ -36,18 +36,25 @@ class OptionRepository
     private $cache = [];
 
     /**
+     * @var ?array
+     */
+    private $autoloadKeys = null;
+
+    /**
      * @param \FishPig\WordPress\App\Option $dataSource
      */
     public function __construct(
         \FishPig\WordPress\App\Option $dataSource,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \FishPig\WordPress\App\Logger $logger,
-        \Magento\Store\Model\StoreManagerInterface $storeManager
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        array $autoloadKeys = []
     ) {
         $this->dataSource = $dataSource;
         $this->serializer = $serializer;
         $this->logger = $logger;
         $this->storeManager = $storeManager;
+        $this->autoloadKeys = $this->prepareAutoloadKeys($autoloadKeys) ?: null;
     }
 
     /**
@@ -57,9 +64,11 @@ class OptionRepository
      */
     public function get(string $key, $default = null)
     {
+        $this->autoload();
+
         $cacheKey = $this->getCacheKey($key);
 
-        if (!isset($this->cache[$cacheKey])) {
+        if (!array_key_exists($cacheKey, $this->cache)) {
             $this->cache[$cacheKey] = $this->dataSource->get($key) ?? $default;
         }
 
@@ -113,5 +122,42 @@ class OptionRepository
     private function getCacheKey(string $key): string
     {
         return $this->storeManager->getStore()->getId() . '::' . $key;;
+    }
+
+    /**
+     *
+     */
+    private function autoload(): void
+    {
+        if ($this->autoloadKeys === null) {
+            return;
+        }
+
+        $defaults = array_combine(
+            array_keys(array_flip($this->autoloadKeys)),
+            array_fill(0, count($this->autoloadKeys), null)
+        );
+
+        $values = array_merge(
+            $defaults,
+            $this->dataSource->getMultiple($this->autoloadKeys)
+        );
+
+        // This stop this running again
+        $this->autoloadKeys = null;
+
+        foreach ($values as $key => $value) {
+            $this->cache[$this->getCacheKey($key)] = $value;
+        }
+    }
+
+    /**
+     *
+     */
+    public function prepareAutoloadKeys(array $keys): ?array
+    {
+        $keys['auth_key'] = \FishPig\WordPress\App\HTTP\AuthorisationKey::KEY_OPTION_NAME;
+        $keys['remote_hash_token'] = \FishPig\WordPress\App\Theme\Builder::TOKEN_REMOTE_HASH;
+        return $keys;
     }
 }

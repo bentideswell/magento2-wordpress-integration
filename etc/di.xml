@@ -418,6 +418,33 @@
     <type name="FishPig\WordPress\Model\OptionRepository">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Serialize</argument>
+            <argument name="autoloadKeys" xsi:type="array">
+                <item name="template" xsi:type="string">template</item>
+                <item name="siteurl" xsi:type="string">siteurl</item>
+                <item name="home" xsi:type="string">home</item>
+                <item name="active_plugins" xsi:type="string">active_plugins</item>
+                <item name="permalink_structure" xsi:type="string">permalink_structure</item>
+                <item name="upload_path" xsi:type="string">upload_path</item>
+                <item name="sticky_posts" xsi:type="string">sticky_posts</item>
+                <item name="blog_public" xsi:type="string">blog_public</item>
+                <item name="blogname" xsi:type="string">blogname</item>
+                <item name="blogdescription" xsi:type="string">blogdescription</item>
+                <item name="page_on_front" xsi:type="string">page_on_front</item>
+                <item name="page_for_posts" xsi:type="string">page_for_posts</item>
+                <item name="show_on_front" xsi:type="string">show_on_front</item>
+                <item name="posts_per_page" xsi:type="string">posts_per_page</item>
+                <item name="date_format" xsi:type="string">date_format</item>
+                <item name="time_format" xsi:type="string">time_format</item>
+                <item name="sidebars_widgets" xsi:type="string">sidebars_widgets</item>
+                <item name="cs_modifiable" xsi:type="string">cs_modifiable</item>
+                <item name="comment_order" xsi:type="string">comment_order</item>
+                <item name="comments_per_page" xsi:type="string">comments_per_page</item>
+                <item name="page_comments" xsi:type="string">page_comments</item>
+                <item name="comment_registration" xsi:type="string">comment_registration</item>
+                <item name="show_avatars" xsi:type="string">show_avatars</item>
+                <item name="avatar_rating" xsi:type="string">avatar_rating</item>
+                <item name="avatar_default" xsi:type="string">avatar_default</item>
+            </argument>
         </arguments>
     </type>
     <type name="FishPig\WordPress\Block\Sidebar">
