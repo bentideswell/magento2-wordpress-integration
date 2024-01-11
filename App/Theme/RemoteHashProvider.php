@@ -21,10 +21,10 @@ class RemoteHashProvider implements \FishPig\WordPress\Api\App\Theme\HashProvide
     protected $optionDataSource = null;
 
     /**
-     * @param \FishPig\WordPress\App\Option $optionDataSource
+     * @param \FishPig\WordPress\Model\OptionRepository $optionDataSource
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $optionDataSource
+        \FishPig\WordPress\Model\OptionRepository $optionDataSource
     ) {
         $this->optionDataSource = $optionDataSource;
     }

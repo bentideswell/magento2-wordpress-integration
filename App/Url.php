@@ -47,7 +47,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
         \FishPig\WordPress\App\Url\SiteUrlResolver $siteUrlResolver,
         \FishPig\WordPress\App\Url\HomeUrlResolver $homeUrlResolver,
         \FishPig\WordPress\App\Url\MagentoUrl $magentoUrl,
-        \FishPig\WordPress\App\Option $option,
+        \FishPig\WordPress\Model\OptionRepository $option,
         \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->siteUrlResolver = $siteUrlResolver;

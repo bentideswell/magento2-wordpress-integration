@@ -19,7 +19,7 @@ class HomeUrlResolver implements \FishPig\WordPress\Api\App\Url\UrlInterface
      *
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $option
     ) {
         $this->option = $option;
     }

@@ -18,10 +18,10 @@ class PermalinkTest implements \FishPig\WordPress\Api\App\Integration\TestInterf
     protected $option = null;
 
     /**
-     * @param \FishPig\WordPress\App\Option $option
+     *
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $option
     ) {
         $this->option = $option;
     }

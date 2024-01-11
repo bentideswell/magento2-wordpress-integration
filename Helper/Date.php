@@ -16,7 +16,7 @@ class Date extends \Magento\Framework\App\Helper\AbstractHelper
     protected $optionRepository = null;
 
     /**
-     * @var \FishPig\WordPress\App\Option
+     * @var \FishPig\WordPress\Model\OptionRepository
      */
     private $option;
 

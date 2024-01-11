@@ -424,6 +424,8 @@
                 <item name="home" xsi:type="string">home</item>
                 <item name="active_plugins" xsi:type="string">active_plugins</item>
                 <item name="permalink_structure" xsi:type="string">permalink_structure</item>
+                <item name="category_base" xsi:type="string">category_base</item>
+                <item name="tag_base" xsi:type="string">tag_base</item>
                 <item name="upload_path" xsi:type="string">upload_path</item>
                 <item name="sticky_posts" xsi:type="string">sticky_posts</item>
                 <item name="blog_public" xsi:type="string">blog_public</item>

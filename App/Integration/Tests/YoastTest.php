@@ -28,7 +28,7 @@ class YoastTest implements \FishPig\WordPress\Api\App\Integration\TestInterface
     protected $moduleManager = null;
 
     /**
-     * @param \FishPig\WordPress\App\Option $option
+     *
      */
     public function __construct(
         \Magento\Framework\App\State $appState,

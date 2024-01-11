@@ -9,15 +9,16 @@ namespace FishPig\WordPress\Model;
 class OptionManager
 {
     /**
-     * @auto
+     *
      */
-    protected $optionRepository = null;
+    private $optionRepository = null;
 
     /**
-     * @param \FishPig\WordPress\App\OptionRepository $optionRepository
+     * @param \FishPig\WordPress\Model\OptionRepository $optionRepository
      */
-    public function __construct(\FishPig\WordPress\Model\OptionRepository $optionRepository)
-    {
+    public function __construct(
+        \FishPig\WordPress\Model\OptionRepository $optionRepository
+    ) {
         $this->optionRepository = $optionRepository;
     }
 

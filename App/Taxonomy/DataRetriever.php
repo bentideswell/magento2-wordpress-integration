@@ -16,10 +16,10 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
     private $option;
 
     /**
-     * @param  \FishPig\WordPress\App\Option $option
+     * @param  \FishPig\WordPress\Model\OptionRepository $option
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $option
     ) {
         $this->option = $option;
     }
@@ -63,7 +63,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
             ]
         ];
     }
-    
+
     /**
      * @param  string $key
      * @param  string $default
@@ -74,7 +74,7 @@ class DataRetriever implements \FishPig\WordPress\Api\App\Taxonomy\TaxonomyRetri
         if ($base = trim((string)$this->option->get($key), '/')) {
             return $base;
         }
-        
+
         return $default;
     }
 }

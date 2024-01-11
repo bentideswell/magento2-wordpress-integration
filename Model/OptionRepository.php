@@ -158,6 +158,8 @@ class OptionRepository
     {
         $keys['auth_key'] = \FishPig\WordPress\App\HTTP\AuthorisationKey::KEY_OPTION_NAME;
         $keys['remote_hash_token'] = \FishPig\WordPress\App\Theme\Builder::TOKEN_REMOTE_HASH;
+        $keys['fishpig_theme_hash'] = \FishPig\WordPress\App\Theme\RemoteHashProvider::OPTION_NAME;
+
         return $keys;
     }
 }

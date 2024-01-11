@@ -11,15 +11,15 @@ namespace FishPig\WordPress\App\PostType;
 class DataRetriever implements \FishPig\WordPress\Api\App\PostType\PostTypeRetrieverInterface
 {
     /**
-     * @var \FishPig\WordPress\App\Option
+     * @var \FishPig\WordPress\Model\OptionRepository
      */
     private $option;
 
     /**
-     * @param \FishPig\WordPress\App\Option $option
+     * @param \FishPig\WordPress\Model\OptionRepository $option
      */
     public function __construct(
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $option
     ) {
         $this->option = $option;
     }

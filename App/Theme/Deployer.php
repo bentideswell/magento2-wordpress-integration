@@ -53,7 +53,7 @@ class Deployer
         Deployment\Pool $deploymentPool,
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\Theme\Url $themeUrl,
-        \FishPig\WordPress\App\Option $option
+        \FishPig\WordPress\Model\OptionRepository $option
     ) {
         $this->theme = $theme;
         $this->logger = $logger;

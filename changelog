@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.29.1] - 2024-01-11
+### [Changed]
+- Changed option data source to use option repository for App classes. This
+  allows these to use autoloaded values, rather than reloading values we already
+  have.
+
 ## [3.29.0] - 2024-01-08
 ### [Added]
 - Added an autoload feature to the option repository. This gets all autoloaded
