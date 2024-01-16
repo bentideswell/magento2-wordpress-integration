@@ -75,7 +75,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      * @const string
      */
     const RENDERED_CONTENT_META_KEY = '_post_content_rendered';
-    
+
     /**
      * @var string
      */
@@ -121,7 +121,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         $this->dateHelper = $dateHelper;
         $this->frontPage = $frontPage;
         $this->passwordManager = $passwordManager;
-        
+
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
 
@@ -305,7 +305,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
                 return $this->termRepository->get($termId);
             }
         }
-        
+
         return false;
     }
 
@@ -340,7 +340,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
                 return $this->taxonomyRepository->get($taxonomy);
             }
         }
-        
+
         return false;
     }
 
@@ -459,7 +459,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     {
         $content = $this->getData('post_content');
 
-        $canGetPreRenderedContent = strpos($content, '<!-- wp:') !== false 
+        $canGetPreRenderedContent = strpos($content, '<!-- wp:') !== false
                                     || strpos($content, 'wp-block-embed') !== false
                                     || strpos($content, '<p') === false;
 
@@ -538,7 +538,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
 
             return $image->getId() ? $image : false;
         }
-        
+
         return false;
     }
 
@@ -906,6 +906,12 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      */
     public function isPublic(): bool
     {
+        if ($postType = $this->getTypeInstance()) {
+            if (!$postType->isPublic()) {
+                return false;
+            }
+        }
+
         return true;
     }
 }

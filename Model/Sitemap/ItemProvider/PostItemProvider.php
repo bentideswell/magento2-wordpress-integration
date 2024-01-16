@@ -39,7 +39,17 @@ class PostItemProvider extends AbstractItemProvider
      */
     protected function getCollection($storeId): iterable
     {
-        return $this->collectionFactory->create()->addIsViewableFilter();
+        $items = $this->collectionFactory->create()
+            ->addIsViewableFilter()
+            ->getItems();
+
+        foreach ($items as $index => $item) {
+            if (!$item->isPublic()) {
+                unset($items[$index]);
+            }
+        }
+
+        return $items;
     }
 
     /**
