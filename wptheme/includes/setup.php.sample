@@ -44,6 +44,9 @@ class Setup
             add_filter('wp_fatal_error_handler_enabled',     '__return_false');
             add_filter('wp_calculate_image_srcset',          '__return_false');
 
+            // Stop .htaccess being edited
+            add_filter('flush_rewrite_rules_hard','__return_false');
+
             if (function_exists('show_admin_bar')) {
                 show_admin_bar(false);
             }

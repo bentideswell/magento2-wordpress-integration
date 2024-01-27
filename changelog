@@ -1,9 +1,12 @@
 # Changelog
 
+## [3.29.3] - 2024-01-27
+### [Changed]
+- Updated WP theme file to stop WordPress auto editing the .htaccess file.
+
 ## [3.29.2] - 2024-01-16
 ### [Changed]
 - Modified post sitemap item provider to call isPublic before adding items.
-
 
 ## [3.29.1] - 2024-01-11
 ### [Changed]
