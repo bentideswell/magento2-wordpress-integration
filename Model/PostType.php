@@ -196,7 +196,11 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
         );
 
         if (!$this->isDefault() && strpos($structure, '%postname%') === false) {
-            $structure = rtrim($structure, '/') . '/%postname%/';
+            $structure = rtrim($structure, '/') . '/%postname%';
+
+            if ($this->url->hasTrailingSlash()) {
+                $structure .= '/';
+            }
         }
 
         if ($this->isHierarchical()) {
