@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.29.5] - 2024-02-01
+### [Changed]
+- Changed the theme hashing to remove a log file that was created in WordPress (theme-update.log)
+
 ## [3.29.4] - 2024-01-30
 ### [Fixed]
 - Fixed a trailing slash issue with custom post type archive pages.

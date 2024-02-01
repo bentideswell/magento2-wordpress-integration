@@ -171,11 +171,6 @@ END;
      */
     public function update(): void
     {
-        file_put_contents(
-            ABSPATH . 'theme-update.log',
-            date('Y-m-d H:i:s') . ' ' . self::HASH . "\n",
-            FILE_APPEND
-        );
         update_option(self::HASH_OPTION_NAME, self::HASH);
         flush_rewrite_rules(false);
         do_action('fishpig/wordpress/theme/updated');
