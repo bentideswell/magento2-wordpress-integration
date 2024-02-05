@@ -39,7 +39,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
         \FishPig\WordPress\Api\Data\ViewableModelInterface $object
     ): void {
         $this->resultPage = $resultPage;
-        
+
         if (!$this->getBlogInfo()->isBlogPublic()) {
             $this->setRobots('NOINDEX,NOFOLLOW');
         }
@@ -48,7 +48,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
             $this->resultPage->getConfig()->setDescription($blogDescription);
         }
     }
-    
+
     /**
      * @param  string $metaTitle
      * @return void
@@ -59,7 +59,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
             $metaTitle
         );
     }
-    
+
     /**
      * @param  string $metaDescription
      * @return void
@@ -96,7 +96,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
             ['attributes' => ['rel' => 'canonical']]
         );
     }
-    
+
     /**
      * @param  string $metaTitle
      * @return void
@@ -105,7 +105,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     {
         $this->setMetaTitle($metaTitle . ' | ' . $this->getBlogInfo()->getBlogName());
     }
-    
+
     /**
      * @param  string|array $robots
      * @return void
@@ -120,7 +120,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
             $this->resultPage->getConfig()->setRobots($robots);
         }
     }
-    
+
     /**
      * @return \FishPig\WordPress\Helper\BlogInfo
      */
@@ -128,7 +128,7 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     {
         return $this->blogInfo;
     }
-    
+
     /**
      * @param mixed
      * @return ?string

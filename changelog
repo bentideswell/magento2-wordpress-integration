@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.29.6] - 2024-02-0
+### [Changed]
+- Changed directives processing so that it is not an asset provider. It runs as the
+  last asset provider in the queue.
+
 ## [3.29.5] - 2024-02-01
 ### [Changed]
 - Changed the theme hashing to remove a log file that was created in WordPress (theme-update.log)
