@@ -59,14 +59,38 @@ class Directives implements AssetProviderInterface
      */
     private function renderDirectives(string $input): ?string
     {
-        if ($this->hasDirectives($input)) {
-            if (preg_match('/<body[^>]*>(.*)<\/body/sU', $input, $bodyMatches)) {
-                return str_replace(
-                    $bodyMatches[1],
-                    $this->filterProcessor->filter($bodyMatches[1]),
-                    $input
+        if (!$this->hasDirectives($input)) {
+            return null;
+        }
+
+        if (!preg_match('/<body[^>]*>(.*)<\/body/sU', $input, $bodyMatches)) {
+            return null;
+        }
+
+        $bodyHtml = $originalBodyHtml = $bodyMatches[1];
+
+        if (preg_match_all(
+            '/\{\{(block|store|trans|view|layout|inlinecss|css|customvar|config|var|template|widget) [^}]*\}\}/',
+            $bodyHtml,
+            $directiveMatches
+        )) {
+            $directiveMatches = array_unique($directiveMatches[0]);
+
+            foreach ($directiveMatches as $directive) {
+                $bodyHtml = str_replace(
+                    $directive,
+                    $this->filterProcessor->filter($directive),
+                    $bodyHtml
                 );
             }
+
+            $input = str_replace(
+                $originalBodyHtml,
+                $bodyHtml,
+                $input
+            );
+
+            return $input;
         }
 
         return null;

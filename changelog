@@ -1,6 +1,11 @@
 # Changelog
 
-## [3.29.6] - 2024-02-0
+## [3.29.7] - 2024-02-09
+### [Fixed]
+- Fixed an issue with directive processor detected false positives, which raises
+  an error.
+
+## [3.29.6] - 2024-02-06
 ### [Changed]
 - Changed directives processing so that it is not an asset provider. It runs as the
   last asset provider in the queue.
