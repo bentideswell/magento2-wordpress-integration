@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.29.8] - 2024-0320
+### [Fixed]
+- Fixed order of breadcrumbs for hierarchical term when viewing 3+ levels deep.
+
 ## [3.29.7] - 2024-02-09
 ### [Fixed]
 - Fixed an issue with directive processor detected false positives, which raises

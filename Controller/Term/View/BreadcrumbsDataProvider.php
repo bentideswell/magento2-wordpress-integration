@@ -49,21 +49,29 @@ class BreadcrumbsDataProvider implements \FishPig\WordPress\Api\Controller\Actio
         }
 
         if ($taxonomy->isHierarchical()) {
+            // Get all parent terms to build crumbs with. These will be in the
+            // wrong order so reverse them before buidling.
             $buffer = $term;
+            $ancestorTerms = [];
 
             while ($buffer->getParentTerm()) {
                 $buffer = $buffer->getParentTerm();
+                $ancestorTerms[] = $buffer;
+            }
 
-                $crumbs['term_' . $buffer->getId()] = [
-                    'label' => __($buffer->getName()),
-                    'title' => __($buffer->getName()),
-                    'link' => $buffer->getUrl(),
-                ];
+            if ($ancestorTerms = array_reverse($ancestorTerms)) {
+                foreach ($ancestorTerms as $buffer) {
+                    $crumbs['term_' . $buffer->getId()] = [
+                        'label' => (string)__($buffer->getName()),
+                        'title' => (string)__($buffer->getName()),
+                        'link' => $buffer->getUrl(),
+                    ];
+                }
             }
         }
 
         $crumbs[$term::ENTITY] = [
-            'label' => __($term->getName())
+            'label' => (string)__($term->getName())
         ];
 
         return $crumbs;
