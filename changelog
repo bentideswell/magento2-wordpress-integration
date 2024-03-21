@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.29.8] - 2024-0320
+## [3.29.9] - 2024-03-21
+### [Changed]
+- Updated links in README.md to point to fishpig.com
+
+## [3.29.8] - 2024-03-20
 ### [Fixed]
 - Fixed order of breadcrumbs for hierarchical term when viewing 3+ levels deep.
 
