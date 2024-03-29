@@ -9,38 +9,44 @@ declare(strict_types=1);
 namespace FishPig\WordPress\App\Api;
 
 use FishPig\WordPress\App\Api\Exception\MissingApiDataException;
+use Magento\Framework\Lock\LockManagerInterface;
 
 class IntegrationDataRetriever
 {
     /**
-     * @auto
+     *
      */
-    protected $restRequestManager = null;
+    const LOCK_NAME = 'fishpig_wordpress_api_init';
 
     /**
-     * @auto
+     *
      */
-    protected $storeManager = null;
+    private $restRequestManager = null;
 
     /**
-     * @auto
+     *
      */
-    protected $cache = null;
+    private $storeManager = null;
 
     /**
-     * @auto
+     *
      */
-    protected $serializer = null;
+    private $cache = null;
 
     /**
-     * @auto
+     *
      */
-    protected $url = null;
+    private $serializer = null;
 
     /**
-     * @auto
+     *
      */
-    protected $isDataRequestEnabled = null;
+    private $url = null;
+
+    /**
+     *
+     */
+    private $isDataRequestEnabled = null;
 
     /**
      * @const string
@@ -53,6 +59,11 @@ class IntegrationDataRetriever
     private $data = [];
 
     /**
+     *
+     */
+    private $lockManager = null;
+
+    /**
      * @param \FishPig\WordPress\App\Api\Rest\Client $apiClient
      */
     public function __construct(
@@ -61,6 +72,7 @@ class IntegrationDataRetriever
         \FishPig\WordPress\App\Cache $cache,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
         \FishPig\WordPress\Model\UrlInterface $url,
+        LockManagerInterface $lockManager,
         bool $isDataRequestEnabled = false
     ) {
         $this->restRequestManager = $restRequestManager;
@@ -68,6 +80,7 @@ class IntegrationDataRetriever
         $this->cache = $cache;
         $this->serializer = $serializer;
         $this->url = $url;
+        $this->lockManager = $lockManager;
         $this->isDataRequestEnabled = $isDataRequestEnabled;
     }
 
@@ -109,25 +122,70 @@ class IntegrationDataRetriever
             return ['time' => time()];
         }
 
-        $cacheKey = 'integration-data-' . $storeId;
+        $cacheKey = 'integration-data-' . $storeId . '-3';
 
         if ($data = $this->cache->load($cacheKey)) {
+            // Data is already in cache
             return $this->serializer->unserialize($data);
         }
 
-        // This fires to check that API is actually available
-        // This is required because data request has authentication so may fail
-        // because of invalid auth token rather than api not being available
-        $this->sayHello();
+        if ($this->lockManager->isLocked(self::LOCK_NAME)) {
+            // Another process is already getting this data so we wait
+            $lockWait = 600;
+            do {
+                usleep(100000);
+            }  while ($this->lockManager->isLocked(self::LOCK_NAME) && $lockWait-- > 0);
 
-        if ($data = $this->restRequestManager->getJson('/fishpig/v1/data')) {
-            $this->cache->save(
-                $this->serializer->serialize($data),
-                $cacheKey
-            );
+            if ($this->lockManager->isLocked(self::LOCK_NAME)) {
+                throw new \RuntimeException(
+                    'FishPig API data retrieval is locked by another process and the timeout was reached.'
+                );
+            }
         }
 
-        return $data;
+        if ($data = $this->cache->load($cacheKey)) {
+            // After waiting for locking process to complete, we now have data
+            // from the cache
+            return $this->serializer->unserialize($data);
+        }
+
+        try {
+            // We are first process to try and get cached data so try to get a lock
+            if (!$this->lockManager->lock(self::LOCK_NAME, 30)) {
+                // Lock failed so throw an exception
+                throw new \RuntimeException(
+                    sprintf(
+                        'Unable to establish lock "%s"',
+                        self::LOCK_NAME
+                    )
+                );
+            }
+
+            // Lock is established, so let's send those API requests.
+
+            // This fires to check that API is actually available
+            // This is required because data request has authentication so may fail
+            // because of invalid auth token rather than api not being available
+            $this->sayHello();
+            sleep(5);
+
+            // Now let's get the API data
+            if ($data = $this->restRequestManager->getJson('/fishpig/v1/data')) {
+                // Cache the API data. When we unlock, this will be available to
+                // other processes requesting this data
+                $this->cache->save(
+                    $this->serializer->serialize($data),
+                    $cacheKey
+                );
+
+                return $data;
+            }
+        } finally {
+            // This unlocks the process
+            $this->lockManager->unlock(self::LOCK_NAME);
+        }
+
+        return ['_error' => __METHOD__ . '::' . __LINE__];
     }
 
     /**
