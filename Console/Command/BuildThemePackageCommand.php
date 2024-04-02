@@ -104,7 +104,7 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
     /**
      *
      */
-    public function getAliases()
+    public function getAliases(): array
     {
         return [
             'fishpig:wordpress:build-theme'
