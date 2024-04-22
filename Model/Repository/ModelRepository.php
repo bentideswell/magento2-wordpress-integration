@@ -160,4 +160,12 @@ abstract class ModelRepository extends AbstractRepository
     {
         return (int)$this->storeManager->getStore()->getId();
     }
+
+    /**
+     * @return []
+     */
+    protected function getCachedList(): array
+    {
+        return $this->cache[$this->getStoreId()] ?? [];
+    }
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.31.0] - 2024-04-22
+### [Added]
+- Added a menu repository and MenuRepository::getByLocation
+### [Changed]
+- Changed canonical to include an alias to stop duplicates being added
+### [Fixed]
+- Incorrectly nested closing div tag in post/view.phtml
+
 ## [3.30.1] - 2024-04-02
 ### [Fixed]
 - Fixed return type for getAliases in console command to be compatible with

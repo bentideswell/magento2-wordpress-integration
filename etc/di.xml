@@ -94,6 +94,7 @@
                 <item name="user" xsi:type="object">FishPig\WordPress\Model\UserRepository</item>
                 <item name="postType" xsi:type="object">FishPig\WordPress\Model\PostTypeRepository</item>
                 <item name="taxonomy" xsi:type="object">FishPig\WordPress\Model\TaxonomyRepository</item>
+                <item name="menu" xsi:type="object">FishPig\WordPress\Model\MenuRepository</item>
             </argument>
         </arguments>
     </type>
@@ -123,6 +124,11 @@
         <arguments>
             <argument name="dataSource" xsi:type="object">FishPig\WordPress\App\Taxonomy</argument>
             <argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\TaxonomyFactory</argument>
+        </arguments>
+    </type>
+    <type name="FishPig\WordPress\Model\MenuRepository">
+        <arguments>
+            <argument name="factoryClass" xsi:type="string">FishPig\WordPress\Model\MenuFactory</argument>
         </arguments>
     </type>
     <!--

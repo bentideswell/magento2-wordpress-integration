@@ -93,7 +93,8 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
         $this->resultPage->getConfig()->addRemotePageAsset(
             $url,
             'canonical',
-            ['attributes' => ['rel' => 'canonical']]
+            ['attributes' => ['rel' => 'canonical']],
+            'canonical'
         );
     }
 

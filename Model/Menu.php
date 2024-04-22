@@ -31,7 +31,12 @@ class Menu extends \FishPig\WordPress\Model\Term
      * @var array
      */
     private $menuCache = null;
-    
+
+    /**
+     * @var array
+     */
+    private $theme = null;
+
     /**
      *
      */
@@ -43,11 +48,13 @@ class Menu extends \FishPig\WordPress\Model\Term
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
         \FishPig\WordPress\Model\ResourceModel\Menu\Item\CollectionFactory $menuItemCollectionFactory,
+        \FishPig\WordPress\App\Theme $theme,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->menuItemCollectionFactory = $menuItemCollectionFactory;
+        $this->theme = $theme;
         parent::__construct(
             $context,
             $registry,
@@ -76,7 +83,7 @@ class Menu extends \FishPig\WordPress\Model\Term
                 $menu[] = $this->_getMenuTreeArray($node);
             }
         }
-        
+
         return $menu;
     }
 
@@ -165,5 +172,22 @@ class Menu extends \FishPig\WordPress\Model\Term
     public function getTaxonomy(): string
     {
         return 'nav_menu';
+    }
+
+    /**
+     * @return string
+     */
+    public function getMenuLocation(): ?string
+    {
+        if (!$this->hasData('menu_location')) {
+            $this->setMenuLocation(null);
+            $locations = $this->theme->getThemeMods('nav_menu_locations') ?: [];
+
+            if (($location = array_search($this->getId(), $locations)) !== false) {
+                $this->setMenuLocation($location);
+            }
+        }
+
+        return $this->getData('menu_location') ?: null;
     }
 }
