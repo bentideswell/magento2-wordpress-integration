@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.1] - 2024-04-23
+### [Fixed]
+- Fixed issue where URL containing only numbers would load homepage.
+
 ## [3.31.0] - 2024-04-22
 ### [Added]
 - Added a menu repository and MenuRepository::getByLocation
