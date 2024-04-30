@@ -13,19 +13,24 @@ use Magento\Swatches\Block\Product\Renderer\Listing\Configurable as SwatchesConf
 class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
 {
     /**
-     * @auto
+     *
      */
-    protected $wpContext = null;
+    private $wpContext = null;
 
     /**
-     * @auto
+     *
      */
-    protected $scopeConfig = null;
+    private $scopeConfig = null;
 
     /**
-     * @auto
+     *
      */
-    protected $logger = null;
+    private $logger = null;
+
+    /**
+     *
+     */
+    private $productListData = [];
 
     /**
      *
@@ -43,6 +48,20 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
     }
 
     /**
+     *
+     */
+    public function setProductListData($arg, $value = null)
+    {
+        if (is_array($arg)) {
+            $this->productListData = $arg;
+        } else {
+            $this->productListData[$arg] = $value;
+        }
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     protected function _toHtml()
@@ -57,6 +76,10 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
                     ->setTemplate(
                         $this->getData('product_list_template') ?: 'Magento_Catalog::product/list.phtml'
                     )->setCollection($collection);
+
+            if ($this->productListData) {
+                $productListBlock->addData($this->productListData);
+            }
 
             $this->fixProductListBlock($productListBlock);
 

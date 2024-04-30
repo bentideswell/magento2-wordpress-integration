@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.31.2] - 2024-04-30
+### [Changed]
+- Changed product list block to allow data to be set against actual product list
+  block. This is useful with the product shortcode [product custom_text="Hello!"]
+  You can then call $block->getCustomText() in product list template and access
+  this data.
+
 ## [3.31.1] - 2024-04-23
 ### [Fixed]
 - Fixed issue where URL containing only numbers would load homepage.
