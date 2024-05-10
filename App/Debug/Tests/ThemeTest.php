@@ -60,9 +60,7 @@ class ThemeTest implements \FishPig\WordPress\App\Debug\TestInterface
 
         unlink($localFile); // Delete file as it's good to be clean
 
-        $this->themeDeployer->deployUsing('local');
-        $this->themeDeployer->deployUsing('http');
-        $this->themeDeployer->deploy(true);
+        $this->themeDeployer->deploy();
 
         // Check theme version
         $this->themeTest->runTest();

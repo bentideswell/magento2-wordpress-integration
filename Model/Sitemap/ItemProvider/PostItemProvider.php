@@ -11,9 +11,14 @@ namespace FishPig\WordPress\Model\Sitemap\ItemProvider;
 class PostItemProvider extends AbstractItemProvider
 {
     /**
-     * @auto
+     *
      */
-    protected $collectionFactory = null;
+    private $collectionFactory = null;
+
+    /**
+     *
+     */
+    private $postTypeRepository = null;
 
     /**
      *
@@ -28,9 +33,11 @@ class PostItemProvider extends AbstractItemProvider
         \Magento\Sitemap\Model\SitemapItemInterfaceFactory $itemFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\App\Logger $logger,
-        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory
+        \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository
     ) {
         $this->collectionFactory = $collectionFactory;
+        $this->postTypeRepository = $postTypeRepository;
         parent::__construct($itemFactory, $storeManager, $logger);
     }
 
@@ -41,7 +48,9 @@ class PostItemProvider extends AbstractItemProvider
     {
         $items = $this->collectionFactory->create()
             ->addIsViewableFilter()
-            ->getItems();
+            ->addPostTypeFilter(
+                array_keys($this->postTypeRepository->getPublic())
+            )->getItems();
 
         foreach ($items as $index => $item) {
             if (!$item->isPublic()) {

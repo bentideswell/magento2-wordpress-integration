@@ -143,16 +143,20 @@ class Deployer
                 DeploymentException::NO_DEPLOYMENTS
             );
         } catch (\Throwable $e) {
-            $this->setThemeUpdateAvailableFlag(
-                $this->theme->getLocalHash()
-            );
+            if ($this->theme->isLatestVersion() === false) {
+                $this->setThemeUpdateAvailableFlag(
+                    $this->theme->getLocalHash()
+                );
 
-            throw new DeploymentException(
-                $this->getErrorMessage(),
-                0,
-                $e->getCode() === DeploymentException::NO_DEPLOYMENTS ? null : $e
-            );
+                throw new DeploymentException(
+                    $this->getErrorMessage(),
+                    0,
+                    $e->getCode() === DeploymentException::NO_DEPLOYMENTS ? null : $e
+                );
+            }
         }
+
+        return null;
     }
 
     /**

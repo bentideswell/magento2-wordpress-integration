@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.31.3] - 2024-05-10
+### [Fixed]
+- Fixed issue where non-public post types were being included in the XML sitemap.
+- Fixed bin/magento fishpig:wordpress:test core.test issue that tried to deploy using
+  local integration when in external mode.
+- Fixed issue with theme deployment where deployment would occur even when hashes
+  matched if triggered via tests.
+
 ## [3.31.2] - 2024-04-30
 ### [Changed]
 - Changed product list block to allow data to be set against actual product list

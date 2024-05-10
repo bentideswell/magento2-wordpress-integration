@@ -11,11 +11,6 @@ namespace FishPig\WordPress\Model;
 class PostTypeRepository extends \FishPig\WordPress\Model\Repository\DataSourceRepository
 {
     /**
-     * @auto
-     */
-    protected $objectFactory = null;
-
-    /**
      * @param \FishPig\WordPress\Model\PostFactory $postFactory
      */
     public function __construct(
@@ -25,5 +20,19 @@ class PostTypeRepository extends \FishPig\WordPress\Model\Repository\DataSourceR
     ) {
         $this->objectFactory = $objectFactory;
         parent::__construct($dataSource, $storeManager);
+    }
+
+    /**
+     *
+     */
+    public function getPublic(): array
+    {
+        $types = [];
+        foreach ($this->getAll() as $index => $postType) {
+            if ($postType->isPublic()) {
+                $types[$index] = $postType;
+            }
+        }
+        return $types;
     }
 }
