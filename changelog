@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.4] - 2024-06-05
+### [Removed]
+- Removed code from WP theme file to remove canonical redirects. This has been
+  moved to the Shortcodes modules, which can handle this more appropriately.
+
 ## [3.31.3] - 2024-05-10
 ### [Fixed]
 - Fixed issue where non-public post types were being included in the XML sitemap.
