@@ -15,5 +15,5 @@
         <?php endif; ?>
     <?php endwhile ?>
 <?php endif; ?>
-    <?= apply_filters('fishpig_index_template_after_loop_html', '') ?>
+<?= apply_filters('fishpig_index_template_after_loop_html', '') ?>
 <?php get_footer() ?>

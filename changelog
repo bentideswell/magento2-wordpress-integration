@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.5] - 2024-06-07
+### [Changed]
+- Changed WP theme to include more filters for HTML injection.
+
 ## [3.31.4] - 2024-06-05
 ### [Removed]
 - Removed code from WP theme file to remove canonical redirects. This has been
