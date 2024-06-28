@@ -175,7 +175,7 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
         }
 
         if (count($postTypes) === 0) {
-            $postTypes = array_keys($this->postTypeRepository->getAll());
+            $postTypes = array_keys($this->postTypeRepository->getPublic());
         }
 
         return $postTypes;

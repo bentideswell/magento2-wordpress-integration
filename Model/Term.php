@@ -48,6 +48,11 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     /**
      *
      */
+    private $postTypeRepository = null;
+
+    /**
+     *
+     */
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -55,6 +60,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -62,6 +68,7 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
         $this->taxonomyRepository = $taxonomyRepository;
         $this->termRepository = $termRepository;
+        $this->postTypeRepository = $postTypeRepository;
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
 
@@ -91,10 +98,17 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
      */
     public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
     {
+        $postTypes = [];
+        foreach ($this->postTypeRepository->getPublic() as $postType) {
+            if ($postType->isTaxonomySupported($this->getTaxonomy())) {
+                $postTypes[] = $postType->getPostType();
+            }
+        }
+
         return $this->postCollectionFactory->create()->addTermIdFilter(
             (int)$this->getId(),
             $this->getTaxonomy()
-        );
+        )->addPostTypeFilter($postTypes);
     }
 
     /**
