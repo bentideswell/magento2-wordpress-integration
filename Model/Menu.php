@@ -47,6 +47,7 @@ class Menu extends \FishPig\WordPress\Model\Term
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
+        \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\ResourceModel\Menu\Item\CollectionFactory $menuItemCollectionFactory,
         \FishPig\WordPress\App\Theme $theme,
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
@@ -62,6 +63,7 @@ class Menu extends \FishPig\WordPress\Model\Term
             $metaDataProvider,
             $taxonomyRepository,
             $termRepository,
+            $postTypeRepository,
             $resource,
             $resourceCollection,
             $data

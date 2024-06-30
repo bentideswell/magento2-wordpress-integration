@@ -33,6 +33,11 @@ class Theme
     /**
      *
      */
+    private $appState = null;
+
+    /**
+     *
+     */
     const THEME_NAME = 'fishpig';
 
     /**
@@ -47,12 +52,14 @@ class Theme
         \FishPig\WordPress\App\Theme\LocalHashProvider $localHashProvider,
         \FishPig\WordPress\App\Theme\RemoteHashProvider $remoteHashProvider,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
-        \FishPig\WordPress\App\Cache $cache
+        \FishPig\WordPress\App\Cache $cache,
+        \Magento\Framework\App\State $appState
     ) {
         $this->localHashProvider = $localHashProvider;
         $this->remoteHashProvider = $remoteHashProvider;
         $this->optionRepository = $optionRepository;
         $this->cache = $cache;
+        $this->appState = $appState;
     }
 
     /**
@@ -103,15 +110,25 @@ class Theme
     {
         $cacheKey = 'theme_local_hash';
 
-        if (PHP_SAPI !== 'cli' && ($localHash = $this->cache->load($cacheKey))) {
-            return $localHash;
+        if (PHP_SAPI !== 'cli' && !$this->isDeveloperMode()) {
+            if ($localHash = $this->cache->load($cacheKey)) {
+                return $localHash;
+            }
         }
 
         $localHash = $this->localHashProvider->getHash();
 
-        $this->cache->save($localHash, $cacheKey, [], 604800);
+        $this->cache->save($localHash, $cacheKey, [], 60);
 
         return $localHash;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isDeveloperMode(): bool
+    {
+        return $this->appState->getMode() == \Magento\Framework\App\State::MODE_DEVELOPER;
     }
 
     /**
