@@ -93,6 +93,10 @@ class Taxonomy extends \Magento\Framework\DataObject
             $slug = rtrim($front . '/' . $slug, '/');
         }
 
+        if ($slug === '.' || $slug === './') {
+            $slug = '';
+        }
+
         return $slug;
     }
 

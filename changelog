@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.10] - 2024-10-20
+### [Fixed]
+- Added support for taxonomy prefix of "." which essentially
+  removes the prefix.
+  
 ## [3.31.9] - 2024-06-30
 ### [Fixed]
 - Fixed error introduced in 3.31.8 with Menu model not having updated contstructor.
