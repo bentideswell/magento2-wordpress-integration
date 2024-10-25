@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.11] - 2024-10-25
+### [Changed]
+- Changed HTTP POST requests to submit data as an array rather than query string.
+
 ## [3.31.10] - 2024-10-20
 ### [Fixed]
 - Added support for taxonomy prefix of "." which essentially

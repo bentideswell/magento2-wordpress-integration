@@ -186,6 +186,17 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     {
         $this->requestedUrl = $uri = $this->authorisationKey->addKeyToUrl((string)$uri);
 
+        if ($method === 'POST') {
+            // This overrides the POSTFIELDS option to allow for file uploads
+            // If not done, POSTFIELDS will be a http query and not an array
+            foreach ($params as $key => $value) {
+                if ($value instanceof \CURLFile) {
+                    $this->setOption(CURLOPT_POSTFIELDS, $params);
+                    break;
+                }
+            }
+        }
+
         return parent::makeRequest($method, $uri, $params);
     }
 
