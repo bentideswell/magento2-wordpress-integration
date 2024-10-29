@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.12]- 2024-1-29
+### [Added]
+- Added CORS file to FishPig WP theme to ensure CORS headers are set for Magento URL
+  when in external integration mode.
+  
 ## [3.31.11] - 2024-10-25
 ### [Changed]
 - Changed HTTP POST requests to submit data as an array rather than query string.
