@@ -1,6 +1,10 @@
 # Changelog
 
-## [3.31.12]- 2024-1-29
+## [3.31.14] - 2025-01-24
+### [Changed]
+- Updated WP theme to allow quick including of index.php in custom template files
+
+## [3.31.12] - 2024-01-29
 ### [Added]
 - Added CORS file to FishPig WP theme to ensure CORS headers are set for Magento URL
   when in external integration mode.

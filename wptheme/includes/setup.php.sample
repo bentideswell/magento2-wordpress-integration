@@ -156,6 +156,11 @@ class Setup
                 remove_filter('request', array($GLOBALS['wpseo_rewrite'], 'request'));
             }
         }
+
+        // Add useful helper to show FishPig index.php in custom templates
+        add_filter('fishpig_index_template', function() {
+            include_once __DIR__ . '/../index.php';
+        });
     }
 }
 // phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
