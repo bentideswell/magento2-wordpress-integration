@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.15] - 2025-04-02
+### [Fixed]
+- Cast the return type to a string in PostType::getSlug to stop returning NULL.
+
 ## [3.31.14] - 2025-01-24
 ### [Changed]
 - Updated WP theme to allow quick including of index.php in custom template files

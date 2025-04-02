@@ -219,7 +219,7 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
      */
     public function getSlug(): string
     {
-        return $this->getData('rewrite/slug');
+        return $this->getData('rewrite/slug') ?? '';
     }
 
     /**

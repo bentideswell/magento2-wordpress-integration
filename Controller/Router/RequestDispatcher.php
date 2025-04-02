@@ -14,7 +14,7 @@ use \Magento\Framework\App\ActionInterface;
 class RequestDispatcher
 {
     /**
-     * @auto
+     * @var \Magento\Framework\App\Response\Http
      */
     protected $response = null;
 
@@ -52,6 +52,7 @@ class RequestDispatcher
     {
         $routeParts = $this->parseRoute($route);
 
+        /** @var \Magento\Framework\App\Request\Http $request */
         $request->setModuleName(
             $routeParts['module']
         )->setControllerName(
@@ -73,7 +74,7 @@ class RequestDispatcher
     }
 
     /**
-     * @param  RequestInterface $request
+     * @param  \Magento\Framework\App\Request\Http $request
      * @param  string $url
      * @param  int $code = 302
      * @return ActionInterface
@@ -81,6 +82,7 @@ class RequestDispatcher
     public function redirect(RequestInterface $request, string $url, int $code = 302): ActionInterface
     {
         $this->response->setRedirect($url, $code);
+
         $request->setDispatched(true);
 
         return $this->actionFactory->create(
