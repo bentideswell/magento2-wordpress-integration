@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.16] - 2025-04-09
+### [Changed]
+- Changed Logger to fix compatibility issue.
+
 ## [3.31.15] - 2025-04-02
 ### [Fixed]
 - Cast the return type to a string in PostType::getSlug to stop returning NULL.
