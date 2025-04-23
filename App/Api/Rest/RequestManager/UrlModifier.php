@@ -11,12 +11,12 @@ namespace FishPig\WordPress\App\Api\Rest\RequestManager;
 class UrlModifier implements \FishPig\WordPress\App\HTTP\RequestManager\UrlModifierInterface
 {
     /**
-     * @var \FishPig\WordPress\Model\UrlInterface
+     *
      */
     private $url = null;
 
     /**
-     * @param \FishPig\WordPress\Model\UrlInterface $url
+     * @param \FishPig\WordPress\App\Url $url
      */
     public function __construct(
         \FishPig\WordPress\Model\UrlInterface $url
@@ -28,7 +28,7 @@ class UrlModifier implements \FishPig\WordPress\App\HTTP\RequestManager\UrlModif
      * @param  string $url
      * @return ?string
      */
-    public function modifyUrl(string $url = null): ?string
+    public function modifyUrl(?string $url = null): ?string
     {
         if ($url === null) {
             throw new \FishPig\WordPress\App\Exception('Invalid URL given.');

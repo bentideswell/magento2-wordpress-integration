@@ -50,8 +50,8 @@ class Menu extends \FishPig\WordPress\Model\Term
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
         \FishPig\WordPress\Model\ResourceModel\Menu\Item\CollectionFactory $menuItemCollectionFactory,
         \FishPig\WordPress\App\Theme $theme,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->menuItemCollectionFactory = $menuItemCollectionFactory;

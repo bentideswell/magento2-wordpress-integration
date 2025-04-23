@@ -53,7 +53,7 @@ class RequestManager
     private $urlModifiers = [];
 
     /**
-     * @param \FishPig\WordPress\Model\UrlInterface $url
+     * @param \FishPig\WordPress\App\Url $url
      */
     public function __construct(
         \FishPig\WordPress\Model\UrlInterface $url,
@@ -82,7 +82,7 @@ class RequestManager
      * @param  string $url = null
      * @return ClientInterface
      */
-    public function get(string $url = null): ClientInterface
+    public function get(?string $url = null): ClientInterface
     {
         return $this->makeRequest('GET', $url);
     }
@@ -92,7 +92,7 @@ class RequestManager
      * @param  array $data = []
      * @return ClientInterface
      */
-    public function post(string $url = null, array $data = []): ClientInterface
+    public function post(?string $url = null, array $data = []): ClientInterface
     {
         return $this->makeRequest('POST', $url, $data);
     }
@@ -101,7 +101,7 @@ class RequestManager
      * @param  string $url = null
      * @return ClientInterface
      */
-    public function head(string $url = null): ClientInterface
+    public function head(?string $url = null): ClientInterface
     {
         return $this->makeRequest('HEAD', $url);
     }
@@ -112,7 +112,7 @@ class RequestManager
      * @param  array $data    = null
      * @return ClientInterface
      */
-    protected function makeRequest(string $method, string $url = null, $args = null): ClientInterface
+    protected function makeRequest(string $method, ?string $url = null, $args = null): ClientInterface
     {
         if (($url = (string)$this->modifyUrl($url)) === '') {
             throw new \FishPig\WordPress\App\Exception('Empty URL in ' . get_class($this) . '::' . $method);
@@ -122,6 +122,7 @@ class RequestManager
         $cacheKey = md5($method . strtolower($url ?? '_current'));
 
         if (!isset($this->cache[$cacheKey])) {
+            /** @var \FishPig\WordPress\App\HTTP\Client\Curl $client */
             $this->cache[$cacheKey] = $client = $this->httpClientFactory->create();
 
             $logData = [
@@ -193,7 +194,7 @@ class RequestManager
      * @param  string $url
      * @return ?string
      */
-    protected function modifyUrl(string $url = null): ?string
+    protected function modifyUrl(?string $url = null): ?string
     {
         foreach ($this->urlModifiers as $urlModifier) {
             $url = $urlModifier->modifyUrl($url);

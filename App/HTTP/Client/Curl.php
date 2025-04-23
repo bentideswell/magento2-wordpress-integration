@@ -13,6 +13,11 @@ use FishPig\WordPress\App\HTTP\CurlException;
 class Curl extends \Magento\Framework\HTTP\Client\Curl
 {
     /**
+     * @var \CurlHandle
+     */
+    protected $_ch;
+
+    /**
      * @auto
      */
     protected $appMode = null;
@@ -28,12 +33,12 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     const USERAGENT = 'Mozilla/5.0 (compatible; FishPig/1.0)';
 
     /**
-     * @var bool
+     *
      */
     private $isHeadRequest = false;
 
     /**
-     * @var string
+     *
      */
     private $authorisationKey = null;
 

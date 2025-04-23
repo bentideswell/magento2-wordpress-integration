@@ -43,7 +43,7 @@ class SetOptionCommand extends \Symfony\Component\Console\Command\Command
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Store\Model\App\Emulation $storeEmulation,
-        string $name = null
+        ?string $name = null
     ) {
         $this->optionRepository = $optionRepository;
         $this->storeManager = $storeManager;

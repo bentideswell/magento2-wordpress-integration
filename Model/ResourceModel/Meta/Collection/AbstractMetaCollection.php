@@ -24,9 +24,9 @@ abstract class AbstractMetaCollection extends \FishPig\WordPress\Model\ResourceM
         \Magento\Framework\Data\Collection\Db\FetchStrategyInterface $fetchStrategy,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
-        string $modelName = null
+        ?\Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        ?\Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        ?string $modelName = null
     ) {
         $this->metaDataProvider = $metaDataProvider;
         parent::__construct($entityFactory, $logger, $fetchStrategy, $eventManager, $connection, $resource, $modelName);

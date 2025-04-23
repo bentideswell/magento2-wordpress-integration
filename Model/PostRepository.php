@@ -23,7 +23,7 @@ class PostRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\Model\PostFactory $objectFactory,
-        string $idFieldName = null
+        ?string $idFieldName = null
     ) {
         $this->objectFactory = $objectFactory;
         parent::__construct($storeManager, $idFieldName);

@@ -68,7 +68,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
         \FishPig\WordPress\App\Debug\TestPoolFactory $testPoolFactory,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Store\Model\App\Emulation $emulation,
-        string $name = null
+        ?string $name = null
     ) {
         $this->appState = $state;
         $this->testPoolFactory = $testPoolFactory;
@@ -187,6 +187,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
     private function runTests(InputInterface $input, OutputInterface $output)
     {
         // Get the store
+        /** @var \Magento\Store\Model\Store */
         $store = $this->storeManager->getStore(
             (int)($input->getOption(self::OPT_STORE) ?: $this->storeManager->getDefaultStoreView()->getId())
         );

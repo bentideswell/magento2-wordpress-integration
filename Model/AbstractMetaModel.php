@@ -23,8 +23,8 @@ abstract class AbstractMetaModel extends AbstractModel
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->metaDataProvider = $metaDataProvider;

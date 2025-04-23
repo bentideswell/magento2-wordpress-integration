@@ -14,5 +14,5 @@ interface UrlModifierInterface
      * @param  string $url = null
      * @return ?string
      */
-    public function modifyUrl(string $url = null): ?string;
+    public function modifyUrl(?string $url = null): ?string;
 }

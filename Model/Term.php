@@ -61,8 +61,8 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
         \FishPig\WordPress\Model\TaxonomyRepository $taxonomyRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
         \FishPig\WordPress\Model\PostTypeRepository $postTypeRepository,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();

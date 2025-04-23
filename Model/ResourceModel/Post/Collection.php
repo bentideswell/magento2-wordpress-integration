@@ -75,9 +75,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \Magento\Customer\Model\Session $customerSession,
         \Magento\Framework\Serialize\SerializerInterface $serializer,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
-        string $modelName = null
+        ?\Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        ?\Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        ?string $modelName = null
     ) {
 
         $this->postTypeRepository = $postTypeRepository;
@@ -190,11 +190,15 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
     {
         parent::_afterLoad();
 
-        $this->getResource()->preparePosts($this->_items);
+        /** @var \FishPig\WordPress\Model\ResourceModel\Post */
+        $resource = $this->getResource();
+        $resource->preparePosts($this->_items);
 
         if ($stickyIds = $this->getFlag('_sticky_ids')) {
-            foreach ($this->_items as $item) {
-                $item->setData('is_sticky', in_array($item->getId(), $stickyIds));
+            if (is_array($stickyIds)) {
+                foreach ($this->_items as $item) {
+                    $item->setData('is_sticky', in_array($item->getId(), $stickyIds));
+                }
             }
         }
 

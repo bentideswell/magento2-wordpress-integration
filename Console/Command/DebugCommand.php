@@ -62,7 +62,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
     protected $storeEmulation = null;
 
     /**
-     * @auto
+     * @var \FishPig\WordPress\App\Url
      */
     protected $wpUrlBuilder = null;
 
@@ -98,7 +98,7 @@ class DebugCommand extends \Symfony\Component\Console\Command\Command
         \Magento\Store\Model\App\Emulation $storeEmulation,
         \FishPig\WordPress\Model\UrlInterface $wpUrlBuilder,
         \FishPig\WordPress\App\Integration\Mode $appMode,
-        string $name = null
+        ?string $name = null
     ) {
         $this->fullModuleList = $fullModuleList;
         $this->moduleManager = $moduleManager;

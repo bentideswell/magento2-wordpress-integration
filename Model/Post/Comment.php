@@ -60,8 +60,8 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\Helper\Date $dateHelper,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();

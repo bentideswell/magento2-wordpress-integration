@@ -38,9 +38,9 @@ class Collection extends \FishPig\WordPress\Model\ResourceModel\Meta\Collection\
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
-        \Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
-        string $modelName = null
+        ?\Magento\Framework\DB\Adapter\AdapterInterface $connection = null,
+        ?\Magento\Framework\Model\ResourceModel\Db\AbstractDb $resource = null,
+        ?string $modelName = null
     ) {
         $this->optionRepository = $optionRepository;
 

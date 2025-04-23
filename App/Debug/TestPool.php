@@ -45,7 +45,7 @@ class TestPool
     }
 
     /**
-     * @return aray
+     * @return array
      */
     public function getCodes(): array
     {

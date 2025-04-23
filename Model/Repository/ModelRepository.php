@@ -32,7 +32,7 @@ abstract class ModelRepository extends AbstractRepository
      */
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        string $idFieldName = null
+        ?string $idFieldName = null
     ) {
         $this->storeManager = $storeManager;
         $this->idFieldName = $idFieldName ?? 'ID';
@@ -133,7 +133,7 @@ abstract class ModelRepository extends AbstractRepository
     /**
      * @param  mixed  $value
      * @param  string $field
-     * @return \FishPig\WordPress\Api\Data\ViewableModelInterface
+     * @return \Magento\Framework\DataObject
      */
     private function loadObject($value, $field)
     {

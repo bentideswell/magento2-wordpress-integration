@@ -1,4 +1,7 @@
 # Changelog
+## [3.31.17] - 2025-04-23
+### [Fixed]
+- Updated code for PHP 8.4 compatibility.
 
 ## [3.31.16] - 2025-04-09
 ### [Changed]

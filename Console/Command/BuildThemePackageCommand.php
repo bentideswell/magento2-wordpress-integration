@@ -50,7 +50,7 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
         \FishPig\WordPress\App\Theme\Builder $themeBuilder,
         \FishPig\WordPress\App\Theme\Deployer $themeDeployer,
         \Magento\Framework\Filesystem\Driver\File $fileDriver,
-        string $name = null
+        ?string $name = null
     ) {
         $this->theme = $theme;
         $this->themeBuilder = $themeBuilder;

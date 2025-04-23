@@ -29,7 +29,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     const CACHE_TAG_WP = 'wordpress';
 
     /**
-     * @var \FishPig\WordPress\Model\UrlInterface
+     * @var \FishPig\WordPress\App\Url
      */
     protected $url;
 
@@ -40,8 +40,8 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->url = $wpContext->getUrl();

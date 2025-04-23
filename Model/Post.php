@@ -106,8 +106,8 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         \FishPig\WordPress\Helper\FrontPage $frontPage,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \FishPig\WordPress\Model\Post\PasswordManager $passwordManager,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->postTypeRepository = $postTypeRepository;

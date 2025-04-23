@@ -38,8 +38,8 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
         \Magento\Framework\Registry $registry,
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->postCollectionFactory = $wpContext->getPostCollectionFactory();
@@ -103,7 +103,9 @@ class User extends AbstractMetaModel implements ViewableModelInterface, PostColl
      */
     public function getTablePrefix()
     {
-        return $this->getResource()->getTablePrefix();
+        /** @var \FishPig\WordPress\Model\ResourceModel\User */
+        $resource = $this->getResource();
+        return $resource->getTablePrefix();
     }
 
     /**

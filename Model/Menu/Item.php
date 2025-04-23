@@ -55,8 +55,8 @@ class Item extends \FishPig\WordPress\Model\AbstractMetaModel
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\PostRepository $postRepository,
         \FishPig\WordPress\Model\TermRepository $termRepository,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->postRepository = $postRepository;
@@ -197,7 +197,8 @@ class Item extends \FishPig\WordPress\Model\AbstractMetaModel
     public function getChildrenItems(): \FishPig\WordPress\Model\ResourceModel\Menu\Item\Collection
     {
         if (null === $this->children) {
-            $this->children = $this->getCollection()->addParentItemIdFilter($this->getId());
+            $this->children = $this->getCollection();
+            $this->children->addParentItemIdFilter($this->getId());
         }
 
         return $this->children;

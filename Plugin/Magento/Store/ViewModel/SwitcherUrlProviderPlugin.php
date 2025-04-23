@@ -38,7 +38,7 @@ class SwitcherUrlProviderPlugin
         \FishPig\WordPress\App\Integration\Mode $appMode,
         \FishPig\WordPress\App\Logger $logger,
         \Magento\Store\Model\App\Emulation $emulation,
-        \FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
+        ?\FishPig\WordPress\Api\Data\StoreSwitcherUrlProviderInterface $storeSwitcherUrlProvider = null
     ) {
         $this->appMode = $appMode;
         $this->logger = $logger;

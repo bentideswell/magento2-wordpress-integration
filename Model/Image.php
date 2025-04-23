@@ -37,8 +37,8 @@ class Image extends \FishPig\WordPress\Model\Post\Attachment
         \FishPig\WordPress\Model\Context $wpContext,
         \FishPig\WordPress\Api\Data\MetaDataProviderInterface $metaDataProvider,
         \FishPig\WordPress\Model\ImageResizerFactory $imageResizerFactory,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
         $this->imageResizerFactory = $imageResizerFactory;

@@ -23,7 +23,7 @@ class UserRepository extends \FishPig\WordPress\Model\Repository\ModelRepository
     public function __construct(
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \FishPig\WordPress\Model\UserFactory $objectFactory,
-        string $idFieldName = null
+        ?string $idFieldName = null
     ) {
         $this->objectFactory = $objectFactory;
         parent::__construct($storeManager, $idFieldName);
