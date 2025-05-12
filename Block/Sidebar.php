@@ -65,7 +65,9 @@ class Sidebar extends \Magento\Framework\View\Element\Template
         if ($widgets = $this->getWidgetsArray()) {
             foreach ($widgets as $widgetType) {
                 if ($block = $this->widgetRepository->get($widgetType)) {
-                    $this->setChild('wordpress_widget_' . $widgetType, $block);
+                    if ($this->isWidgetEnabled($block)) {
+                        $this->setChild('wordpress_widget_' . $widgetType, $block);
+                    }
                 }
             }
         }
@@ -75,6 +77,14 @@ class Sidebar extends \Magento\Framework\View\Element\Template
         }
 
         return parent::_beforeToHtml();
+    }
+
+    /**
+     * 
+     */
+    public function isWidgetEnabled(\FishPig\WordPress\Block\Sidebar\Widget\AbstractWidget $widget): bool
+    {
+        return true;
     }
 
     /**

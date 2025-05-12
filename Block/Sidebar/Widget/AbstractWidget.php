@@ -58,10 +58,22 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
      */
     protected function _beforeToHtml()
     {
-        if ($this->getWidgetType()) {
-            $data = $this->optionRepository->get('widget_' . $this->getWidgetType());
+        $this->loadInstance();
 
-            if ($data) {
+        return parent::_beforeToHtml();
+    }
+
+    /**
+     * 
+     */
+    public function loadInstance(): self
+    {
+        $instanceLoadedFlag = '__instanceLoaded';
+
+        if (!$this->getData($instanceLoadedFlag)) {
+            $this->setData($instanceLoadedFlag, true);
+
+            if ($data = $this->optionRepository->get('widget_' . $this->getWidgetType())) {
                 $data = $this->serializer->unserialize($data);
 
                 if (isset($data[$this->getWidgetIndex()])) {
@@ -70,9 +82,9 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
                     }
                 }
             }
-        }
+        } 
 
-        return parent::_beforeToHtml();
+        return $this;
     }
 
     /**
@@ -93,8 +105,6 @@ abstract class AbstractWidget extends \FishPig\WordPress\Block\AbstractBlock
     }
 
     /**
-     *
-     *
      * @return int
      */
     public function getWidgetId()

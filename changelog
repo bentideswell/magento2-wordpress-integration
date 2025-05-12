@@ -1,4 +1,9 @@
 # Changelog
+
+## [3.31.18] - 2025-05-12
+### [Added]
+- Added Sidebar::isWidgetEnabled method. This allow other extensions to toggle widgets (eg. WPML).
+
 ## [3.31.17] - 2025-04-23
 ### [Fixed]
 - Updated code for PHP 8.4 compatibility.
