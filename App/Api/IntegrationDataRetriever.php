@@ -151,7 +151,7 @@ class IntegrationDataRetriever
 
         try {
             // We are first process to try and get cached data so try to get a lock
-            if (!$this->lockManager->lock(self::LOCK_NAME, 30)) {
+            if (!$this->lockManager->lock(self::LOCK_NAME, 10)) {
                 // Lock failed so throw an exception
                 throw new \RuntimeException(
                     sprintf(

@@ -1,8 +1,10 @@
 # Changelog
 
-## [3.31.19] - 2025-05-22
+## [3.31.20] - 2025-05-22
 ### [Removed]
 - Removed a line of debugging code that caused issues with Api data retrieval lock.
+### [Changed]
+- Decreased lock timeout time from 30 to 10.
 
 ## [3.31.18] - 2025-05-12
 ### [Added]
