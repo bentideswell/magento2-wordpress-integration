@@ -167,7 +167,6 @@ class IntegrationDataRetriever
             // This is required because data request has authentication so may fail
             // because of invalid auth token rather than api not being available
             $this->sayHello();
-            sleep(5);
 
             // Now let's get the API data
             if ($data = $this->restRequestManager->getJson('/fishpig/v1/data')) {

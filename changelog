@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.19] - 2025-05-22
+### [Removed]
+- Removed a line of debugging code that caused issues with Api data retrieval lock.
+
 ## [3.31.18] - 2025-05-12
 ### [Added]
 - Added Sidebar::isWidgetEnabled method. This allow other extensions to toggle widgets (eg. WPML).
