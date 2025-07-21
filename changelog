@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.21] - 2025-07-21
+### [Added]
+- Added a test for the authorisation key. This ensures that a key gets generated 
+  in WordPress, which is required for auto FPC cleaning on saving posts.
+  
 ## [3.31.20] - 2025-05-22
 ### [Removed]
 - Removed a line of debugging code that caused issues with Api data retrieval lock.

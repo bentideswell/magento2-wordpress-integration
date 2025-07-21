@@ -16,6 +16,7 @@
                 <item name="api" xsi:type="object">FishPig\WordPress\App\Integration\Tests\ApiTest</item>
                 <item name="permalink" xsi:type="object">FishPig\WordPress\App\Integration\Tests\PermalinkTest</item>
                 <item name="yoast" xsi:type="object">FishPig\WordPress\App\Integration\Tests\YoastTest</item>
+                <item name="authorisation-key" xsi:type="object">FishPig\WordPress\App\Integration\Tests\AuthKeyTest</item>
             </argument>
         </arguments>
     </type>
