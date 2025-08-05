@@ -223,6 +223,14 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
     }
 
     /**
+     *
+     */
+    public function getSlugOriginal(): ?string
+    {
+        return $this->getData('rewrite/slug_original');
+    }
+
+    /**
      * @return bool
      */
     public function hasArchive(): bool
@@ -245,6 +253,8 @@ class PostType extends \Magento\Framework\DataObject implements ViewableModelInt
 
         // phpcs:ignore -- empty if
         if (((string)$slug = $this->getHasArchive()) !== '1') {
+            /**/
+        } elseif ($slug = $this->getSlugOriginal()) {
             /**/
         } elseif ($slug = $this->getSlug()) {
             if (strpos($slug, '%') !== false) {

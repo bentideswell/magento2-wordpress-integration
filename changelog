@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.22] - 2025-08-05
+### [Fixed]
+- Fixed issue that stopped post type archive page displaying when a WP plugin that changes the rewrite/slug
+  value is installed. We now checkout rewrite/slug_original for the archive slug, before using rewrite/slug.
+  
 ## [3.31.21] - 2025-07-21
 ### [Added]
 - Added a test for the authorisation key. This ensures that a key gets generated 
