@@ -55,6 +55,10 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
      */
     protected function setMetaTitle(string $metaTitle): void
     {
+        if (!($metaTitle = $this->stripHtmlTags($metaTitle))) {
+            return;
+        }
+
         $this->resultPage->getConfig()->getTitle()->set(
             $metaTitle
         );
@@ -66,8 +70,12 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
      */
     protected function setMetaDescription(string $metaDescription): void
     {
+        if (!($metaDescription = $this->stripHtmlTags($metaDescription))) {
+            return;
+        }
+
         $this->resultPage->getConfig()->setDescription(
-            $this->stripHtmlTags($metaDescription)
+            $metaDescription
         );
     }
 
@@ -77,9 +85,13 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
      */
     protected function setPageTitle(string $pageTitle): void
     {
+        if (!($pageTitle = $this->stripHtmlTags($pageTitle))) {
+            return;
+        }
+
         if ($pageMainTitle = $this->resultPage->getLayout()->getBlock('page.main.title')) {
             $pageMainTitle->setPageTitle(
-                $this->stripHtmlTags($pageTitle)
+                $pageTitle
             );
         }
     }
@@ -104,7 +116,16 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
      */
     protected function setMetaTitleWithBlogName(string $metaTitle): void
     {
-        $this->setMetaTitle($metaTitle . ' | ' . $this->getBlogInfo()->getBlogName());
+        if (!($metaTitle = $this->stripHtmlTags($metaTitle))) {
+            return;
+        }
+
+        $this->setMetaTitle(
+            rtrim(
+                $metaTitle . ' | ' . $this->getBlogInfo()->getBlogName(),
+                ' |'
+            )
+        );
     }
 
     /**
@@ -131,11 +152,10 @@ abstract class SeoMetaDataProvider implements \FishPig\WordPress\Api\Controller\
     }
 
     /**
-     * @param mixed
-     * @return ?string
+     *
      */
-    private function stripHtmlTags($s)
+    private function stripHtmlTags($s): string
     {
-        return $s ? strip_tags((string)$s) : $s;
+        return trim(strip_tags((string)$s));
     }
 }

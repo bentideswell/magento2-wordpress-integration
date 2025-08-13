@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.23] - 2025-08-13
+### [Changed]
+- Modified SeoMetaDataProvider to stop empty meta data and page title being set.
+
 ## [3.31.22] - 2025-08-05
 ### [Fixed]
 - Fixed issue that stopped post type archive page displaying when a WP plugin that changes the rewrite/slug
