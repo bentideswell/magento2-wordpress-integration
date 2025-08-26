@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.24] - 2025-08-26
+### [Changed]
+- Updated wptheme/misc.php.sample to fix issue where View Post on custom post
+  types had the wrong permalink_template and ended in a 404.
+
 ## [3.31.23] - 2025-08-13
 ### [Changed]
 - Modified SeoMetaDataProvider to stop empty meta data and page title being set.

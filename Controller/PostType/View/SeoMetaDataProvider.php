@@ -28,9 +28,9 @@ class SeoMetaDataProvider extends \FishPig\WordPress\Controller\Action\SeoMetaDa
             $this->setPageTitle($blogName);
             $this->setCanonicalUrl($postType->getUrl());
         } else {
+            $this->setMetaTitle($postType->getName());
             $this->setPageTitle($postType->getName());
             $this->setCanonicalUrl($postType->getUrl());
-
         }
     }
 }
