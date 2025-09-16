@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.25] - 2025-09-16
+### [Changed]
+- Updated WP theme files to allow access to tags.
+- Improved API data reporting
+
 ## [3.31.24] - 2025-08-26
 ### [Changed]
 - Updated wptheme/misc.php.sample to fix issue where View Post on custom post

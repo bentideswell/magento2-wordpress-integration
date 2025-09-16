@@ -53,6 +53,29 @@ class Api
 
                 register_rest_route(
                     'fishpig/v1',
+                    '/info/',
+                    [
+                        'methods' => 'GET',
+                        'callback' => function(\WP_REST_Request $request) {
+                            $data = array_merge(
+                                apply_filters('fishpig_api_v1_info', []),
+                                [
+                                    'time' => time(),
+                                    'version' => \FishPig\WordPress\X\Version::getVersion(),
+                                    'addons' => \FishPig\WordPress\X\Version::getAddonTags(),
+                                ]
+                            );
+
+                            return $data;
+                        },
+                        'permission_callback' => function() {
+                            return ($_GET['key'] ?? null) === md5(date('Ymd') . '::' . strtolower($_SERVER['HTTP_HOST']));
+                        }
+                    ]
+                );
+
+                register_rest_route(
+                    'fishpig/v1',
                     '/data/',
                     [
                         'methods' => 'GET',
