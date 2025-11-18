@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.26] - 2025-11-17
+### [Fixed]
+- Fixed bug in Permalink resource model where invalid value passed to str_replace
+  when completing a slug.
+  
 ## [3.31.25] - 2025-09-16
 ### [Changed]
 - Updated WP theme files to allow access to tags.

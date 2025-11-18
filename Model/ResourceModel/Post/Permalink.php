@@ -187,8 +187,11 @@ class Permalink
             } else {
                 try {
                     $taxonomy = $this->taxonomyRepository->get(trim($mtoken, '%'));
+                    
                     if ($termId = $this->getParentTermId($postId, $taxonomy->getTaxonomy())) {
-                        $slug = str_replace($mtoken, $taxonomy->getUriById($termId, false), $slug);
+                        if ($replace = $taxonomy->getUriById($termId, false)) {
+                            $slug = str_replace($mtoken, $replace, $slug);
+                        }
                     }
                     // Change
                 } catch (\Magento\Framework\Exception\NoSuchEntityException $e) {
