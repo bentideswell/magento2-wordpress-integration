@@ -185,8 +185,8 @@
     </type>
     <type name="FishPig\WordPress\Model\Term\MetaDataProvider">
         <arguments>
-            <argument name="tableName" xsi:type="string"></argument>
-            <argument name="objectField" xsi:type="string"></argument>
+            <argument name="tableName" xsi:type="string">termmeta</argument>
+            <argument name="objectField" xsi:type="string">term_id</argument>
         </arguments>
     </type>
 

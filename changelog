@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.27] - 2025-11-24
+### [Added]
+- Added pre rendering of exerpt to match post content.
+- Added termmeta table lookups to meta data provider for Term models.
+
 ## [3.31.26] - 2025-11-17
 ### [Fixed]
 - Fixed bug in Permalink resource model where invalid value passed to str_replace

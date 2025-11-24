@@ -30,6 +30,8 @@ class Misc
                 }
         
                 update_post_meta($post_id, '_post_content_rendered', $content);
+                update_post_meta($post_id, '_post_exerpt_rendered',  get_the_excerpt($post) ?: '');
+
             } catch (\Exception $e) {
                 // Do nothing
             }

@@ -223,7 +223,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
         // Start with a new line to let things breathe
         $output->writeLn('');
         $output->write(
-            __('Running <options=bold>%1</> test(s) on <options=bold>Store #%2</>', count($codes), $store->getId())
+            (string)__('Running <options=bold>%1</> test(s) on <options=bold>Store #%2</>', count($codes), $store->getId())
         );
         $output->writeLn(' - <options=bold>' . $store->getBaseUrl() . '</>');
         $output->writeLn('');

@@ -78,7 +78,7 @@ class MetaDataProvider implements \FishPig\WordPress\Api\Data\MetaDataProviderIn
         if (isset($this->cache[$cacheKey])) {
             return $this->cache[$cacheKey];
         }
-
+        
         $this->cache[$cacheKey] = false;
 
         $db = $this->resourceConnection->getConnection();

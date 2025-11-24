@@ -75,6 +75,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      * @const string
      */
     const RENDERED_CONTENT_META_KEY = '_post_content_rendered';
+    const RENDERED_EXERPT_META_KEY = '_post_exerpt_rendered';
 
     /**
      * @var string
@@ -464,7 +465,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
                                     || strpos($content, '<p') === false;
 
         if ($canGetPreRenderedContent) {
-            if ($renderedContent = $this->getMetaValue(self::RENDERED_CONTENT_META_KEY)) {
+            if ($renderedContent = $this->getPreRenderedContent()) {
                 if (strpos($renderedContent, '[') !== false) {
                     $renderedContent = $this->shortcodeFactory->create()
                         ->setShortcode($renderedContent)
@@ -486,6 +487,22 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         }
 
         return $this->getData($key);
+    }
+
+    /**
+     * 
+     */
+    public function getPreRenderedContent(): ?string
+    {
+        return $this->getMetaValue(self::RENDERED_CONTENT_META_KEY) ?: null;
+    }
+
+    /**
+     * 
+     */
+    public function getPreRenderedExerpt(): ?string
+    {
+        return $this->getMetaValue(self::RENDERED_EXERPT_META_KEY) ?: null;
     }
 
     /**
