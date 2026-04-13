@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.31.28] - 2026-04-13
+### [Fixed]
+- Fixed Undefined variable $position \FishPig\WordPress\Model\Post\Comments
+
 ## [3.31.27] - 2025-11-24
 ### [Added]
 - Added pre rendering of exerpt to match post content.

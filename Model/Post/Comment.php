@@ -180,7 +180,7 @@ class Comment extends \FishPig\WordPress\Model\AbstractMetaModel
                 $commentsPerPage = $this->optionRepository->get('comments_per_page', 50);
 
                 if ($commentsPerPage > 0 && $totalComments > $commentsPerPage) {
-                    $it = 0;
+                    $it = $position = 0;
 
                     foreach ($post->getComments() as $comment) {
                         ++$it;
