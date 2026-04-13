@@ -10,6 +10,9 @@ namespace FishPig\WordPress\Model;
 
 use FishPig\WordPress\Api\Data\PostCollectionGeneratorInterface;
 use FishPig\WordPress\Api\Data\ViewableModelInterface;
+use FishPig\WordPress\Model\ResourceModel\Term as TermResource;
+use FishPig\WordPress\Model\ResourceModel\Term\Collection as TermCollection;
+use FishPig\WordPress\Model\ResourceModel\Post\Collection as PostCollection;
 
 class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface, ViewableModelInterface
 {
@@ -94,9 +97,9 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     }
 
     /**
-     * @return \FishPig\WordPress\Model\ResourceModel\Post\Collection
+     *
      */
-    public function getPostCollection(): \FishPig\WordPress\Model\ResourceModel\Post\Collection
+    public function getPostCollection(): PostCollection
     {
         $postTypes = [];
         foreach ($this->postTypeRepository->getPublic() as $postType) {
@@ -147,11 +150,14 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     }
 
     /**
-     * @return \FishPig\WordPress\Model\ResourceModel\Term\Collection
+     *
      */
-    public function getChildrenTerms(): \FishPig\WordPress\Model\ResourceModel\Term\Collection
+    public function getChildrenTerms(): TermCollection
     {
-        return $this->getCollection()->addParentFilter($this);
+        /** @var TermCollection $collection */
+        $collection = $this->getCollection();
+
+        return $collection->addParentFilter($this);
     }
 
     /**
@@ -174,12 +180,12 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
 
     /**
      * Get a recursive array of all children IDs
-     *
-     * @return array
      */
     public function getChildIds(): array
     {
-        return $this->getResource()->getChildIds($this->getId());
+        /** @var TermResource $resource */
+        $resource = $this->getResource();
+        return $resource->getChildIds($this->getId());
     }
 
     /**

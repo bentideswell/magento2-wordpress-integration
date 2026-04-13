@@ -164,7 +164,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
             $uri = ltrim($front . '/' . $uri, '/');
         }
 
-        return rtrim($this->getHomeUrl(), '/') . '/' . $uri;
+        return $this->getHomeUrl($uri);
     }
 
     /**

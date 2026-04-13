@@ -1,5 +1,10 @@
 # Changelog
 
+## [3.31.29] - 2026-04-13
+### [Fixed]
+- Fixed FishPig\WordPress\Model\User::getUrl to take into account trailing slash
+  configuration.
+  
 ## [3.31.28] - 2026-04-13
 ### [Fixed]
 - Fixed Undefined variable $position \FishPig\WordPress\Model\Post\Comments
