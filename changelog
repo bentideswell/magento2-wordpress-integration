@@ -1,4 +1,7 @@
 # Changelog
+## [3.31.30] - 2026-04-29
+### [Added]
+- Added new option to Post List widget to filter by category_id
 
 ## [3.31.29] - 2026-04-13
 ### [Fixed]

@@ -52,11 +52,20 @@ class ListPosts extends \Magento\Framework\View\Element\Template implements \Mag
                 ->addIsViewableFilter()
                 ->setCurPage(1)
                 ->setPageSize((int)$this->getPostLimit());
+
+            if ($this->getCategoryId()) {
+                $this->collection->addCategoryIdFilter($this->getCategoryId());
+            }
         }
         
         return $this->collection;
     }
     
+    public function getCategoryId(): ?int
+    {
+        return (int)$this->getData('category_id') ?: null;
+    }
+
     /**
      *
      */

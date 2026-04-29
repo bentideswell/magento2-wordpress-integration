@@ -10,8 +10,11 @@
             <parameter name="post_limit" xsi:type="text" required="true" visible="true" sort_order="10">
                 <label>Number of Posts</label>
             </parameter>
+            <parameter name="category_id" xsi:type="select" visible="true" required="false" sort_order="30" source_model="FishPig\WordPress\Model\Config\Source\Post\Category">
+                <label translate="true">Category</label>
+            </parameter>
             <parameter name="order_by" xsi:type="select" visible="true" required="true" sort_order="20">
-            <label translate="true">Order Posts By</label>
+                <label translate="true">Order Posts By</label>
                 <options>
                     <option name="recent" value="recent">
                         <label>Most Recent</label>
