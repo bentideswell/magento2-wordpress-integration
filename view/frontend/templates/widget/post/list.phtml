@@ -2,9 +2,13 @@
 /**
  *
  */
+/** @var \FishPig\WordPress\Block\Widget\ListPosts $block */
 ?>
 <?php $posts = $block->getLoadedPostCollection() ?>
 <?php if (count($posts) > 0): ?>
+    <?php if ($title = $block->getTitle()): ?>
+        <h2 class="widget-title"><?= $block->escapeHtml($title) ?></h2>
+    <?php endif; ?>
     <div class="widget widget-blog widget-blog-posts">
         <ol class="post-list grid">
             <?php foreach ($posts as $post): ?>

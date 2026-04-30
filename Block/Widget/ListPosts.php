@@ -41,6 +41,14 @@ class ListPosts extends \Magento\Framework\View\Element\Template implements \Mag
     }
 
     /**
+     * 
+     */
+    public function getTitle(): ?string
+    {
+        return $this->getData('title') ?: null;
+    }
+
+    /**
      *
      */
     public function getPostCollection()

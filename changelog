@@ -1,4 +1,9 @@
 # Changelog
+
+## [3.31.31] - 2026-04-30
+### [Changed]
+- Added title option to Post List widget.
+
 ## [3.31.30] - 2026-04-29
 ### [Added]
 - Added new option to Post List widget to filter by category_id
