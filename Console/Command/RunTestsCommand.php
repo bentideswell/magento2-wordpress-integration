@@ -136,7 +136,7 @@ class RunTestsCommand extends \Symfony\Component\Console\Command\Command
      * @param  InputInterface $input
      * @param  OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         try {
             // Set the area code to stop errors in tests

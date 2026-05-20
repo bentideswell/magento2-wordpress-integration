@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.32.0]  - 2026-05-20
+### [Added]
+- Added support for Magento 2.4.9.
+
 ## [3.31.31] - 2026-04-30
 ### [Changed]
 - Added title option to Post List widget.

@@ -71,7 +71,7 @@ class SetOptionCommand extends \Symfony\Component\Console\Command\Command
      * @param  InputInterface $input
      * @param  OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $optionName = trim($input->getOption(self::OPTION));
         $optionValue = trim($input->getOption(self::VALUE));

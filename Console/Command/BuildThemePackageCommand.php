@@ -115,7 +115,7 @@ class BuildThemePackageCommand extends \Symfony\Component\Console\Command\Comman
      * @param  InputInterface $input
      * @param  OutputInterface $output
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         if ($input->getOption(self::ZIP)) {
             $output->write(
