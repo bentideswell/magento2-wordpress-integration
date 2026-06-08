@@ -30,7 +30,7 @@ class Curl extends \Magento\Framework\HTTP\Client\Curl
     /**
      * @const string
      */
-    const USERAGENT = 'Mozilla/5.0 (compatible; FishPig/1.0)';
+    const USERAGENT = 'FishPig-WordPressIntegration/1.0 (+https://fishpig.com/magento2-wordpress-integration; info@fishpig.com)';
 
     /**
      *
