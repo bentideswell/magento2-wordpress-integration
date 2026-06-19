@@ -33,6 +33,11 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
     private $productListData = [];
 
     /**
+     * 
+     */
+    private $escaper;
+    
+    /**
      *
      */
     public function __construct(
@@ -40,10 +45,12 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
         \FishPig\WordPress\Block\Context $wpContext,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \FishPig\WordPress\App\Logger $logger,
+        \Magento\Framework\Escaper $escaper,
         array $data = []
     ) {
         $this->scopeConfig = $scopeConfig;
         $this->logger = $logger;
+        $this->escaper = $escaper;
         parent::__construct($context, $data);
     }
 
@@ -99,7 +106,8 @@ class ListProduct extends \Magento\Catalog\Block\Product\AbstractProduct
             return parent::_toHtml();
         } catch (\Exception $e) {
             $this->logger->error($e);
-            return $e->getMessage();
+            
+            return $this->escaper->escapeHtml($e->getMessage());
         }
     }
 

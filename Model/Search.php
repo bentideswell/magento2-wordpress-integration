@@ -100,7 +100,7 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
         foreach (['cat', 'tag'] as $key) {
             if ($value = $this->request->getParam($key)) {
                 if (is_array($value)) {
-                    foreach ($values as $v) {
+                    foreach ($value as $v) {
                         $extra[] = $key . '[]=' . $v;
                     }
                 } else {
@@ -213,9 +213,10 @@ class Search extends \Magento\Framework\DataObject implements ViewableModelInter
      */
     private function getParsedSearchString()
     {
+        $maxWords = 8;
         $words = explode(' ', $this->getSearchTerm());
 
-        if (count($words) > 15) {
+        if (count($words) > $maxWords) {
             $words = array_slice($words, 0, $maxWords);
         }
 

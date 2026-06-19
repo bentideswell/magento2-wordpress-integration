@@ -132,7 +132,7 @@ class Builder
         $zip = new \ZipArchive();
 
         if ($zip->open($tempFileLocation, \ZipArchive::OVERWRITE) !== true) {
-            throw new \FishPig\WordPress\App\Exception('Unable to open Zip for writing at ' . $zipFile);
+            throw new \FishPig\WordPress\App\Exception('Unable to open Zip for writing at ' . $tempFileLocation);
         }
 
         $localHash = $this->localHashProvider->getHash();

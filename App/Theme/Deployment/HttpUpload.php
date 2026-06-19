@@ -165,8 +165,6 @@ class HttpUpload implements \FishPig\WordPress\App\Theme\DeploymentInterface
                 ]);
             }
 
-            curl_setopt($ch, CURLOPT_URL, 'https://wp.local.fp.com/wp/wp-login.php');
-
             $loginResult = $this->curlExec($ch);
 
             if (strpos($loginResult, '/wp/wp-admin/admin-ajax.php') === false) {

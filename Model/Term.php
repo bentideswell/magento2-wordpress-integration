@@ -222,4 +222,9 @@ class Term extends AbstractMetaModel implements PostCollectionGeneratorInterface
     {
         return true;
     }
+
+    public function getTaxonomy(): string
+    {
+        return (string)$this->_getData('taxonomy');
+    }
 }

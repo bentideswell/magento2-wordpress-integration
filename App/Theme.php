@@ -46,6 +46,11 @@ class Theme
     private $themeMods = null;
 
     /**
+     * 
+     */
+    private $storeManager = null;
+
+    /**
      * @return void
      */
     public function __construct(
@@ -53,13 +58,15 @@ class Theme
         \FishPig\WordPress\App\Theme\RemoteHashProvider $remoteHashProvider,
         \FishPig\WordPress\Model\OptionRepository $optionRepository,
         \FishPig\WordPress\App\Cache $cache,
-        \Magento\Framework\App\State $appState
+        \Magento\Framework\App\State $appState,
+        \Magento\Store\Model\StoreManagerInterface $storeManager
     ) {
         $this->localHashProvider = $localHashProvider;
         $this->remoteHashProvider = $remoteHashProvider;
         $this->optionRepository = $optionRepository;
         $this->cache = $cache;
         $this->appState = $appState;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -108,7 +115,7 @@ class Theme
      */
     public function getLocalHash(): string
     {
-        $cacheKey = 'theme_local_hash';
+        $cacheKey = 'theme_local_hash_' . $this->storeManager->getStore()->getId();
 
         if (PHP_SAPI !== 'cli' && !$this->isDeveloperMode()) {
             if ($localHash = $this->cache->load($cacheKey)) {

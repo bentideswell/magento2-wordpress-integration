@@ -239,7 +239,7 @@ class Url implements \FishPig\WordPress\Model\UrlInterface
     }
 
     /**
-     * @return bool
+     * This is overridden by a plugin to enable it
      */
     public function isRoot(): bool
     {

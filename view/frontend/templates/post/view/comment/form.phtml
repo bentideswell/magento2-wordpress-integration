@@ -3,6 +3,7 @@
  * @category    FishPig
  * @package     FishPig_WordPress
  * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @var \FishPig\WordPress\Block\Post\View\Comment\Form $block
  */
 // phpcs:ignoreFile -- long lines
 ?>
@@ -14,7 +15,9 @@
         <legend class="legend"><?= $block->escapeHtml(__('Leave a Reply')) ?></legend>
         <?php if ($block->customerMustLogin()): ?>    
             <div class="field note no-label"><?= $block->escapeHtml(__('Sorry, you must be logged in to post a comment.')) ?></div>
-            <div class="field note no-label"><button class="button btn-login" type="button" onclick="window.location.href=encodeURI('<?= $block->escapeUrl($block->getLoginLink()) ?>')"><span><span><?= $block->escapeHtml(__('Login')) ?></span></span></button></div>
+            <div class="field note no-label">
+                <button class="button btn-login" type="button" onclick="window.location.href=encodeURI('<?= $block->escapeUrl($block->getLoginLink()) ?>')"><span><span><?= $block->escapeHtml(__('Login')) ?></span></span></button>
+            </div>
         <?php else: ?>
                 <?php if (!$block->isCustomerLoggedIn()): ?>
                     <div class="field required">
@@ -56,7 +59,10 @@
         </button>
         </div>
         <span class="please-wait" id="respond-please-wait" style="display:none;">
-            <img src="<?= $block->escapeUrl($block->getSkinUrl('images/opc-ajax-loader.gif')) ?>" alt="<?= $block->escapeHtml(__('Loading next step...')) ?>" title="<?= $block->escapeHtml(__('Please wait...')) ?>" class="v-middle" /> <?= $block->escapeHtml(__('Please wait...')) ?>
+            <img src="<?= $block->escapeUrl($block->getSkinUrl('images/opc-ajax-loader.gif')) ?>" 
+                 alt="<?= $block->escapeHtml(__('Loading next step...')) ?>" 
+                 title="<?= $block->escapeHtml(__('Please wait...')) ?>" 
+                 class="v-middle" /> <?= $block->escapeHtml(__('Please wait...')) ?>
         </span>
     </div>
     <?php endif; ?>

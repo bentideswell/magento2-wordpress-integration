@@ -89,6 +89,11 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
     private $typeInstance = null;
 
     /**
+     * 
+     */
+    private $customerSession;
+
+    /**
      *
      */
     public function __construct(
@@ -107,6 +112,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         \FishPig\WordPress\Helper\FrontPage $frontPage,
         \FishPig\WordPress\Helper\Date $dateHelper,
         \FishPig\WordPress\Model\Post\PasswordManager $passwordManager,
+        \Magento\Customer\Model\Session $customerSession,
         ?\Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         ?\Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
@@ -122,6 +128,7 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         $this->dateHelper = $dateHelper;
         $this->frontPage = $frontPage;
         $this->passwordManager = $passwordManager;
+        $this->customerSession = $customerSession;
 
         parent::__construct($context, $registry, $wpContext, $metaDataProvider, $resource, $resourceCollection, $data);
     }
@@ -175,6 +182,22 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
         $this->getResource()->preparePosts([$this]);
 
         return $this;
+    }
+
+    /**
+     * 
+     */
+    public function getResource(): ResourceModel\Post
+    {
+        return parent::getResource();
+    }
+
+    /**
+     * 
+     */
+    public function getCollection(): ResourceModel\Post\Collection
+    {
+        return parent::getCollection();
     }
 
     /**
@@ -694,7 +717,8 @@ class Post extends AbstractMetaModel implements \FishPig\WordPress\Api\Data\View
      */
     public function canBeViewed()
     {
-        return $this->isPublished() || ($this->getPostStatus() === 'private' && $this->_app->getConfig()->isLoggedIn());
+        return $this->isPublished()
+               || ($this->getPostStatus() === 'private' && $this->customerSession->isLoggedIn());
     }
 
     /**

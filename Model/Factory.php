@@ -18,7 +18,7 @@ class Factory
      */
     public function __construct(array $factories = [])
     {
-        $this->factories = [];
+        $this->factories = $factories;
     }
 
     /**

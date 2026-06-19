@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.32.2] - 2026-06-19
+### [Fixed]
+- Fixed multiple bugs
+
 ## [3.32.1] - 2026-06-08
 ### [Changed]
 - Changed UserAgent for Magento to WordPress HTTP requests.

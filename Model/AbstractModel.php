@@ -27,7 +27,8 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
      * @const string
      */
     const CACHE_TAG_WP = 'wordpress';
-
+    const CACHE_TAG = 'wordpress_abstract_model';
+    
     /**
      * @var \FishPig\WordPress\App\Url
      */
@@ -62,7 +63,7 @@ abstract class AbstractModel extends \Magento\Framework\Model\AbstractModel impl
     public function getIdentities()
     {
         return [
-              self::CACHE_TAG_WP,
+            self::CACHE_TAG_WP,
             static::CACHE_TAG . '_' . $this->getId()
         ];
     }

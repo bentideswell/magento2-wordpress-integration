@@ -26,17 +26,23 @@ class ListPosts extends \Magento\Framework\View\Element\Template implements \Mag
     private $collection;
 
     /**
+     * 
+     */
+    private $escaper;
+
+    /**
      *
      */
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \FishPig\WordPress\Model\ResourceModel\Post\CollectionFactory $collectionFactory,
         \FishPig\WordPress\App\Integration\Tests $integrationManager,
+        \Magento\Framework\Escaper $escaper,
         array $data = []
     ) {
         $this->collectionFactory = $collectionFactory;
         $this->integrationManager = $integrationManager;
-        
+        $this->escaper = $escaper;
         parent::__construct($context, $data);
     }
 
@@ -102,7 +108,7 @@ class ListPosts extends \Magento\Framework\View\Element\Template implements \Mag
             
             return '';
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return $this->escaper->escapeHtml($e->getMessage());
         }
     }
 }

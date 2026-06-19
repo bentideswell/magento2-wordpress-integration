@@ -103,7 +103,7 @@ abstract class ModelRepository extends AbstractRepository
 
         $this->cache[$storeId][$id] = false;
 
-        return $this->cache[$id][$storeId] = $this->loadObject($id, $this->idFieldName);
+        return $this->cache[$storeId][$id] = $this->loadObject($id, $this->idFieldName);
     }
 
     /**

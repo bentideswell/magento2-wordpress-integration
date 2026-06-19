@@ -65,7 +65,7 @@ class Term extends \FishPig\WordPress\Model\ResourceModel\AbstractResourceModel
                 $this->useTermOrderField[$table] = $this->getConnection()->fetchOne(
                     'SHOW COLUMNS FROM ' . $table . ' WHERE Field = \'term_order\''
                 ) !== false;
-            } catch (Exception $e) {
+            } catch (\Exception $e) {
                 $this->useTermOrderField[$table] = false;
             }
         }

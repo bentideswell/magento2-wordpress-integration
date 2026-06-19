@@ -35,7 +35,9 @@ class OptionManager
      */
     public function optionExists($key)
     {
-        return $this->optionRepository->exists($key);
+        $isEmptyValue = '__!5_-3mpTy_!_££££_';
+
+        return $this->optionRepository->get($key, $isEmptyValue) !== $isEmptyValue;
     }
 
     /**
