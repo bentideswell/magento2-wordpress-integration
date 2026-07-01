@@ -1,5 +1,9 @@
 # Changelog
 
+## [3.32.3] - 2026-07-01
+### [Changed]
+- Updated cors.php in WordPress to allow setting Allow-Origin via filter.
+
 ## [3.32.2] - 2026-06-19
 ### [Fixed]
 - Fixed multiple bugs

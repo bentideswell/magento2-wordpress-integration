@@ -27,16 +27,65 @@ class Cors
      */
     private function addHeaders(): void
     {
-        if ($origin = $this->getAllowedOrigin()) {
-            header('Access-Control-Allow-Origin: ' . $origin);
-            header('Access-Control-Allow-Credentials: true');
-            header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        $origin = apply_filters(
+            "fishpig:cors:allow-origin",
+            $this->getAllowedOrigin()
+        );
+
+        $corsHeaders = [];
+
+        if ($origin) {
+            $corsHeaders['Access-Control-Allow-Origin'] = $origin;
+
+            if ($origin !== '*') {
+                $corsHeaders['Access-Control-Allow-Credentials'] = 'true';
+            }
+            
+            $corsHeaders['Access-Control-Allow-Methods'] = ['GET', 'POST', 'OPTIONS'];
         }
 
         if ($this->isOptionsRequest()) {
-            header('Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept');
-            exit;
+            $corsHeaders['Access-Control-Allow-Headers'] = ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'];
+            
+            if ($this->sendCorsHeaders($corsHeaders)) {
+                exit;
+            }
         }
+
+        if ($corsHeaders) {
+            $this->sendCorsHeaders($corsHeaders);
+        }
+    }
+
+    /**
+     *
+     */
+    private function sendCorsHeaders(array $corsHeaders): bool
+    {
+        $corsHeaders = apply_filters(
+            "fishpig:cors:headers",
+            $corsHeaders
+        );
+
+        if (!$corsHeaders) {
+            return false;
+        }
+
+        foreach ($corsHeaders as $header => $value) {
+            if (is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
+            if ($value === true) {
+                $value = 'true';
+            } elseif ($value === false) {
+                $value = 'false';
+            }
+
+            header($header . ': ' . $value);
+        }
+
+        return true;
     }
 
     /**
@@ -80,7 +129,9 @@ class Cors
             return null;
         }
 
-        $homeUrl = $this->getHomeUrl();
+        if (!($homeUrl = $this->getHomeUrl())) {
+            return null;
+        }
 
         if (strpos($origin, $homeUrl) === 0 || strpos($homeUrl, $origin) === 0) {
             return $origin;
