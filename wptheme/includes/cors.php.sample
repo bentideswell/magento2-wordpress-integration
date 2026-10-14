@@ -133,11 +133,27 @@ class Cors
             return null;
         }
 
-        if (strpos($origin, $homeUrl) === 0 || strpos($homeUrl, $origin) === 0) {
+        if (($originKey = $this->getOriginKey($origin)) && $originKey === $this->getOriginKey($homeUrl)) {
             return $origin;
         }
 
         return null;
+    }
+
+    /**
+     * Normalise a URL to scheme://host:port for exact origin comparison
+     */
+    private function getOriginKey(string $url): ?string
+    {
+        $parts = parse_url(strtolower($url));
+
+        if (empty($parts['scheme']) || empty($parts['host'])) {
+            return null;
+        }
+
+        $port = $parts['port'] ?? ($parts['scheme'] === 'https' ? 443 : 80);
+
+        return $parts['scheme'] . '://' . $parts['host'] . ':' . $port;
     }
 }
 // phpcs:ignoreFile -- this file is a WordPress theme file and will not run in Magento
