@@ -110,6 +110,12 @@ class AssetProvider implements AssetProviderInterface
                 return;
             }
         } catch (\FishPig\WordPress\App\Exception  $e) {
+            // Asset providers need WP but it is unavailable so content is
+            // unrendered. Stop the FPC and external caches caching this response.
+            if ($response instanceof \Magento\Framework\App\Response\Http) {
+                $response->setNoCacheHeaders();
+            }
+
             return;
         }
 

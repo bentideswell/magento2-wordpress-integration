@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.32.6] - 2026-10-14
+### [Changed]
+- Changed AssetProvider to send no-cache headers when integration tests fail.
+  This stops the FPC and Varnish caching pages with unrendered WordPress
+  content (eg. [wp_block] shortcodes) while WordPress is unavailable.
+
 ## [3.32.5] - 2026-10-14
 ### [Fixed]
 - Fixed CORS origin check in WordPress cors.php to require an exact scheme, host
