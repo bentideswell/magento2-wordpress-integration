@@ -1,6 +1,6 @@
 # Changelog
 
-## [3.32.4] - 2026-10-14
+## [3.32.5] - 2026-10-14
 ### [Fixed]
 - Fixed CORS origin check in WordPress cors.php to require an exact scheme, host
   and port match with the home URL instead of a prefix match.
