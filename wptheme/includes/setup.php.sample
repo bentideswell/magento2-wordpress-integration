@@ -53,14 +53,28 @@ class Setup
              * Stop spaces in URLs being converted by WP into dashes.
              * This causes an issue in Magento where /hello world/ loads
              * /hello-world/, which is wrong as this is not the right URL.
+             *
+             * WP_Query concatenates the query-context value straight into SQL
+             * (post_name = '...') so it must still be sanitized. Each part is
+             * sanitized by core and the parts are rejoined with spaces.
              */
             remove_filter('sanitize_title', 'sanitize_title_with_dashes', 10, 3);
             add_filter(
                 'sanitize_title',
                 function ($title, $raw_title = '', $context = 'display') {
-                    return $context === 'query'
-                        ? $title
-                        : sanitize_title_with_dashes($title, $raw_title, $context);
+                    if ($context !== 'query') {
+                        return sanitize_title_with_dashes($title, $raw_title, $context);
+                    }
+
+                    $parts = preg_split('/[\s\x{00A0}]/u', (string)$title);
+
+                    if ($parts === false) {
+                        return sanitize_title_with_dashes($title, $raw_title, $context);
+                    }
+
+                    return implode(' ', array_map(function ($part) use ($raw_title, $context) {
+                        return sanitize_title_with_dashes($part, $raw_title, $context);
+                    }, $parts));
                 },
                 10,
                 3

@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.33.0] - 2026-10-20
+### [Security]
+- Fixed unauthenticated SQL injection in the WordPress theme. setup.php replaced
+  core's sanitize_title_with_dashes filter with one that returned the raw value
+  for the 'query' context, which WP_Query uses unescaped in post_name = '...'.
+  The theme must be redeployed after updating (fishpig:wordpress:theme --deploy).
+
 ## [3.32.6] - 2026-10-14
 ### [Changed]
 - Changed AssetProvider to send no-cache headers when integration tests fail.
